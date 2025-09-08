@@ -1,0 +1,6 @@
+frontend/**
+_legacy_frontend/**
+web/**
+web/.next/**
+.DS_Store
+*.mdx
