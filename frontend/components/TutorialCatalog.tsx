@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Navigation from './Navigation';
+import ALAINLogo from './ALAINLogo';
 import backend from '~backend/client';
 
 interface Tutorial {
@@ -18,6 +20,7 @@ interface Tutorial {
 }
 
 export default function TutorialCatalog() {
+  const navigate = useNavigate();
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,56 +77,62 @@ export default function TutorialCatalog() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold text-foreground mb-2">Tutorial Catalog</h2>
-        <p className="text-muted-foreground">
-          Explore AI tutorials and learn by doing with interactive notebooks.
-        </p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navigation showBack={true} backTo="/" backLabel="Back to Home" />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {tutorials.map((tutorial) => (
-          <Link key={tutorial.id} to={`/tutorial/${tutorial.id}`}>
-            <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-lg">{tutorial.title}</CardTitle>
-                  <Badge className={getDifficultyColor(tutorial.difficulty)}>
-                    {tutorial.difficulty}
-                  </Badge>
-                </div>
-                <CardDescription>{tutorial.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">
-                    <span className="font-medium">Model:</span> {tutorial.model}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    <span className="font-medium">Provider:</span> {tutorial.provider}
-                  </div>
-                  {tutorial.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {tutorial.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
+      <div className="container mx-auto px-4 py-12">
+        <div className="space-y-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Tutorial Catalog</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore our comprehensive collection of interactive AI tutorials. Learn by doing with real AI models and structured, hands-on experiences.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {tutorials.map((tutorial) => (
+              <Link key={tutorial.id} to={`/tutorial/${tutorial.id}`}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle className="text-lg">{tutorial.title}</CardTitle>
+                      <Badge className={getDifficultyColor(tutorial.difficulty)}>
+                        {tutorial.difficulty}
+                      </Badge>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+                    <CardDescription>{tutorial.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="text-sm text-muted-foreground">
+                        <span className="font-medium">Model:</span> {tutorial.model}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        <span className="font-medium">Provider:</span> {tutorial.provider}
+                      </div>
+                      {tutorial.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {tutorial.tags.map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
 
-      {tutorials.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <div className="text-muted-foreground">No tutorials available yet.</div>
+          {tutorials.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <div className="text-muted-foreground">No tutorials available yet.</div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -99,10 +99,11 @@ export namespace execution {
         }
 
         /**
-         * Executes LLM requests with streaming response.
+         * Executes LLM requests and returns the complete response.
          */
-        public async execute(params: RequestType<typeof api_execution_execute_execute>): Promise<void> {
-            await this.baseClient.callTypedAPI(`/execute`, {method: "POST", body: JSON.stringify(params)})
+        public async execute(params: RequestType<typeof api_execution_execute_execute>): Promise<ResponseType<typeof api_execution_execute_execute>> {
+            const resp = await this.baseClient.callTypedAPI(`/execute`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_execution_execute_execute>
         }
     }
 }

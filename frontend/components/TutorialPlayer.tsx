@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Play, Square, AlertCircle, Wifi, Clock, Key, Zap, Shield, Server, Settings } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import Navigation from './Navigation';
 import backend from '~backend/client';
 
 interface Tutorial {
@@ -40,6 +41,7 @@ interface StreamError {
 
 export default function TutorialPlayer() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
@@ -227,16 +229,20 @@ export default function TutorialPlayer() {
   const step = tutorial.steps[currentStep];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">{tutorial.title}</h1>
-        <p className="text-muted-foreground mt-2">{tutorial.description}</p>
-        <div className="flex items-center gap-2 mt-4">
-          <Badge>{tutorial.difficulty}</Badge>
-          <Badge variant="outline">{tutorial.provider}</Badge>
-          <Badge variant="outline">{tutorial.model}</Badge>
-        </div>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navigation showBack={true} backTo="/tutorials" backLabel="Back to Tutorials" />
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">{tutorial.title}</h1>
+            <p className="text-muted-foreground mt-2">{tutorial.description}</p>
+            <div className="flex items-center gap-2 mt-4">
+              <Badge>{tutorial.difficulty}</Badge>
+              <Badge variant="outline">{tutorial.provider}</Badge>
+              <Badge variant="outline">{tutorial.model}</Badge>
+            </div>
+          </div>
 
       {tutorial.steps.length > 1 && (
         <div className="flex gap-2">
@@ -341,6 +347,7 @@ export default function TutorialPlayer() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );

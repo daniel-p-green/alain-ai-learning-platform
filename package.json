@@ -2,9 +2,10 @@
   "name": "leap-app",
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "bun",
+  "packageManager": "npm@10",
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "web"
   ]
 }
