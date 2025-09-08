@@ -73,4 +73,33 @@ describe("deleteStep", () => {
     const progress = await tutorialsDB.queryRow`SELECT * FROM user_progress WHERE user_id = 'test-user-progress'`;
     expect(progress!.current_step).toBe(2); // was 3
   });
+
+  it("updates completed_steps when a step is deleted", async () => {
+    await tutorialsDB.exec`
+      INSERT INTO user_progress (user_id, tutorial_id, current_step, completed_steps)
+      VALUES ('user-progress-2', ${tutorialId}, 3, ARRAY[1,2])
+    `;
+
+    await deleteStep({ stepId: step2Id });
+    const progress = await tutorialsDB.queryRow`SELECT * FROM user_progress WHERE user_id = 'user-progress-2'`;
+    // current_step 3 -> 2 (already covered by previous test scenario pattern)
+    expect(progress!.current_step).toBe(2);
+    // completed_steps [1,2] -> delete 2 and shift >2 down => [1]
+    expect(progress!.completed_steps).toEqual([1]);
+  });
+
+  it("cascades delete assessments for the deleted step", async () => {
+    // Create an assessment tied to step 2
+    const a = await tutorialsDB.queryRow`
+      INSERT INTO assessments (tutorial_id, step_order, question, options, correct_index, difficulty)
+      VALUES (${tutorialId}, 2, 'Q', ARRAY['A','B'], 0, 'beginner')
+      RETURNING id
+    `;
+    const assessmentId = a!.id;
+
+    await deleteStep({ stepId: step2Id });
+
+    const gone = await tutorialsDB.queryRow`SELECT * FROM assessments WHERE id = ${assessmentId}`;
+    expect(gone).toBeNull();
+  });
 });
