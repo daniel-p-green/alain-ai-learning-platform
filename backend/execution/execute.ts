@@ -27,6 +27,8 @@ interface ExecuteResponse {
     code: string;
     message: string;
     details?: any;
+    suggestion?: string;
+    retry?: { recommended: boolean; delay_ms?: number; max_attempts?: number };
   };
 }
 
@@ -37,13 +39,13 @@ export const execute = api<ExecuteRequest, ExecuteResponse>(
     try {
       await requireUserId(ctx);
       const provider = getProvider(req.provider);
-      const content = await provider.execute(req);
+      const content = await withRetries(() => provider.execute(req));
       return { success: true, content };
     } catch (error) {
       const errorData = mapProviderError(error);
       return {
         success: false,
-        error: errorData
+        error: errorData,
       };
     }
   }
@@ -69,7 +71,7 @@ export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
       teacherReq.max_tokens = req.max_tokens ?? 2048; // Reasonable limit for lesson generation
 
       const provider = getProvider(teacherReq.provider);
-      const content = await provider.execute(teacherReq);
+      const content = await withRetries(() => provider.execute(teacherReq));
       return { success: true, content };
     } catch (error) {
       const errorData = mapProviderError(error);
@@ -241,11 +243,38 @@ class OpenAICompatibleProvider implements Provider {
   }
 }
 
-function mapProviderError(error: any): { code: string; message: string; details?: any } {
+function delay(ms: number) { return new Promise(res => setTimeout(res, ms)); }
+
+async function withRetries<T>(fn: () => Promise<T>): Promise<T> {
+  let attempt = 1;
+  const maxAttempts = 2;
+  let lastErr: any;
+  while (attempt <= maxAttempts) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      const code = classifyErrorCode(err);
+      if (code === 'network_timeout' || code === 'provider_unavailable' || code === 'connection_error') {
+        if (attempt < maxAttempts) {
+          await delay(300 * attempt);
+          attempt++;
+          continue;
+        }
+      }
+      break;
+    }
+  }
+  throw lastErr;
+}
+
+function mapProviderError(error: any): { code: string; message: string; details?: any; suggestion?: string; retry?: { recommended: boolean; delay_ms?: number; max_attempts?: number } } {
   if (error instanceof APIError) {
     return {
       code: getCodeFromAPIError(error),
-      message: error.message
+      message: error.message,
+      suggestion: suggestionForCode(getCodeFromAPIError(error)),
+      retry: retryForCode(getCodeFromAPIError(error)),
     };
   }
 
@@ -255,28 +284,36 @@ function mapProviderError(error: any): { code: string; message: string; details?
     if (message.includes('fetch') || message.includes('network') || message.includes('connect') || message.includes('econnreset')) {
       return {
         code: "connection_error",
-        message: "Unable to connect to the AI provider. Please check your internet connection and try again."
+        message: "Unable to connect to the AI provider. Please check your network.",
+        suggestion: "Check connectivity and try again.",
+        retry: { recommended: true, delay_ms: 300, max_attempts: 2 },
       };
     }
     
     if (message.includes('timeout') || message.includes('aborted')) {
       return {
-        code: "timeout",
-        message: "The request took too long to complete. Please try again with a shorter prompt or different parameters."
+        code: "network_timeout",
+        message: "The request timed out.",
+        suggestion: "Try again or reduce output length.",
+        retry: { recommended: true, delay_ms: 300, max_attempts: 2 },
       };
     }
 
     if (message.includes('401') || message.includes('unauthorized') || message.includes('authentication')) {
       return {
-        code: "authentication_failed",
-        message: "Authentication failed. Please check your API key configuration."
+        code: "auth_expired",
+        message: "Authentication failed or expired.",
+        suggestion: "Re-authenticate and refresh API key.",
+        retry: { recommended: false },
       };
     }
 
     if (message.includes('429') || message.includes('rate limit')) {
       return {
-        code: "rate_limited",
-        message: "Too many requests. Please wait a moment before trying again."
+        code: "quota_exceeded",
+        message: "Rate limited or quota exceeded.",
+        suggestion: "Wait before retrying or reduce request frequency.",
+        retry: { recommended: true, delay_ms: 1000, max_attempts: 1 },
       };
     }
 
@@ -290,19 +327,21 @@ function mapProviderError(error: any): { code: string; message: string; details?
     if (message.includes('500') || message.includes('502') || message.includes('503') || message.includes('504')) {
       return {
         code: "provider_unavailable",
-        message: "The AI provider is temporarily unavailable. Please try again in a few moments."
+        message: "The AI provider is temporarily unavailable.",
+        suggestion: "Retry shortly; providers often recover quickly.",
+        retry: { recommended: true, delay_ms: 500, max_attempts: 2 },
       };
     }
     
     return {
       code: "unknown_error",
-      message: "An unexpected error occurred. Please try again."
+      message: "An unexpected error occurred.",
     };
   }
   
   return {
     code: "internal_error",
-    message: "An internal error occurred. Please try again."
+    message: "An internal error occurred.",
   };
 }
 
@@ -310,18 +349,61 @@ function getCodeFromAPIError(error: APIError): string {
   const errorCode = (error as any).code;
   switch (errorCode) {
     case "unauthenticated":
-      return "authentication_failed";
+      return "auth_expired";
     case "not_found":
       return "model_not_found";
     case "resource_exhausted":
-      return "rate_limited";
+      return "quota_exceeded";
     case "deadline_exceeded":
-      return "timeout";
+      return "network_timeout";
     case "failed_precondition":
       return "configuration_error";
     case "invalid_argument":
       return "invalid_request";
     default:
       return "internal_error";
+  }
+}
+
+function classifyErrorCode(error: any): string {
+  if (error instanceof APIError) return getCodeFromAPIError(error);
+  const msg = (error instanceof Error ? error.message : String(error)).toLowerCase();
+  if (msg.includes('timeout') || msg.includes('aborted')) return 'network_timeout';
+  if (msg.includes('401') || msg.includes('unauthorized')) return 'auth_expired';
+  if (msg.includes('429') || msg.includes('rate limit')) return 'quota_exceeded';
+  if (msg.includes('fetch') || msg.includes('network') || msg.includes('connect') || msg.includes('econnreset')) return 'connection_error';
+  if (msg.includes('502') || msg.includes('503') || msg.includes('504')) return 'provider_unavailable';
+  return 'unknown_error';
+}
+
+function suggestionForCode(code: string): string | undefined {
+  switch (code) {
+    case 'network_timeout':
+      return 'Try again; consider reducing max tokens or simplifying the prompt.';
+    case 'auth_expired':
+      return 'Re-authenticate and update your API credentials.';
+    case 'quota_exceeded':
+      return 'Wait for quota reset, reduce request rate, or upgrade your plan.';
+    case 'connection_error':
+      return 'Check your connection or provider endpoint configuration.';
+    case 'provider_unavailable':
+      return 'Wait briefly and retry; provider may be recovering.';
+    default:
+      return undefined;
+  }
+}
+
+function retryForCode(code: string): { recommended: boolean; delay_ms?: number; max_attempts?: number } | undefined {
+  switch (code) {
+    case 'network_timeout':
+    case 'connection_error':
+    case 'provider_unavailable':
+      return { recommended: true, delay_ms: 300, max_attempts: 2 };
+    case 'quota_exceeded':
+      return { recommended: true, delay_ms: 1000, max_attempts: 1 };
+    case 'auth_expired':
+      return { recommended: false };
+    default:
+      return undefined;
   }
 }

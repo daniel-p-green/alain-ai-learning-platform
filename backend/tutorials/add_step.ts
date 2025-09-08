@@ -86,6 +86,33 @@ export const addStep = api<AddStepRequest, TutorialStep>(
           SET step_order = step_order + 1 
           WHERE tutorial_id = ${req.tutorialId} AND step_order >= ${req.stepOrder}
         `;
+
+        // Preserve user progress: shift any user current_step and completed_steps
+        // at or beyond the inserted position
+        await tx.exec`
+          UPDATE user_progress
+          SET current_step = current_step + 1,
+              last_accessed = NOW()
+          WHERE tutorial_id = ${req.tutorialId} AND current_step >= ${req.stepOrder}
+        `;
+
+        const usersWithProgress = await tx.queryAll<{ id: number; completed_steps: number[] | null }>`
+          SELECT id, completed_steps
+          FROM user_progress
+          WHERE tutorial_id = ${req.tutorialId}
+        `;
+
+        for (const u of usersWithProgress) {
+          const arr = (u.completed_steps || []) as number[];
+          if (!arr || arr.length === 0) continue;
+          const updated = arr.map(s => (s >= req.stepOrder ? s + 1 : s));
+          await tx.exec`
+            UPDATE user_progress
+            SET completed_steps = ${updated},
+                last_accessed = NOW()
+            WHERE id = ${u.id}
+          `;
+        }
       }
 
       // Validate model_params if provided

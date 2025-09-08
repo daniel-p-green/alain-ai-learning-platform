@@ -74,6 +74,12 @@ export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
         ORDER BY step_order ASC
       `;
 
+      // Cascade delete assessments for this step (responses cascade via FK)
+      await tx.exec`
+        DELETE FROM assessments
+        WHERE tutorial_id = ${stepToDelete.tutorial_id} AND step_order = ${stepToDelete.step_order}
+      `;
+
       await tx.exec`
         DELETE FROM tutorial_steps
         WHERE id = ${stepId}
@@ -94,6 +100,29 @@ export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
         WHERE tutorial_id = ${stepToDelete.tutorial_id} 
           AND current_step > ${stepToDelete.step_order}
       `;
+
+      // Update completed_steps arrays for all users on this tutorial:
+      //  - remove the deleted step if present
+      //  - decrement any steps after the deleted position
+      const users = await tx.queryAll<{ id: number; completed_steps: number[] | null }>`
+        SELECT id, completed_steps
+        FROM user_progress
+        WHERE tutorial_id = ${stepToDelete.tutorial_id}
+      `;
+
+      for (const u of users) {
+        const arr = (u.completed_steps || []) as number[];
+        if (!arr || arr.length === 0) continue;
+        const filtered = arr
+          .filter(s => s !== stepToDelete.step_order)
+          .map(s => (s > stepToDelete.step_order ? s - 1 : s));
+        await tx.exec`
+          UPDATE user_progress
+          SET completed_steps = ${filtered},
+              last_accessed = NOW()
+          WHERE id = ${u.id}
+        `;
+      }
 
       await tx.commit();
 

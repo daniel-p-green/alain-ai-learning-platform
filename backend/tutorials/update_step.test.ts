@@ -60,6 +60,23 @@ describe("updateStep", () => {
     ).rejects.toThrow("step title cannot be empty");
   });
 
+  it("throws an error for empty content when provided", async () => {
+    await expect(
+      updateStep({ stepId, content: "  " })
+    ).rejects.toThrow("step content cannot be empty");
+  });
+
+  it("updates codeTemplate and expectedOutput fields", async () => {
+    const updated = await updateStep({
+      stepId,
+      codeTemplate: "print('Hello')",
+      expectedOutput: "Hello",
+    });
+
+    expect(updated.code_template).toBe("print('Hello')");
+    expect(updated.expected_output).toBe("Hello");
+  });
+
   it("updates model_params", async () => {
     const newParams = { temperature: 0.9 };
     const updated = await updateStep({
