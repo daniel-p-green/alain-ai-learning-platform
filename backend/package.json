@@ -4,7 +4,8 @@
   "type": "module",
   "packageManager": "npm@10",
   "scripts": {
-    "build": "cd ../frontend && npm install && npx vite build --outDir=../backend/frontend/dist"
+    "build": "cd ../frontend && npm install && npx vite build --outDir=../backend/frontend/dist",
+    "test": "vitest run"
   },
   "dependencies": {
     "encore.dev": "^1.49.3",
@@ -12,6 +13,8 @@
     "@clerk/backend": "^1.11.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^2.0.5",
+    "ts-node": "^10.9.2"
   }
 }

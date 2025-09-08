@@ -5,8 +5,8 @@
  * Tests Poe API connectivity using different methods
  */
 
-const https = require('https');
-const { OpenAI } = require('openai');
+import https from 'https';
+import { OpenAI } from 'openai';
 
 // Get API key from environment
 const POE_API_KEY = process.env.POE_API_KEY;
@@ -162,11 +162,51 @@ async function runTests() {
     // Test 3: Regular OpenAI comparison
     await testRegularOpenAI();
 
-    console.log('\n🎉 Tests completed!');
-    console.log('\n📚 Next steps:');
-    console.log('- If Direct HTTP works but OpenAI SDK fails: Check OpenAI SDK version (needs v4+)');
-    console.log('- If both fail: Verify POE_API_KEY is correct');
-    console.log('- For production: Use OpenAI SDK approach for better error handling and streaming');
+    // Test 4: GPT-OSS teacher models
+    await testGPTOSSModels();
+
+// Test 4: Test GPT-OSS models specifically
+async function testGPTOSSModels() {
+    console.log('\n4️⃣ Testing GPT-OSS Teacher Models...');
+
+    const modelsToTest = ['GPT-OSS-20B', 'GPT-OSS-120B'];
+
+    for (const model of modelsToTest) {
+        try {
+            console.log(`\n🧪 Testing ${model}...`);
+
+            const response = await client.chat.completions.create({
+                model: model,
+                messages: [
+                    {
+                        role: 'user',
+                        content: `You are ALAIN's teacher AI. Respond with: "Hello! I am ${model}, ready to help generate AI learning content for ALAIN platform."`
+                    }
+                ],
+                temperature: 0.7,
+                max_tokens: 100,
+            });
+
+            console.log(`✅ ${model}: SUCCESS`);
+            console.log('Response:', response.choices[0].message.content);
+
+        } catch (error) {
+            console.log(`❌ ${model}: FAILED`);
+            console.log('Error:', error.message);
+
+            if (error.message.includes('404')) {
+                console.log(`💡 Tip: ${model} may not be available through Poe API`);
+            }
+        }
+    }
+}
+
+console.log('\n🎉 Tests completed!');
+console.log('\n📚 Next steps:');
+console.log('- If Direct HTTP works but OpenAI SDK fails: Check OpenAI SDK version (needs v4+)');
+console.log('- If both fail: Verify POE_API_KEY is correct');
+console.log('- If GPT-OSS models fail: They may not be available through Poe API');
+console.log('- For production: Use OpenAI SDK approach for better error handling and streaming');
 }
 
 // Handle command line arguments

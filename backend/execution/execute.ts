@@ -41,9 +41,41 @@ export const execute = api<ExecuteRequest, ExecuteResponse>(
       return { success: true, content };
     } catch (error) {
       const errorData = mapProviderError(error);
-      return { 
-        success: false, 
-        error: errorData 
+      return {
+        success: false,
+        error: errorData
+      };
+    }
+  }
+);
+
+// Teacher model router for lesson generation using GPT-OSS models (no auth required for internal use)
+export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
+  { expose: true, method: "POST", path: "/teacher/execute" },
+  async (req, ctx) => {
+    try {
+      // Force Poe provider and GPT-OSS models for teacher functionality
+      const teacherReq = { ...req, provider: "poe" as const };
+
+      // Validate and set teacher model - only allow GPT-OSS-20B and GPT-OSS-120B
+      if (!req.model || !req.model.toLowerCase().includes('gpt-oss')) {
+        teacherReq.model = 'GPT-OSS-20B'; // Default teacher model
+      } else if (req.model !== 'GPT-OSS-20B' && req.model !== 'GPT-OSS-120B') {
+        teacherReq.model = 'GPT-OSS-20B'; // Force to valid teacher model
+      }
+
+      // Set harmony-compatible parameters for GPT-OSS models
+      teacherReq.temperature = req.temperature ?? 0.3; // Lower temperature for more structured output
+      teacherReq.max_tokens = req.max_tokens ?? 2048; // Reasonable limit for lesson generation
+
+      const provider = getProvider(teacherReq.provider);
+      const content = await provider.execute(teacherReq);
+      return { success: true, content };
+    } catch (error) {
+      const errorData = mapProviderError(error);
+      return {
+        success: false,
+        error: errorData
       };
     }
   }
@@ -72,7 +104,7 @@ class PoeProvider implements Provider {
     }
 
     const payload = {
-      model: req.model,
+      model: this.mapModelName(req.model),
       messages: req.messages,
       stream: false,
       temperature: req.temperature,
@@ -181,6 +213,31 @@ class OpenAICompatibleProvider implements Provider {
       }
       throw error;
     }
+  }
+
+  private mapModelName(alainModel: string): string {
+    const modelMap: Record<string, string> = {
+      // GPT-OSS models (teacher models) - Primary models for lesson generation
+      'GPT-OSS-20B': 'GPT-OSS-20B',
+      'GPT-OSS-120B': 'GPT-OSS-120B',
+      'gpt-oss-20b': 'GPT-OSS-20B',
+      'gpt-oss-120b': 'GPT-OSS-120B',
+
+      // Popular Poe models for student interactions
+      'gpt-4o': 'GPT-4o',
+      'gpt-4o-mini': 'GPT-4o-mini',
+      'claude-3.5-sonnet': 'Claude-3.5-Sonnet',
+      'claude-3-haiku': 'Claude-3-Haiku',
+      'gemini-1.5-pro': 'Gemini-1.5-Pro',
+      'gemini-1.5-flash': 'Gemini-1.5-Flash',
+      'grok-2': 'Grok-2',
+      'llama-3.1-405b': 'Llama-3.1-405B',
+
+      // Default fallback for student interactions
+      'default': 'GPT-4o-mini'
+    };
+
+    return modelMap[alainModel.toLowerCase()] || modelMap['default'];
   }
 }
 
