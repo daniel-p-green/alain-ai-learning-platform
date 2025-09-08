@@ -5,6 +5,19 @@
   "packageManager": "bun",
   "workspaces": [
     "backend",
-    "frontend"
-  ]
+    "frontend",
+    "web"
+  ],
+  "scripts": {
+    "dev:web": "bun run --cwd web dev",
+    "build:web": "bun run --cwd web build",
+    "start:web": "bun run --cwd web start",
+
+    "dev:frontend": "sh -c 'cd frontend && bunx vite dev'",
+    "build:frontend": "sh -c 'cd frontend && bunx vite build'",
+
+    "dev:backend": "sh -c 'cd backend && encore run'",
+    "test:backend": "bun run --cwd backend test",
+    "build:backend": "bun run --cwd backend build"
+  }
 }
