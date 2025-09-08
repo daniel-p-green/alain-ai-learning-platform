@@ -141,7 +141,7 @@ Providers
 —
 
 ## Submission Details
-- Repo: <link to this repository>
+- Repo: https://gitlab.com/daniel-p-green/alain-ai-learning-platform
 - Leap Project ID: <add here>
 - How to run: See “Run Locally” above and `alain-ai-learning-platform/README.md`.
 - Contact: hackathon@leap.new (per event instructions)
@@ -152,4 +152,3 @@ Providers
 - Built for Leap Open Source Hackathon 2025.
 - Teacher model: GPT‑oss‑20b (strategy varies by provider availability).
 - Thanks to the open‑source community for tooling and inspiration.
-

@@ -2,6 +2,10 @@
 
 An interactive AI learning platform that combines theory with hands-on experience using real AI models.
 
+Repository
+- GitLab (primary): https://gitlab.com/daniel-p-green/alain-ai-learning-platform
+  - SSH: `git@gitlab.com:daniel-p-green/alain-ai-learning-platform.git`
+
 ## 🏗️ Architecture
 
 This project consists of three main components:
@@ -175,11 +179,11 @@ npm run start
 
 ## 🤝 Contributing
 
-1. Fork the repository
+1. Fork the repository (on GitLab)
 2. Create a feature branch
 3. Make your changes
 4. Run tests and linting
-5. Submit a pull request
+5. Open a merge request (MR)
 
 ## 📝 License
 
