@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Play, Square, AlertCircle, Wifi, Clock } from 'lucide-react';
+import { Play, Square, AlertCircle, Wifi, Clock, Key, Zap, Shield, Server, Settings } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import backend from '~backend/client';
 
@@ -34,6 +34,8 @@ interface StreamError {
   code: string;
   message: string;
   details?: any;
+  recoveryActions?: string[];
+  retryAfter?: number;
 }
 
 export default function TutorialPlayer() {
@@ -101,8 +103,9 @@ export default function TutorialPlayer() {
       } else if (result.error) {
         setStreamError(result.error);
         setOutput(`Error: ${result.error.message}`);
+        
         toast({
-          title: "Execution Error",
+          title: getErrorTitle(result.error.code),
           description: getErrorDescription(result.error),
           variant: "destructive",
         });
@@ -112,7 +115,12 @@ export default function TutorialPlayer() {
       setOutput(`Error: ${errorMessage}`);
       setStreamError({
         code: 'network_error',
-        message: errorMessage
+        message: errorMessage,
+        recoveryActions: [
+          'Check your internet connection',
+          'Try again in a few moments',
+          'Contact support if the issue persists'
+        ]
       });
       
       console.error('Execution error:', err);
@@ -130,34 +138,73 @@ export default function TutorialPlayer() {
     setIsRunning(false);
   };
 
-  const getErrorDescription = (error: StreamError): string => {
-    switch (error.code) {
+  const getErrorTitle = (code: string): string => {
+    switch (code) {
       case 'authentication_failed':
-        return 'Authentication failed. Please check the API configuration.';
-      case 'model_not_found':
-        return 'The AI model is not available. Please try a different model.';
-      case 'rate_limited':
-        return 'Too many requests. Please wait a moment before trying again.';
-      case 'timeout':
-        return 'Request timed out. Please try with a shorter prompt.';
-      case 'connection_error':
-        return 'Unable to connect to the AI provider. Please check your connection.';
-      case 'provider_unavailable':
-        return 'The AI service is temporarily unavailable. Please try again later.';
+        return 'Authentication Failed';
+      case 'rate_limit_exceeded':
+        return 'Rate Limit Exceeded';
+      case 'request_timeout':
+        return 'Request Timeout';
+      case 'network_connectivity_error':
+      case 'network_error':
+        return 'Network Error';
+      case 'model_not_available':
+        return 'Model Unavailable';
+      case 'provider_server_error':
+        return 'Service Unavailable';
+      case 'access_forbidden':
+        return 'Access Denied';
+      case 'invalid_request_parameters':
+        return 'Invalid Request';
+      case 'configuration_error':
+        return 'Configuration Error';
       default:
-        return error.message || 'An unexpected error occurred.';
+        return 'Error';
     }
+  };
+
+  const getErrorDescription = (error: StreamError): string => {
+    let description = error.message;
+    
+    if (error.retryAfter) {
+      description += ` Please wait ${error.retryAfter} seconds before trying again.`;
+    }
+    
+    return description;
   };
 
   const getErrorIcon = (code: string) => {
     switch (code) {
-      case 'timeout':
+      case 'request_timeout':
         return <Clock className="w-4 h-4" />;
-      case 'connection_error':
-      case 'provider_unavailable':
+      case 'network_connectivity_error':
+      case 'network_error':
+      case 'provider_server_error':
         return <Wifi className="w-4 h-4" />;
+      case 'authentication_failed':
+        return <Key className="w-4 h-4" />;
+      case 'rate_limit_exceeded':
+        return <Zap className="w-4 h-4" />;
+      case 'access_forbidden':
+        return <Shield className="w-4 h-4" />;
+      case 'model_not_available':
+        return <Server className="w-4 h-4" />;
+      case 'configuration_error':
+      case 'invalid_request_parameters':
+        return <Settings className="w-4 h-4" />;
       default:
         return <AlertCircle className="w-4 h-4" />;
+    }
+  };
+
+  const getErrorVariant = (code: string): "default" | "destructive" => {
+    switch (code) {
+      case 'rate_limit_exceeded':
+      case 'request_timeout':
+        return 'default';
+      default:
+        return 'destructive';
     }
   };
 
@@ -212,11 +259,25 @@ export default function TutorialPlayer() {
       )}
 
       {streamError && (
-        <Alert variant="destructive">
+        <Alert variant={getErrorVariant(streamError.code)}>
           {getErrorIcon(streamError.code)}
           <AlertDescription>
-            <strong>{streamError.code.replace(/_/g, ' ').toUpperCase()}:</strong>{' '}
-            {getErrorDescription(streamError)}
+            <div className="space-y-2">
+              <div>
+                <strong>{getErrorTitle(streamError.code)}:</strong>{' '}
+                {getErrorDescription(streamError)}
+              </div>
+              {streamError.recoveryActions && streamError.recoveryActions.length > 0 && (
+                <div>
+                  <strong>Suggested actions:</strong>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    {streamError.recoveryActions.map((action, index) => (
+                      <li key={index} className="text-sm">{action}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -257,6 +318,11 @@ export default function TutorialPlayer() {
                     <Square className="w-4 h-4 mr-2" />
                     Stop
                   </Button>
+                )}
+                {streamError && streamError.retryAfter && (
+                  <div className="text-sm text-muted-foreground self-center">
+                    Retry in {streamError.retryAfter}s
+                  </div>
                 )}
               </div>
             </CardContent>

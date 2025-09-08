@@ -26,6 +26,8 @@ interface ExecuteResponse {
     code: string;
     message: string;
     details?: any;
+    recoveryActions?: string[];
+    retryAfter?: number;
   };
 }
 
@@ -182,68 +184,126 @@ class OpenAICompatibleProvider implements Provider {
   }
 }
 
-function mapProviderError(error: any): { code: string; message: string; details?: any } {
+function mapProviderError(error: any): { 
+  code: string; 
+  message: string; 
+  details?: any; 
+  recoveryActions?: string[];
+  retryAfter?: number;
+} {
   if (error instanceof APIError) {
     return {
       code: getCodeFromAPIError(error),
-      message: error.message
+      message: error.message,
+      recoveryActions: getRecoveryActionsFromAPIError(error)
     };
   }
 
   if (error instanceof Error) {
     const message = error.message.toLowerCase();
     
-    if (message.includes('fetch') || message.includes('network') || message.includes('connect') || message.includes('econnreset')) {
-      return {
-        code: "connection_error",
-        message: "Unable to connect to the AI provider. Please check your internet connection and try again."
-      };
-    }
-    
     if (message.includes('timeout') || message.includes('aborted')) {
       return {
-        code: "timeout",
-        message: "The request took too long to complete. Please try again with a shorter prompt or different parameters."
+        code: "request_timeout",
+        message: "The request timed out while waiting for a response from the AI provider.",
+        recoveryActions: [
+          "Try reducing the length of your prompt",
+          "Reduce the max_tokens parameter if specified",
+          "Check if the AI provider is experiencing high load",
+          "Try again in a few moments"
+        ]
+      };
+    }
+
+    if (message.includes('fetch') || message.includes('network') || message.includes('connect') || message.includes('econnreset')) {
+      return {
+        code: "network_connectivity_error",
+        message: "Unable to establish a connection to the AI provider.",
+        recoveryActions: [
+          "Check your internet connection",
+          "Verify the provider's service status",
+          "Check if the provider URL is correct",
+          "Try again in a few moments",
+          "Contact your network administrator if the issue persists"
+        ]
       };
     }
 
     if (message.includes('401') || message.includes('unauthorized') || message.includes('authentication')) {
       return {
         code: "authentication_failed",
-        message: "Authentication failed. Please check your API key configuration."
+        message: "Authentication failed. Please verify your API key.",
+        recoveryActions: [
+          "Verify that your API key is correct and active",
+          "Check if your API key has the necessary permissions",
+          "Ensure the API key hasn't expired",
+          "Try regenerating your API key from the provider's dashboard",
+          "Contact the provider's support if the key appears valid"
+        ]
       };
     }
 
     if (message.includes('429') || message.includes('rate limit')) {
       return {
-        code: "rate_limited",
-        message: "Too many requests. Please wait a moment before trying again."
+        code: "rate_limit_exceeded",
+        message: "Rate limit exceeded. Please wait before making another request.",
+        recoveryActions: [
+          "Wait a few moments before retrying",
+          "Consider reducing the frequency of your requests",
+          "Implement exponential backoff in your retry logic",
+          "Check your usage limits and consider upgrading your plan",
+          "Use request batching if supported by the provider"
+        ]
       };
     }
 
     if (message.includes('404') || message.includes('model')) {
       return {
-        code: "model_not_found",
-        message: "The specified AI model is not available. Please try a different model."
+        code: "model_not_available",
+        message: "The requested model is not available.",
+        recoveryActions: [
+          "Verify the model name is spelled correctly",
+          "Check the provider's documentation for available models",
+          "Ensure you have access to the requested model",
+          "Try using a different model that's known to be available",
+          "Contact the provider to confirm model availability"
+        ]
       };
     }
 
     if (message.includes('500') || message.includes('502') || message.includes('503') || message.includes('504')) {
       return {
-        code: "provider_unavailable",
-        message: "The AI provider is temporarily unavailable. Please try again in a few moments."
+        code: "provider_server_error",
+        message: "The AI provider is experiencing server issues.",
+        recoveryActions: [
+          "Try again in a few moments as this is likely temporary",
+          "Check the provider's status page for known issues",
+          "Implement exponential backoff for retries",
+          "Consider using a different provider as a fallback",
+          "Report the issue to the provider if it persists"
+        ]
       };
     }
     
     return {
       code: "unknown_error",
-      message: "An unexpected error occurred. Please try again."
+      message: "An unexpected error occurred while processing your request.",
+      details: { originalMessage: error.message },
+      recoveryActions: [
+        "Try again in a few moments",
+        "Check your request parameters",
+        "Contact support if the issue persists"
+      ]
     };
   }
   
   return {
     code: "internal_error",
-    message: "An internal error occurred. Please try again."
+    message: "An internal error occurred. Please try again.",
+    recoveryActions: [
+      "Try again in a few moments",
+      "Contact support if the issue persists"
+    ]
   };
 }
 
@@ -253,16 +313,65 @@ function getCodeFromAPIError(error: APIError): string {
     case "unauthenticated":
       return "authentication_failed";
     case "not_found":
-      return "model_not_found";
+      return "model_not_available";
     case "resource_exhausted":
-      return "rate_limited";
+      return "rate_limit_exceeded";
     case "deadline_exceeded":
-      return "timeout";
+      return "request_timeout";
     case "failed_precondition":
       return "configuration_error";
     case "invalid_argument":
-      return "invalid_request";
+      return "invalid_request_parameters";
+    case "permission_denied":
+      return "access_forbidden";
     default:
       return "internal_error";
+  }
+}
+
+function getRecoveryActionsFromAPIError(error: APIError): string[] {
+  const errorCode = (error as any).code;
+  switch (errorCode) {
+    case "unauthenticated":
+      return [
+        "Verify your API key configuration",
+        "Check if the API key has the necessary permissions",
+        "Ensure the API key hasn't expired"
+      ];
+    case "not_found":
+      return [
+        "Verify the model name is correct",
+        "Check the provider's available models",
+        "Ensure you have access to the requested model"
+      ];
+    case "resource_exhausted":
+      return [
+        "Wait a few moments before retrying",
+        "Consider reducing request frequency",
+        "Check your usage limits"
+      ];
+    case "deadline_exceeded":
+      return [
+        "Try with a shorter prompt",
+        "Reduce the max_tokens parameter",
+        "Try again in a few moments"
+      ];
+    case "failed_precondition":
+      return [
+        "Check your configuration settings",
+        "Verify all required secrets are set",
+        "Review the provider setup documentation"
+      ];
+    case "invalid_argument":
+      return [
+        "Check your request parameters",
+        "Verify the request format",
+        "Review the API documentation"
+      ];
+    default:
+      return [
+        "Try again in a few moments",
+        "Contact support if the issue persists"
+      ];
   }
 }
