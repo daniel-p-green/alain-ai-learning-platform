@@ -34,6 +34,8 @@ This repo is configured to use npm as the package manager. If you previously had
 
 The backend will be available at the URL shown in your terminal (typically `http://localhost:4000`).
 
+Note: The backend TypeScript config excludes the React frontends (`frontend/` and `web/`) from Encore's TS dependency parser to avoid JSX parse errors. Frontends are built and served independently.
+
 
 
 ### Frontend Setup
