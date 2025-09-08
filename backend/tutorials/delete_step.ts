@@ -82,7 +82,7 @@ export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
       `;
 
       // Delete the step
-      const deleteResult = await tx.exec`
+      await tx.exec`
         DELETE FROM tutorial_steps
         WHERE id = ${stepId}
       `;
