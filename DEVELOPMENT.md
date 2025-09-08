@@ -10,7 +10,11 @@ If this is your first time using Encore, you need to install the CLI that runs t
 - **Linux:** `curl -L https://encore.dev/install.sh | bash`
 - **Windows:** `iwr https://encore.dev/install.ps1 | iex`
 
-This repo is configured to use npm as the package manager. If you previously had Bun configured, switch to npm with the steps below.
+You also need to have bun installed for package management. If you don't have bun installed, you can install it by running:
+
+```bash
+npm install -g bun
+```
 
 ## Running the Application
 
@@ -21,20 +25,12 @@ This repo is configured to use npm as the package manager. If you previously had
    cd backend
    ```
 
-2. Install backend deps (first time only):
-   ```bash
-   cd backend
-   npm install
-   ```
-
-3. Start the Encore development server:
+2. Start the Encore development server:
    ```bash
    encore run
    ```
 
 The backend will be available at the URL shown in your terminal (typically `http://localhost:4000`).
-
-Note: The backend TypeScript config excludes the React frontends (`frontend/` and `web/`) from Encore's TS dependency parser to avoid JSX parse errors. Frontends are built and served independently.
 
 
 
@@ -131,39 +127,5 @@ git push origin main
 - [GitHub Integration](https://encore.dev/docs/platform/integrations/github)
 - [Encore Cloud Dashboard](https://app.encore.dev)
 
-### Web (Next.js + Clerk + Streaming)
 
-1. Navigate to the web directory:
-   ```bash
-   cd web
-   npm install
-   ```
 
-2. Create `.env.local` with:
-   ```bash
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
-   CLERK_SECRET_KEY=YOUR_SECRET_KEY
-   # Optional if streaming directly from providers via web API route
-   POE_API_KEY=YOUR_POE_API_KEY
-   OPENAI_BASE_URL=https://api.openai.com/v1  # or your compatible base
-   OPENAI_API_KEY=YOUR_OPENAI_KEY
-   ```
-
-3. Run the web dev server:
-   ```bash
-   npm run dev
-   ```
-
-The streaming API is at `POST /api/execute` and is protected by Clerk; when `stream: true` (default), it sends SSE frames with `[DONE]` sentinel and 15s heartbeats.
-
-Rate limiting: 30 RPM per user is enforced on `/api/execute`.
-
-Capabilities: `GET /api/providers` lists provider names and streaming support.
-
-### Seed the Database
-
-With the backend running locally (`encore run`), seed a sample tutorial and two steps:
-
-```bash
-curl -X POST "http://localhost:4000/seed"
-```
