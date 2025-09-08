@@ -1,22 +1,3 @@
-:root {
-  --bg: #0b0c10;
-  --fg: #e5e7eb;
-}
-
-html, body {
-  padding: 0;
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    Helvetica, Arial, Noto Sans, "Apple Color Emoji", "Segoe UI Emoji";
-}
-
-a {
-  color: inherit;
-}
-
-header {
-  border-bottom: 1px solid #1f2937;
-}
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

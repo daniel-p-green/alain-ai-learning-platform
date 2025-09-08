@@ -31,8 +31,11 @@ export class PoeNodeJSProvider {
 
   async execute(req: ExecuteRequest): Promise<string> {
     try {
+      // Map ALAIn model names to Poe model names
+      const poeModel = this.mapModelName(req.model);
+
       const completion = await this.client.chat.completions.create({
-        model: req.model,
+        model: poeModel,
         messages: req.messages,
         temperature: req.temperature,
         top_p: req.top_p,
@@ -48,8 +51,11 @@ export class PoeNodeJSProvider {
 
   async *executeStream(req: ExecuteRequest): AsyncGenerator<string> {
     try {
+      // Map ALAIn model names to Poe model names
+      const poeModel = this.mapModelName(req.model);
+
       const stream = await this.client.chat.completions.create({
-        model: req.model,
+        model: poeModel,
         messages: req.messages,
         temperature: req.temperature,
         top_p: req.top_p,
@@ -66,5 +72,27 @@ export class PoeNodeJSProvider {
     } catch (error: any) {
       throw new Error(`Poe API streaming error: ${error.message}`);
     }
+  }
+
+  // Model name mapping for ALAIn to Poe
+  private mapModelName(alainModel: string): string {
+    const modelMap: Record<string, string> = {
+      // GPT-OSS models (what you requested)
+      'GPT-OSS-20B': 'GPT-OSS-20B',
+      'GPT-OSS-120B': 'GPT-OSS-120B',
+
+      // Popular Poe models
+      'gpt-4o': 'GPT-4o',
+      'gpt-4o-mini': 'GPT-4o-mini',
+      'claude-3.5-sonnet': 'Claude-3.5-Sonnet',
+      'claude-3-haiku': 'Claude-3-Haiku',
+      'gemini-1.5-pro': 'Gemini-1.5-Pro',
+      'gemini-1.5-flash': 'Gemini-1.5-Flash',
+
+      // Default fallback
+      'default': 'GPT-4o-mini'
+    };
+
+    return modelMap[alainModel.toLowerCase()] || modelMap['default'];
   }
 }
