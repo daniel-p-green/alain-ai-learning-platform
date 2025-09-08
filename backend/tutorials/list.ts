@@ -61,7 +61,10 @@ export const list = api<ListQuery, ListTutorialsResponse>(
       whereParts.push(`tags && $${params.push(q.tags)}::text[]`);
     }
     if (q.search) {
-      whereParts.push(`(title ILIKE $${params.push(`%${q.search}%`)} OR description ILIKE $${params.push(`%${q.search}%`)})`);
+      const like1 = `%${q.search}%`;
+      const like2 = `%${q.search}%`;
+      const like3 = `%${q.search}%`;
+      whereParts.push(`(title ILIKE $${params.push(like1)} OR description ILIKE $${params.push(like2)} OR model ILIKE $${params.push(like3)})`);
     }
 
     const whereSql = whereParts.length ? `WHERE ${whereParts.join(" AND ")}` : "";
