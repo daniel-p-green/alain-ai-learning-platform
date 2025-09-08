@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,7 +40,7 @@ interface StreamError {
 }
 
 export default function TutorialPlayer() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string, }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
