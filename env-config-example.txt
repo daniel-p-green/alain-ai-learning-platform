@@ -1,0 +1,27 @@
+# ALAIN AI Learning Platform - Environment Configuration
+# Copy this file to .env.local and fill in your values
+
+# === CLERK AUTHENTICATION (for web app) ===
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
+CLERK_SECRET_KEY=your_clerk_secret_key_here
+
+# === AI API CONFIGURATION ===
+# Poe API Key (get from https://poe.com/api_key)
+POE_API_KEY=your_poe_api_key_here
+
+# OpenAI Compatible API Configuration
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_API_KEY=your_openai_api_key_here
+
+# === BACKEND SECRETS (for Encore.dev) ===
+# These are configured through Encore.dev dashboard
+# POE_API_KEY=your_poe_api_key_here
+# OPENAI_BASE_URL=https://api.openai.com/v1
+# OPENAI_API_KEY=your_openai_api_key_here
+
+# === OPTIONAL CONFIGURATIONS ===
+# Database URL (if using custom database)
+# DATABASE_URL=your_database_url_here
+
+# Development settings
+NODE_ENV=development

@@ -10,8 +10,8 @@ import {
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Clerk Next.js Quickstart",
-  description: "Generated for alain-ai-learning-platform",
+  title: "ALAIN - Applied Learning AI Notebooks",
+  description: "Interactive AI learning platform with real models and hands-on tutorials",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body>
-          <header style={{ display: "flex", gap: 12, padding: 12 }}>
+          <header className="flex gap-3 p-4 border-b">
             <SignedOut>
               <SignInButton />
               <SignUpButton />

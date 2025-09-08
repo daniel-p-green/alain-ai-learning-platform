@@ -1,11 +1,20 @@
 {
-  "name": "leap-app",
+  "name": "alain-ai-learning-platform",
   "version": "1.0.0",
+  "description": "Applied Learning AI Notebooks - Interactive AI learning platform",
   "type": "module",
   "packageManager": "npm@10",
   "workspaces": [
     "backend",
     "frontend",
     "web"
-  ]
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev:backend": "cd backend && encore run",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:web": "cd web && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "build:web": "cd web && npm run build"
+  }
 }

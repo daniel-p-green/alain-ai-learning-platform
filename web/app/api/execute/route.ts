@@ -1,16 +1,9 @@
 import { NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import type { ExecuteBody } from "../../../lib/providers";
+import { poeProvider, openAIProvider, type Provider } from "../../../lib/providers";
 
 type Message = { role: "system" | "user" | "assistant"; content: string };
-type ExecuteBody = {
-  provider: "poe" | "openai-compatible";
-  model: string;
-  messages: Message[];
-  temperature?: number;
-  top_p?: number;
-  max_tokens?: number;
-  stream?: boolean;
-};
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -26,6 +19,14 @@ export async function POST(req: NextRequest) {
   }
 
   const stream = body.stream !== false; // default to streaming
+
+  // Simple per-user rate limit: 30 RPM
+  if (!incrementRate(userId)) {
+    return Response.json(
+      { success: false, error: { code: "rate_limited", message: "Too many requests. Please try again later." } },
+      { status: 429 }
+    );
+  }
 
   if (!stream) {
     // Non-streaming passthrough to provider
@@ -71,156 +72,23 @@ export async function POST(req: NextRequest) {
 }
 
 async function completeOnce(body: ExecuteBody): Promise<string> {
-  switch (body.provider) {
-    case "poe":
-      return poeComplete(body);
-    case "openai-compatible":
-      return oaiComplete(body);
-    default:
-      throw new Error("unsupported provider");
-  }
+  return selectProvider(body.provider).execute(body);
 }
 
 async function streamFromProvider(
   body: ExecuteBody,
   onData: (data: any) => void
 ) {
-  switch (body.provider) {
+  return selectProvider(body.provider).stream(body, onData);
+}
+function selectProvider(name: ExecuteBody["provider"]): Provider {
+  switch (name) {
     case "poe":
-      return poeStream(body, onData);
+      return poeProvider;
     case "openai-compatible":
-      return oaiStream(body, onData);
+      return openAIProvider;
     default:
       throw new Error("unsupported provider");
-  }
-}
-
-async function poeComplete(body: ExecuteBody): Promise<string> {
-  const apiKey = process.env.POE_API_KEY;
-  if (!apiKey) throw new Error("POE_API_KEY not configured");
-  const resp = await fetch("https://api.poe.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "ALAIN-Tutorial-Platform/1.0",
-    },
-    body: JSON.stringify({
-      model: body.model,
-      messages: body.messages,
-      stream: false,
-      temperature: body.temperature,
-      top_p: body.top_p,
-      max_tokens: body.max_tokens,
-    }),
-  });
-  if (!resp.ok) throw new Error(`Poe API error (${resp.status})`);
-  const data = await resp.json();
-  if (data.error) throw new Error(data.error.message || "Unknown Poe error");
-  return data.choices?.[0]?.message?.content || "";
-}
-
-async function poeStream(body: ExecuteBody, onData: (data: any) => void) {
-  const apiKey = process.env.POE_API_KEY;
-  if (!apiKey) throw new Error("POE_API_KEY not configured");
-  const resp = await fetch("https://api.poe.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "ALAIN-Tutorial-Platform/1.0",
-    },
-    body: JSON.stringify({
-      model: body.model,
-      messages: body.messages,
-      stream: true,
-      temperature: body.temperature,
-      top_p: body.top_p,
-      max_tokens: body.max_tokens,
-    }),
-  });
-  if (!resp.ok || !resp.body) throw new Error(`Poe API error (${resp.status})`);
-  await pipeSSE(resp, onData);
-}
-
-async function oaiComplete(body: ExecuteBody): Promise<string> {
-  const baseUrl = process.env.OPENAI_BASE_URL;
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
-  const resp = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "ALAIN-Tutorial-Platform/1.0",
-    },
-    body: JSON.stringify({
-      model: body.model,
-      messages: body.messages,
-      stream: false,
-      temperature: body.temperature,
-      top_p: body.top_p,
-      max_tokens: body.max_tokens,
-    }),
-  });
-  if (!resp.ok) throw new Error(`OpenAI API error (${resp.status})`);
-  const data = await resp.json();
-  if (data.error) throw new Error(data.error.message || "Unknown OpenAI error");
-  return data.choices?.[0]?.message?.content || "";
-}
-
-async function oaiStream(body: ExecuteBody, onData: (data: any) => void) {
-  const baseUrl = process.env.OPENAI_BASE_URL;
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
-  const resp = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "ALAIN-Tutorial-Platform/1.0",
-    },
-    body: JSON.stringify({
-      model: body.model,
-      messages: body.messages,
-      stream: true,
-      temperature: body.temperature,
-      top_p: body.top_p,
-      max_tokens: body.max_tokens,
-    }),
-  });
-  if (!resp.ok || !resp.body) throw new Error(`OpenAI API error (${resp.status})`);
-  await pipeSSE(resp, onData);
-}
-
-async function pipeSSE(resp: Response, onData: (data: any) => void) {
-  const reader = resp.body!.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    let idx;
-    while ((idx = buffer.indexOf("\n\n")) !== -1) {
-      const chunk = buffer.slice(0, idx);
-      buffer = buffer.slice(idx + 2);
-      const line = chunk.trim();
-      if (!line) continue;
-      // Expect lines like: data: {...}
-      const dataPrefix = "data:";
-      if (line.startsWith(dataPrefix)) {
-        const dataStr = line.slice(dataPrefix.length).trim();
-        if (dataStr === "[DONE]") return;
-        try {
-          const json = JSON.parse(dataStr);
-          onData(json);
-        } catch {
-          // ignore malformed chunks
-        }
-      }
-    }
   }
 }
 
@@ -233,3 +101,15 @@ function mapProviderError(error: any) {
   return { code: "unknown_error", message: "An unexpected error occurred." };
 }
 
+// naive in-memory rate limiter keyed by userId
+const bucket: Record<string, number[]> = {};
+function incrementRate(userId: string): boolean {
+  const now = Date.now();
+  const windowMs = 60_000;
+  const max = 30;
+  const arr = (bucket[userId] ||= []);
+  while (arr.length && now - arr[0] > windowMs) arr.shift();
+  if (arr.length >= max) return false;
+  arr.push(now);
+  return true;
+}

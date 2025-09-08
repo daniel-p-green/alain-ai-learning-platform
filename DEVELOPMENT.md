@@ -154,6 +154,10 @@ git push origin main
 
 The streaming API is at `POST /api/execute` and is protected by Clerk; when `stream: true` (default), it sends SSE frames with `[DONE]` sentinel and 15s heartbeats.
 
+Rate limiting: 30 RPM per user is enforced on `/api/execute`.
+
+Capabilities: `GET /api/providers` lists provider names and streaming support.
+
 ### Seed the Database
 
 With the backend running locally (`encore run`), seed a sample tutorial and two steps:
@@ -161,4 +165,3 @@ With the backend running locally (`encore run`), seed a sample tutorial and two 
 ```bash
 curl -X POST "http://localhost:4000/seed"
 ```
-
