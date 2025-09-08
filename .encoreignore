@@ -1,0 +1,7 @@
+frontend/**
+frontend
+web/**
+web
+web/.next/**
+.DS_Store
+*.mdx
