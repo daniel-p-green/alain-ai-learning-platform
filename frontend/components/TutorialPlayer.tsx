@@ -40,7 +40,7 @@ interface StreamError {
 }
 
 export default function TutorialPlayer() {
-  const { id } = useParams<{ id: string, }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
@@ -213,7 +213,7 @@ export default function TutorialPlayer() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-muted-foreground">Loading tutorial...</div>
+        <div className="text-muted-foreground">Loading tutorials...</div>
       </div>
     );
   }
