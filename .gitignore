@@ -4,9 +4,3 @@ encore.gen.cue
 /.encore
 node_modules
 /encore.gen
-.env
-.env*
-.next
-out
-dist
-.DS_Store
