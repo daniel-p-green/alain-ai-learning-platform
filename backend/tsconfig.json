@@ -28,10 +28,4 @@
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true
 	}
-  ,
-  "exclude": [
-    "node_modules",
-    "../frontend/**/*",
-    "../web/**/*"
-  ]
 }
