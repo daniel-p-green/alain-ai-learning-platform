@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { tutorialsDB } from "./db";
+import { requireUserId } from "../auth";
 
 interface AddStepRequest {
   tutorialId: number;
@@ -26,7 +27,8 @@ interface TutorialStep {
 // Adds a new step to an existing tutorial.
 export const addStep = api<AddStepRequest, TutorialStep>(
   { expose: true, method: "POST", path: "/tutorials/:tutorialId/steps" },
-  async (req) => {
+  async (req, ctx) => {
+    await requireUserId(ctx);
     // Validate input parameters
     if (!req.title?.trim()) {
       throw APIError.invalidArgument("step title cannot be empty");

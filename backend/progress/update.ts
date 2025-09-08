@@ -1,5 +1,6 @@
-import { api } from "encore.dev/api";
+import { api, APIError } from "encore.dev/api";
 import { progressDB } from "./db";
+import { requireUserId } from "../auth";
 
 interface UpdateProgressRequest {
   userId: string;
@@ -21,7 +22,11 @@ interface UserProgress {
 // Updates or creates user progress for a tutorial.
 export const updateProgress = api<UpdateProgressRequest, UserProgress>(
   { expose: true, method: "POST", path: "/progress" },
-  async (req) => {
+  async (req, ctx) => {
+    const uid = await requireUserId(ctx);
+    if (uid !== req.userId) {
+      throw APIError.permissionDenied("Cannot modify another user's progress");
+    }
     const progress = await progressDB.queryRow<UserProgress>`
       INSERT INTO user_progress (user_id, tutorial_id, current_step, completed_steps, last_accessed)
       VALUES (${req.userId}, ${req.tutorialId}, ${req.currentStep}, ${req.completedSteps}, NOW())

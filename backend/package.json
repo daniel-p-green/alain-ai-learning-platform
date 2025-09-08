@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "encore.dev": "^1.49.3",
-    "openai": "^4.104.0"
+    "openai": "^4.104.0",
+    "@clerk/backend": "^1.11.0"
   },
   "devDependencies": {
     "typescript": "^5.9.2"

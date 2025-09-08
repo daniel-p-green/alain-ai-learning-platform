@@ -1,5 +1,6 @@
-import { api } from "encore.dev/api";
+import { api, APIError } from "encore.dev/api";
 import { tutorialsDB } from "./db";
+import { requireUserId } from "../auth";
 
 interface CreateTutorialRequest {
   title: string;
@@ -25,7 +26,8 @@ interface Tutorial {
 // Creates a new tutorial.
 export const create = api<CreateTutorialRequest, Tutorial>(
   { expose: true, method: "POST", path: "/tutorials" },
-  async (req) => {
+  async (req, ctx) => {
+    await requireUserId(ctx);
     const tutorial = await tutorialsDB.queryRow<Tutorial>`
       INSERT INTO tutorials (title, description, model, provider, difficulty, tags)
       VALUES (${req.title}, ${req.description}, ${req.model}, ${req.provider}, ${req.difficulty}, ${req.tags})

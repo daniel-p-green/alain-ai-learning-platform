@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { tutorialsDB } from "./db";
+import { requireUserId } from "../auth";
 
 interface DeleteStepParams {
   stepId: number;
@@ -19,7 +20,8 @@ interface DeleteStepResponse {
 // Deletes a tutorial step and reorders remaining steps.
 export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
   { expose: true, method: "DELETE", path: "/tutorials/steps/:stepId" },
-  async ({ stepId }) => {
+  async ({ stepId }, ctx) => {
+    await requireUserId(ctx);
     if (!stepId || stepId < 1) {
       throw APIError.invalidArgument("step ID must be a positive integer");
     }

@@ -1,6 +1,7 @@
-import { api } from "encore.dev/api";
+import { api, APIError } from "encore.dev/api";
 import type { ExecuteRequest } from "./providers";
 import { poeProvider, openAIProvider, type Provider } from "./providers";
+import { requireUserId } from "../auth";
 
 function selectProvider(name: ExecuteRequest["provider"]): Provider {
   switch (name) {
@@ -26,33 +27,11 @@ function incrementRate(userId: string): boolean {
   return true;
 }
 
-function getUserId(ctx: any): string | null {
-  // Try headers commonly available
-  try {
-    const auth = ctx?.req?.header?.("Authorization") || ctx?.req?.header?.("authorization");
-    if (auth && typeof auth === "string") {
-      const m = auth.match(/^Bearer\s+(.+)/i);
-      if (m) {
-        // In a hardened version, verify Clerk JWT here.
-        // For now, treat token as opaque user id or fallback to X-User-Id header.
-        return m[1];
-      }
-    }
-    const uid = ctx?.req?.header?.("X-User-Id") || ctx?.req?.header?.("x-user-id");
-    if (uid) return String(uid);
-  } catch {}
-  return null;
-}
 
 export const executeStream = api<ExecuteRequest, void>(
   { expose: true, method: "POST", path: "/execute/stream", raw: true },
   async (req, ctx) => {
-    const userId = getUserId(ctx);
-    if (!userId) {
-      ctx.res.statusCode = 401;
-      ctx.res.end("Unauthorized");
-      return;
-    }
+    const userId = await requireUserId(ctx);
     if (!incrementRate(userId)) {
       ctx.res.statusCode = 429;
       ctx.res.end("Rate limited");
@@ -88,4 +67,3 @@ export const executeStream = api<ExecuteRequest, void>(
     }
   }
 );
-

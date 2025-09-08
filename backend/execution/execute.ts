@@ -1,4 +1,5 @@
 import { api, APIError } from "encore.dev/api";
+import { requireUserId } from "../auth";
 import { secret } from "encore.dev/config";
 
 const poeApiKey = secret("POE_API_KEY");
@@ -32,8 +33,9 @@ interface ExecuteResponse {
 // Executes LLM requests and returns the complete response.
 export const execute = api<ExecuteRequest, ExecuteResponse>(
   { expose: true, method: "POST", path: "/execute" },
-  async (req) => {
+  async (req, ctx) => {
     try {
+      await requireUserId(ctx);
       const provider = getProvider(req.provider);
       const content = await provider.execute(req);
       return { success: true, content };

@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { tutorialsDB } from "./db";
+import { requireUserId } from "../auth";
 
 interface ReorderStepsRequest {
   tutorialId: number;
@@ -20,7 +21,8 @@ interface ReorderStepsResponse {
 // Reorders tutorial steps by updating their step_order values.
 export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
   { expose: true, method: "PUT", path: "/tutorials/:tutorialId/steps/reorder" },
-  async (req) => {
+  async (req, ctx) => {
+    await requireUserId(ctx);
     if (!req.tutorialId || req.tutorialId < 1) {
       throw APIError.invalidArgument("tutorial ID must be a positive integer");
     }

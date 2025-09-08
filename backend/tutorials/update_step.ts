@@ -23,9 +23,12 @@ interface TutorialStep {
 }
 
 // Updates an existing tutorial step.
+import { requireUserId } from "../auth";
+
 export const updateStep = api<UpdateStepRequest, TutorialStep>(
   { expose: true, method: "PUT", path: "/tutorials/steps/:stepId" },
-  async (req) => {
+  async (req, ctx) => {
+    await requireUserId(ctx);
     if (!req.stepId || req.stepId < 1) {
       throw APIError.invalidArgument("step ID must be a positive integer");
     }
