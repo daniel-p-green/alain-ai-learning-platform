@@ -90,9 +90,146 @@ function getProvider(providerName: string): Provider {
     case "poe":
       return new PoeProvider();
     case "openai-compatible":
+    case "openai":
       return new OpenAICompatibleProvider();
+    case "anthropic":
+      return new AnthropicProvider();
+    case "ollama":
+      return new OllamaProvider();
+    case "vllm":
+      return new VLLMProvider();
     default:
-      throw APIError.invalidArgument("unsupported provider");
+      throw APIError.invalidArgument(`unsupported provider: ${providerName}`);
+  }
+}
+
+// Additional provider classes for expanded support
+class AnthropicProvider implements Provider {
+  async execute(req: ExecuteRequest): Promise<string> {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      throw APIError.failedPrecondition("ANTHROPIC_API_KEY not configured");
+    }
+
+    const payload = {
+      model: req.model,
+      messages: req.messages,
+      max_tokens: req.max_tokens || 4096,
+      temperature: req.temperature,
+      top_p: req.top_p,
+    };
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": apiKey,
+          "Content-Type": "application/json",
+          "anthropic-version": "2023-06-01",
+          "User-Agent": "ALAIN-Tutorial-Platform/1.0",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Anthropic API error (${response.status})`);
+      }
+
+      const data = await response.json();
+      return data.content?.[0]?.text || '';
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('401')) {
+          throw APIError.unauthenticated("Invalid Anthropic API key");
+        }
+        if (error.message.includes('429')) {
+          throw APIError.resourceExhausted("Anthropic rate limit exceeded");
+        }
+      }
+      throw error;
+    }
+  }
+}
+
+class OllamaProvider implements Provider {
+  async execute(req: ExecuteRequest): Promise<string> {
+    const baseUrl = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
+
+    const payload = {
+      model: req.model,
+      messages: req.messages,
+      stream: false,
+      options: {
+        temperature: req.temperature,
+        top_p: req.top_p,
+        num_predict: req.max_tokens,
+      },
+    };
+
+    try {
+      const response = await fetch(`${baseUrl}/api/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "ALAIN-Tutorial-Platform/1.0",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ollama API error (${response.status})`);
+      }
+
+      const data = await response.json();
+      return data.message?.content || '';
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('ECONNREFUSED') || error.message.includes('fetch')) {
+          throw APIError.unavailable("Cannot connect to Ollama. Make sure it's running locally.");
+        }
+      }
+      throw error;
+    }
+  }
+}
+
+class VLLMProvider implements Provider {
+  async execute(req: ExecuteRequest): Promise<string> {
+    const baseUrl = process.env.VLLM_BASE_URL || "http://localhost:8000";
+
+    const payload = {
+      model: req.model,
+      messages: req.messages,
+      temperature: req.temperature,
+      top_p: req.top_p,
+      max_tokens: req.max_tokens,
+      stream: false,
+    };
+
+    try {
+      const response = await fetch(`${baseUrl}/v1/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "ALAIN-Tutorial-Platform/1.0",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`vLLM API error (${response.status})`);
+      }
+
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content || '';
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('ECONNREFUSED') || error.message.includes('fetch')) {
+          throw APIError.unavailable("Cannot connect to vLLM server. Check your VLLM_BASE_URL.");
+        }
+      }
+      throw error;
+    }
   }
 }
 
