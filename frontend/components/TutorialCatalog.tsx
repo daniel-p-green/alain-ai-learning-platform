@@ -19,6 +19,8 @@ interface Tutorial {
   updated_at: Date;
 }
 
+const ENABLE_CATALOG = (import.meta as any)?.env?.VITE_ENABLE_CATALOG === 'true';
+
 export default function TutorialCatalog() {
   const navigate = useNavigate();
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
@@ -26,11 +28,15 @@ export default function TutorialCatalog() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!ENABLE_CATALOG) {
+      // Skip backend calls when catalog is disabled
+      setLoading(false);
+      return;
+    }
     const loadTutorials = async () => {
       try {
         setLoading(true);
         setError(null);
-        
         const response = await backend.tutorials.list();
         setTutorials(response.tutorials);
       } catch (err) {
@@ -40,7 +46,6 @@ export default function TutorialCatalog() {
         setLoading(false);
       }
     };
-
     loadTutorials();
   }, []);
 
@@ -75,6 +80,23 @@ export default function TutorialCatalog() {
         return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
+
+  if (!ENABLE_CATALOG) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation showBack={true} backTo="/" backLabel="Back to Home" />
+        <div className="container mx-auto px-4 py-12">
+          <div className="space-y-6 text-center">
+            <h1 className="text-3xl font-bold text-foreground">Tutorial Catalog</h1>
+            <p className="text-muted-foreground">
+              Catalog is temporarily disabled. Generate a lesson from a Hugging Face URL in the web app,
+              or enable the catalog by setting <code className="font-mono">VITE_ENABLE_CATALOG=true</code> and running the backend.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
