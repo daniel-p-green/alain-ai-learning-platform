@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Play, Square } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Play, Square, AlertCircle, Wifi, Clock } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 import backend from '~backend/client';
 
 interface Tutorial {
@@ -28,8 +30,15 @@ interface TutorialStep {
   model_params: any;
 }
 
+interface StreamError {
+  code: string;
+  message: string;
+  details?: any;
+}
+
 export default function TutorialPlayer() {
   const { id } = useParams<{ id: string }>();
+  const { toast } = useToast();
   const [tutorial, setTutorial] = useState<Tutorial | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [prompt, setPrompt] = useState('');
@@ -37,6 +46,7 @@ export default function TutorialPlayer() {
   const [isRunning, setIsRunning] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [streamError, setStreamError] = useState<StreamError | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -51,19 +61,25 @@ export default function TutorialPlayer() {
       } catch (err) {
         setError('Failed to load tutorial');
         console.error('Error loading tutorial:', err);
+        toast({
+          title: "Error",
+          description: "Failed to load tutorial. Please try again.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     loadTutorial();
-  }, [id]);
+  }, [id, toast]);
 
   const handleRun = async () => {
     if (!tutorial || !prompt.trim()) return;
 
     setIsRunning(true);
     setOutput('');
+    setStreamError(null);
 
     try {
       const step = tutorial.steps[currentStep];
@@ -71,68 +87,40 @@ export default function TutorialPlayer() {
         { role: 'user' as const, content: prompt }
       ];
 
-      const response = await fetch('/api/execute', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          provider: tutorial.provider,
-          model: tutorial.model,
-          messages,
-          stream: true,
-          ...step.model_params,
-        }),
+      const result = await backend.execution.execute({
+        provider: tutorial.provider as "poe" | "openai-compatible",
+        model: tutorial.model,
+        messages,
+        temperature: step.model_params?.temperature,
+        top_p: step.model_params?.top_p,
+        max_tokens: step.model_params?.max_tokens,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No response body');
-      }
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6);
-              if (data.trim() === '[DONE]') {
-                return;
-              }
-
-              try {
-                const parsed = JSON.parse(data);
-                if (parsed.choices?.[0]?.delta?.content) {
-                  setOutput(prev => prev + parsed.choices[0].delta.content);
-                }
-                if (parsed.error) {
-                  setOutput(prev => prev + `\nError: ${parsed.error.message}`);
-                }
-              } catch (e) {
-                // Skip malformed JSON
-              }
-            }
-          }
-        }
-      } finally {
-        reader.releaseLock();
+      if (result.success && result.content) {
+        setOutput(result.content);
+      } else if (result.error) {
+        setStreamError(result.error);
+        setOutput(`Error: ${result.error.message}`);
+        toast({
+          title: "Execution Error",
+          description: getErrorDescription(result.error),
+          variant: "destructive",
+        });
       }
     } catch (err) {
-      setOutput(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setOutput(`Error: ${errorMessage}`);
+      setStreamError({
+        code: 'network_error',
+        message: errorMessage
+      });
+      
       console.error('Execution error:', err);
+      toast({
+        title: "Connection Error",
+        description: "Failed to connect to the AI service. Please check your connection and try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsRunning(false);
     }
@@ -140,6 +128,37 @@ export default function TutorialPlayer() {
 
   const handleStop = () => {
     setIsRunning(false);
+  };
+
+  const getErrorDescription = (error: StreamError): string => {
+    switch (error.code) {
+      case 'authentication_failed':
+        return 'Authentication failed. Please check the API configuration.';
+      case 'model_not_found':
+        return 'The AI model is not available. Please try a different model.';
+      case 'rate_limited':
+        return 'Too many requests. Please wait a moment before trying again.';
+      case 'timeout':
+        return 'Request timed out. Please try with a shorter prompt.';
+      case 'connection_error':
+        return 'Unable to connect to the AI provider. Please check your connection.';
+      case 'provider_unavailable':
+        return 'The AI service is temporarily unavailable. Please try again later.';
+      default:
+        return error.message || 'An unexpected error occurred.';
+    }
+  };
+
+  const getErrorIcon = (code: string) => {
+    switch (code) {
+      case 'timeout':
+        return <Clock className="w-4 h-4" />;
+      case 'connection_error':
+      case 'provider_unavailable':
+        return <Wifi className="w-4 h-4" />;
+      default:
+        return <AlertCircle className="w-4 h-4" />;
+    }
   };
 
   if (loading) {
@@ -183,12 +202,23 @@ export default function TutorialPlayer() {
                 setCurrentStep(index);
                 setPrompt(tutorial.steps[index].code_template || '');
                 setOutput('');
+                setStreamError(null);
               }}
             >
               Step {index + 1}
             </Button>
           ))}
         </div>
+      )}
+
+      {streamError && (
+        <Alert variant="destructive">
+          {getErrorIcon(streamError.code)}
+          <AlertDescription>
+            <strong>{streamError.code.replace(/_/g, ' ').toUpperCase()}:</strong>{' '}
+            {getErrorDescription(streamError)}
+          </AlertDescription>
+        </Alert>
       )}
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -214,6 +244,7 @@ export default function TutorialPlayer() {
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Enter your prompt here..."
                 className="min-h-32"
+                disabled={isRunning}
               />
               <div className="flex gap-2 mt-4">
                 {!isRunning ? (
