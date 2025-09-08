@@ -1,0 +1,11 @@
+# Ignore sibling frontends so Encore's tsdepsparser doesn't parse JSX/Next output
+../frontend/**
+../web/**
+../web/.next/**
+../**/.DS_Store
+
+# Also match if Encore resolves paths relative to repo root
+frontend/**
+web/**
+web/.next/**
+.DS_Store
