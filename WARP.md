@@ -69,8 +69,11 @@ curl -X POST "http://localhost:4000/seed"
 encore auth login
 git push encore
 
-# For GitHub integration (recommended for production)
-git push origin main  # auto-deploys via GitHub integration
+# If using GitHub integration (Encore auto-deploys from GitHub)
+git push origin main
+
+# For GitLab (primary repo): push branches via SSH
+git push gitlab main
 ```
 
 ### Single Test Execution

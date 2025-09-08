@@ -97,7 +97,23 @@ git push encore
 
 Monitor your deployment progress in the [Encore Cloud dashboard](https://app.encore.dev/alain-ai-learning-platform-rui2/deploys).
 
-## GitHub Integration (Recommended for Production)
+## GitLab Repository (Preferred for this project)
+
+For day-to-day development and collaboration, use the GitLab repository:
+
+```bash
+# Add or switch the GitLab remote (SSH)
+git remote add gitlab git@gitlab.com:daniel-p-green/alain-ai-learning-platform.git 2>/dev/null || \
+git remote set-url gitlab git@gitlab.com:daniel-p-green/alain-ai-learning-platform.git
+
+# Push branches
+git push -u gitlab main
+git push -u gitlab <your-branch>
+```
+
+Note: Encore's GitHub integration triggers deployments from GitHub. If you are not using GitHub, deploy via the `encore` remote as shown above.
+
+## GitHub Integration (Optional)
 
 For production applications, we recommend integrating with GitHub instead of using Encore's managed git:
 
@@ -126,6 +142,5 @@ git push origin main
 - [Deployment Guide](https://encore.dev/docs/platform/deploy/deploying)
 - [GitHub Integration](https://encore.dev/docs/platform/integrations/github)
 - [Encore Cloud Dashboard](https://app.encore.dev)
-
 
 
