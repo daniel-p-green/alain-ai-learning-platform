@@ -44,6 +44,7 @@ export default function GenerateLessonPage() {
           className="p-2 rounded bg-gray-900 border border-gray-800"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
+          title="Select difficulty level"
         >
           <option value="beginner">Beginner</option>
           <option value="intermediate">Intermediate</option>

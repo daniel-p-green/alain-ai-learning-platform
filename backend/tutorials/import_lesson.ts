@@ -40,9 +40,21 @@ export const importLesson = api<LessonInput, ImportResponse>(
 
     const tx = await tutorialsDB.begin();
     try {
+      let makerId: number | null = null;
+      // Optional model_maker persistence
+      const anyLesson: any = lesson as any;
+      if (anyLesson.model_maker && anyLesson.model_maker.name && anyLesson.model_maker.org_type) {
+        const m = anyLesson.model_maker;
+        const makerRow = await tx.queryRow<{ id: number }>`
+          INSERT INTO model_makers (name, org_type, homepage, license, repo)
+          VALUES (${m.name}, ${m.org_type}, ${m.homepage || null}, ${m.license || null}, ${m.repo || null})
+          RETURNING id
+        `;
+        makerId = makerRow!.id;
+      }
       const t = await tx.queryRow<{ id: number }>`
-        INSERT INTO tutorials (title, description, model, provider, difficulty, tags)
-        VALUES (${lesson.title}, ${lesson.description}, ${lesson.model}, ${lesson.provider}, ${lesson.difficulty}, ${lesson.tags})
+        INSERT INTO tutorials (title, description, model, provider, difficulty, tags, model_maker_id)
+        VALUES (${lesson.title}, ${lesson.description}, ${lesson.model}, ${lesson.provider}, ${lesson.difficulty}, ${lesson.tags}, ${makerId})
         RETURNING id
       `;
 
