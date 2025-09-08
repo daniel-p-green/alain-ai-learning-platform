@@ -10,10 +10,17 @@ If this is your first time using Encore, you need to install the CLI that runs t
 - **Linux:** `curl -L https://encore.dev/install.sh | bash`
 - **Windows:** `iwr https://encore.dev/install.ps1 | iex`
 
-You also need to have bun installed for package management. If you don't have bun installed, you can install it by running:
+You also need Bun for package management. Install it with one of:
 
 ```bash
-npm install -g bun
+# macOS/Linux (official)
+curl -fsSL https://bun.sh/install | bash
+
+# Homebrew (macOS)
+brew install oven-sh/bun/bun
+
+# Windows (PowerShell)
+powershell -c "irm bun.sh/install.ps1 | iex"
 ```
 
 ## Running the Application
@@ -43,12 +50,12 @@ The backend will be available at the URL shown in your terminal (typically `http
 
 2. Install the dependencies:
    ```bash
-   npm install
+   bun install
    ```
 
 3. Start the development server:
    ```bash
-   npx vite dev
+   bunx vite dev
    ```
 
 The frontend will be available at `http://localhost:5173` (or the next available port).
@@ -126,6 +133,4 @@ git push origin main
 - [Deployment Guide](https://encore.dev/docs/platform/deploy/deploying)
 - [GitHub Integration](https://encore.dev/docs/platform/integrations/github)
 - [Encore Cloud Dashboard](https://app.encore.dev)
-
-
 
