@@ -1,6 +1,16 @@
 # ALAIN-Kit Harmony Prompts
 
-This directory contains the complete set of OpenAI Harmony-formatted prompts that implement the ALAIN-Kit methodology for systematic AI model educational content generation.
+This directory contains the complete set of **properly formatted OpenAI Harmony prompts** that implement the ALAIN-Kit methodology for systematic AI model educational content generation.
+
+## ✅ Harmony Format Compliance
+
+All prompts in this directory follow the official OpenAI Harmony format specification:
+
+- **Special Tokens**: Uses proper Harmony tokens (`<|start|>`, `<|message|>`, `<|end|>`, `<|channel|>`, `<|constrain|>`, `<|call|>`, `<|return|>`)
+- **Channel Structure**: Implements all three channels (`analysis`, `commentary`, `final`)
+- **Function Calling**: Tool calls properly constrained with `<|constrain|> json` and directed to `commentary` channel
+- **Message Hierarchy**: Follows proper role hierarchy (`system > developer > user > assistant > tool`)
+- **TypeScript-like Functions**: Function signatures use proper TypeScript-like syntax for tool definitions
 
 ## Overview
 
