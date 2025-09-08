@@ -179,7 +179,6 @@ export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
           }
 
           // Update completed_steps arrays
-          // This is more complex as we need to update arrays
           const usersWithProgress = await tx.queryAll<{ 
             id: number; 
             completed_steps: number[]; 

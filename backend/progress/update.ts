@@ -27,8 +27,8 @@ export const updateProgress = api<UpdateProgressRequest, UserProgress>(
       VALUES (${req.userId}, ${req.tutorialId}, ${req.currentStep}, ${req.completedSteps}, NOW())
       ON CONFLICT (user_id, tutorial_id)
       DO UPDATE SET
-        current_step = ${req.currentStep},
-        completed_steps = ${req.completedSteps},
+        current_step = EXCLUDED.current_step,
+        completed_steps = EXCLUDED.completed_steps,
         last_accessed = NOW()
       RETURNING id, user_id, tutorial_id, current_step, completed_steps, started_at, last_accessed
     `;

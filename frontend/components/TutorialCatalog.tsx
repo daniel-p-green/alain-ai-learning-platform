@@ -3,7 +3,18 @@ import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import backend from '~backend/client';
-import type { Tutorial } from '~backend/tutorials/list';
+
+interface Tutorial {
+  id: number;
+  title: string;
+  description: string;
+  model: string;
+  provider: string;
+  difficulty: string;
+  tags: string[];
+  created_at: Date;
+  updated_at: Date;
+}
 
 export default function TutorialCatalog() {
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
