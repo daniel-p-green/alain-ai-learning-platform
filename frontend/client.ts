@@ -147,9 +147,15 @@ export namespace progress {
 /**
  * Import the endpoint handlers to derive the types for the client.
  */
+import { addStep as api_tutorials_add_step_addStep } from "~backend/tutorials/add_step";
 import { create as api_tutorials_create_create } from "~backend/tutorials/create";
+import { deleteStep as api_tutorials_delete_step_deleteStep } from "~backend/tutorials/delete_step";
 import { get as api_tutorials_get_get } from "~backend/tutorials/get";
+import { getStep as api_tutorials_get_step_getStep } from "~backend/tutorials/get_step";
 import { list as api_tutorials_list_list } from "~backend/tutorials/list";
+import { listSteps as api_tutorials_list_steps_listSteps } from "~backend/tutorials/list_steps";
+import { reorderSteps as api_tutorials_reorder_steps_reorderSteps } from "~backend/tutorials/reorder_steps";
+import { updateStep as api_tutorials_update_step_updateStep } from "~backend/tutorials/update_step";
 
 export namespace tutorials {
 
@@ -158,9 +164,34 @@ export namespace tutorials {
 
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
+            this.addStep = this.addStep.bind(this)
             this.create = this.create.bind(this)
+            this.deleteStep = this.deleteStep.bind(this)
             this.get = this.get.bind(this)
+            this.getStep = this.getStep.bind(this)
             this.list = this.list.bind(this)
+            this.listSteps = this.listSteps.bind(this)
+            this.reorderSteps = this.reorderSteps.bind(this)
+            this.updateStep = this.updateStep.bind(this)
+        }
+
+        /**
+         * Adds a new step to an existing tutorial.
+         */
+        public async addStep(params: RequestType<typeof api_tutorials_add_step_addStep>): Promise<ResponseType<typeof api_tutorials_add_step_addStep>> {
+            // Construct the body with only the fields which we want encoded within the body (excluding query string or header fields)
+            const body: Record<string, any> = {
+                codeTemplate:   params.codeTemplate,
+                content:        params.content,
+                expectedOutput: params.expectedOutput,
+                modelParams:    params.modelParams,
+                stepOrder:      params.stepOrder,
+                title:          params.title,
+            }
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/tutorials/${encodeURIComponent(params.tutorialId)}/steps`, {method: "POST", body: JSON.stringify(body)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_add_step_addStep>
         }
 
         /**
@@ -173,6 +204,15 @@ export namespace tutorials {
         }
 
         /**
+         * Deletes a tutorial step and reorders remaining steps.
+         */
+        public async deleteStep(params: { stepId: number }): Promise<ResponseType<typeof api_tutorials_delete_step_deleteStep>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/tutorials/steps/${encodeURIComponent(params.stepId)}`, {method: "DELETE", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_delete_step_deleteStep>
+        }
+
+        /**
          * Retrieves a tutorial with its steps by ID.
          */
         public async get(params: { id: number }): Promise<ResponseType<typeof api_tutorials_get_get>> {
@@ -182,12 +222,62 @@ export namespace tutorials {
         }
 
         /**
+         * Retrieves a specific tutorial step by ID.
+         */
+        public async getStep(params: { stepId: number }): Promise<ResponseType<typeof api_tutorials_get_step_getStep>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/tutorials/steps/${encodeURIComponent(params.stepId)}`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_get_step_getStep>
+        }
+
+        /**
          * Retrieves all tutorials ordered by creation date.
          */
         public async list(): Promise<ResponseType<typeof api_tutorials_list_list>> {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/tutorials`, {method: "GET", body: undefined})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_list_list>
+        }
+
+        /**
+         * Retrieves all steps for a tutorial ordered by step_order.
+         */
+        public async listSteps(params: { tutorialId: number }): Promise<ResponseType<typeof api_tutorials_list_steps_listSteps>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/tutorials/${encodeURIComponent(params.tutorialId)}/steps`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_list_steps_listSteps>
+        }
+
+        /**
+         * Reorders tutorial steps by updating their step_order values.
+         */
+        public async reorderSteps(params: RequestType<typeof api_tutorials_reorder_steps_reorderSteps>): Promise<ResponseType<typeof api_tutorials_reorder_steps_reorderSteps>> {
+            // Construct the body with only the fields which we want encoded within the body (excluding query string or header fields)
+            const body: Record<string, any> = {
+                stepOrders: params.stepOrders,
+            }
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/tutorials/${encodeURIComponent(params.tutorialId)}/steps/reorder`, {method: "PUT", body: JSON.stringify(body)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_reorder_steps_reorderSteps>
+        }
+
+        /**
+         * Updates an existing tutorial step.
+         */
+        public async updateStep(params: RequestType<typeof api_tutorials_update_step_updateStep>): Promise<ResponseType<typeof api_tutorials_update_step_updateStep>> {
+            // Construct the body with only the fields which we want encoded within the body (excluding query string or header fields)
+            const body: Record<string, any> = {
+                codeTemplate:   params.codeTemplate,
+                content:        params.content,
+                expectedOutput: params.expectedOutput,
+                modelParams:    params.modelParams,
+                title:          params.title,
+            }
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/tutorials/steps/${encodeURIComponent(params.stepId)}`, {method: "PUT", body: JSON.stringify(body)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_tutorials_update_step_updateStep>
         }
     }
 }
