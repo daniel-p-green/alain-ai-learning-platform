@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import backend from '~backend/client';
 
 interface Tutorial {
@@ -24,10 +25,13 @@ export default function TutorialCatalog() {
   useEffect(() => {
     const loadTutorials = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
         const response = await backend.tutorials.list();
         setTutorials(response.tutorials);
       } catch (err) {
-        setError('Failed to load tutorials');
+        setError('Failed to load tutorials. Please try again.');
         console.error('Error loading tutorials:', err);
       } finally {
         setLoading(false);
@@ -47,8 +51,11 @@ export default function TutorialCatalog() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <div className="text-destructive">{error}</div>
+        <Button onClick={() => window.location.reload()}>
+          Try Again
+        </Button>
       </div>
     );
   }
@@ -56,13 +63,13 @@ export default function TutorialCatalog() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
       case 'intermediate':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300';
       case 'advanced':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -112,7 +119,7 @@ export default function TutorialCatalog() {
         ))}
       </div>
 
-      {tutorials.length === 0 && (
+      {tutorials.length === 0 && !loading && (
         <div className="text-center py-12">
           <div className="text-muted-foreground">No tutorials available yet.</div>
         </div>
