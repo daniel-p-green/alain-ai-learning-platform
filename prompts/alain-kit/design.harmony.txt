@@ -277,4 +277,12 @@ quality_criteria: {
 improvement_recommendations: string[]
 }) => any;
 
-} // namespace functions<|end|><|start|>user<|message|>Create an engaging learning experience design for the AI model based on the provided research findings. Apply the ALAIN-Kit design methodology systematically and output your design using the emit_learning_design function.<|end|><|start|>assistant
+} // namespace functions
+
+## Example: Function Call and Response
+This example shows the correct sequence for calling a function and handling its response, as per the Harmony guide.
+
+<|start|>assistant<|channel|>analysis<|message|>The user wants a learning design. I will analyze the requirements and then call the `emit_learning_design` function.<|end|>
+<|start|>assistant<|channel|>commentary to=functions.emit_learning_design <|constrain|>json<|message|>{"learning_objectives": ["Understand core concepts"], "instructional_architecture": "scaffolded", "interactive_elements": ["quiz"]}<|call|>
+<|start|>functions.emit_learning_design to=assistant<|channel|>commentary<|message|>{"success": true, "design_id": "design-123"}<|end|>
+<|start|>assistant<|channel|>final<|message|>The learning design has been successfully created with ID: design-123.<|return|>assistant
