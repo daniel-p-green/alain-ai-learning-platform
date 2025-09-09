@@ -25,7 +25,7 @@ async function complete(body: ExecuteBody): Promise<string> {
   return data.choices?.[0]?.message?.content || "";
 }
 
-async function stream(body: ExecuteBody, onData: (data: any) => void) {
+async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: AbortSignal) {
   const apiKey = process.env.POE_API_KEY;
   if (!apiKey) throw new Error("POE_API_KEY not configured");
   const resp = await fetch("https://api.poe.com/v1/chat/completions", {
@@ -43,6 +43,7 @@ async function stream(body: ExecuteBody, onData: (data: any) => void) {
       top_p: body.top_p,
       max_tokens: body.max_tokens,
     }),
+    signal,
   });
   if (!resp.ok || !resp.body) throw new Error(`Poe API error (${resp.status})`);
   await pipeSSE(resp, onData);
@@ -98,4 +99,3 @@ function mapModelName(alainModel: string): string {
 }
 
 export const poeProvider: Provider = { execute: complete, stream };
-

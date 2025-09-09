@@ -26,7 +26,7 @@ async function complete(body: ExecuteBody): Promise<string> {
   return data.choices?.[0]?.message?.content || "";
 }
 
-async function stream(body: ExecuteBody, onData: (data: any) => void) {
+async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: AbortSignal) {
   const baseUrl = process.env.OPENAI_BASE_URL;
   const apiKey = process.env.OPENAI_API_KEY;
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
@@ -45,6 +45,7 @@ async function stream(body: ExecuteBody, onData: (data: any) => void) {
       top_p: body.top_p,
       max_tokens: body.max_tokens,
     }),
+    signal,
   });
   if (!resp.ok || !resp.body) throw new Error(`OpenAI API error (${resp.status})`);
   await pipeSSE(resp, onData);
@@ -75,4 +76,3 @@ async function pipeSSE(resp: Response, onData: (data: any) => void) {
 }
 
 export const openAIProvider: Provider = { execute: complete, stream };
-

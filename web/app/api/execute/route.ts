@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib/providers";
 
 export async function POST(req: NextRequest) {
   const { userId, getToken } = await auth();
@@ -22,35 +23,52 @@ export async function POST(req: NextRequest) {
     const token = await getToken();
 
     if (stream) {
-      // Proxy streaming request to Encore SSE endpoint
-      const encoreResponse = await fetch(`${backendUrl}/execute/stream`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+      // Stream directly from web providers to client via SSE
+      const provider: WebProvider = selectWebProvider(body.provider);
+      // Create an SSE stream
+      const readable = new ReadableStream({
+        start(controller) {
+          // Helper to send data frames
+          const send = (obj: any) => {
+            const line = `data: ${JSON.stringify(obj)}\n\n`;
+            controller.enqueue(new TextEncoder().encode(line));
+          };
+
+          provider
+            .stream(body, (data) => {
+              // Forward provider JSON chunks as SSE data lines
+              send(data);
+            }, req.signal)
+            .then(() => {
+              // Close with [DONE]
+              controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+              controller.close();
+            })
+            .catch((error) => {
+              const err = {
+                success: false,
+                error: {
+                  code: "provider_error",
+                  message: error instanceof Error ? error.message : "unknown provider error",
+                },
+              };
+              controller.enqueue(new TextEncoder().encode(`event: error\n`));
+              controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(err)}\n\n`));
+              controller.close();
+            });
+
+          // Handle client abort
+          req.signal.addEventListener("abort", () => {
+            // Optionally emit an abort event
+            controller.close();
+          });
         },
-        body: JSON.stringify(body),
       });
 
-      if (!encoreResponse.ok) {
-        const errorText = await encoreResponse.text();
-        return new Response(
-          JSON.stringify({
-            success: false,
-            error: {
-              code: "backend_error",
-              message: `Backend error: ${encoreResponse.status} ${errorText}`
-            }
-          }),
-          { status: encoreResponse.status }
-        );
-      }
-
-      // Return the SSE stream directly
-      return new Response(encoreResponse.body, {
+      return new Response(readable, {
         headers: {
           "Content-Type": "text/event-stream; charset=utf-8",
-          "Cache-Control": "no-cache",
+          "Cache-Control": "no-cache, no-transform",
           "Connection": "keep-alive",
         },
       });
@@ -80,5 +98,16 @@ export async function POST(req: NextRequest) {
       },
       { status: 500 }
     );
+  }
+}
+
+function selectWebProvider(name: "poe" | "openai-compatible"): WebProvider {
+  switch (name) {
+    case "poe":
+      return poeProvider;
+    case "openai-compatible":
+      return openAIProvider;
+    default:
+      return poeProvider;
   }
 }
