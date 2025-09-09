@@ -66,7 +66,12 @@ export default function SettingsPage() {
               <div key={p.id} className="p-3 rounded border border-gray-800 bg-gray-900">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-white">{p.name}</div>
+                    <div className="font-medium text-white flex items-center gap-2">
+                      {p.name}
+                      <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'available' ? 'bg-green-900/40 border-green-700 text-green-300' : p.status === 'configuring' ? 'bg-yellow-900/40 border-yellow-700 text-yellow-300' : 'bg-red-900/40 border-red-700 text-red-300'}`}>
+                        {p.status}
+                      </span>
+                    </div>
                     <div className="text-sm text-gray-400">{p.description}</div>
                     <div className="text-xs text-gray-500 mt-1">Status: {p.status}</div>
                   </div>

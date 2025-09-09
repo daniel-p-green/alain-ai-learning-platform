@@ -55,6 +55,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const abortControllerRef = useRef<AbortController | null>(null);
   const [showRequest, setShowRequest] = useState(false);
   const [lastRequest, setLastRequest] = useState<any | null>(null);
+  const [curl, setCurl] = useState<string>("");
+  const [sdk, setSdk] = useState<string>("");
   const monacoRef = useRef<HTMLDivElement | null>(null);
   const monacoEditorRef = useRef<any>(null);
   const [monacoReady, setMonacoReady] = useState(false);
@@ -262,6 +264,23 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       abortControllerRef.current = null;
     }
   }
+
+  // Build copyable code snippets
+  useEffect(() => {
+    const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "";
+    const payload = lastRequest || { provider: tutorial?.provider, model: tutorial?.model, messages: [{ role: 'user', content: prompt }], stream: false };
+    const baseUrl = payload.provider === 'poe' ? 'https://api.poe.com/v1' : (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1');
+    const keyVar = payload.provider === 'poe' ? 'POE_API_KEY' : 'OPENAI_API_KEY';
+    const curlCmd = [
+      `curl -s -X POST "${baseUrl}/chat/completions" \\\n`,
+      `  -H "Authorization: Bearer $${keyVar}" \\\n`,
+      `  -H "Content-Type: application/json" \\\n`,
+      `  -d '${JSON.stringify({ model: payload.model, messages: payload.messages, stream: false, temperature: 0.7 })}'`
+    ].join("");
+    setCurl(curlCmd);
+    const sdkJs = `import OpenAI from 'openai';\n\nconst client = new OpenAI({ apiKey: process.env.${keyVar}, baseURL: '${baseUrl}' });\nconst resp = await client.chat.completions.create({ model: '${payload.model}', messages: ${JSON.stringify(payload.messages)}, max_tokens: 400 });\nconsole.log(resp.choices[0].message.content);\n`;
+    setSdk(sdkJs);
+  }, [lastRequest, tutorial, prompt]);
 
   function cancelExecution() {
     if (abortControllerRef.current) {
@@ -515,6 +534,18 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           }`}>
             {out || (executionState.status === 'idle' ? 'Click "Run step" to execute your prompt...' : '')}
           </pre>
+
+          {/* Copy helpers */}
+          <div className="bg-gray-900 border border-gray-800 rounded p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-300">Copy as</div>
+              <div className="flex gap-2">
+                <button className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-xs" onClick={() => navigator.clipboard.writeText(curl)}>curl</button>
+                <button className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-xs" onClick={() => navigator.clipboard.writeText(sdk)}>OpenAI SDK (JS)</button>
+              </div>
+            </div>
+            <pre className="text-xs whitespace-pre-wrap text-gray-400">{curl}</pre>
+          </div>
 
           {/* Budget Indicators */}
           {executionState.status === 'completed' && executionState.tokenCount && (

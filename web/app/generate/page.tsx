@@ -9,6 +9,7 @@ export default function GenerateLessonPage() {
   const [errorDetails, setErrorDetails] = useState<string[]>([]);
   const [progress, setProgress] = useState<"idle" | "parsing" | "asking" | "importing" | "done">("idle");
   const [result, setResult] = useState<null | { tutorialId: number; meta?: any; preview?: any }>(null);
+  const [repairing, setRepairing] = useState(false);
 
   function parseHfInput(input: string): { ok: boolean; url: string } {
     const t = input.trim();
@@ -107,6 +108,37 @@ export default function GenerateLessonPage() {
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {!result && error && errorDetails.length > 0 && (
+        <div className="mt-3 text-sm text-gray-300">
+          <div className="mb-1">Try automatic fixes:</div>
+          <div className="flex gap-2">
+            <button
+              className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white disabled:opacity-50"
+              disabled={repairing}
+              onClick={async () => {
+                setRepairing(true);
+                const parsed = parseHfInput(hfUrl);
+                const resp = await fetch('/api/repair-lesson', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ hfUrl: parsed.url, difficulty, fixes: ['add_description','add_intro_step'] })
+                });
+                const data = await resp.json();
+                setRepairing(false);
+                if (!data.success) {
+                  setError(data?.error?.message || 'Repair failed');
+                  setErrorDetails(Array.isArray(data?.error?.details) ? data.error.details : []);
+                } else {
+                  setError(null);
+                  setErrorDetails([]);
+                  setResult({ tutorialId: data.tutorialId, preview: data.preview });
+                }
+              }}
+            >Auto-fix and Import</button>
+          </div>
         </div>
       )}
 
