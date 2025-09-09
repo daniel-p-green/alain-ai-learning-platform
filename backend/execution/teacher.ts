@@ -37,28 +37,83 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
       }
 
       // Resolve provider (request overrides env default)
-      const provider: "poe" | "openai-compatible" =
+      const initialProvider: "poe" | "openai-compatible" =
         req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe');
+      const provider = resolveTeacherProvider(initialProvider, req.model, !!poeApiKey());
 
       // Set harmony-compatible parameters based on task
       const harmonyParams = getHarmonyParams(req.task);
 
       // Prepare harmony-formatted messages
-      const provider: "poe" | "openai-compatible" =
-        req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe');
-
-      const supportsHarmonyRoles = false; // be conservative across providers
+      const supportsHarmonyRoles = provider === 'poe';
       const harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
       
       // Provider-specific execution
-      const payload = {
+      const payload: any = {
         model: mapModelForProvider(provider, req.model),
         messages: harmonyMessages,
         stream: false,
         temperature: req.temperature ?? harmonyParams.temperature,
         top_p: 0.9,
         max_tokens: req.max_tokens ?? harmonyParams.max_tokens,
-      } as any;
+      };
+
+      // Optional tools scaffold (disabled by default)
+      // Enable by setting TEACHER_ENABLE_TOOLS=1 for providers that support function calling
+      if (process.env.TEACHER_ENABLE_TOOLS === '1' && req.task === 'lesson_generation') {
+        payload.tools = [
+          {
+            type: 'function',
+            function: {
+              name: 'emit_lesson',
+              description: 'Return a structured lesson object',
+              parameters: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string' },
+                  description: { type: 'string' },
+                  reasoning_summary: { type: 'string' },
+                  learning_objectives: { type: 'array', items: { type: 'string' } },
+                  steps: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        step_order: { type: 'integer' },
+                        title: { type: 'string' },
+                        content: { type: 'string' },
+                        code_template: { type: 'string' },
+                        expected_output: { type: 'string' },
+                        model_params: { type: 'object' },
+                      },
+                      required: ['step_order','title','content']
+                    }
+                  },
+                },
+                required: ['title','description','steps']
+              }
+            }
+          }
+        ];
+      }
+
+      // Helper to extract content, honoring tool-calls when enabled
+      const extractContent = (data: any): string => {
+        try {
+          const choice = data?.choices?.[0];
+          const msg = choice?.message || {};
+          const toolCalls = (msg as any).tool_calls;
+          if (Array.isArray(toolCalls) && toolCalls.length > 0) {
+            const fn = toolCalls[0]?.function;
+            const args = fn?.arguments;
+            if (args && typeof args === 'string') {
+              // Return the function arguments verbatim as JSON string
+              return args;
+            }
+          }
+          return msg?.content || '';
+        } catch { return ''; }
+      };
 
       if (provider === 'poe') {
         const apiKey = poeApiKey();
@@ -86,7 +141,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           }
           return data;
         });
-        return { success: true, content: data.choices?.[0]?.message?.content || '' };
+        return { success: true, content: extractContent(data) };
       } else {
         const baseUrl = openaiBaseUrl();
         const apiKey = openaiApiKey();
@@ -114,7 +169,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           }
           return data;
         });
-        return { success: true, content: data.choices?.[0]?.message?.content || '' };
+        return { success: true, content: extractContent(data) };
       }
     } catch (error) {
       const errorData = mapTeacherError(error);
@@ -305,13 +360,20 @@ async function withRetries<T>(fn: (signal: AbortSignal) => Promise<T>): Promise<
   throw lastErr;
 }
 
-// Map model aliases per provider.
-function mapModelForProvider(model: "GPT-OSS-20B" | "GPT-OSS-120B", provider: "poe" | "openai-compatible"): string {
-  if (provider === 'poe') return model;
-  // For OpenAI-compatible (e.g., Ollama), use checkpoint tags
-  const map: Record<string, string> = {
-    "GPT-OSS-20B": "gpt-oss:20b",
-    "GPT-OSS-120B": "gpt-oss:120b",
-  };
-  return map[model] || model;
+// Model aliasing handled by shared helper imported from ./providers/aliases
+
+// Exported for unit tests and reuse
+export function resolveTeacherProvider(
+  requested: "poe" | "openai-compatible",
+  model: "GPT-OSS-20B" | "GPT-OSS-120B",
+  poeAvailable: boolean,
+): "poe" | "openai-compatible" {
+  if (requested === 'openai-compatible' && model === 'GPT-OSS-120B') {
+    if (poeAvailable) return 'poe';
+    // Mirror the same message thrown in API path
+    throw APIError.failedPrecondition(
+      'GPT-OSS-120B is not supported on local endpoints. Configure POE_API_KEY or switch to GPT-OSS-20B for local runs.'
+    );
+  }
+  return requested;
 }

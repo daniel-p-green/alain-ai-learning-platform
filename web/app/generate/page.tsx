@@ -15,6 +15,7 @@ export default function GenerateLessonPage() {
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
   const [snackbar, setSnackbar] = useState<string | null>(null);
+  const [showReasoning, setShowReasoning] = useState(false);
 
   // Provider capabilities
   const [providersLoading, setProvidersLoading] = useState(false);
@@ -69,7 +70,7 @@ export default function GenerateLessonPage() {
       const resp = await fetch("/api/generate-lesson", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
+        body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel, showReasoning })
       });
       const data = await resp.json();
       if (!data.success) {
@@ -124,6 +125,10 @@ export default function GenerateLessonPage() {
               <option key={m.id} value={m.id}>{m.name || m.id}</option>
             ))}
           </select>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-300">
+          <input id="show-reasoning" type="checkbox" checked={showReasoning} onChange={(e)=> setShowReasoning(e.target.checked)} />
+          <label htmlFor="show-reasoning">Show Reasoning (beta)</label>
         </div>
         {providersLoading && <div className="text-xs text-gray-400">Loading providers…</div>}
         {providersError && <div className="text-xs text-yellow-400">{providersError}</div>}
@@ -291,3 +296,9 @@ export default function GenerateLessonPage() {
     </div>
   );
 }
+          {showReasoning && result.meta?.reasoning_summary && (
+            <div className="text-sm text-gray-400">
+              <div className="font-medium text-gray-300 mb-1">Reasoning (summary)</div>
+              <div className="whitespace-pre-wrap">{result.meta.reasoning_summary}</div>
+            </div>
+          )}

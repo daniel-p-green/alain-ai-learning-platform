@@ -5,6 +5,8 @@ async function complete(body: ExecuteBody): Promise<string> {
   const baseUrl = process.env.OPENAI_BASE_URL;
   const apiKey = process.env.OPENAI_API_KEY;
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), 30_000);
   const resp = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
     headers: {
@@ -20,7 +22,9 @@ async function complete(body: ExecuteBody): Promise<string> {
       top_p: body.top_p,
       max_tokens: body.max_tokens,
     }),
+    signal: ac.signal,
   });
+  clearTimeout(timer);
   if (!resp.ok) throw new Error(`OpenAI API error (${resp.status})`);
   const data = await resp.json();
   if (data.error) throw new Error(data.error.message || "Unknown OpenAI error");
@@ -31,6 +35,12 @@ async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: A
   const baseUrl = process.env.OPENAI_BASE_URL;
   const apiKey = process.env.OPENAI_API_KEY;
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
+  // Combine external abort with a 30s internal timeout
+  const ac = new AbortController();
+  const timers: any[] = [];
+  const clearAll = () => { timers.forEach(clearTimeout); };
+  timers.push(setTimeout(() => ac.abort(), 30_000));
+  const combined: AbortSignal = (AbortSignal as any).any ? (AbortSignal as any).any([ac.signal, signal].filter(Boolean)) : (signal || ac.signal);
   const resp = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
     headers: {
@@ -46,10 +56,14 @@ async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: A
       top_p: body.top_p,
       max_tokens: body.max_tokens,
     }),
-    signal,
+    signal: combined,
   });
   if (!resp.ok || !resp.body) throw new Error(`OpenAI API error (${resp.status})`);
-  await pipeSSE(resp, onData);
+  try {
+    await pipeSSE(resp, onData);
+  } finally {
+    clearAll();
+  }
 }
 
 async function pipeSSE(resp: Response, onData: (data: any) => void) {

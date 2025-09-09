@@ -10,6 +10,8 @@ interface LessonGenerationRequest {
   includeAssessment?: boolean;
   // Optional provider toggle to select where the Teacher runs
   provider?: "poe" | "openai-compatible";
+  // Optional: ask the teacher to include a brief reasoning summary in the output JSON
+  includeReasoning?: boolean;
 }
 
 interface LessonGenerationResponse {
@@ -63,7 +65,7 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
       const modelInfo = await extractHFModelInfo(req.hfUrl);
 
       // Generate lesson content using teacher model
-      const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment);
+      const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
 
       const teacherResponse = await teacherGenerate({
         model: req.teacherModel,
@@ -83,6 +85,19 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
 
       // Parse → fill defaults → validate. If invalid, attempt a single repair pass.
       let raw = teacherResponse.content;
+
+      // Extract optional reasoning_summary before sanitization
+      const extractReasoning = (jsonText: string): string | undefined => {
+        try {
+          let t = jsonText.trim();
+          if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
+          const o = JSON.parse(t);
+          const r = o?.reasoning_summary;
+          return typeof r === 'string' && r.trim() ? r.trim() : undefined;
+        } catch { return undefined; }
+      };
+      let reasoningSummary = extractReasoning(raw);
+
       let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
       let v1 = validateLesson(lesson);
       let usedRepair = false;
@@ -93,13 +108,15 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
         }
         lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
         usedRepair = true;
+        // Try to re-extract reasoning if not present
+        if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
         const v2 = validateLesson(lesson);
         if (!v2.valid) {
           return { success: false, error: { code: "validation_error", message: "Lesson invalid after repair", details: v2.errors } } as any;
         }
       }
 
-      return { success: true, lesson, meta: { repaired: usedRepair } } as any;
+      return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
     } catch (error) {
       const errorData = mapLessonGenerationError(error);
       return {
@@ -142,7 +159,7 @@ async function extractHFModelInfo(hfUrl: string) {
 }
 
 // Build comprehensive lesson generation prompt
-function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean): string {
+function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean, includeReasoning?: boolean): string {
   const basePrompt = `Generate a comprehensive, structured lesson for the AI model: ${modelInfo.name}
 
 Model Information:
@@ -163,6 +180,7 @@ Format your response as a JSON object with this structure:
 {
   "title": "Lesson Title",
   "description": "Brief description",
+  ${includeReasoning ? '"reasoning_summary": "2-4 sentences explaining why you chose this teaching approach and step ordering.",' : ''}
   "learning_objectives": ["Objective 1", "Objective 2"],
   "steps": [
     {

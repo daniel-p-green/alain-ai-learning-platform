@@ -55,9 +55,14 @@ export async function POST(req: NextRequest) {
       const readable = new ReadableStream({
         start(controller) {
           // Helper to send data frames
+          const startAt = Date.now();
+          let totalChars = 0;
+          const enc = new TextEncoder();
           const send = (obj: any) => {
-            const line = `data: ${JSON.stringify(obj)}\n\n`;
-            controller.enqueue(new TextEncoder().encode(line));
+            const payload = JSON.stringify(obj);
+            totalChars += payload.length;
+            const line = `data: ${payload}\n\n`;
+            controller.enqueue(enc.encode(line));
           };
 
           const run = async () => {
@@ -66,6 +71,10 @@ export async function POST(req: NextRequest) {
                 send(data);
               }, req.signal);
               controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+              // Basic metrics (duration, chars/sec) for observability
+              const dur = Math.max(1, Date.now() - startAt);
+              const cps = Math.round((totalChars / dur) * 1000);
+              console.log(`[SSE] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
               controller.close();
             } catch (error) {
               // One quick retry on initial failure
@@ -74,6 +83,9 @@ export async function POST(req: NextRequest) {
                   send(data);
                 }, req.signal);
                 controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+                const dur = Math.max(1, Date.now() - startAt);
+                const cps = Math.round((totalChars / dur) * 1000);
+                console.log(`[SSE:retry] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
                 controller.close();
               } catch (e2) {
                 const err = {
@@ -85,6 +97,9 @@ export async function POST(req: NextRequest) {
                 };
                 controller.enqueue(new TextEncoder().encode(`event: error\n`));
                 controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(err)}\n\n`));
+                const dur = Math.max(1, Date.now() - startAt);
+                const cps = Math.round((totalChars / dur) * 1000);
+                console.warn(`[SSE:error] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
                 controller.close();
               }
             }

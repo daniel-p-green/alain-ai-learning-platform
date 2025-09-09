@@ -20,6 +20,14 @@ Tagline: Learn models by doing.
 
 —
 
+## Why gpt‑oss (20B/120B)
+- Philosophical: Open models teaching other open models. Transparency and local control align with our mission to democratize advanced model usage and education.
+- Practical: `gpt‑oss‑20b` hits a sweet spot — strong code/explanation quality while remaining runnable locally on a single workstation (Ollama/vLLM). `gpt‑oss‑120b` provides a higher‑ceiling path when available.
+- Local capability: Fully offline generation is possible with an OpenAI‑compatible endpoint. This reduces cost, preserves privacy, and improves reliability during demos.
+- Road to fine‑tuning: The open weights + OpenAI‑compatible semantics make targeted fine‑tuning on educational formats straightforward later.
+
+—
+
 ## TL;DR Demo
 - Web UI (Next.js): Browse and play lessons with live model calls.
 - React SPA: Lightweight demo of the tutorial player.
@@ -121,6 +129,44 @@ Prereqs: Node 18+, Go (Encore), optional Python 3.8+.
 Providers
 - Poe (default): Requires `POE_API_KEY`; streams via `/execute`.
 - OpenAI‑compatible (BYOK): Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` (e.g., vendor, vLLM, Ollama).
+
+—
+
+## Local/Offline Quick‑Start (Ollama)
+Prereqs: Ollama installed
+
+1) Pull the model
+```
+ollama pull gpt-oss:20b
+```
+2) Point ALAIN to your local endpoint
+```
+export OPENAI_BASE_URL=http://localhost:11434/v1
+export OPENAI_API_KEY=ollama
+```
+3) Start ALAIN (separate shells)
+```
+npm run dev:backend
+npm run dev:web
+```
+4) In the web app:
+- Teacher Provider: Local (OpenAI‑compatible)
+- Generate a lesson from a HF URL (e.g., meta-llama/Meta-Llama-3.1-8B-Instruct)
+
+Minimal local sanity check (optional)
+```
+curl -s -X POST "$OPENAI_BASE_URL/chat/completions" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" -H "Content-Type: application/json" \
+  -d '{"model":"gpt-oss:20b","messages":[{"role":"user","content":"Say hello from gpt-oss local"}]}'
+```
+
+—
+
+## Known Limitations
+- Streaming: Token streaming is handled in the Next.js layer only; Encore streaming is disabled in this MVP. This does not block the core Paste‑URL → Lesson → Preview/Export flow.
+- Reasoning visibility: Harmony‑style prompting is used for teacher tasks, but internal reasoning is not surfaced in the UI yet. Planned: optional “show reasoning” panel.
+- Tool/function calling: The repair loop is model‑driven without explicit `tools` parameters in requests. Planned: minimal `tools` scaffolding for structured outputs.
+ - Model routing: `GPT-OSS-120B` is not run locally. If selected, the teacher auto‑routes to Poe (requires `POE_API_KEY`). Use `GPT-OSS-20B` for local/Ollama.
 
 —
 
