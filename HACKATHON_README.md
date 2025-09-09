@@ -20,15 +20,41 @@ Tagline: Learn models by doing.
 
 —
 
+## Why gpt‑oss (20B/120B)
+- Philosophical: Open models teaching other open models. Transparency and local control align with our mission to democratize advanced model usage and education.
+- Practical: `gpt‑oss‑20b` hits a sweet spot — strong code/explanation quality while remaining runnable locally on a single workstation (Ollama/vLLM). `gpt‑oss‑120b` provides a higher‑ceiling path when available.
+- Local capability: Fully offline generation is possible with an OpenAI‑compatible endpoint. This reduces cost, preserves privacy, and improves reliability during demos.
+- Road to fine‑tuning: The open weights + OpenAI‑compatible semantics make targeted fine‑tuning on educational formats straightforward later.
+
+—
+
 ## TL;DR Demo
 - Web UI (Next.js): Browse and play lessons with live model calls.
+- Public Directory: Link in the header to explore tutorials with search and filters.
 - React SPA: Lightweight demo of the tutorial player.
 - Execution API (Encore.ts): Unified SSE endpoint for streaming completions.
 
+Notebook export (Colab)
+- Exported notebooks now include:
+  - Provider setup cells (install OpenAI SDK, set OPENAI_BASE_URL/API_KEY; Poe defaults to https://api.poe.com/v1)
+  - A quick smoke test cell to verify keys work with the selected model
+  - Each lesson step rendered as markdown + a runnable code cell that sends the step prompt to the model
+  - MCQ assessment cells with inline graders (choose an option, see correctness and explanation)
+- No arbitrary code execution; only parameterized API calls using OpenAI-compatible client
+
+UI improvements (magical MVP)
+- Model picker: choose provider (Poe/BYOK) and a default model when generating lessons and when running steps in the player.
+- Fix-it actions: on validation errors, click “Auto-fix and Import” to repair missing fields/steps.
+- Instant preview: after generation, preview title, description, objectives, and first step with one-click “Open Tutorial” or “Export Notebook”.
+- Transparent execution: “Show Request” reveals the JSON payload; copy as curl or OpenAI SDK is one click away.
+- Adapt Experience (beta): On tutorial pages, tailor content for Beginner/Intermediate/Advanced. Original content remains unchanged.
+
 Quick start
 1) Install: `npm install`
-2) Configure env: `cp env-config-example.txt .env.local` and add keys
-3) Run services: `npm run dev:backend` | `npm run dev:frontend` | `npm run dev:web`
+2) Configure envs:
+   - Web: `cp env.web.example web/.env.local` and fill in Clerk + backend base
+   - Backend: set secrets via Encore (`encore secret set ...`) or `cp env.backend.example backend/.env.local` for local
+3) Run services: `npm run dev:backend` | `npm run dev:web`
 4) Open the web app and load a sample lesson or paste a model link.
 
 How to run details live in `alain-ai-learning-platform/README.md`.
@@ -110,6 +136,45 @@ Providers
 
 —
 
+## Local/Offline Quick‑Start (Ollama)
+Prereqs: Ollama installed
+
+1) Pull the model
+```
+ollama pull gpt-oss:20b
+```
+2) Point ALAIN to your local endpoint
+```
+export OPENAI_BASE_URL=http://localhost:11434/v1
+export OPENAI_API_KEY=ollama
+```
+3) Start ALAIN (separate shells)
+```
+npm run dev:backend
+npm run dev:web
+```
+4) In the web app:
+- Teacher Provider: Local (OpenAI‑compatible)
+- Generate a lesson from a HF URL (e.g., meta-llama/Meta-Llama-3.1-8B-Instruct)
+
+Minimal local sanity check (optional)
+```
+curl -s -X POST "$OPENAI_BASE_URL/chat/completions" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" -H "Content-Type: application/json" \
+  -d '{"model":"gpt-oss:20b","messages":[{"role":"user","content":"Say hello from gpt-oss local"}]}'
+```
+
+—
+
+## Known Limitations
+- Streaming: Token streaming is handled in the Next.js layer only; Encore streaming is disabled in this MVP. This does not block the core Paste‑URL → Lesson → Preview/Export flow.
+- Reasoning visibility: Harmony‑style prompting is used for teacher tasks, but internal reasoning is not surfaced in the UI yet. Planned: optional “show reasoning” panel.
+- Tool/function calling: The repair loop is model‑driven without explicit `tools` parameters in requests. Planned: minimal `tools` scaffolding for structured outputs.
+- Model routing: `GPT-OSS-120B` is not run locally. If selected, the teacher auto‑routes to Poe (requires `POE_API_KEY`). Use `GPT-OSS-20B` for local/Ollama.
+- Backend auth & limits: Generation and execution require auth and apply per-user limits. Colab export is lightly throttled to prevent scraping.
+
+—
+
 ## Judging Criteria Mapping
 - Impact: Converts model launches into shareable, runnable lessons; helps devs, teams, and students adopt faster.
 - Execution: Real streaming, provider abstraction, Encore‑based API, and a polished UI flow.
@@ -141,7 +206,7 @@ Providers
 —
 
 ## Submission Details
-- Repo: <link to this repository>
+- Repo: https://gitlab.com/daniel-p-green/alain-ai-learning-platform
 - Leap Project ID: <add here>
 - How to run: See “Run Locally” above and `alain-ai-learning-platform/README.md`.
 - Contact: hackathon@leap.new (per event instructions)
@@ -152,4 +217,3 @@ Providers
 - Built for Leap Open Source Hackathon 2025.
 - Teacher model: GPT‑oss‑20b (strategy varies by provider availability).
 - Thanks to the open‑source community for tooling and inspiration.
-

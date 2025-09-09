@@ -66,6 +66,18 @@ describe("reorderSteps", () => {
     ).rejects.toThrow("duplicate new step orders found");
   });
 
+  it("throws an error for duplicate step IDs in request", async () => {
+    await expect(
+      reorderSteps({
+        tutorialId,
+        stepOrders: [
+          { stepId: step1Id, newOrder: 2 },
+          { stepId: step1Id, newOrder: 1 },
+        ],
+      })
+    ).rejects.toThrow("duplicate step IDs found");
+  });
+
   it("throws an error for incomplete sequence when reordering all steps", async () => {
     await expect(
       reorderSteps({
@@ -130,5 +142,21 @@ describe("reorderSteps", () => {
         stepOrders: [{ stepId: step1Id, newOrder: 3 }], // Conflicts with step3's order
       })
     ).rejects.toThrow("conflict with existing step orders");
+  });
+
+  it("rejects negative or zero newOrder values", async () => {
+    await expect(
+      reorderSteps({
+        tutorialId,
+        stepOrders: [{ stepId: step1Id, newOrder: 0 }],
+      })
+    ).rejects.toThrow("positive integers");
+
+    await expect(
+      reorderSteps({
+        tutorialId,
+        stepOrders: [{ stepId: step2Id, newOrder: -3 }],
+      })
+    ).rejects.toThrow("positive integers");
   });
 });

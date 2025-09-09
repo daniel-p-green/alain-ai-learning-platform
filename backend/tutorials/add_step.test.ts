@@ -84,6 +84,45 @@ describe("addStep", () => {
     ).rejects.toThrow("step title cannot be empty");
   });
 
+  it("throws an error for empty content", async () => {
+    await expect(
+      addStep({
+        tutorialId,
+        stepOrder: 3,
+        title: "Valid",
+        content: " ",
+      })
+    ).rejects.toThrow("step content cannot be empty");
+  });
+
+  it("throws an error for invalid stepOrder (zero or negative)", async () => {
+    await expect(
+      addStep({ tutorialId, stepOrder: 0, title: "T", content: "C" })
+    ).rejects.toThrow("step order must be at least 1");
+    await expect(
+      addStep({ tutorialId, stepOrder: -1, title: "T", content: "C" })
+    ).rejects.toThrow("step order must be at least 1");
+  });
+
+  it("preserves user progress when inserting a preceding step", async () => {
+    await tutorialsDB.exec`
+      INSERT INTO user_progress (user_id, tutorial_id, current_step, completed_steps)
+      VALUES ('user-progress-1', ${tutorialId}, 2, ARRAY[1])
+    `;
+
+    // Insert a new step at position 1; should shift steps >=1 to +1
+    await addStep({
+      tutorialId,
+      stepOrder: 1,
+      title: "Inserted at 1",
+      content: "Content",
+    });
+
+    const p = await tutorialsDB.queryRow`SELECT * FROM user_progress WHERE user_id = 'user-progress-1'`;
+    expect(p!.current_step).toBe(3); // 2 -> 3
+    expect(p!.completed_steps).toEqual([2]); // [1] -> [2]
+  });
+
   it("throws an error for invalid stepOrder (too high)", async () => {
     await expect(
       addStep({
