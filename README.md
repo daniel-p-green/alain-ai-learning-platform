@@ -105,6 +105,12 @@ Notes
   - Hosted: Poe (`POE_API_KEY`) with `GPT-OSS-20B` / `GPT-OSS-120B`
   - Local: OpenAI‑compatible endpoints (Ollama, vLLM) using identical request shape
 
+## Why gpt‑oss (20B/120B)
+- Open models teach open models: transparency and local control fit the learning mission.
+- Practical sweet spot: `gpt‑oss‑20b` delivers strong code/explanations while remaining runnable locally; `120B` is a higher‑ceiling option.
+- Local capability: Fully offline generation via OpenAI‑compatible endpoints reduces cost and preserves privacy.
+- Future‑proofing: Open weights + compatible API make targeted fine‑tuning on educational formats feasible.
+
 ## Project Structure
 ```
 alain-ai-learning-platform/
@@ -126,6 +132,12 @@ alain-ai-learning-platform/
 - Provider errors: set `POE_API_KEY` for hosted or `OPENAI_BASE_URL`/`OPENAI_API_KEY` for local; set Encore secrets
 - Local is slow: reduce tokens, or try hosted Poe for the demo
 - Streaming (known limitation): SSE streams through Next.js only (Encore SSE disabled). If the stream drops, it retries once; generation still succeeds with non‑streaming fallback.
+
+## Known Limitations
+- Streaming: Token streaming is implemented in the Next.js layer only; Encore streaming disabled in MVP.
+- Reasoning visibility: Teacher uses harmony‑style prompting; an optional reasoning summary is available in Generate view (beta), not full CoT.
+- Tools/function calling: Minimal scaffold behind `TEACHER_ENABLE_TOOLS`; off by default to avoid provider incompatibilities.
+- Model routing: `GPT-OSS-120B` does not run locally; teacher auto‑routes to Poe when selected (requires `POE_API_KEY`). For local runs, use `GPT-OSS-20B`.
 
 ## Build & Deploy
 - Backend (Encore Cloud): `encore auth login && git push encore`

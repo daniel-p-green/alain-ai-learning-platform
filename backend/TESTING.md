@@ -10,6 +10,10 @@ This repo includes two kinds of backend tests:
 ```bash
 cd alain-ai-learning-platform/backend
 bunx vitest run --include "**/{export,execution,utils}/**/*.test.ts"
+
+Examples:
+- Provider aliasing and mapping: `backend/execution/providers/aliases.test.ts`
+- Teacher routing guard (120B → Poe): `backend/execution/teacher.routing.test.ts`
 ```
 
 ## Run all tests (with Encore runtime)
@@ -26,4 +30,3 @@ bunx vitest run
 ```
 
 If the resolve fails, locate the file manually under node_modules/encore.dev/dist/internal/runtime/napi/encore-runtime.node and set ENCORE_RUNTIME_LIB to the absolute path.
-

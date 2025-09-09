@@ -106,8 +106,9 @@ class PoeProvider implements Provider {
       throw APIError.failedPrecondition("POE_API_KEY not configured");
     }
 
+    // Map model aliases using the shared helper (single source of truth)
     const payload = {
-      model: this.mapModelName(mapModelForProvider('poe', req.model)),
+      model: mapModelForProvider('poe', req.model),
       messages: req.messages,
       stream: false,
       temperature: req.temperature,
@@ -116,6 +117,9 @@ class PoeProvider implements Provider {
     };
 
     try {
+      // Add a 30s timeout via AbortController
+      const ac = new AbortController();
+      const timer = setTimeout(() => ac.abort(), 30_000);
       const response = await fetch("https://api.poe.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -124,7 +128,9 @@ class PoeProvider implements Provider {
           "User-Agent": "ALAIN-Tutorial-Platform/1.0",
         },
         body: JSON.stringify(payload),
+        signal: ac.signal,
       });
+      clearTimeout(timer);
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'Unknown error');
@@ -157,30 +163,7 @@ class PoeProvider implements Provider {
     }
   }
 
-  // Map external/common model aliases to Poe model identifiers.
-  private mapModelName(alainModel: string): string {
-    const modelMap: Record<string, string> = {
-      // GPT-OSS teacher models
-      'GPT-OSS-20B': 'GPT-OSS-20B',
-      'GPT-OSS-120B': 'GPT-OSS-120B',
-      'gpt-oss-20b': 'GPT-OSS-20B',
-      'gpt-oss-120b': 'GPT-OSS-120B',
-
-      // Popular Poe models
-      'gpt-4o': 'GPT-4o',
-      'gpt-4o-mini': 'GPT-4o-mini',
-      'claude-3.5-sonnet': 'Claude-3.5-Sonnet',
-      'claude-3-haiku': 'Claude-3-Haiku',
-      'gemini-1.5-pro': 'Gemini-1.5-Pro',
-      'gemini-1.5-flash': 'Gemini-1.5-Flash',
-      'grok-2': 'Grok-2',
-      'llama-3.1-405b': 'Llama-3.1-405B',
-
-      // Default fallback
-      'default': 'GPT-4o-mini',
-    };
-    return modelMap[alainModel.toLowerCase()] || modelMap['default'];
-  }
+  // Local model alias map removed in favor of shared mapModelForProvider
 }
 
 class OpenAICompatibleProvider implements Provider {
@@ -192,6 +175,7 @@ class OpenAICompatibleProvider implements Provider {
       throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required");
     }
 
+    // Map model aliases using the shared helper (single source of truth)
     const payload = {
       model: mapModelForProvider('openai-compatible', req.model),
       messages: req.messages,
@@ -202,6 +186,9 @@ class OpenAICompatibleProvider implements Provider {
     };
 
     try {
+      // Add a 30s timeout via AbortController
+      const ac = new AbortController();
+      const timer = setTimeout(() => ac.abort(), 30_000);
       const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
         method: "POST",
         headers: {
@@ -210,7 +197,9 @@ class OpenAICompatibleProvider implements Provider {
           "User-Agent": "ALAIN-Tutorial-Platform/1.0",
         },
         body: JSON.stringify(payload),
+        signal: ac.signal,
       });
+      clearTimeout(timer);
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'Unknown error');
@@ -243,30 +232,7 @@ class OpenAICompatibleProvider implements Provider {
     }
   }
 
-  private mapModelName(alainModel: string): string {
-    const modelMap: Record<string, string> = {
-      // GPT-OSS models (teacher models) - Primary models for lesson generation
-      'GPT-OSS-20B': 'GPT-OSS-20B',
-      'GPT-OSS-120B': 'GPT-OSS-120B',
-      'gpt-oss-20b': 'GPT-OSS-20B',
-      'gpt-oss-120b': 'GPT-OSS-120B',
-
-      // Popular Poe models for student interactions
-      'gpt-4o': 'GPT-4o',
-      'gpt-4o-mini': 'GPT-4o-mini',
-      'claude-3.5-sonnet': 'Claude-3.5-Sonnet',
-      'claude-3-haiku': 'Claude-3-Haiku',
-      'gemini-1.5-pro': 'Gemini-1.5-Pro',
-      'gemini-1.5-flash': 'Gemini-1.5-Flash',
-      'grok-2': 'Grok-2',
-      'llama-3.1-405b': 'Llama-3.1-405B',
-
-      // Default fallback for student interactions
-      'default': 'GPT-4o-mini'
-    };
-
-    return modelMap[alainModel.toLowerCase()] || modelMap['default'];
-  }
+  // Local model alias map removed in favor of shared mapModelForProvider
 }
 
 function delay(ms: number) { return new Promise(res => setTimeout(res, ms)); }

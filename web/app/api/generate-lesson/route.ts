@@ -11,13 +11,14 @@ export async function POST(req: Request) {
   const difficulty = body.difficulty || "beginner";
   const includeAssessment = Boolean(body.includeAssessment);
   const provider = (body.provider || process.env.TEACHER_PROVIDER || 'poe') as 'poe' | 'openai-compatible';
+  const includeReasoning = Boolean(body.showReasoning);
 
   // 1) Generate lesson structure from HF URL
   const genStart = Date.now();
   const genResp = await fetch(`${base}/lessons/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider })
+    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning })
   });
   const gen = await genResp.json();
   const genMs = Date.now() - genStart;
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
   return Response.json({
     success: true,
     tutorialId: imp.tutorialId,
-    meta: { repaired: !!gen?.meta?.repaired, timings: { lesson_ms: genMs, import_ms: impMs } },
+    meta: { repaired: !!gen?.meta?.repaired, timings: { lesson_ms: genMs, import_ms: impMs }, reasoning_summary: gen?.meta?.reasoning_summary },
     preview,
   });
 }

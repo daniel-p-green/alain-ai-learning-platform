@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { teacherGenerate } from "./teacher";
+import { parseHfUrl } from "../utils/hf";
 import { applyDefaults, validateLesson } from "./spec/lessonSchema";
 
 interface RepairRequest {
@@ -57,15 +58,18 @@ export const repairLesson = api<RepairRequest, RepairResponse>(
 );
 
 async function extractHFModelInfoLite(hfUrl: string) {
-  const urlMatch = hfUrl.match(/huggingface\.co\/([^\/]+)\/([^\/]+)/);
-  if (!urlMatch) {
-    // Try owner/repo shorthand
-    const m = hfUrl.match(/^([^\s\/]+)\/(.+)$/);
-    if (m) return { name: m[2], org: m[1], url: `https://huggingface.co/${hfUrl}`, card: null };
+  try {
+    const { owner, repo } = parseHfUrl(hfUrl);
+    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card: null };
+  } catch {
+    // Try strict owner/repo shorthand (no scheme, no extra path)
+    const m = hfUrl.trim().match(/^[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/);
+    if (m) {
+      const [owner, repo] = hfUrl.trim().split('/') as [string, string];
+      return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card: null };
+    }
     throw APIError.invalidArgument("Invalid Hugging Face URL format");
   }
-  const [, org, model] = urlMatch;
-  return { name: model, org, url: hfUrl, card: null };
 }
 
 function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean): string {
@@ -96,4 +100,3 @@ function parseGeneratedLessonLite(content: string) {
   else if (clean.startsWith("```")) clean = clean.replace(/^```\w*\n?/, "").replace(/\n?```$/, "");
   return JSON.parse(clean);
 }
-
