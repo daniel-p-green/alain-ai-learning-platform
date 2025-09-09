@@ -6,6 +6,12 @@ Repository
 - GitLab (primary): https://gitlab.com/daniel-p-green/alain-ai-learning-platform
 - SSH: `git@gitlab.com:daniel-p-green/alain-ai-learning-platform.git`
 
+## Docs & Tools
+- Notebook Linter: `scripts/notebook_linter.py` — checks seeds, version pins, secrets handling, evaluation, and cost logging. Run: `python scripts/notebook_linter.py path/to/notebook.ipynb` (add `--json` or `--soft` as needed).
+- Best Practices: `docs/notebooks/notebook-best-practices.md`
+- Author Checklist: `docs/notebooks/notebook-quality-checklist.md`
+- Teaching Template: `docs/templates/teaching_template.ipynb`
+
 ## What You Get
 - Backend (`backend/`): Encore.ts APIs for parsing, lesson generation, execution, and Colab export
 - Web (`web/`): Next.js app (Clerk auth) to generate, preview, and run lessons
