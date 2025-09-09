@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
+import { mapModelForProvider } from "./providers/aliases";
 
 const poeApiKey = secret("POE_API_KEY");
 const openaiBaseUrl = secret("OPENAI_BASE_URL");
@@ -43,11 +44,15 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
       const harmonyParams = getHarmonyParams(req.task);
 
       // Prepare harmony-formatted messages
-      const harmonyMessages = formatHarmonyMessages(req.messages, req.task);
+      const provider: "poe" | "openai-compatible" =
+        req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe');
+
+      const supportsHarmonyRoles = false; // be conservative across providers
+      const harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
       
       // Provider-specific execution
       const payload = {
-        model: mapModelForProvider(req.model, provider),
+        model: mapModelForProvider(provider, req.model),
         messages: harmonyMessages,
         stream: false,
         temperature: req.temperature ?? harmonyParams.temperature,
@@ -60,26 +65,27 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         if (!apiKey) {
           throw APIError.failedPrecondition("POE_API_KEY not configured");
         }
-
-        const response = await fetch("https://api.poe.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "User-Agent": "ALAIN-Teacher/1.0",
-          },
-          body: JSON.stringify(payload),
+        const data = await withRetries(async (signal) => {
+          const response = await fetch("https://api.poe.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${apiKey}`,
+              "Content-Type": "application/json",
+              "User-Agent": "ALAIN-Teacher/1.0",
+            },
+            body: JSON.stringify(payload),
+            signal,
+          });
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Unknown error');
+            throw new Error(`Poe API error (${response.status}): ${errorText}`);
+          }
+          const data = await response.json();
+          if (data.error) {
+            throw new Error(`Poe API error: ${data.error.message || 'Unknown error'}`);
+          }
+          return data;
         });
-
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => 'Unknown error');
-          throw new Error(`Poe API error (${response.status}): ${errorText}`);
-        }
-
-        const data = await response.json();
-        if (data.error) {
-          throw new Error(`Poe API error: ${data.error.message || 'Unknown error'}`);
-        }
         return { success: true, content: data.choices?.[0]?.message?.content || '' };
       } else {
         const baseUrl = openaiBaseUrl();
@@ -87,26 +93,27 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         if (!baseUrl || !apiKey) {
           throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required for openai-compatible provider");
         }
-
-        const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-            "User-Agent": "ALAIN-Teacher/1.0",
-          },
-          body: JSON.stringify(payload),
+        const data = await withRetries(async (signal) => {
+          const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${apiKey}`,
+              "Content-Type": "application/json",
+              "User-Agent": "ALAIN-Teacher/1.0",
+            },
+            body: JSON.stringify(payload),
+            signal,
+          });
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Unknown error');
+            throw new Error(`OpenAI-compatible API error (${response.status}): ${errorText}`);
+          }
+          const data = await response.json();
+          if (data.error) {
+            throw new Error(`OpenAI-compatible API error: ${data.error.message || 'Unknown error'}`);
+          }
+          return data;
         });
-
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => 'Unknown error');
-          throw new Error(`OpenAI-compatible API error (${response.status}): ${errorText}`);
-        }
-
-        const data = await response.json();
-        if (data.error) {
-          throw new Error(`OpenAI-compatible API error: ${data.error.message || 'Unknown error'}`);
-        }
         return { success: true, content: data.choices?.[0]?.message?.content || '' };
       }
     } catch (error) {
@@ -152,7 +159,7 @@ function getHarmonyParams(task: string) {
 }
 
 // Format messages according to harmony format requirements
-function formatHarmonyMessages(messages: Array<{ role: string; content: string }>, task: string) {
+function formatHarmonyMessages(messages: Array<{ role: string; content: string }>, task: string, supportsHarmonyRoles: boolean) {
   const systemMessage = {
     role: "system",
     content: `You are ChatGPT, a large language model trained by OpenAI.
@@ -164,13 +171,16 @@ Reasoning: high
 # Valid channels: analysis, commentary, final. Channel must be included for every message.
 Calls to these tools must go to the commentary channel: 'functions'.`
   };
-
-  const developerMessage = {
-    role: "developer",
-    content: getDeveloperInstructions(task)
+  if (supportsHarmonyRoles) {
+    const developerMessage = { role: "developer", content: getDeveloperInstructions(task) } as any;
+    return [systemMessage as any, developerMessage, ...messages];
+  }
+  // Downgrade: fold developer content into system preface
+  const downgradedSystem = {
+    role: "system",
+    content: systemMessage.content + "\n\n" + getDeveloperInstructions(task)
   };
-
-  return [systemMessage, developerMessage, ...messages];
+  return [downgradedSystem as any, ...messages];
 }
 
 // Get task-specific developer instructions following harmony format
@@ -273,6 +283,26 @@ function mapTeacherError(error: any): { code: string; message: string; details?:
     code: "internal_error",
     message: "Internal teacher service error."
   };
+}
+
+// Retry helper with a 30s timeout and two attempts (300ms/600ms backoff)
+async function withRetries<T>(fn: (signal: AbortSignal) => Promise<T>): Promise<T> {
+  const attempts = [300, 600];
+  let lastErr: any;
+  for (let i = 0; i <= attempts.length; i++) {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), 30_000);
+    try {
+      const out = await fn(ac.signal);
+      clearTimeout(timer);
+      return out;
+    } catch (err) {
+      clearTimeout(timer);
+      lastErr = err;
+      if (i < attempts.length) await new Promise(r => setTimeout(r, attempts[i]));
+    }
+  }
+  throw lastErr;
 }
 
 // Map model aliases per provider.

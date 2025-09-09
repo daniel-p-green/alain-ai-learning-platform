@@ -1,6 +1,7 @@
 import { api, APIError } from "encore.dev/api";
 import { requireUserId } from "../auth";
 import { secret } from "encore.dev/config";
+import { mapModelForProvider } from "./providers/aliases";
 
 const poeApiKey = secret("POE_API_KEY");
 const openaiBaseUrl = secret("OPENAI_BASE_URL");
@@ -106,7 +107,7 @@ class PoeProvider implements Provider {
     }
 
     const payload = {
-      model: this.mapModelName(req.model),
+      model: this.mapModelName(mapModelForProvider('poe', req.model)),
       messages: req.messages,
       stream: false,
       temperature: req.temperature,
@@ -192,7 +193,7 @@ class OpenAICompatibleProvider implements Provider {
     }
 
     const payload = {
-      model: req.model,
+      model: mapModelForProvider('openai-compatible', req.model),
       messages: req.messages,
       stream: false,
       temperature: req.temperature,

@@ -60,28 +60,36 @@ export async function POST(req: NextRequest) {
             controller.enqueue(new TextEncoder().encode(line));
           };
 
-          provider
-            .stream(body, (data) => {
-              // Forward provider JSON chunks as SSE data lines
-              send(data);
-            }, req.signal)
-            .then(() => {
-              // Close with [DONE]
+          const run = async () => {
+            try {
+              await provider.stream(body, (data) => {
+                send(data);
+              }, req.signal);
               controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
               controller.close();
-            })
-            .catch((error) => {
-              const err = {
-                success: false,
-                error: {
-                  code: "provider_error",
-                  message: error instanceof Error ? error.message : "unknown provider error",
-                },
-              };
-              controller.enqueue(new TextEncoder().encode(`event: error\n`));
-              controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(err)}\n\n`));
-              controller.close();
-            });
+            } catch (error) {
+              // One quick retry on initial failure
+              try {
+                await provider.stream(body, (data) => {
+                  send(data);
+                }, req.signal);
+                controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+                controller.close();
+              } catch (e2) {
+                const err = {
+                  success: false,
+                  error: {
+                    code: "provider_error",
+                    message: (e2 instanceof Error ? e2.message : 'unknown provider error'),
+                  },
+                };
+                controller.enqueue(new TextEncoder().encode(`event: error\n`));
+                controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(err)}\n\n`));
+                controller.close();
+              }
+            }
+          };
+          run();
 
           // Handle client abort
           req.signal.addEventListener("abort", () => {

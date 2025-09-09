@@ -7,6 +7,9 @@ interface ProviderCapabilities {
   models: ModelInfo[];
   supportsStreaming: boolean;
   requiresAuth: boolean;
+  // Capability flags for formatting/tooling differences
+  supportsHarmonyRoles?: boolean;
+  supportsTools?: boolean;
   rateLimits: {
     requestsPerMinute: number;
     tokensPerMinute?: number;
@@ -49,6 +52,8 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
       description: "Single API key for 20+ AI models including GPT-OSS teacher models",
       supportsStreaming: true,
       requiresAuth: true,
+      supportsHarmonyRoles: false,
+      supportsTools: false,
       rateLimits: {
         requestsPerMinute: 30,
         tokensPerMinute: 100000
@@ -101,6 +106,8 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
       description: "Bring your own OpenAI-compatible API endpoint",
       supportsStreaming: true,
       requiresAuth: true,
+      supportsHarmonyRoles: false,
+      supportsTools: false,
       rateLimits: {
         requestsPerMinute: 60,
         tokensPerMinute: 150000
