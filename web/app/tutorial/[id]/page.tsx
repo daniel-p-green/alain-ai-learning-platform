@@ -66,7 +66,9 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<{ correct: boolean; explanation?: string } | null>(null);
-  const [providers, setProviders] = useState<any[]>([]);
+  type ProviderModel = { id: string; name?: string };
+  type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
+  const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [runProvider, setRunProvider] = useState<string>("poe");
   const [runModel, setRunModel] = useState<string>("");
 
@@ -86,7 +88,9 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         const resp = await fetch('/api/providers');
         const data = await resp.json();
         setProviders(data.providers || []);
-      } catch {}
+      } catch (e) {
+        // ignore for now in tutorial view; UI degrades gracefully
+      }
     })();
   }, []);
 

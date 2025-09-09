@@ -227,3 +227,102 @@ Pinned installs (first cell for Colab)
 - Smoke test runs: `pytest --nbmake path/to/notebook.ipynb -q`
 - Colab‑ready: first cell installs pinned deps; secrets via env; runs in < 1 minute
 
+## Debugging Playbook (Add These If Users Struggle)
+
+Common issues and quick fixes you can copy into a Troubleshooting section.
+
+- Local GPT‑OSS connection
+  - Symptom: connection refused/timeouts. Check `OPENAI_BASE_URL` and server health.
+  - Ollama: `curl http://localhost:11434/v1/models` → expect JSON. Ensure model pulled: `ollama pull gpt-oss:20b`.
+  - vLLM: started with OpenAI server entrypoint; verify `GET /models` works.
+  - Fix: set `OPENAI_BASE_URL` correctly; restart server; reduce `max_tokens`.
+
+- Auth/keys
+  - Symptom: 401/403. Fix: ensure `OPENAI_API_KEY`/provider key in env; never hardcode.
+  - Anthropic/OpenAI cloud: confirm org permissions; rotate keys if needed.
+
+- Transformers runtime
+  - Model/tokenizer mismatch: set `trust_remote_code=True` for custom models when safe.
+  - CUDA OOM: lower batch/sequence length; use `torch.float16/bfloat16`; CPU fallback; gradient checkpointing for fine‑tune.
+  - Apple Silicon: prefer MPS (`torch.device("mps")`) or CPU; avoid unsupported dtypes.
+
+- JSON/schema validation
+  - Symptom: parse errors. Fix: enable model JSON/structured output if supported; otherwise add a repair pass and validate with Pydantic.
+
+- Rate limits / 429 / retries
+  - Implement exponential backoff; reduce concurrency; cache results; shorten prompts.
+
+- Latency & throughput
+  - Batch small calls; stream where supported; pre‑tokenize; enable kv‑cache; cache embeddings.
+
+- Colab environment
+  - Stuck on installs: restart runtime after large installs; ensure first cell pins versions.
+  - Session resets: save artifacts to Drive; add a cleanup cell; keep quickstart small.
+
+### Diagnostic Cells (Copy‑Paste)
+
+Connectivity checks (GPT‑OSS)
+```python
+import os, requests
+base = os.getenv('OPENAI_BASE_URL', 'http://localhost:11434/v1')
+try:
+    r = requests.get(base + '/models', timeout=5)
+    print(r.status_code, r.text[:200])
+except Exception as e:
+    print('Conn error:', e)
+```
+
+GPU memory snapshot (PyTorch)
+```python
+try:
+    import torch
+    if torch.cuda.is_available():
+        free, total = torch.cuda.mem_get_info()
+        print('VRAM (GiB):', round(free/2**30,2), '/', round(total/2**30,2))
+    else:
+        print('CUDA not available')
+except Exception as e:
+    print('Torch not installed or mem_get_info unsupported:', e)
+```
+
+Hugging Face cache cleanup (use carefully)
+```python
+import shutil, os
+cache = os.path.expanduser('~/.cache/huggingface')
+print('HF cache at:', cache)
+# shutil.rmtree(cache)  # Uncomment to clear cache (will re-download models)
+```
+
+Retry/backoff helper
+```python
+import time
+def with_retry(fn, tries=3, backoff=1.5):
+    for i in range(tries):
+        try:
+            return fn()
+        except Exception as e:
+            print(f'Attempt {i+1} error:', e)
+            if i == tries-1: raise
+            time.sleep(backoff**i)
+```
+
+JSON repair pass example
+```python
+import json, re
+def try_json(text):
+    try:
+        return json.loads(text), None
+    except Exception as e:
+        # naive repair: strip code fences and trailing text
+        cleaned = re.sub(r"```(json)?|```", "", text).strip()
+        cleaned = re.sub(r"[^\{\}\[\]\:,\"\-0-9a-zA-Z\s]", "", cleaned)
+        try:
+            return json.loads(cleaned), None
+        except Exception as ee:
+            return None, (e, ee)
+```
+
+### When to Escalate
+- Gated/private HF models: user needs access token; document how.
+- Persistent OOM on target hardware: document required VRAM/alternatives (smaller model, quantization).
+- Provider outages: link to status pages and suggest local fallback.

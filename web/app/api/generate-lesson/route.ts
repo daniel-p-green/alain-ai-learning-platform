@@ -11,13 +11,14 @@ export async function POST(req: Request) {
   const difficulty = body.difficulty || "beginner";
   const includeAssessment = Boolean(body.includeAssessment);
   const provider = (body.provider || process.env.TEACHER_PROVIDER || 'poe') as 'poe' | 'openai-compatible';
+  const token = await getToken();
   const includeReasoning = Boolean(body.showReasoning);
 
   // 1) Generate lesson structure from HF URL
   const genStart = Date.now();
   const genResp = await fetch(`${base}/lessons/generate`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning })
   });
   const gen = await genResp.json();

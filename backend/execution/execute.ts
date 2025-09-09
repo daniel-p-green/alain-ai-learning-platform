@@ -1,5 +1,7 @@
 import { api, APIError } from "encore.dev/api";
 import { requireUserId } from "../auth";
+import { validateBackendEnv } from "../config/env";
+import { allowRate } from "../utils/ratelimit";
 import { secret } from "encore.dev/config";
 import { mapModelForProvider } from "./providers/aliases";
 
@@ -38,7 +40,12 @@ export const execute = api<ExecuteRequest, ExecuteResponse>(
   { expose: true, method: "POST", path: "/execute" },
   async (req, ctx) => {
     try {
-      await requireUserId(ctx);
+      validateBackendEnv();
+      const userId = await requireUserId(ctx);
+      const gate = allowRate(userId, 'execute', Number(process.env.EXECUTE_MAX_RPM || 60), 60_000);
+      if (!gate.ok) {
+        throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
+      }
       const provider = getProvider(req.provider);
       const content = await withRetries(() => provider.execute(req));
       return { success: true, content };
