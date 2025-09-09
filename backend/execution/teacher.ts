@@ -2,6 +2,8 @@ import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 
 const poeApiKey = secret("POE_API_KEY");
+const openaiBaseUrl = secret("OPENAI_BASE_URL");
+const openaiApiKey = secret("OPENAI_API_KEY");
 
 interface TeacherRequest {
   model: "GPT-OSS-20B" | "GPT-OSS-120B";
@@ -9,6 +11,8 @@ interface TeacherRequest {
   task: "lesson_generation" | "assessment_creation" | "content_adaptation";
   temperature?: number;
   max_tokens?: number;
+  // Provider toggle: default 'poe'; allow OpenAI-compatible for local/offline (e.g., Ollama/vLLM)
+  provider?: "poe" | "openai-compatible";
 }
 
 interface TeacherResponse {
@@ -31,48 +35,80 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         throw APIError.invalidArgument("Only GPT-OSS-20B and GPT-OSS-120B are supported for teacher tasks");
       }
 
+      // Resolve provider (request overrides env default)
+      const provider: "poe" | "openai-compatible" =
+        req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe');
+
       // Set harmony-compatible parameters based on task
       const harmonyParams = getHarmonyParams(req.task);
 
       // Prepare harmony-formatted messages
       const harmonyMessages = formatHarmonyMessages(req.messages, req.task);
-
+      
+      // Provider-specific execution
       const payload = {
-        model: req.model,
+        model: mapModelForProvider(req.model, provider),
         messages: harmonyMessages,
         stream: false,
         temperature: req.temperature ?? harmonyParams.temperature,
         top_p: 0.9,
         max_tokens: req.max_tokens ?? harmonyParams.max_tokens,
-      };
+      } as any;
 
-      const apiKey = poeApiKey();
-      if (!apiKey) {
-        throw APIError.failedPrecondition("POE_API_KEY not configured");
+      if (provider === 'poe') {
+        const apiKey = poeApiKey();
+        if (!apiKey) {
+          throw APIError.failedPrecondition("POE_API_KEY not configured");
+        }
+
+        const response = await fetch("https://api.poe.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "User-Agent": "ALAIN-Teacher/1.0",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'Unknown error');
+          throw new Error(`Poe API error (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
+        if (data.error) {
+          throw new Error(`Poe API error: ${data.error.message || 'Unknown error'}`);
+        }
+        return { success: true, content: data.choices?.[0]?.message?.content || '' };
+      } else {
+        const baseUrl = openaiBaseUrl();
+        const apiKey = openaiApiKey();
+        if (!baseUrl || !apiKey) {
+          throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required for openai-compatible provider");
+        }
+
+        const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "User-Agent": "ALAIN-Teacher/1.0",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'Unknown error');
+          throw new Error(`OpenAI-compatible API error (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
+        if (data.error) {
+          throw new Error(`OpenAI-compatible API error: ${data.error.message || 'Unknown error'}`);
+        }
+        return { success: true, content: data.choices?.[0]?.message?.content || '' };
       }
-
-      const response = await fetch("https://api.poe.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "User-Agent": "ALAIN-Teacher/1.0",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unknown error');
-        throw new Error(`Poe API error (${response.status}): ${errorText}`);
-      }
-
-      const data = await response.json();
-
-      if (data.error) {
-        throw new Error(`Poe API error: ${data.error.message || 'Unknown error'}`);
-      }
-
-      return { success: true, content: data.choices?.[0]?.message?.content || '' };
     } catch (error) {
       const errorData = mapTeacherError(error);
       return {
@@ -202,14 +238,14 @@ function mapTeacherError(error: any): { code: string; message: string; details?:
     if (message.includes('401')) {
       return {
         code: "authentication_failed",
-        message: "Teacher model authentication failed. Check POE_API_KEY."
+        message: "Teacher model authentication failed. Check provider API key configuration."
       };
     }
 
     if (message.includes('404')) {
       return {
         code: "model_not_available",
-        message: "Requested GPT-OSS teacher model is not available through Poe."
+        message: "Requested GPT-OSS teacher model is not available on the selected provider."
       };
     }
 
@@ -223,7 +259,7 @@ function mapTeacherError(error: any): { code: string; message: string; details?:
     if (message.includes('timeout')) {
       return {
         code: "timeout",
-        message: "Teacher model request timed out. GPT-OSS models may be busy."
+        message: "Teacher model request timed out. Provider may be busy."
       };
     }
 
@@ -237,4 +273,15 @@ function mapTeacherError(error: any): { code: string; message: string; details?:
     code: "internal_error",
     message: "Internal teacher service error."
   };
+}
+
+// Map model aliases per provider.
+function mapModelForProvider(model: "GPT-OSS-20B" | "GPT-OSS-120B", provider: "poe" | "openai-compatible"): string {
+  if (provider === 'poe') return model;
+  // For OpenAI-compatible (e.g., Ollama), use checkpoint tags
+  const map: Record<string, string> = {
+    "GPT-OSS-20B": "gpt-oss:20b",
+    "GPT-OSS-120B": "gpt-oss:120b",
+  };
+  return map[model] || model;
 }

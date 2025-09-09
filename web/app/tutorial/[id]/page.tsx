@@ -63,13 +63,29 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<{ correct: boolean; explanation?: string } | null>(null);
+  const [providers, setProviders] = useState<any[]>([]);
+  const [runProvider, setRunProvider] = useState<string>("poe");
+  const [runModel, setRunModel] = useState<string>("");
 
   useEffect(() => {
     fetchTutorial(id).then((t) => {
       setTutorial(t);
       setPrompt(t?.steps?.[0]?.code_template || "");
+      setRunProvider(t?.provider || 'poe');
+      setRunModel(t?.model || '');
     });
   }, [id]);
+
+  // Load providers for model suggestions
+  useEffect(() => {
+    (async () => {
+      try {
+        const resp = await fetch('/api/providers');
+        const data = await resp.json();
+        setProviders(data.providers || []);
+      } catch {}
+    })();
+  }, []);
 
   // Load assessments for current step
   useEffect(() => {
@@ -163,8 +179,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
     try {
       const body = {
-        provider: tutorial.provider,
-        model: tutorial.model,
+        provider: runProvider || tutorial.provider,
+        model: runModel || tutorial.model,
         messages: [{ role: "user", content: prompt }],
         stream: true,
       };
@@ -352,6 +368,18 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         <div className="space-y-3">
           <h2 className="text-xl font-semibold">{step.title}</h2>
           <div className="whitespace-pre-wrap text-gray-200">{step.content}</div>
+          {/* Provider/model picker for run-time */}
+          <div className="flex items-center gap-2 text-sm">
+            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)}>
+              {providers.map((p:any)=> (<option key={p.id} value={p.id}>{p.name}</option>))}
+            </select>
+            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runModel} onChange={(e)=> setRunModel(e.target.value)}>
+              <option value="">{tutorial?.model || 'Model'}</option>
+              {(providers.find((p:any)=> p.id===runProvider)?.models || []).map((m:any)=> (
+                <option key={m.id} value={m.id}>{m.name || m.id}</option>
+              ))}
+            </select>
+          </div>
 
           {/* Execution Status Bar */}
           {executionState.status !== 'idle' && (

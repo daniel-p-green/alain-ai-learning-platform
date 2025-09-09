@@ -7,6 +7,8 @@ interface LessonGenerationRequest {
   difficulty: "beginner" | "intermediate" | "advanced";
   teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B";
   includeAssessment?: boolean;
+  // Optional provider toggle to select where the Teacher runs
+  provider?: "poe" | "openai-compatible";
 }
 
 interface LessonGenerationResponse {
@@ -70,7 +72,8 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
             content: lessonPrompt
           }
         ],
-        task: "lesson_generation"
+        task: "lesson_generation",
+        provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
       });
 
       if (!teacherResponse.success || !teacherResponse.content) {
@@ -245,6 +248,7 @@ async function attemptRepairJSON(teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B", b
       model: teacherModel,
       messages: [{ role: 'user', content: prompt }],
       task: 'lesson_generation',
+      provider: (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe') as any,
       temperature: 0.1,
       max_tokens: 3000,
     });

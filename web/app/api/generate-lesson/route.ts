@@ -10,19 +10,27 @@ export async function POST(req: Request) {
   const teacherModel = body.teacherModel || "GPT-OSS-20B";
   const difficulty = body.difficulty || "beginner";
   const includeAssessment = Boolean(body.includeAssessment);
+  const provider = (body.provider || process.env.TEACHER_PROVIDER || 'poe') as 'poe' | 'openai-compatible';
 
   // 1) Generate lesson structure from HF URL
   const genStart = Date.now();
   const genResp = await fetch(`${base}/lessons/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment })
+    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider })
   });
   const gen = await genResp.json();
   const genMs = Date.now() - genStart;
   if (!gen.success) return Response.json(gen, { status: 200 });
 
   const lesson = gen.lesson;
+  // Optional overrides from UI (provider/model picker)
+  if (body.targetProvider && typeof body.targetProvider === 'string') {
+    lesson.provider = body.targetProvider;
+  }
+  if (body.targetModel && typeof body.targetModel === 'string' && body.targetModel.trim()) {
+    lesson.model = body.targetModel.trim();
+  }
 
   // 2) Persist lesson into tutorials
   const token = await getToken();
