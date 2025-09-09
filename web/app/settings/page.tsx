@@ -12,6 +12,7 @@ export default function SettingsPage() {
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
+  const [smoke, setSmoke] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -79,6 +80,16 @@ export default function SettingsPage() {
                     <button onClick={() => validate(p.id)} className="px-3 py-1 rounded bg-blue-600 text-white">
                       Validate
                     </button>
+                    <button
+                      onClick={async ()=>{
+                        setSmoke(null);
+                        const model = (p.models?.[0]?.id) || (p.id==='poe' ? 'gpt-4o-mini' : 'gpt-4o');
+                        const resp = await fetch('/api/providers/smoke', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ provider: p.id, model }) });
+                        const data = await resp.json();
+                        setSmoke(data.success ? `OK: ${(data.sample||'').slice(0,80)}...` : `Error: ${data?.error?.message || 'unknown'}`);
+                      }}
+                      className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-white text-xs"
+                    >Run smoke test</button>
                     {p.id === "openai-compatible" && (
                       <button
                         type="button"

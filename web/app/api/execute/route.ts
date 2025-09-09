@@ -2,6 +2,23 @@ import { NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib/providers";
 
+// Simple in-memory rate limiter per user (RPM)
+const BUCKET: Record<string, number[]> = {};
+const WINDOW_MS = 60_000;
+const MAX_RPM = Number(process.env.NEXT_PUBLIC_EXECUTE_RPM || 30);
+
+function allow(userId: string): { ok: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const arr = (BUCKET[userId] ||= []);
+  while (arr.length && now - arr[0] > WINDOW_MS) arr.shift();
+  if (arr.length >= MAX_RPM) {
+    const retryAfterMs = WINDOW_MS - (now - arr[0]);
+    return { ok: false, retryAfter: Math.ceil(retryAfterMs / 1000) };
+  }
+  arr.push(now);
+  return { ok: true };
+}
+
 export async function POST(req: NextRequest) {
   const { userId, getToken } = await auth();
   if (!userId) {
@@ -19,6 +36,15 @@ export async function POST(req: NextRequest) {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
 
   try {
+    // Rate limit per user
+    const gate = allow(userId);
+    if (!gate.ok) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: { code: "rate_limited", message: `Too many requests. Try again in ${gate.retryAfter}s.` }
+      }), { status: 429, headers: { 'Retry-After': String(gate.retryAfter || 60) } });
+    }
+
     // Get Clerk JWT token to forward to backend
     const token = await getToken();
 

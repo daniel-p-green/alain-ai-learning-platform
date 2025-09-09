@@ -57,6 +57,9 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [lastRequest, setLastRequest] = useState<any | null>(null);
   const [curl, setCurl] = useState<string>("");
   const [sdk, setSdk] = useState<string>("");
+  const [toast, setToast] = useState<string | null>(null);
+  const providerStatus = providers.find((p:any)=> p.id===runProvider)?.status || 'unknown';
+  const providerAvailable = providerStatus === 'available';
   const monacoRef = useRef<HTMLDivElement | null>(null);
   const monacoEditorRef = useRef<any>(null);
   const [monacoReady, setMonacoReady] = useState(false);
@@ -178,6 +181,11 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
     });
 
     try {
+      if (!providerAvailable) {
+        setToast('Provider not configured. Set keys in Settings.');
+        setTimeout(()=> setToast(null), 2000);
+        return;
+      }
       const body = {
         provider: runProvider || tutorial.provider,
         model: runModel || tutorial.model,
@@ -199,6 +207,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
       if (!resp.body) throw new Error("No response stream");
 
+      setToast('Streaming started');
+      setTimeout(()=> setToast(null), 1200);
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
@@ -309,7 +319,12 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-      <a className="text-blue-400 hover:underline" href="/tutorials">← Back</a>
+      <div className="flex items-center justify-between">
+        <a className="text-blue-400 hover:underline" href="/tutorials">← Back</a>
+        <a className="text-xs text-gray-400 hover:underline" target="_blank" href={
+          `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
+        }>Report issue</a>
+      </div>
       <h1 className="text-3xl font-bold">{tutorial.title}</h1>
       <p className="text-gray-400">{tutorial.description}</p>
 
@@ -380,6 +395,13 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
               ))}
             </select>
           </div>
+
+          {/* Provider status banner */}
+          {!providerAvailable && (
+            <div className="bg-red-900/20 border border-red-700 rounded-lg p-2 text-sm text-red-300">
+              Provider not configured. Set keys in Settings and pick a working provider/model.
+            </div>
+          )}
 
           {/* Execution Status Bar */}
           {executionState.status !== 'idle' && (
@@ -588,6 +610,10 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   <span className="text-gray-400">Est. Tokens:</span>
                   <div className="text-white font-mono">~{executionState.tokenCount}</div>
                 </div>
+                <div className="col-span-2">
+                  <span className="text-gray-400">Est. Cost:</span>
+                  <CostHint provider={runProvider} model={runModel || tutorial.model} tokens={executionState.tokenCount || 0} />
+                </div>
               </div>
             </div>
           )}
@@ -616,6 +642,29 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           Download Colab Notebook
         </button>
       </div>
+
+      {toast && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded bg-gray-900 border border-gray-700 text-white shadow">{toast}</div>
+      )}
+    </div>
+  );
+}
+
+function CostHint({ provider, model, tokens }: { provider: string; model: string; tokens: number }) {
+  // Very rough cost map (USD per 1K tokens)
+  const COSTS: Record<string, { in?: number; out?: number }> = {
+    'gpt-4o': { in: 0.005, out: 0.015 },
+    'gpt-4o-mini': { in: 0.00015, out: 0.0006 },
+    'gpt-4-turbo': { in: 0.01, out: 0.03 },
+  };
+  const key = (model || '').toLowerCase();
+  const c = COSTS[key];
+  if (!c) return <div className="text-white font-mono">N/A</div>;
+  const cost = (tokens / 1000) * ((c.in || 0) + (c.out || 0));
+  return (
+    <div className="text-white font-mono inline-flex items-center gap-2">
+      ~${cost.toFixed(4)}
+      <span className="text-xs text-gray-500" title="Rough estimate; varies by provider and direction.">ⓘ</span>
     </div>
   );
 }

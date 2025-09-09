@@ -28,5 +28,27 @@ describe("lessonSchema", () => {
     expect(typeof out.steps[0].code_template).toBe("string");
     expect(out.steps[0].code_template!.length).toBeGreaterThan(0);
   });
-});
 
+  it("validates learning_objectives and assessments shape", () => {
+    const lesson: any = {
+      title: "T", description: "D",
+      steps: [{ title: "S1", content: "C1" }],
+      learning_objectives: ["a", "b"],
+      assessments: [{ question: "Q?", options: ["x","y"], correct_index: 1, explanation: "why" }]
+    };
+    expect(validateLesson(lesson).valid).toBe(true);
+
+    lesson.assessments[0].correct_index = 3; // invalid
+    const r = validateLesson(lesson);
+    expect(r.valid).toBe(false);
+    expect(r.errors.join(' ')).toContain('correct_index invalid');
+  });
+
+  it("rejects overly long content", () => {
+    const big = 'x'.repeat(5000);
+    const lesson = { title: "T", description: "D", steps: [{ title: "S1", content: big }] } as any;
+    const r = validateLesson(lesson);
+    expect(r.valid).toBe(false);
+    expect(r.errors.join(' ')).toContain('content too long');
+  });
+});

@@ -33,12 +33,27 @@ export type Lesson = {
   };
 };
 
+const LIMITS = {
+  maxObjectives: 8,
+  maxSteps: 7,
+  minSteps: 1,
+  maxTitleLen: 200,
+  maxDescLen: 2000,
+  maxContentLen: 4000,
+  maxCodeLen: 3000,
+};
+
 export function validateLesson(lesson: any): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
   if (!lesson || typeof lesson !== "object") errors.push("lesson must be an object");
   if (!lesson?.title || typeof lesson.title !== "string") errors.push("title is required");
   if (!lesson?.description || typeof lesson.description !== "string") errors.push("description is required");
   if (!Array.isArray(lesson?.steps) || lesson.steps.length === 0) errors.push("steps array is required");
+  if (lesson?.title && lesson.title.length > LIMITS.maxTitleLen) errors.push("title too long");
+  if (lesson?.description && lesson.description.length > LIMITS.maxDescLen) errors.push("description too long");
+  if (Array.isArray(lesson?.steps) && (lesson.steps.length < LIMITS.minSteps || lesson.steps.length > LIMITS.maxSteps)) {
+    errors.push("invalid number of steps");
+  }
   if (lesson?.difficulty && !["beginner", "intermediate", "advanced"].includes(lesson.difficulty)) errors.push("difficulty invalid");
   if (Array.isArray(lesson?.steps)) {
     lesson.steps.forEach((s: any, i: number) => {
@@ -47,7 +62,30 @@ export function validateLesson(lesson: any): { valid: boolean; errors: string[] 
       if (!s?.content || typeof s.content !== "string") errors.push(`steps[${i}].content required`);
       if (s?.step_order != null && typeof s.step_order !== "number") errors.push(`steps[${i}].step_order must be number`);
       if (s?.code_template != null && typeof s.code_template !== "string") errors.push(`steps[${i}].code_template must be string`);
+      if (s?.content && s.content.length > LIMITS.maxContentLen) errors.push(`steps[${i}].content too long`);
+      if (s?.code_template && s.code_template.length > LIMITS.maxCodeLen) errors.push(`steps[${i}].code_template too long`);
     });
+  }
+  if (lesson?.learning_objectives) {
+    if (!Array.isArray(lesson.learning_objectives)) errors.push("learning_objectives must be array");
+    else {
+      if (lesson.learning_objectives.length > LIMITS.maxObjectives) errors.push("too many learning_objectives");
+      lesson.learning_objectives.forEach((o: any, idx: number) => {
+        if (typeof o !== 'string' || !o.trim()) errors.push(`learning_objectives[${idx}] must be non-empty string`);
+      });
+    }
+  }
+  if (lesson?.assessments) {
+    if (!Array.isArray(lesson.assessments)) errors.push("assessments must be array");
+    else {
+      lesson.assessments.forEach((a: any, idx: number) => {
+        if (!a || typeof a !== 'object') errors.push(`assessments[${idx}] must be object`);
+        if (typeof a?.question !== 'string' || !a.question.trim()) errors.push(`assessments[${idx}].question required`);
+        if (!Array.isArray(a?.options) || a.options.length < 2) errors.push(`assessments[${idx}].options must have >=2`);
+        if (typeof a?.correct_index !== 'number' || a.correct_index < 0 || a.correct_index >= (a.options?.length || 0)) errors.push(`assessments[${idx}].correct_index invalid`);
+        if (a?.explanation != null && typeof a.explanation !== 'string') errors.push(`assessments[${idx}].explanation must be string`);
+      });
+    }
   }
   return { valid: errors.length === 0, errors };
 }
@@ -79,4 +117,3 @@ export function synthesizePromptFallback(title: string, content: string) {
   const snippet = (content || "").replace(/\s+/g, " ").slice(0, 180);
   return `You are a helpful assistant. For the lesson step "${title}", provide a concise response based on this context: ${snippet}`;
 }
-
