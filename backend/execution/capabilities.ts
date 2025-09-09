@@ -10,6 +10,7 @@ interface ProviderCapabilities {
   // Capability flags for formatting/tooling differences
   supportsHarmonyRoles?: boolean;
   supportsTools?: boolean;
+  notes?: string;
   rateLimits: {
     requestsPerMinute: number;
     tokensPerMinute?: number;
@@ -54,6 +55,7 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
       requiresAuth: true,
       supportsHarmonyRoles: false,
       supportsTools: false,
+      notes: 'Best coverage for GPT-OSS teacher models (20B/120B).',
       rateLimits: {
         requestsPerMinute: 30,
         tokensPerMinute: 100000
@@ -108,6 +110,7 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
       requiresAuth: true,
       supportsHarmonyRoles: false,
       supportsTools: false,
+      notes: 'Local/offline via Ollama or vLLM; use gpt-oss:20b for 20B.',
       rateLimits: {
         requestsPerMinute: 60,
         tokensPerMinute: 150000

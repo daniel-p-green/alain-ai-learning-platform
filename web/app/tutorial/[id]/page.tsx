@@ -392,11 +392,11 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           {/* Provider/model picker for run-time */}
           <div className="flex items-center gap-2 text-sm">
             <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)}>
-              {providers.map((p:any)=> (<option key={p.id} value={p.id}>{p.name}</option>))}
+              {providers.map((p)=> (<option key={p.id} value={p.id}>{p.name}</option>))}
             </select>
             <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runModel} onChange={(e)=> setRunModel(e.target.value)}>
               <option value="">{tutorial?.model || 'Model'}</option>
-              {(providers.find((p:any)=> p.id===runProvider)?.models || []).map((m:any)=> (
+              {(providers.find((p)=> p.id===runProvider)?.models || []).map((m)=> (
                 <option key={m.id} value={m.id}>{m.name || m.id}</option>
               ))}
             </select>

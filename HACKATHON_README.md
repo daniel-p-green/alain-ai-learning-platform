@@ -30,6 +30,7 @@ Tagline: Learn models by doing.
 
 ## TL;DR Demo
 - Web UI (Next.js): Browse and play lessons with live model calls.
+- Public Directory: Link in the header to explore tutorials with search and filters.
 - React SPA: Lightweight demo of the tutorial player.
 - Execution API (Encore.ts): Unified SSE endpoint for streaming completions.
 
@@ -46,6 +47,7 @@ UI improvements (magical MVP)
 - Fix-it actions: on validation errors, click “Auto-fix and Import” to repair missing fields/steps.
 - Instant preview: after generation, preview title, description, objectives, and first step with one-click “Open Tutorial” or “Export Notebook”.
 - Transparent execution: “Show Request” reveals the JSON payload; copy as curl or OpenAI SDK is one click away.
+- Adapt Experience (beta): On tutorial pages, tailor content for Beginner/Intermediate/Advanced. Original content remains unchanged.
 
 Quick start
 1) Install: `npm install`
@@ -168,7 +170,8 @@ curl -s -X POST "$OPENAI_BASE_URL/chat/completions" \
 - Streaming: Token streaming is handled in the Next.js layer only; Encore streaming is disabled in this MVP. This does not block the core Paste‑URL → Lesson → Preview/Export flow.
 - Reasoning visibility: Harmony‑style prompting is used for teacher tasks, but internal reasoning is not surfaced in the UI yet. Planned: optional “show reasoning” panel.
 - Tool/function calling: The repair loop is model‑driven without explicit `tools` parameters in requests. Planned: minimal `tools` scaffolding for structured outputs.
- - Model routing: `GPT-OSS-120B` is not run locally. If selected, the teacher auto‑routes to Poe (requires `POE_API_KEY`). Use `GPT-OSS-20B` for local/Ollama.
+- Model routing: `GPT-OSS-120B` is not run locally. If selected, the teacher auto‑routes to Poe (requires `POE_API_KEY`). Use `GPT-OSS-20B` for local/Ollama.
+- Backend auth & limits: Generation and execution require auth and apply per-user limits. Colab export is lightly throttled to prevent scraping.
 
 —
 

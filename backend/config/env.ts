@@ -16,5 +16,10 @@ export function validateBackendEnv() {
     }
   }
   // Poe is optional unless 120B is requested; we do not hard fail here.
+  if (!requireEnv('POE_API_KEY')) {
+    console.warn('[config] POE_API_KEY not set. GPT-OSS-120B will not be available and requests will fail the routing guard.');
+  }
+  if (!requireEnv('CLERK_JWT_ISSUER')) {
+    console.warn('[config] CLERK_JWT_ISSUER not set. JWT verification will rely on default settings.');
+  }
 }
-
