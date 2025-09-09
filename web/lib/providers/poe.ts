@@ -1,4 +1,5 @@
 import type { ExecuteBody, Provider } from "./index";
+import { mapModelForProvider } from "./aliases";
 
 async function complete(body: ExecuteBody): Promise<string> {
   const apiKey = process.env.POE_API_KEY;
@@ -11,7 +12,7 @@ async function complete(body: ExecuteBody): Promise<string> {
       "User-Agent": "ALAIN-Tutorial-Platform/1.0",
     },
     body: JSON.stringify({
-      model: mapModelName(body.model),
+      model: mapModelForProvider('poe', mapModelName(body.model)),
       messages: body.messages,
       stream: false,
       temperature: body.temperature,
@@ -36,7 +37,7 @@ async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: A
       "User-Agent": "ALAIN-Tutorial-Platform/1.0",
     },
     body: JSON.stringify({
-      model: mapModelName(body.model),
+      model: mapModelForProvider('poe', mapModelName(body.model)),
       messages: body.messages,
       stream: true,
       temperature: body.temperature,
