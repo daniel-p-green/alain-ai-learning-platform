@@ -37,13 +37,15 @@ Tagline: Learn models by doing.
 Notebook export (Colab)
 - Exported notebooks now include:
   - Provider setup cells (install OpenAI SDK, set OPENAI_BASE_URL/API_KEY; Poe defaults to https://api.poe.com/v1)
+  - Secure auth cell for Colab: reads secrets from Colab `userdata` when available and falls back to a hidden `getpass()` prompt
   - A quick smoke test cell to verify keys work with the selected model
   - Each lesson step rendered as markdown + a runnable code cell that sends the step prompt to the model
-  - MCQ assessment cells with inline graders (choose an option, see correctness and explanation)
+  - MCQ assessment cells with inline graders, plus an interactive ipywidgets variant (radio buttons + submit + feedback)
 - No arbitrary code execution; only parameterized API calls using OpenAI-compatible client
 
 UI improvements (magical MVP)
 - Model picker: choose provider (Poe/BYOK) and a default model when generating lessons and when running steps in the player.
+- Public Directory: added “Model Maker” filter alongside Difficulty/Provider/Tags. Cards now surface the maker name when available.
 - Fix-it actions: on validation errors, click “Auto-fix and Import” to repair missing fields/steps.
 - Instant preview: after generation, preview title, description, objectives, and first step with one-click “Open Tutorial” or “Export Notebook”.
 - Transparent execution: “Show Request” reveals the JSON payload; copy as curl or OpenAI SDK is one click away.
