@@ -53,6 +53,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [out, setOut] = useState("");
   const [executionState, setExecutionState] = useState<ExecutionState>({ status: 'idle' });
   const abortControllerRef = useRef<AbortController | null>(null);
+  const [showRequest, setShowRequest] = useState(false);
+  const [lastRequest, setLastRequest] = useState<any | null>(null);
   const monacoRef = useRef<HTMLDivElement | null>(null);
   const monacoEditorRef = useRef<any>(null);
   const [monacoReady, setMonacoReady] = useState(false);
@@ -158,15 +160,17 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
     });
 
     try {
+      const body = {
+        provider: tutorial.provider,
+        model: tutorial.model,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      };
+      setLastRequest(body);
       const resp = await fetch("/api/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider: tutorial.provider,
-          model: tutorial.model,
-          messages: [{ role: "user", content: prompt }],
-          stream: true,
-        }),
+        body: JSON.stringify(body),
         signal: abortControllerRef.current.signal,
       });
 
@@ -472,9 +476,16 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Output</h2>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Output</h2>
+          <div className="flex items-center gap-2">
+            <button
+              className="text-xs px-2 py-1 rounded bg-gray-800 border border-gray-700"
+              onClick={() => setShowRequest(!showRequest)}
+            >
+              {showRequest ? 'Hide Request' : 'Show Request'}
+            </button>
             {executionState.status === 'completed' && (
               <span className="text-sm text-green-400 font-medium">✓ Completed</span>
             )}
@@ -482,6 +493,20 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
               <span className="text-sm text-yellow-400 font-medium">⏹ Cancelled</span>
             )}
           </div>
+        </div>
+
+        {showRequest && (
+          <div className="text-xs bg-gray-900 border border-gray-800 rounded p-3">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-gray-400">Last request payload</div>
+              <button
+                className="px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-white"
+                onClick={() => navigator.clipboard.writeText(JSON.stringify(lastRequest || {}, null, 2))}
+              >Copy JSON</button>
+            </div>
+            <pre className="whitespace-pre-wrap text-gray-300">{JSON.stringify(lastRequest || {}, null, 2)}</pre>
+          </div>
+        )}
 
           <pre className={`min-h-64 p-3 bg-gray-900 rounded border whitespace-pre-wrap ${
             executionState.status === 'error' ? 'border-red-700' :

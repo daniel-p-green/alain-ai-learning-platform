@@ -81,19 +81,21 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
       let raw = teacherResponse.content;
       let lesson = applyDefaults(parseGeneratedLesson(raw, modelInfo, req.difficulty), req.difficulty, modelInfo);
       let v1 = validateLesson(lesson);
+      let usedRepair = false;
       if (!v1.valid) {
         const repaired = await attemptRepairJSON(req.teacherModel, raw);
         if (!repaired) {
           return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
         }
         lesson = applyDefaults(parseGeneratedLesson(repaired, modelInfo, req.difficulty), req.difficulty, modelInfo);
+        usedRepair = true;
         const v2 = validateLesson(lesson);
         if (!v2.valid) {
           return { success: false, error: { code: "validation_error", message: "Lesson invalid after repair", details: v2.errors } } as any;
         }
       }
 
-      return { success: true, lesson };
+      return { success: true, lesson, meta: { repaired: usedRepair } } as any;
     } catch (error) {
       const errorData = mapLessonGenerationError(error);
       return {

@@ -40,7 +40,8 @@ describe("buildNotebook (Colab export)", () => {
     const nb = buildNotebook(meta, steps, assessments);
     const codeCells = nb.cells.filter(c => c.cell_type === "code");
     const body = codeCells.map(c => c.source.join("")).join("\n---\n");
-    expect(body).toContain("PROMPT = \"\"\"");
+    // Accept triple-single or triple-double quotes for PROMPT string.
+    expect(body.match(/PROMPT\s*=\s*("""|''')/)).toBeTruthy();
     expect(body).toContain("Write a short greeting.");
     expect(body).toContain("client.chat.completions.create");
   });
@@ -56,4 +57,3 @@ describe("buildNotebook (Colab export)", () => {
     expect(src).toContain("choice = 0");
   });
 });
-

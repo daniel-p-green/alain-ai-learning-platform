@@ -74,11 +74,25 @@ export default function SettingsPage() {
                     <button onClick={() => validate(p.id)} className="px-3 py-1 rounded bg-blue-600 text-white">
                       Validate
                     </button>
+                    {p.id === "openai-compatible" && (
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText("export OPENAI_BASE_URL=https://api.openai.com/v1\nexport OPENAI_API_KEY=YOUR_KEY_HERE")}
+                        className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-white text-xs"
+                      >Copy env snippet</button>
+                    )}
+                    {p.id === "poe" && (
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText("export POE_API_KEY=YOUR_KEY_HERE\n# Base URL: https://api.poe.com/v1")}
+                        className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-white text-xs"
+                      >Copy env snippet</button>
+                    )}
                   </div>
                 </div>
                 {p.id === "openai-compatible" && (
                   <div className="text-xs text-gray-500 mt-2">
-                    Set OPENAI_BASE_URL and OPENAI_API_KEY in backend env. Example base URL: https://api.openai.com/v1 or http://localhost:11434/v1 (Ollama).
+                  Set OPENAI_BASE_URL and OPENAI_API_KEY in backend env. Example base URL: https://api.openai.com/v1 or http://localhost:11434/v1 (Ollama).
                   </div>
                 )}
                 {p.id === "poe" && (
@@ -94,4 +108,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
