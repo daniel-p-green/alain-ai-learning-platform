@@ -28,7 +28,7 @@ interface TeacherResponse {
 
 // Dedicated teacher model service for GPT-OSS models using harmony format
 export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
-  { expose: true, method: "POST", path: "/teacher/generate" },
+  { expose: false, method: "POST", path: "/teacher/generate" },
   async (req, ctx) => {
     try {
       // Validate teacher model
@@ -173,9 +173,11 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
       }
     } catch (error) {
       const errorData = mapTeacherError(error);
+      // Mask detailed provider messages in production
+      const isProd = process.env.NODE_ENV === 'production';
       return {
         success: false,
-        error: errorData
+        error: isProd ? { code: errorData.code, message: 'Teacher model request failed. Please try again later.' } : errorData
       };
     }
   }

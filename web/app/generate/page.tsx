@@ -11,7 +11,9 @@ export default function GenerateLessonPage() {
   const [progress, setProgress] = useState<"idle" | "parsing" | "asking" | "importing" | "done">("idle");
   const [result, setResult] = useState<null | { tutorialId: number; meta?: any; preview?: any }>(null);
   const [repairing, setRepairing] = useState(false);
-  const [providers, setProviders] = useState<any[]>([]);
+  type ProviderModel = { id: string; name?: string };
+  type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
+  const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
   const [snackbar, setSnackbar] = useState<string | null>(null);
@@ -42,9 +44,10 @@ export default function GenerateLessonPage() {
         setProviders(data.providers || []);
         if (data.defaultProvider) setTargetProvider(data.defaultProvider);
         setProvidersError(null);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!alive) return;
-        setProvidersError(e?.message || 'Failed to load providers');
+        const msg = e instanceof Error ? e.message : 'Failed to load providers';
+        setProvidersError(msg);
       } finally {
         if (alive) setProvidersLoading(false);
       }
@@ -83,8 +86,9 @@ export default function GenerateLessonPage() {
       setResult({ tutorialId: data.tutorialId, meta: data.meta, preview: data.preview });
       setSnackbar('Lesson ready! Open the tutorial or export to Colab.');
       setTimeout(() => setSnackbar(null), 2500);
-    } catch (e: any) {
-      setError(e?.message || String(e));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg);
       setErrorDetails([]);
       setProgress("idle");
     } finally {

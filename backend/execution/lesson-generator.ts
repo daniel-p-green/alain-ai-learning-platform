@@ -1,5 +1,8 @@
 import { api, APIError } from "encore.dev/api";
 import { teacherGenerate } from "./teacher";
+import { requireUserId } from "../auth";
+import { allowRate } from "../utils/ratelimit";
+import { validateBackendEnv } from "../config/env";
 import { validateLesson, applyDefaults } from "./spec/lessonSchema";
 import { parseHfUrl } from "../utils/hf";
 
@@ -60,6 +63,12 @@ interface LessonGenerationResponse {
 export const generateLesson = api<LessonGenerationRequest, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate" },
   async (req, ctx) => {
+    validateBackendEnv();
+    const userId = await requireUserId(ctx);
+    const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
+    if (!gate.ok) {
+      throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
+    }
     // Dedupe concurrent requests: same hfUrl+difficulty coalesce to one in-flight promise (short TTL)
     const key = `${req.hfUrl}::${req.difficulty}`;
     const existing = inflight.get(key);
