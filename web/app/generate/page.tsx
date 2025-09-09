@@ -6,6 +6,7 @@ export default function GenerateLessonPage() {
   const [difficulty, setDifficulty] = useState("beginner");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorDetails, setErrorDetails] = useState<string[]>([]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -19,12 +20,14 @@ export default function GenerateLessonPage() {
       });
       const data = await resp.json();
       if (!data.success) {
-        setError(data?.error?.message || "Failed to generate");
+        setError(data?.error?.code === 'validation_error' ? 'Lesson validation failed' : (data?.error?.message || 'Failed to generate'));
+        setErrorDetails(Array.isArray(data?.error?.details) ? data.error.details : []);
         return;
       }
       window.location.href = `/tutorial/${data.tutorialId}`;
     } catch (e: any) {
       setError(e?.message || String(e));
+      setErrorDetails([]);
     } finally {
       setLoading(false);
     }
@@ -54,7 +57,18 @@ export default function GenerateLessonPage() {
           {loading ? "Generating..." : "Generate Lesson"}
         </button>
       </form>
-      {error && <div className="text-red-400">{error}</div>}
+      {error && (
+        <div className="text-red-400 space-y-2">
+          <div>{error}</div>
+          {errorDetails.length > 0 && (
+            <ul className="list-disc pl-5 text-red-300 text-sm">
+              {errorDetails.map((d, i) => (
+                <li key={i}>{d}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 }
