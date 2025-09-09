@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.2.0 — Provider unification, teacher hardening, UX polish
+
+Highlights
+- Providers: Unified model aliasing across backend and web
+  - New `backend/execution/providers/aliases.ts` and `web/lib/providers/aliases.ts`
+  - Normalizes `GPT-OSS-20B` ↔ `gpt-oss:20b` per provider
+- Teacher: Timeouts (30s), two‑try retry, role downgrade
+  - Uses shared alias mapper; safer defaults for Harmony roles
+- Lesson generation: Safer parsing and validation
+  - Strict HF URL parsing with 5s timeout; drop unknown fields before validation
+- Web UX: Reliable provider load and local hint
+  - `useEffect` fix; loading/error states; Ollama setup hint next to selector
+- SSE: One-shot retry on initial failure; clean `[DONE]` termination
+
+Upgrade Notes
+- No breaking API changes. For local runs, ensure `OPENAI_BASE_URL` and `OPENAI_API_KEY` are set; `TEACHER_PROVIDER` optional.
+
 ## v0.1.0 — Hackathon MVP
 
 Highlights
