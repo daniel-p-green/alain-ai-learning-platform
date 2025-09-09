@@ -62,6 +62,19 @@ Purpose: Turn any Hugging Face model link into a top‑scoring, highly engaging,
 - Use forms (`#@param`) or ipywidgets for parameters when helpful.
 - Save/cleanup artifacts to handle session resets.
 
+Colab badge example (replace with your GitHub URL)
+```
+[Open in Colab](https://colab.research.google.com/github/your-org/your-repo/***REMOVED***/main/path/to/notebook.ipynb)
+```
+
+Colab form parameters
+```
+#@title Model and Runtime
+HF_MODEL = 'org/name' #@param {type:'string'}
+RUNTIME = 'gpt-oss' #@param ['gpt-oss','transformers']
+OPENAI_BASE_URL = 'http://localhost:11434/v1' #@param {type:'string'}
+```
+
 11) Troubleshooting & cleanup
 - Cover 401/403, 429 backoff, JSON validation, timeouts, and device issues.
 - Cleanup caches and stop background processes if applicable.

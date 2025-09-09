@@ -58,6 +58,7 @@ export async function POST(req: Request) {
     description: lesson.description,
     learning_objectives: lesson.learning_objectives || [],
     first_step: lesson.steps?.[0] || null,
+    model_maker: lesson.model_maker || null,
   };
 
   return Response.json({

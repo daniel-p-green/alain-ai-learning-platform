@@ -66,6 +66,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<{ correct: boolean; explanation?: string } | null>(null);
+  const [adapted, setAdapted] = useState<string | null>(null);
+  const [targetDifficulty, setTargetDifficulty] = useState<'beginner'|'intermediate'|'advanced'>('beginner');
   type ProviderModel = { id: string; name?: string };
   type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
@@ -524,6 +526,48 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
               ))}
             </div>
           )}
+
+          {/* Experience Adaptation */}
+          <div className="bg-gray-800 rounded-lg p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">Adapt Experience</h3>
+              <div className="flex items-center gap-2 text-sm">
+                <label className="text-gray-300">Target</label>
+                <select className="px-2 py-1 rounded bg-gray-900 border border-gray-700" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)}>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+                <button
+                  className="px-3 py-1.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white"
+                  onClick={async ()=>{
+                    const score = assessmentResult ? (assessmentResult.correct ? 80 : 40) : 60;
+                    const resp = await fetch('/api/adapt', {
+                      method:'POST',
+                      headers:{'Content-Type':'application/json'},
+                      body: JSON.stringify({
+                        tutorialId: tutorial.id,
+                        stepOrder: step.step_order,
+                        current_content: step.content,
+                        user_performance: score,
+                        target_difficulty: targetDifficulty,
+                        provider: 'poe'
+                      })
+                    });
+                    const data = await resp.json();
+                    if (data.success && data.adapted) setAdapted(data.adapted);
+                  }}
+                >Adapt</button>
+              </div>
+            </div>
+            {adapted && (
+              <div className="mt-1 p-3 rounded border border-indigo-700 bg-indigo-900/10">
+                <div className="text-sm text-indigo-300 font-medium mb-1">Adapted for {targetDifficulty}</div>
+                <div className="whitespace-pre-wrap text-indigo-100">{adapted}</div>
+              </div>
+            )}
+            <div className="text-xs text-gray-500">Uses teacher model; original content remains unchanged.</div>
+          </div>
 
           {/* Progress */}
           {user && (
