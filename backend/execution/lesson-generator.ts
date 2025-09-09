@@ -76,8 +76,22 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
         throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
       }
 
-      // Parse and validate the generated lesson
-      const lesson = parseGeneratedLesson(teacherResponse.content, modelInfo, req.difficulty);
+      // Parse → fill defaults → validate. If invalid, attempt a single repair pass.
+      let raw = teacherResponse.content;
+      let lesson = parseGeneratedLesson(raw, modelInfo, req.difficulty);
+      lesson = ensureDefaultsAndFallbacks(lesson, req.difficulty, modelInfo);
+      const v1 = validateLessonData(lesson);
+      if (!v1.valid) {
+        const repaired = await attemptRepairJSON(req.teacherModel, raw);
+        if (!repaired) {
+          throw new Error(`Generated lesson invalid: ${v1.errors.join('; ')}`);
+        }
+        lesson = ensureDefaultsAndFallbacks(parseGeneratedLesson(repaired, modelInfo, req.difficulty), req.difficulty, modelInfo);
+        const v2 = validateLessonData(lesson);
+        if (!v2.valid) {
+          throw new Error(`Repaired lesson still invalid: ${v2.errors.join('; ')}`);
+        }
+      }
 
       return { success: true, lesson };
     } catch (error) {
@@ -206,30 +220,83 @@ function parseGeneratedLesson(content: string, modelInfo: any, difficulty: strin
 
     const lessonData = JSON.parse(cleanContent);
 
-    // Validate required fields
-    if (!lessonData.title || !lessonData.description || !lessonData.steps) {
-      throw new Error("Generated lesson missing required fields");
-    }
-
-    // Add default values and metadata
-    lessonData.model = modelInfo.name;
-    lessonData.provider = "poe";
-    lessonData.difficulty = difficulty;
-    lessonData.tags = lessonData.tags || [`${modelInfo.org}`, difficulty];
-
-    // Ensure steps have proper structure
-    lessonData.steps = lessonData.steps.map((step: any, index: number) => ({
-      step_order: step.step_order || (index + 1),
-      title: step.title,
-      content: step.content,
-      code_template: step.code_template || null,
-      expected_output: step.expected_output || null,
-      model_params: step.model_params || { temperature: 0.7 }
-    }));
-
+    // Basic normalization only; validation and defaults applied later.
     return lessonData;
   } catch (error) {
     throw new Error(`Failed to parse generated lesson: ${error instanceof Error ? error.message : 'Invalid format'}`);
+  }
+}
+
+/**
+ * Validate lesson object against a minimal schema (no external deps).
+ */
+function validateLessonData(lesson: any): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  if (!lesson || typeof lesson !== 'object') errors.push('lesson must be an object');
+  if (!lesson.title || typeof lesson.title !== 'string') errors.push('title is required');
+  if (!lesson.description || typeof lesson.description !== 'string') errors.push('description is required');
+  if (!Array.isArray(lesson.steps) || lesson.steps.length === 0) errors.push('steps array is required');
+  if (lesson.difficulty && !['beginner','intermediate','advanced'].includes(lesson.difficulty)) errors.push('difficulty invalid');
+  if (Array.isArray(lesson.steps)) {
+    lesson.steps.forEach((s: any, i: number) => {
+      if (!s || typeof s !== 'object') errors.push(`steps[${i}] must be object`);
+      if (!s.title || typeof s.title !== 'string') errors.push(`steps[${i}].title required`);
+      if (!s.content || typeof s.content !== 'string') errors.push(`steps[${i}].content required`);
+      if (s.step_order != null && typeof s.step_order !== 'number') errors.push(`steps[${i}].step_order must be number`);
+      if (s.code_template != null && typeof s.code_template !== 'string') errors.push(`steps[${i}].code_template must be string`);
+    });
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+/**
+ * Apply defaults, normalize steps, and synthesize prompt template when missing.
+ */
+function ensureDefaultsAndFallbacks(lessonData: any, difficulty: string, modelInfo: any) {
+  const out = { ...lessonData };
+  out.model = modelInfo?.name || out.model || 'gpt-oss-20b';
+  out.provider = out.provider || 'poe';
+  out.difficulty = out.difficulty || difficulty || 'beginner';
+  out.tags = Array.isArray(out.tags) ? out.tags : [];
+  if (modelInfo?.org) out.tags = Array.from(new Set([`${modelInfo.org}`, out.difficulty, ...out.tags]));
+
+  out.steps = (out.steps || []).map((step: any, index: number) => {
+    const s = { ...step };
+    s.step_order = typeof s.step_order === 'number' ? s.step_order : index + 1;
+    s.model_params = s.model_params || { temperature: 0.7 };
+    if (!s.code_template || typeof s.code_template !== 'string' || !s.code_template.trim()) {
+      s.code_template = synthesizePromptFallback(s.title, s.content);
+    }
+    return s;
+  });
+
+  return out;
+}
+
+function synthesizePromptFallback(title: string, content: string) {
+  const snippet = (content || '').replace(/\s+/g, ' ').slice(0, 180);
+  return `You are a helpful assistant. For the lesson step "${title}", provide a concise response based on this context: ${snippet}`;
+}
+
+/**
+ * Attempt a single "repair JSON" pass by asking the teacher to output valid JSON only.
+ * Returns a JSON string or null if repair failed.
+ */
+async function attemptRepairJSON(teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B", broken: string): Promise<string | null> {
+  try {
+    const prompt = `The following JSON is invalid or incomplete for a lesson package. Repair it to include: title, description, steps (3-5) with { step_order, title, content, code_template?, expected_output?, model_params? }, optional learning_objectives[], optional assessments[]. Output ONLY JSON with valid syntax.\n\nJSON:\n${broken}`;
+    const resp = await teacherGenerate({
+      model: teacherModel,
+      messages: [{ role: 'user', content: prompt }],
+      task: 'lesson_generation',
+      temperature: 0.1,
+      max_tokens: 3000,
+    });
+    if (!resp.success || !resp.content) return null;
+    // Return raw content; caller will parse and validate.
+    return resp.content;
+  } catch {
+    return null;
   }
 }
 

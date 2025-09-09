@@ -25,6 +25,14 @@ Tagline: Learn models by doing.
 - React SPA: Lightweight demo of the tutorial player.
 - Execution API (Encore.ts): Unified SSE endpoint for streaming completions.
 
+Notebook export (Colab)
+- Exported notebooks now include:
+  - Provider setup cells (install OpenAI SDK, set OPENAI_BASE_URL/API_KEY; Poe defaults to https://api.poe.com/v1)
+  - A quick smoke test cell to verify keys work with the selected model
+  - Each lesson step rendered as markdown + a runnable code cell that sends the step prompt to the model
+  - MCQ assessment cells with inline graders (choose an option, see correctness and explanation)
+  - No arbitrary code execution; only parameterized API calls using OpenAI-compatible client
+
 Quick start
 1) Install: `npm install`
 2) Configure env: `cp env-config-example.txt .env.local` and add keys
