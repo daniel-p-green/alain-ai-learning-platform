@@ -689,6 +689,9 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         >
           Download Colab Notebook
         </button>
+        <div className="text-xs text-gray-500 mt-2">
+          Tip: To open in Google Colab, visit <a className="text-blue-400 hover:underline" href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
+        </div>
       </div>
 
       {toast && (
