@@ -1,2 +1,41 @@
 @import "tailwindcss/preflight";
 @tailwind utilities;
+
+/* ALAIN brand tokens — Code meets Seinfeld */
+:root {
+  /* Brand core */
+  --alain-yolk: #FFD22E;
+  --alain-yolk-shadow: #FFB800;
+  --alain-paper: #FFF6D1;
+  --alain-red: #C33228;
+  --alain-red-shadow: #8E221C;
+  --alain-ink: #1B1B1B;
+  --alain-blue: #2CA6A4;
+
+  /* UI neutrals */
+  --text-strong: #0F172A;
+  --text-muted: #334155;
+  --panel: #F1F5F9;
+  --bg: #FFFFFF;
+
+  /* Effects */
+  --radius: 12px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+/* Simple helpers to reuse tokens without Tailwind config changes */
+.brand-header {
+  background: var(--bg);
+  color: var(--text-strong);
+  border-bottom: 1px solid color-mix(in srgb, var(--alain-ink) 12%, transparent);
+}
+
+.brand-cta {
+  background: var(--alain-yolk);
+  color: var(--alain-ink);
+  border: 1px solid var(--alain-ink);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.8rem;
+}
+
+.brand-cta:hover { filter: brightness(0.98); }
