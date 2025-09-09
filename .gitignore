@@ -7,3 +7,5 @@ node_modules
 *.DS_Store
 **/.DS_Store
 web/app/.DS_Store
+\n+# Feedback notes (local only)
+feedback/
