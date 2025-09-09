@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="ALAIN logo: red italic wordmark in yellow lozenge">
+  <!-- Brand tokens as CSS variables for easy tweaking -->
+  <style>
+    :root {
+      --yolk: #FFD22E;
+      --yolk-shadow: #FFB800;
+      --red: #C33228;
+      --red-shadow: #8E221C;
+      --ink: #1B1B1B;
+      --blue: #2CA6A4;
+    }
+    .ink { fill: var(--ink); }
+    .yolk { fill: var(--yolk); }
+    .red { fill: var(--red); }
+  </style>
+
+  <!-- Background for previews only -->
+  <rect width="100%" height="100%" fill="#FFF6D1"/>
+
+  <!-- Tilted lozenge with ink outline -->
+  <g transform="rotate(-12 480 270)">
+    <!-- drop shadow (simple offset shape) -->
+    <rect x="220" y="150" width="520" height="240" rx="120" ry="120" fill="var(--ink)" opacity="0.35" transform="translate(6,10)"/>
+    <rect x="220" y="150" width="520" height="240" rx="120" ry="120" fill="var(--yolk)" stroke="var(--ink)" stroke-width="18"/>
+  </g>
+
+  <!-- Wordmark with subtle shadow -->
+  <g transform="translate(0,-10)">
+    <text x="320" y="320" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="210" font-style="italic" fill="var(--ink)" opacity="0.4" dx="10" dy="10">Alain</text>
+    <text x="320" y="320" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="210" font-style="italic" fill="var(--red)" stroke="var(--ink)" stroke-width="8" paint-order="stroke fill">Alain</text>
+  </g>
+
+  <!-- Blue tech accent (caret) above the i -->
+  <path d="M560 215 l18 -28 l18 28 z" fill="var(--blue)"/>
+</svg>
+

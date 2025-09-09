@@ -50,7 +50,7 @@ export default function GenerateLessonPage() {
           <option value="intermediate">Intermediate</option>
           <option value="advanced">Advanced</option>
         </select>
-        <button className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50" disabled={loading || !hfUrl.trim()}>
+        <button className="brand-cta disabled:opacity-50" disabled={loading || !hfUrl.trim()}>
           {loading ? "Generating..." : "Generate Lesson"}
         </button>
       </form>
@@ -58,4 +58,3 @@ export default function GenerateLessonPage() {
     </div>
   );
 }
-
