@@ -49,8 +49,10 @@ UI improvements (magical MVP)
 
 Quick start
 1) Install: `npm install`
-2) Configure env: `cp env-config-example.txt .env.local` and add keys
-3) Run services: `npm run dev:backend` | `npm run dev:frontend` | `npm run dev:web`
+2) Configure envs:
+   - Web: `cp env.web.example web/.env.local` and fill in Clerk + backend base
+   - Backend: set secrets via Encore (`encore secret set ...`) or `cp env.backend.example backend/.env.local` for local
+3) Run services: `npm run dev:backend` | `npm run dev:web`
 4) Open the web app and load a sample lesson or paste a model link.
 
 How to run details live in `alain-ai-learning-platform/README.md`.

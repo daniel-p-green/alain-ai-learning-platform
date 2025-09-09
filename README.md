@@ -11,6 +11,21 @@ Repository
 - Best Practices: `docs/notebooks/notebook-best-practices.md`
 - Author Checklist: `docs/notebooks/notebook-quality-checklist.md`
 - Teaching Template: `docs/templates/teaching_template.ipynb`
+- Jupyter Style: `docs/notebooks/jupyter-style-guide.md`
+- Repro Environments: `docs/notebooks/reproducible-environments.md`
+- Notebook CI: `docs/notebooks/notebook-ci.md`
+- Colab Guide: `docs/notebooks/colab-guide.md`
+- Data Privacy & Secrets: `docs/notebooks/data-privacy-and-secrets.md`
+- Observability & Costs: `docs/notebooks/observability-and-costs.md`
+- Testing Patterns: `docs/notebooks/testing-patterns.md`
+- Using the Toolchain: `docs/notebooks/using-the-notebook-toolchain.md`
+
+GPT‑OSS Docs
+- Local Run: `docs/gpt-oss/local-run.md`
+- Prompting: `docs/gpt-oss/prompting.md`
+- Evaluation: `docs/gpt-oss/evaluation.md`
+- Fine‑Tuning: `docs/gpt-oss/fine-tuning.md`
+- RAG Recipes: `docs/gpt-oss/rag-recipes.md`
 
 ## What You Get
 - Backend (`backend/`): Encore.ts APIs for parsing, lesson generation, execution, and Colab export
@@ -37,28 +52,34 @@ npm install
 
 # Optional (for local notebooks/tools)
 pip install -r requirements.txt
+
+# Dev tools for notebooks (linter, nbmake, pre-commit)
+pip install -r requirements-dev.txt
+pre-commit install
 ```
 
 ### 2) Configure environment
+Web (.env.local):
 ```bash
-cp env-config-example.txt .env.local
+cp env.web.example web/.env.local
 ```
 
-Set in `.env.local` (web app):
+Backend (Encore secrets preferred; or local env file):
+```bash
+encore secret set POE_API_KEY
+encore secret set OPENAI_BASE_URL
+encore secret set OPENAI_API_KEY
+# or for local-only dev
+cp env.backend.example backend/.env.local
+```
+
+Set in `web/.env.local`:
 - Clerk: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`
 - For Hosted: `POE_API_KEY`
 - For Local: `OPENAI_BASE_URL` (e.g. `http://localhost:11434/v1`) and `OPENAI_API_KEY` (e.g. `ollama`)
 - Optional default: `TEACHER_PROVIDER=poe` or `openai-compatible`
 
-Set backend secrets (Encore) — once per machine:
-```bash
-# Hosted (Poe)
-encore secret set POE_API_KEY
-
-# Local (Ollama/vLLM)
-encore secret set OPENAI_BASE_URL  # e.g. http://localhost:11434/v1
-encore secret set OPENAI_API_KEY   # e.g. ollama
-```
+Set backend secrets via Encore as shown above.
 
 ### 3) Start services
 ```bash

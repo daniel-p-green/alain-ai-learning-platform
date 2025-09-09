@@ -16,4 +16,3 @@
 - Cleanup: instructions to stop jobs/free resources
 
 If 11+ boxes are checked, your notebook is likely ready to publish/teach.
-
