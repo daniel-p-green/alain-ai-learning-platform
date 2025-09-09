@@ -66,6 +66,13 @@ pytest -q
 - Log token usage/cost where available; show basic latency
 - Include Troubleshooting and Exercises; add Cleanup if resources are used
 
+## Metaphors and Simple Explanations
+- Add an “About the Model” section with org, license, last modified, and 3–5 bullet highlights.
+- Include an ELI5 summary for 2–3 audiences (Developer/PM/CTO) generated via local GPT‑OSS or a short README extract.
+- Use a single vivid metaphor to anchor understanding (e.g., “multitool writer”).
+- Provide 3 concrete tasks it does well and 2 it does poorly, each with a one‑line why.
+- Link to “Adjacent Models” to offer alternatives and comparisons.
+
 ## Linting & Pre‑Commit
 
 - Manual run:
