@@ -48,7 +48,10 @@ export default function RootLayout({
               <SignUpButton />
             </SignedOut>
             <SignedIn>
-              <UserButton />
+              <div className="flex items-center gap-3">
+                <Link href="/settings" className="text-sm text-blue-600 hover:underline">Settings</Link>
+                <UserButton />
+              </div>
             </SignedIn>
           </header>
           <main>{children}</main>
