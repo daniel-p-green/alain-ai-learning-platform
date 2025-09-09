@@ -15,8 +15,15 @@ export const exportColab = api<{ tutorialId: number }, Notebook>(
       const gate = allowRate(ident, 'export_colab', Number(process.env.COLAB_EXPORT_MAX_RPM || 30), 60_000);
       if (!gate.ok) throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     } catch {}
-    const tut = await tutorialsDB.queryRow<{ id: number; title: string; description: string; provider: string; model: string }>`
-      SELECT id, title, description, provider, model FROM tutorials WHERE id = ${tutorialId}
+    const tut = await tutorialsDB.queryRow<{
+      id: number; title: string; description: string; provider: string; model: string;
+      maker_name?: string | null; maker_org?: string | null; maker_homepage?: string | null; maker_license?: string | null; maker_repo?: string | null;
+    }>`
+      SELECT t.id, t.title, t.description, t.provider, t.model,
+             mm.name as maker_name, mm.org_type as maker_org, mm.homepage as maker_homepage, mm.license as maker_license, mm.repo as maker_repo
+      FROM tutorials t
+      LEFT JOIN model_makers mm ON mm.id = t.model_maker_id
+      WHERE t.id = ${tutorialId}
     `;
     if (!tut) throw APIError.notFound("tutorial not found");
     const steps: Array<{ step_order: number; title: string; content: string; code_template: string | null; model_params?: any }>= [];
@@ -45,7 +52,14 @@ export const exportColab = api<{ tutorialId: number }, Notebook>(
         model: tut.model,
       },
       steps,
-      assessments
+      assessments,
+      tut.maker_name ? {
+        name: tut.maker_name,
+        org_type: tut.maker_org || 'organization',
+        homepage: tut.maker_homepage || undefined,
+        license: tut.maker_license || undefined,
+        repo: tut.maker_repo || undefined,
+      } : null
     );
   }
 );
