@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
@@ -16,9 +16,9 @@ export default function GenerateLessonPage() {
   const [targetModel, setTargetModel] = useState<string>("");
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
-  // Load provider capabilities for model picker
-  // (Optional enhancement; UI falls back gracefully if unavailable)
-  (async () => {})();
+  // Provider capabilities
+  const [providersLoading, setProvidersLoading] = useState(false);
+  const [providersError, setProvidersError] = useState<string | null>(null);
 
   function parseHfInput(input: string): { ok: boolean; url: string } {
     const t = input.trim();
@@ -29,20 +29,27 @@ export default function GenerateLessonPage() {
     return { ok: false, url: t };
   }
 
-  // Lazy-load providers once
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useState(() => {
+  // Load providers once
+  useEffect(() => {
+    let alive = true;
     (async () => {
       try {
+        setProvidersLoading(true);
         const resp = await fetch('/api/providers');
         const data = await resp.json();
+        if (!alive) return;
         setProviders(data.providers || []);
-        // Default target provider to backend default if present
         if (data.defaultProvider) setTargetProvider(data.defaultProvider);
-      } catch {}
+        setProvidersError(null);
+      } catch (e: any) {
+        if (!alive) return;
+        setProvidersError(e?.message || 'Failed to load providers');
+      } finally {
+        if (alive) setProvidersLoading(false);
+      }
     })();
-    return undefined;
-  });
+    return () => { alive = false; };
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -118,6 +125,8 @@ export default function GenerateLessonPage() {
             ))}
           </select>
         </div>
+        {providersLoading && <div className="text-xs text-gray-400">Loading providers…</div>}
+        {providersError && <div className="text-xs text-yellow-400">{providersError}</div>}
         <select
           className="p-2 rounded bg-gray-900 border border-gray-800"
           value={difficulty}
@@ -140,6 +149,7 @@ export default function GenerateLessonPage() {
             <option value="poe">Poe (hosted)</option>
             <option value="openai-compatible">Local (OpenAI‑compatible)</option>
           </select>
+          <span className="text-xs text-gray-500">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
         <div className="flex gap-2">
           <button className="brand-cta disabled:opacity-50" disabled={loading || !hfUrl.trim()}>

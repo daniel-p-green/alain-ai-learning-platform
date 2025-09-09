@@ -5,6 +5,6 @@
   "packageManager": "bun",
   "workspaces": [
     "backend",
-    "frontend"
+    "web"
   ]
 }

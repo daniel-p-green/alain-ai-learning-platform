@@ -1,6 +1,7 @@
 import { api, APIError } from "encore.dev/api";
 import { teacherGenerate } from "./teacher";
 import { validateLesson, applyDefaults } from "./spec/lessonSchema";
+import { parseHfUrl } from "../utils/hf";
 
 interface LessonGenerationRequest {
   hfUrl: string;
@@ -82,7 +83,7 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
 
       // Parse → fill defaults → validate. If invalid, attempt a single repair pass.
       let raw = teacherResponse.content;
-      let lesson = applyDefaults(parseGeneratedLesson(raw, modelInfo, req.difficulty), req.difficulty, modelInfo);
+      let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
       let v1 = validateLesson(lesson);
       let usedRepair = false;
       if (!v1.valid) {
@@ -90,7 +91,7 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
         if (!repaired) {
           return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
         }
-        lesson = applyDefaults(parseGeneratedLesson(repaired, modelInfo, req.difficulty), req.difficulty, modelInfo);
+        lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
         usedRepair = true;
         const v2 = validateLesson(lesson);
         if (!v2.valid) {
@@ -111,47 +112,32 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
 
 // Extract model information from Hugging Face URL
 async function extractHFModelInfo(hfUrl: string) {
-  // Extract model name from URL
-  const urlMatch = hfUrl.match(/huggingface\.co\/([^\/]+)\/([^\/]+)/);
-  if (!urlMatch) {
+  // Strict HF parsing and host allowlisting
+  let owner: string, repo: string;
+  try {
+    const ref = parseHfUrl(hfUrl);
+    owner = ref.owner; repo = ref.repo;
+  } catch {
     throw APIError.invalidArgument("Invalid Hugging Face URL format");
   }
 
-  const [, org, model] = urlMatch;
-
+  const apiUrl = `https://huggingface.co/api/models/${owner}/${repo}`;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 5000);
   try {
-    // Try to fetch model card (this would be expanded in production)
-    const response = await fetch(`https://huggingface.co/api/models/${org}/${model}`, {
-      headers: {
-        'User-Agent': 'ALAIN-Lesson-Generator/1.0'
-      }
+    const response = await fetch(apiUrl, {
+      headers: { 'User-Agent': 'ALAIN-Lesson-Generator/1.0' },
+      signal: ctrl.signal,
     });
-
+    clearTimeout(t);
     if (!response.ok) {
-      // Fallback to basic info if API fails
-      return {
-        name: model,
-        org: org,
-        url: hfUrl,
-        card: null
-      };
+      return { name: `${owner}/${repo}`, org: owner, url: `https://huggingface.co/${owner}/${repo}` } as any;
     }
-
     const card = await response.json();
-    return {
-      name: model,
-      org: org,
-      url: hfUrl,
-      card: card
-    };
+    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card } as any;
   } catch (error) {
-    // Fallback if network request fails
-    return {
-      name: model,
-      org: org,
-      url: hfUrl,
-      card: null
-    };
+    clearTimeout(t);
+    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card: null } as any;
   }
 }
 
@@ -232,6 +218,26 @@ function parseGeneratedLesson(content: string, modelInfo: any, difficulty: strin
   }
 }
 
+// Drop unknown fields defensively
+function sanitizeLesson(lessonData: any) {
+  const allowTop = new Set([
+    'title','description','model','provider','difficulty','tags','learning_objectives','steps','assessments','model_maker'
+  ]);
+  const allowStep = new Set(['step_order','title','content','code_template','expected_output','model_params']);
+  const out: any = {};
+  for (const k of Object.keys(lessonData || {})) {
+    if (allowTop.has(k)) out[k] = (lessonData as any)[k];
+  }
+  if (Array.isArray(out.steps)) {
+    out.steps = out.steps.map((s: any) => {
+      const ss: any = {};
+      for (const k of Object.keys(s || {})) if (allowStep.has(k)) ss[k] = s[k];
+      return ss;
+    });
+  }
+  return out;
+}
+
 /**
  * Validate lesson object against a minimal schema (no external deps).
  */
@@ -243,13 +249,13 @@ function parseGeneratedLesson(content: string, modelInfo: any, difficulty: strin
  */
 async function attemptRepairJSON(teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B", broken: string): Promise<string | null> {
   try {
-    const prompt = `The following JSON is invalid or incomplete for a lesson package. Repair it to include: title, description, steps (3-5) with { step_order, title, content, code_template?, expected_output?, model_params? }, optional learning_objectives[], optional assessments[]. Output ONLY JSON with valid syntax.\n\nJSON:\n${broken}`;
+    const prompt = `The following JSON is invalid or incomplete for a lesson package. Repair with valid JSON only. Include: title, description, steps[3-5] with { step_order, title, content, code_template?, expected_output?, model_params? }, optional learning_objectives[], optional assessments[]. Output ONLY JSON.\n\nJSON:\n${broken}`;
     const resp = await teacherGenerate({
       model: teacherModel,
       messages: [{ role: 'user', content: prompt }],
       task: 'lesson_generation',
       provider: (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe') as any,
-      temperature: 0.1,
+      temperature: 0.0,
       max_tokens: 3000,
     });
     if (!resp.success || !resp.content) return null;

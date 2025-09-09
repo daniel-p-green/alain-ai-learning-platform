@@ -29,6 +29,17 @@ describe("lessonSchema", () => {
     expect(out.steps[0].code_template!.length).toBeGreaterThan(0);
   });
 
+  it("drops unknown top-level and step fields (sanitize)", () => {
+    const inLesson: any = {
+      title: 'T', description: 'D', steps: [{ title: 'S1', content: 'C1', extra: 'x' }],
+      extraTop: 'y'
+    };
+    const out = applyDefaults(inLesson, "beginner", { name: "gpt-oss-20b", org: "hf-org" });
+    // Unknown fields should not cause validation failure and should not be required downstream
+    const r = validateLesson(out);
+    expect(r.valid).toBe(true);
+  });
+
   it("validates learning_objectives and assessments shape", () => {
     const lesson: any = {
       title: "T", description: "D",

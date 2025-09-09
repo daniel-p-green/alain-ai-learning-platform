@@ -125,7 +125,7 @@ alain-ai-learning-platform/
 - Unauthorized on web: set Clerk keys in `.env.local`, restart `npm run dev` in `web/`, and sign in
 - Provider errors: set `POE_API_KEY` for hosted or `OPENAI_BASE_URL`/`OPENAI_API_KEY` for local; set Encore secrets
 - Local is slow: reduce tokens, or try hosted Poe for the demo
-- Streaming quirks: known SSE limitation; generation still succeeds with non‑streaming fallback
+- Streaming (known limitation): SSE streams through Next.js only (Encore SSE disabled). If the stream drops, it retries once; generation still succeeds with non‑streaming fallback.
 
 ## Build & Deploy
 - Backend (Encore Cloud): `encore auth login && git push encore`
@@ -136,4 +136,3 @@ Issues, MRs, and PRs are welcome. See `HACKATHON_README.md` for scope and `POE_I
 
 ## License
 MIT
-
