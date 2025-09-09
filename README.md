@@ -38,6 +38,8 @@ Pick one path:
 - Hosted (Poe): simplest, no local model needed
 - Local (Ollama): fully offline teacher using gpt‑oss‑20b
 
+Note on package managers: the web app uses npm scripts; backend tests use bunx for Vitest. Use `npm` for app workflows and `bunx vitest` for backend tests (no global install required).
+
 ### Prerequisites
 - Node.js 18+
 - Go + Encore CLI (backend)

@@ -60,7 +60,12 @@ interface LessonGenerationResponse {
 export const generateLesson = api<LessonGenerationRequest, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate" },
   async (req, ctx) => {
-    try {
+    // Dedupe concurrent requests: same hfUrl+difficulty coalesce to one in-flight promise (short TTL)
+    const key = `${req.hfUrl}::${req.difficulty}`;
+    const existing = inflight.get(key);
+    if (existing) return await existing;
+    const task = (async (): Promise<LessonGenerationResponse> => {
+      try {
       // Extract model information from HF URL
       const modelInfo = await extractHFModelInfo(req.hfUrl);
 
@@ -117,15 +122,20 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
       }
 
       return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
-    } catch (error) {
-      const errorData = mapLessonGenerationError(error);
-      return {
-        success: false,
-        error: errorData
-      };
-    }
+      } catch (error) {
+        const errorData = mapLessonGenerationError(error);
+        return { success: false, error: errorData } as any;
+      }
+    })();
+    inflight.set(key, task);
+    // Cleanup after a short delay once it resolves
+    task.finally(() => setTimeout(() => inflight.delete(key), 5000));
+    return await task;
   }
 );
+
+// In-memory map of in-flight generation promises
+const inflight = new Map<string, Promise<LessonGenerationResponse>>();
 
 // Extract model information from Hugging Face URL
 async function extractHFModelInfo(hfUrl: string) {
