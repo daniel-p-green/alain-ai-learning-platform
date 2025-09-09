@@ -63,11 +63,36 @@ export async function POST(req: NextRequest) {
           const startAt = Date.now();
           let totalChars = 0;
           const enc = new TextEncoder();
+          // Buffered emission to avoid overwhelming clients on fast providers
+          const queue: string[] = [];
+          const flushIntervalMs = 16; // ~60Hz
+          let flushing = false;
+          const flush = () => {
+            if (flushing) return;
+            flushing = true;
+            setTimeout(() => {
+              try {
+                if (queue.length) {
+                  const chunk = queue.splice(0, queue.length).join("");
+                  controller.enqueue(enc.encode(chunk));
+                }
+              } finally {
+                flushing = false;
+              }
+            }, flushIntervalMs);
+          };
           const send = (obj: any) => {
             const payload = JSON.stringify(obj);
             totalChars += payload.length;
             const line = `data: ${payload}\n\n`;
-            controller.enqueue(enc.encode(line));
+            queue.push(line);
+            // Flush immediately if large, else batch
+            if (queue.length > 8 || payload.length > 2048) {
+              const chunk = queue.splice(0, queue.length).join("");
+              controller.enqueue(enc.encode(chunk));
+            } else {
+              flush();
+            }
           };
 
           const run = async () => {
@@ -75,7 +100,9 @@ export async function POST(req: NextRequest) {
               await provider.stream(body, (data) => {
                 send(data);
               }, req.signal);
-              controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+              queue.push("data: [DONE]\n\n");
+              const tail = queue.splice(0, queue.length).join("");
+              controller.enqueue(enc.encode(tail));
               // Basic metrics (duration, chars/sec) for observability
               const dur = Math.max(1, Date.now() - startAt);
               const cps = Math.round((totalChars / dur) * 1000);
@@ -87,7 +114,9 @@ export async function POST(req: NextRequest) {
                 await provider.stream(body, (data) => {
                   send(data);
                 }, req.signal);
-                controller.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
+                queue.push("data: [DONE]\n\n");
+                const tail = queue.splice(0, queue.length).join("");
+                controller.enqueue(enc.encode(tail));
                 const dur = Math.max(1, Date.now() - startAt);
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.log(`[SSE:retry] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
