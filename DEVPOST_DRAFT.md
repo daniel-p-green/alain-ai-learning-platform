@@ -3,6 +3,10 @@
 ## What it does
 Paste a Hugging Face model link and get a runnable, hands‑on lesson: learning objectives, progressive steps with parameterized model calls, and MCQ assessments. Export to Colab or learn in the in‑app player.
 
+New:
+- Adapt Experience (beta): tailor content for Beginner/Intermediate/Advanced on tutorial pages.
+- Public Tutorials directory: searchable, filterable list accessible from the header.
+
 ## Why gpt‑oss (20B/120B)
 - Open models teach open models: transparency and local control align with democratizing model education.
 - Practical: `gpt‑oss‑20b` balances quality and efficiency; it runs locally on a single workstation (Ollama/vLLM). `120B` is a high‑capacity path when available.
@@ -37,6 +41,7 @@ npm run dev:web
 - Streaming: Implemented in the Next.js layer only; Encore streaming disabled in MVP.
 - Reasoning visibility: Harmony‑style prompting used for the teacher, but internal reasoning is surfaced only as an optional summary in the Generate view (beta).
 - Tools/function calling: Minimal scaffold behind `TEACHER_ENABLE_TOOLS`; disabled by default to avoid provider incompatibilities.
+- Backend auth & rate limits: generation/execution require auth with per-user limits; Colab export lightly throttled.
 
 ## Challenges
 - Provider divergence and alias drift (solved with a shared alias map and tests).

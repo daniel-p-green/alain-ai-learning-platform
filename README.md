@@ -180,3 +180,11 @@ Issues, MRs, and PRs are welcome. See `HACKATHON_README.md` for scope and `POE_I
 
 ## License
 MIT
+## New Features
+- Adapt Experience (beta): On a tutorial page, use the Adapt block to tailor explanations for Beginner/Intermediate/Advanced without modifying the original content.
+- Public Tutorials: Browse tutorials from the header link “Tutorials” with search and filters.
+- Colab: Use the “Download Colab Notebook” button in a tutorial. To open in Google Colab, visit colab.research.google.com and choose Upload to select the downloaded .ipynb.
+
+## Security & Limits
+- Backend requires auth for generation and execution. Per-user rate limits apply; heavy downloads on Colab export are lightly throttled.
+- Teacher routing: GPT‑OSS‑120B runs via Poe only (requires `POE_API_KEY`); GPT‑OSS‑20B supports local.

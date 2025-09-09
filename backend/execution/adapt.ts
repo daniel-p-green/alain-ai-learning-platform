@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { requireUserId } from "../auth";
+import { allowRate } from "../utils/ratelimit";
 import { validateBackendEnv } from "../config/env";
 import { teacherGenerate } from "./teacher";
 
@@ -23,7 +24,9 @@ export const adaptContent = api<AdaptRequest, AdaptResponse>(
   async (req, ctx) => {
     try {
       validateBackendEnv();
-      await requireUserId(ctx);
+      const userId = await requireUserId(ctx);
+      const gate = allowRate(userId, 'adapt', Number(process.env.ADAPT_MAX_RPM || 20), 60_000);
+      if (!gate.ok) throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
 
       if (!req.current_content || typeof req.current_content !== 'string') {
         throw APIError.invalidArgument("current_content required");
@@ -59,4 +62,3 @@ export const adaptContent = api<AdaptRequest, AdaptResponse>(
     }
   }
 );
-

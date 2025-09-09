@@ -5,6 +5,7 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 type ProviderInfo = {
   id: string; name: string; description: string;
   supportsStreaming: boolean; requiresAuth: boolean;
+  supportsHarmonyRoles?: boolean; supportsTools?: boolean; notes?: string;
   status: "available" | "configuring" | "unavailable" | "unknown";
 };
 
@@ -75,6 +76,10 @@ export default function SettingsPage() {
                     </div>
                     <div className="text-sm text-gray-400">{p.description}</div>
                     <div className="text-xs text-gray-500 mt-1">Status: {p.status}</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Capabilities: {p.supportsHarmonyRoles ? 'harmony-roles ' : ''}{p.supportsTools ? 'tools ' : ''}
+                    </div>
+                    {p.notes && <div className="text-xs text-gray-500">{p.notes}</div>}
                   </div>
                   <div className="flex items-center gap-2">
                     <button onClick={() => validate(p.id)} className="px-3 py-1 rounded bg-blue-600 text-white">

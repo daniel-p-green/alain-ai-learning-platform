@@ -11,8 +11,8 @@ export async function POST(req: Request) {
   try {
     const text = await provider.execute({ provider: providerId, model, messages: [{ role: 'user', content: 'ping' }], stream: false });
     return Response.json({ success: true, sample: (text||'').slice(0,120) });
-  } catch (e: any) {
-    return Response.json({ success: false, error: { message: e?.message || String(e) } }, { status: 200 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'provider smoke test failed';
+    return Response.json({ success: false, error: { code: 'provider_error', message } }, { status: 200 });
   }
 }
-

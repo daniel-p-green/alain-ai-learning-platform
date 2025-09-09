@@ -11,6 +11,20 @@ describe("parseHfUrl", () => {
   it("rejects non-HF", () => {
     expect(() => parseHfUrl("https://example.com/x/y")).toThrow();
   });
+
+  it("rejects oversized owner or repo", () => {
+    const longOwner = 'a'.repeat(65);
+    const longRepo = 'b'.repeat(129);
+    expect(() => parseHfUrl(`https://huggingface.co/${longOwner}/repo`)).toThrow();
+    expect(() => parseHfUrl(`https://huggingface.co/owner/${longRepo}`)).toThrow();
+  });
+
+  it("rejects invalid characters", () => {
+    expect(() => parseHfUrl("https://huggingface.co/owner/repo!"))
+      .toThrow();
+    expect(() => parseHfUrl("https://huggingface.co/ow ner/repo"))
+      .toThrow();
+  });
 });
 
 describe("normalizeDifficulty", () => {
@@ -27,4 +41,3 @@ describe("toTags", () => {
     expect(toTags("Meta-LLaMA", "Llama-3.1-8B")).toContain("llama");
   });
 });
-

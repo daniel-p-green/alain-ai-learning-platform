@@ -9,7 +9,11 @@ export default function GenerateLessonPage() {
   const [error, setError] = useState<string | null>(null);
   const [errorDetails, setErrorDetails] = useState<string[]>([]);
   const [progress, setProgress] = useState<"idle" | "parsing" | "asking" | "importing" | "done">("idle");
-  const [result, setResult] = useState<null | { tutorialId: number; meta?: any; preview?: any }>(null);
+  type ModelMaker = { name: string; org_type: string; homepage?: string|null; license?: string|null; repo?: string|null };
+  type Preview = { title: string; description: string; learning_objectives: string[]; first_step?: { title: string; content: string } | null; model_maker?: ModelMaker | null };
+  type ResultMeta = { repaired?: boolean; reasoning_summary?: string };
+  type GenerateResult = { tutorialId: number; meta?: ResultMeta; preview?: Preview };
+  const [result, setResult] = useState<null | GenerateResult>(null);
   const [repairing, setRepairing] = useState(false);
   type ProviderModel = { id: string; name?: string };
   type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
