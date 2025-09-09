@@ -1,11 +1,20 @@
 import { api, APIError } from "encore.dev/api";
 import { teacherGenerate } from "./teacher";
+import { requireUserId } from "../auth";
+import { allowRate } from "../utils/ratelimit";
+import { validateBackendEnv } from "../config/env";
+import { validateLesson, applyDefaults } from "./spec/lessonSchema";
+import { parseHfUrl } from "../utils/hf";
 
 interface LessonGenerationRequest {
   hfUrl: string;
   difficulty: "beginner" | "intermediate" | "advanced";
   teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B";
   includeAssessment?: boolean;
+  // Optional provider toggle to select where the Teacher runs
+  provider?: "poe" | "openai-compatible";
+  // Optional: ask the teacher to include a brief reasoning summary in the output JSON
+  includeReasoning?: boolean;
 }
 
 interface LessonGenerationResponse {
@@ -54,12 +63,23 @@ interface LessonGenerationResponse {
 export const generateLesson = api<LessonGenerationRequest, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate" },
   async (req, ctx) => {
-    try {
+    validateBackendEnv();
+    const userId = await requireUserId(ctx);
+    const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
+    if (!gate.ok) {
+      throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
+    }
+    // Dedupe concurrent requests: same hfUrl+difficulty coalesce to one in-flight promise (short TTL)
+    const key = `${req.hfUrl}::${req.difficulty}`;
+    const existing = inflight.get(key);
+    if (existing) return await existing;
+    const task = (async (): Promise<LessonGenerationResponse> => {
+      try {
       // Extract model information from HF URL
       const modelInfo = await extractHFModelInfo(req.hfUrl);
 
       // Generate lesson content using teacher model
-      const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment);
+      const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
 
       const teacherResponse = await teacherGenerate({
         model: req.teacherModel,
@@ -69,75 +89,96 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
             content: lessonPrompt
           }
         ],
-        task: "lesson_generation"
+        task: "lesson_generation",
+        provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
       });
 
       if (!teacherResponse.success || !teacherResponse.content) {
         throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
       }
 
-      // Parse and validate the generated lesson
-      const lesson = parseGeneratedLesson(teacherResponse.content, modelInfo, req.difficulty);
+      // Parse → fill defaults → validate. If invalid, attempt a single repair pass.
+      let raw = teacherResponse.content;
 
-      return { success: true, lesson };
-    } catch (error) {
-      const errorData = mapLessonGenerationError(error);
-      return {
-        success: false,
-        error: errorData
+      // Extract optional reasoning_summary before sanitization
+      const extractReasoning = (jsonText: string): string | undefined => {
+        try {
+          let t = jsonText.trim();
+          if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
+          const o = JSON.parse(t);
+          const r = o?.reasoning_summary;
+          return typeof r === 'string' && r.trim() ? r.trim() : undefined;
+        } catch { return undefined; }
       };
-    }
+      let reasoningSummary = extractReasoning(raw);
+
+      let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
+      let v1 = validateLesson(lesson);
+      let usedRepair = false;
+      if (!v1.valid) {
+        const repaired = await attemptRepairJSON(req.teacherModel, raw);
+        if (!repaired) {
+          return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
+        }
+        lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
+        usedRepair = true;
+        // Try to re-extract reasoning if not present
+        if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
+        const v2 = validateLesson(lesson);
+        if (!v2.valid) {
+          return { success: false, error: { code: "validation_error", message: "Lesson invalid after repair", details: v2.errors } } as any;
+        }
+      }
+
+      return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
+      } catch (error) {
+        const errorData = mapLessonGenerationError(error);
+        return { success: false, error: errorData } as any;
+      }
+    })();
+    inflight.set(key, task);
+    // Cleanup after a short delay once it resolves
+    task.finally(() => setTimeout(() => inflight.delete(key), 5000));
+    return await task;
   }
 );
 
+// In-memory map of in-flight generation promises
+const inflight = new Map<string, Promise<LessonGenerationResponse>>();
+
 // Extract model information from Hugging Face URL
 async function extractHFModelInfo(hfUrl: string) {
-  // Extract model name from URL
-  const urlMatch = hfUrl.match(/huggingface\.co\/([^\/]+)\/([^\/]+)/);
-  if (!urlMatch) {
+  // Strict HF parsing and host allowlisting
+  let owner: string, repo: string;
+  try {
+    const ref = parseHfUrl(hfUrl);
+    owner = ref.owner; repo = ref.repo;
+  } catch {
     throw APIError.invalidArgument("Invalid Hugging Face URL format");
   }
 
-  const [, org, model] = urlMatch;
-
+  const apiUrl = `https://huggingface.co/api/models/${owner}/${repo}`;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 5000);
   try {
-    // Try to fetch model card (this would be expanded in production)
-    const response = await fetch(`https://huggingface.co/api/models/${org}/${model}`, {
-      headers: {
-        'User-Agent': 'ALAIN-Lesson-Generator/1.0'
-      }
+    const response = await fetch(apiUrl, {
+      headers: { 'User-Agent': 'ALAIN-Lesson-Generator/1.0' },
+      signal: ctrl.signal,
     });
-
+    clearTimeout(t);
     if (!response.ok) {
-      // Fallback to basic info if API fails
-      return {
-        name: model,
-        org: org,
-        url: hfUrl,
-        card: null
-      };
+      return { name: `${owner}/${repo}`, org: owner, url: `https://huggingface.co/${owner}/${repo}` } as any;
     }
-
     const card = await response.json();
-    return {
-      name: model,
-      org: org,
-      url: hfUrl,
-      card: card
-    };
+    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card } as any;
   } catch (error) {
-    // Fallback if network request fails
-    return {
-      name: model,
-      org: org,
-      url: hfUrl,
-      card: null
-    };
+    clearTimeout(t);
+    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card: null } as any;
   }
 }
 
 // Build comprehensive lesson generation prompt
-function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean): string {
+function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean, includeReasoning?: boolean): string {
   const basePrompt = `Generate a comprehensive, structured lesson for the AI model: ${modelInfo.name}
 
 Model Information:
@@ -158,6 +199,7 @@ Format your response as a JSON object with this structure:
 {
   "title": "Lesson Title",
   "description": "Brief description",
+  ${includeReasoning ? '"reasoning_summary": "2-4 sentences explaining why you chose this teaching approach and step ordering.",' : ''}
   "learning_objectives": ["Objective 1", "Objective 2"],
   "steps": [
     {
@@ -206,30 +248,58 @@ function parseGeneratedLesson(content: string, modelInfo: any, difficulty: strin
 
     const lessonData = JSON.parse(cleanContent);
 
-    // Validate required fields
-    if (!lessonData.title || !lessonData.description || !lessonData.steps) {
-      throw new Error("Generated lesson missing required fields");
-    }
-
-    // Add default values and metadata
-    lessonData.model = modelInfo.name;
-    lessonData.provider = "poe";
-    lessonData.difficulty = difficulty;
-    lessonData.tags = lessonData.tags || [`${modelInfo.org}`, difficulty];
-
-    // Ensure steps have proper structure
-    lessonData.steps = lessonData.steps.map((step: any, index: number) => ({
-      step_order: step.step_order || (index + 1),
-      title: step.title,
-      content: step.content,
-      code_template: step.code_template || null,
-      expected_output: step.expected_output || null,
-      model_params: step.model_params || { temperature: 0.7 }
-    }));
-
+    // Basic normalization only; validation and defaults applied later.
     return lessonData;
   } catch (error) {
     throw new Error(`Failed to parse generated lesson: ${error instanceof Error ? error.message : 'Invalid format'}`);
+  }
+}
+
+// Drop unknown fields defensively
+function sanitizeLesson(lessonData: any) {
+  const allowTop = new Set([
+    'title','description','model','provider','difficulty','tags','learning_objectives','steps','assessments','model_maker'
+  ]);
+  const allowStep = new Set(['step_order','title','content','code_template','expected_output','model_params']);
+  const out: any = {};
+  for (const k of Object.keys(lessonData || {})) {
+    if (allowTop.has(k)) out[k] = (lessonData as any)[k];
+  }
+  if (Array.isArray(out.steps)) {
+    out.steps = out.steps.map((s: any) => {
+      const ss: any = {};
+      for (const k of Object.keys(s || {})) if (allowStep.has(k)) ss[k] = s[k];
+      return ss;
+    });
+  }
+  return out;
+}
+
+/**
+ * Validate lesson object against a minimal schema (no external deps).
+ */
+// moved validate + defaults to ./spec/lessonSchema
+
+/**
+ * Attempt a single "repair JSON" pass by asking the teacher to output valid JSON only.
+ * Returns a JSON string or null if repair failed.
+ */
+async function attemptRepairJSON(teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B", broken: string): Promise<string | null> {
+  try {
+    const prompt = `The following JSON is invalid or incomplete for a lesson package. Repair with valid JSON only. Include: title, description, steps[3-5] with { step_order, title, content, code_template?, expected_output?, model_params? }, optional learning_objectives[], optional assessments[]. Output ONLY JSON.\n\nJSON:\n${broken}`;
+    const resp = await teacherGenerate({
+      model: teacherModel,
+      messages: [{ role: 'user', content: prompt }],
+      task: 'lesson_generation',
+      provider: (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe') as any,
+      temperature: 0.0,
+      max_tokens: 3000,
+    });
+    if (!resp.success || !resp.content) return null;
+    // Return raw content; caller will parse and validate.
+    return resp.content;
+  } catch {
+    return null;
   }
 }
 

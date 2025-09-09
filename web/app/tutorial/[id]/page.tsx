@@ -53,19 +53,48 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [out, setOut] = useState("");
   const [executionState, setExecutionState] = useState<ExecutionState>({ status: 'idle' });
   const abortControllerRef = useRef<AbortController | null>(null);
+  const [showRequest, setShowRequest] = useState(false);
+  const [lastRequest, setLastRequest] = useState<any | null>(null);
+  const [curl, setCurl] = useState<string>("");
+  const [sdk, setSdk] = useState<string>("");
+  const [toast, setToast] = useState<string | null>(null);
+  const providerStatus = providers.find((p:any)=> p.id===runProvider)?.status || 'unknown';
+  const providerAvailable = providerStatus === 'available';
   const monacoRef = useRef<HTMLDivElement | null>(null);
   const monacoEditorRef = useRef<any>(null);
   const [monacoReady, setMonacoReady] = useState(false);
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<{ correct: boolean; explanation?: string } | null>(null);
+  const [adapted, setAdapted] = useState<string | null>(null);
+  const [targetDifficulty, setTargetDifficulty] = useState<'beginner'|'intermediate'|'advanced'>('beginner');
+  type ProviderModel = { id: string; name?: string };
+  type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
+  const [providers, setProviders] = useState<ProviderInfo[]>([]);
+  const [runProvider, setRunProvider] = useState<string>("poe");
+  const [runModel, setRunModel] = useState<string>("");
 
   useEffect(() => {
     fetchTutorial(id).then((t) => {
       setTutorial(t);
       setPrompt(t?.steps?.[0]?.code_template || "");
+      setRunProvider(t?.provider || 'poe');
+      setRunModel(t?.model || '');
     });
   }, [id]);
+
+  // Load providers for model suggestions
+  useEffect(() => {
+    (async () => {
+      try {
+        const resp = await fetch('/api/providers');
+        const data = await resp.json();
+        setProviders(data.providers || []);
+      } catch (e) {
+        // ignore for now in tutorial view; UI degrades gracefully
+      }
+    })();
+  }, []);
 
   // Load assessments for current step
   useEffect(() => {
@@ -158,15 +187,22 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
     });
 
     try {
+      if (!providerAvailable) {
+        setToast('Provider not configured. Set keys in Settings.');
+        setTimeout(()=> setToast(null), 2000);
+        return;
+      }
+      const body = {
+        provider: runProvider || tutorial.provider,
+        model: runModel || tutorial.model,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+      };
+      setLastRequest(body);
       const resp = await fetch("/api/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider: tutorial.provider,
-          model: tutorial.model,
-          messages: [{ role: "user", content: prompt }],
-          stream: true,
-        }),
+        body: JSON.stringify(body),
         signal: abortControllerRef.current.signal,
       });
 
@@ -177,6 +213,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
       if (!resp.body) throw new Error("No response stream");
 
+      setToast('Streaming started');
+      setTimeout(()=> setToast(null), 1200);
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
@@ -259,6 +297,23 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
     }
   }
 
+  // Build copyable code snippets
+  useEffect(() => {
+    const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "";
+    const payload = lastRequest || { provider: tutorial?.provider, model: tutorial?.model, messages: [{ role: 'user', content: prompt }], stream: false };
+    const baseUrl = payload.provider === 'poe' ? 'https://api.poe.com/v1' : (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1');
+    const keyVar = payload.provider === 'poe' ? 'POE_API_KEY' : 'OPENAI_API_KEY';
+    const curlCmd = [
+      `curl -s -X POST "${baseUrl}/chat/completions" \\\n`,
+      `  -H "Authorization: Bearer $${keyVar}" \\\n`,
+      `  -H "Content-Type: application/json" \\\n`,
+      `  -d '${JSON.stringify({ model: payload.model, messages: payload.messages, stream: false, temperature: 0.7 })}'`
+    ].join("");
+    setCurl(curlCmd);
+    const sdkJs = `import OpenAI from 'openai';\n\nconst client = new OpenAI({ apiKey: process.env.${keyVar}, baseURL: '${baseUrl}' });\nconst resp = await client.chat.completions.create({ model: '${payload.model}', messages: ${JSON.stringify(payload.messages)}, max_tokens: 400 });\nconsole.log(resp.choices[0].message.content);\n`;
+    setSdk(sdkJs);
+  }, [lastRequest, tutorial, prompt]);
+
   function cancelExecution() {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -270,7 +325,12 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-      <a className="text-blue-400 hover:underline" href="/tutorials">← Back</a>
+      <div className="flex items-center justify-between">
+        <a className="text-blue-400 hover:underline" href="/tutorials">← Back</a>
+        <a className="text-xs text-gray-400 hover:underline" target="_blank" href={
+          `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
+        }>Report issue</a>
+      </div>
       <h1 className="text-3xl font-bold">{tutorial.title}</h1>
       <p className="text-gray-400">{tutorial.description}</p>
 
@@ -329,6 +389,25 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         <div className="space-y-3">
           <h2 className="text-xl font-semibold">{step.title}</h2>
           <div className="whitespace-pre-wrap text-gray-200">{step.content}</div>
+          {/* Provider/model picker for run-time */}
+          <div className="flex items-center gap-2 text-sm">
+            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)}>
+              {providers.map((p)=> (<option key={p.id} value={p.id}>{p.name}</option>))}
+            </select>
+            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runModel} onChange={(e)=> setRunModel(e.target.value)}>
+              <option value="">{tutorial?.model || 'Model'}</option>
+              {(providers.find((p)=> p.id===runProvider)?.models || []).map((m)=> (
+                <option key={m.id} value={m.id}>{m.name || m.id}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Provider status banner */}
+          {!providerAvailable && (
+            <div className="bg-red-900/20 border border-red-700 rounded-lg p-2 text-sm text-red-300">
+              Provider not configured. Set keys in Settings and pick a working provider/model.
+            </div>
+          )}
 
           {/* Execution Status Bar */}
           {executionState.status !== 'idle' && (
@@ -448,6 +527,48 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             </div>
           )}
 
+          {/* Experience Adaptation */}
+          <div className="bg-gray-800 rounded-lg p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">Adapt Experience</h3>
+              <div className="flex items-center gap-2 text-sm">
+                <label className="text-gray-300">Target</label>
+                <select className="px-2 py-1 rounded bg-gray-900 border border-gray-700" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)}>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+                <button
+                  className="px-3 py-1.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white"
+                  onClick={async ()=>{
+                    const score = assessmentResult ? (assessmentResult.correct ? 80 : 40) : 60;
+                    const resp = await fetch('/api/adapt', {
+                      method:'POST',
+                      headers:{'Content-Type':'application/json'},
+                      body: JSON.stringify({
+                        tutorialId: tutorial.id,
+                        stepOrder: step.step_order,
+                        current_content: step.content,
+                        user_performance: score,
+                        target_difficulty: targetDifficulty,
+                        provider: 'poe'
+                      })
+                    });
+                    const data = await resp.json();
+                    if (data.success && data.adapted) setAdapted(data.adapted);
+                  }}
+                >Adapt</button>
+              </div>
+            </div>
+            {adapted && (
+              <div className="mt-1 p-3 rounded border border-indigo-700 bg-indigo-900/10">
+                <div className="text-sm text-indigo-300 font-medium mb-1">Adapted for {targetDifficulty}</div>
+                <div className="whitespace-pre-wrap text-indigo-100">{adapted}</div>
+              </div>
+            )}
+            <div className="text-xs text-gray-500">Uses teacher model; original content remains unchanged.</div>
+          </div>
+
           {/* Progress */}
           {user && (
             <button
@@ -472,9 +593,16 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Output</h2>
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Output</h2>
+          <div className="flex items-center gap-2">
+            <button
+              className="text-xs px-2 py-1 rounded bg-gray-800 border border-gray-700"
+              onClick={() => setShowRequest(!showRequest)}
+            >
+              {showRequest ? 'Hide Request' : 'Show Request'}
+            </button>
             {executionState.status === 'completed' && (
               <span className="text-sm text-green-400 font-medium">✓ Completed</span>
             )}
@@ -482,6 +610,20 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
               <span className="text-sm text-yellow-400 font-medium">⏹ Cancelled</span>
             )}
           </div>
+        </div>
+
+        {showRequest && (
+          <div className="text-xs bg-gray-900 border border-gray-800 rounded p-3">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-gray-400">Last request payload</div>
+              <button
+                className="px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-white"
+                onClick={() => navigator.clipboard.writeText(JSON.stringify(lastRequest || {}, null, 2))}
+              >Copy JSON</button>
+            </div>
+            <pre className="whitespace-pre-wrap text-gray-300">{JSON.stringify(lastRequest || {}, null, 2)}</pre>
+          </div>
+        )}
 
           <pre className={`min-h-64 p-3 bg-gray-900 rounded border whitespace-pre-wrap ${
             executionState.status === 'error' ? 'border-red-700' :
@@ -490,6 +632,18 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           }`}>
             {out || (executionState.status === 'idle' ? 'Click "Run step" to execute your prompt...' : '')}
           </pre>
+
+          {/* Copy helpers */}
+          <div className="bg-gray-900 border border-gray-800 rounded p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-300">Copy as</div>
+              <div className="flex gap-2">
+                <button className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-xs" onClick={() => navigator.clipboard.writeText(curl)}>curl</button>
+                <button className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-xs" onClick={() => navigator.clipboard.writeText(sdk)}>OpenAI SDK (JS)</button>
+              </div>
+            </div>
+            <pre className="text-xs whitespace-pre-wrap text-gray-400">{curl}</pre>
+          </div>
 
           {/* Budget Indicators */}
           {executionState.status === 'completed' && executionState.tokenCount && (
@@ -503,6 +657,10 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                 <div>
                   <span className="text-gray-400">Est. Tokens:</span>
                   <div className="text-white font-mono">~{executionState.tokenCount}</div>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-gray-400">Est. Cost:</span>
+                  <CostHint provider={runProvider} model={runModel || tutorial.model} tokens={executionState.tokenCount || 0} />
                 </div>
               </div>
             </div>
@@ -531,7 +689,33 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         >
           Download Colab Notebook
         </button>
+        <div className="text-xs text-gray-500 mt-2">
+          Tip: To open in Google Colab, visit <a className="text-blue-400 hover:underline" href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
+        </div>
       </div>
+
+      {toast && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded bg-gray-900 border border-gray-700 text-white shadow">{toast}</div>
+      )}
+    </div>
+  );
+}
+
+function CostHint({ provider, model, tokens }: { provider: string; model: string; tokens: number }) {
+  // Very rough cost map (USD per 1K tokens)
+  const COSTS: Record<string, { in?: number; out?: number }> = {
+    'gpt-4o': { in: 0.005, out: 0.015 },
+    'gpt-4o-mini': { in: 0.00015, out: 0.0006 },
+    'gpt-4-turbo': { in: 0.01, out: 0.03 },
+  };
+  const key = (model || '').toLowerCase();
+  const c = COSTS[key];
+  if (!c) return <div className="text-white font-mono">N/A</div>;
+  const cost = (tokens / 1000) * ((c.in || 0) + (c.out || 0));
+  return (
+    <div className="text-white font-mono inline-flex items-center gap-2">
+      ~${cost.toFixed(4)}
+      <span className="text-xs text-gray-500" title="Rough estimate; varies by provider and direction.">ⓘ</span>
     </div>
   );
 }

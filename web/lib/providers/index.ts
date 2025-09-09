@@ -12,9 +12,8 @@ export type ExecuteBody = {
 
 export interface Provider {
   execute(body: ExecuteBody): Promise<string>;
-  stream(body: ExecuteBody, onData: (data: any) => void): Promise<void>;
+  stream(body: ExecuteBody, onData: (data: any) => void, signal?: AbortSignal): Promise<void>;
 }
 
 export { poeProvider } from "./poe";
 export { openAIProvider } from "./openai";
-

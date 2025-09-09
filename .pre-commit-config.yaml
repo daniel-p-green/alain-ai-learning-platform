@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+      - id: nbstripout
+        name: Strip Jupyter outputs
+        files: \.ipynb$
+
+  - repo: local
+    hooks:
+      - id: notebook-linter
+        name: Notebook Linter (teaching best practices)
+        entry: python scripts/notebook_linter.py
+        language: system
+        files: \.ipynb$
+        pass_filenames: true
+

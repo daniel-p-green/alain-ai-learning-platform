@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "packageManager": "bun",
+  "scripts": {
+    "test:pure": "npm --workspace backend run test:pure",
+    "test:all": "npm --workspace backend run test:all"
+  },
   "workspaces": [
     "backend",
-    "frontend"
+    "web"
   ]
 }
