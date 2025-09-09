@@ -12,18 +12,21 @@ export async function POST(req: Request) {
   const includeAssessment = Boolean(body.includeAssessment);
 
   // 1) Generate lesson structure from HF URL
+  const genStart = Date.now();
   const genResp = await fetch(`${base}/lessons/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment })
   });
   const gen = await genResp.json();
+  const genMs = Date.now() - genStart;
   if (!gen.success) return Response.json(gen, { status: 200 });
 
   const lesson = gen.lesson;
 
   // 2) Persist lesson into tutorials
   const token = await getToken();
+  const impStart = Date.now();
   const impResp = await fetch(`${base}/tutorials/import`, {
     method: "POST",
     headers: {
@@ -37,6 +40,20 @@ export async function POST(req: Request) {
     return new Response(`Import failed: ${t}`, { status: 500 });
   }
   const imp = await impResp.json();
-  return Response.json({ success: true, tutorialId: imp.tutorialId });
-}
+  const impMs = Date.now() - impStart;
 
+  // Preview data for instant confirmation UI
+  const preview = {
+    title: lesson.title,
+    description: lesson.description,
+    learning_objectives: lesson.learning_objectives || [],
+    first_step: lesson.steps?.[0] || null,
+  };
+
+  return Response.json({
+    success: true,
+    tutorialId: imp.tutorialId,
+    meta: { repaired: !!gen?.meta?.repaired, timings: { lesson_ms: genMs, import_ms: impMs } },
+    preview,
+  });
+}
