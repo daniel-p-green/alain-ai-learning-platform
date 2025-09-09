@@ -4,12 +4,21 @@ import { useState } from "react";
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
   const [difficulty, setDifficulty] = useState("beginner");
+  const [teacherProvider, setTeacherProvider] = useState<"poe" | "openai-compatible">("poe");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorDetails, setErrorDetails] = useState<string[]>([]);
   const [progress, setProgress] = useState<"idle" | "parsing" | "asking" | "importing" | "done">("idle");
   const [result, setResult] = useState<null | { tutorialId: number; meta?: any; preview?: any }>(null);
   const [repairing, setRepairing] = useState(false);
+  const [providers, setProviders] = useState<any[]>([]);
+  const [targetProvider, setTargetProvider] = useState<string>("poe");
+  const [targetModel, setTargetModel] = useState<string>("");
+  const [snackbar, setSnackbar] = useState<string | null>(null);
+
+  // Load provider capabilities for model picker
+  // (Optional enhancement; UI falls back gracefully if unavailable)
+  (async () => {})();
 
   function parseHfInput(input: string): { ok: boolean; url: string } {
     const t = input.trim();
@@ -19,6 +28,21 @@ export default function GenerateLessonPage() {
     if (/^[^\s\/]+\/[A-Za-z0-9._\-]+$/.test(t)) return { ok: true, url: `https://huggingface.co/${t}` };
     return { ok: false, url: t };
   }
+
+  // Lazy-load providers once
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useState(() => {
+    (async () => {
+      try {
+        const resp = await fetch('/api/providers');
+        const data = await resp.json();
+        setProviders(data.providers || []);
+        // Default target provider to backend default if present
+        if (data.defaultProvider) setTargetProvider(data.defaultProvider);
+      } catch {}
+    })();
+    return undefined;
+  });
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +62,7 @@ export default function GenerateLessonPage() {
       const resp = await fetch("/api/generate-lesson", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true })
+        body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
       });
       const data = await resp.json();
       if (!data.success) {
@@ -49,6 +73,8 @@ export default function GenerateLessonPage() {
       }
       setProgress("done");
       setResult({ tutorialId: data.tutorialId, meta: data.meta, preview: data.preview });
+      setSnackbar('Lesson ready! Open the tutorial or export to Colab.');
+      setTimeout(() => setSnackbar(null), 2500);
     } catch (e: any) {
       setError(e?.message || String(e));
       setErrorDetails([]);
@@ -68,6 +94,30 @@ export default function GenerateLessonPage() {
           value={hfUrl}
           onChange={(e) => setHfUrl(e.target.value)}
         />
+        {/* Provider/Model picker for runtime */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <select
+            className="p-2 rounded bg-gray-900 border border-gray-800"
+            value={targetProvider}
+            onChange={(e) => setTargetProvider(e.target.value)}
+            title="Choose provider for running steps"
+          >
+            {providers.map((p: any) => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+          <select
+            className="p-2 rounded bg-gray-900 border border-gray-800"
+            value={targetModel}
+            onChange={(e) => setTargetModel(e.target.value)}
+            title="Default model for steps"
+          >
+            <option value="">Auto (from HF model)</option>
+            {(providers.find((p:any)=>p.id===targetProvider)?.models || []).map((m:any)=> (
+              <option key={m.id} value={m.id}>{m.name || m.id}</option>
+            ))}
+          </select>
+        </div>
         <select
           className="p-2 rounded bg-gray-900 border border-gray-800"
           value={difficulty}
@@ -78,6 +128,19 @@ export default function GenerateLessonPage() {
           <option value="intermediate">Intermediate</option>
           <option value="advanced">Advanced</option>
         </select>
+        <div className="flex items-center gap-2 text-sm text-gray-300">
+          <label htmlFor="teacher-provider" className="whitespace-nowrap">Teacher Provider</label>
+          <select
+            id="teacher-provider"
+            className="p-2 rounded bg-gray-900 border border-gray-800"
+            value={teacherProvider}
+            onChange={(e) => setTeacherProvider(e.target.value as any)}
+            title="Choose Poe or a local OpenAI‑compatible endpoint (e.g., Ollama)"
+          >
+            <option value="poe">Poe (hosted)</option>
+            <option value="openai-compatible">Local (OpenAI‑compatible)</option>
+          </select>
+        </div>
         <div className="flex gap-2">
           <button className="brand-cta disabled:opacity-50" disabled={loading || !hfUrl.trim()}>
             {loading ? "Generating..." : "Generate Lesson"}
@@ -114,7 +177,12 @@ export default function GenerateLessonPage() {
       {!result && error && errorDetails.length > 0 && (
         <div className="mt-3 text-sm text-gray-300">
           <div className="mb-1">Try automatic fixes:</div>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3 text-xs text-gray-400">
+              <label className="inline-flex items-center gap-1" title="Add 2–3 sentence description if missing"><input type="checkbox" defaultChecked readOnly /> add_description</label>
+              <label className="inline-flex items-center gap-1" title="Create an intro step if steps are missing"><input type="checkbox" defaultChecked readOnly /> add_intro_step</label>
+              <label className="inline-flex items-center gap-1" title="Limit to ~3 strong steps"><input type="checkbox" defaultChecked readOnly /> compact_steps</label>
+            </div>
             <button
               className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white disabled:opacity-50"
               disabled={repairing}
@@ -124,7 +192,7 @@ export default function GenerateLessonPage() {
                 const resp = await fetch('/api/repair-lesson', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ hfUrl: parsed.url, difficulty, fixes: ['add_description','add_intro_step'] })
+                  body: JSON.stringify({ hfUrl: parsed.url, difficulty, fixes: ['add_description','add_intro_step','compact_steps'] })
                 });
                 const data = await resp.json();
                 setRepairing(false);
@@ -135,6 +203,8 @@ export default function GenerateLessonPage() {
                   setError(null);
                   setErrorDetails([]);
                   setResult({ tutorialId: data.tutorialId, preview: data.preview });
+                  setSnackbar('Repaired and imported successfully');
+                  setTimeout(() => setSnackbar(null), 2000);
                 }
               }}
             >Auto-fix and Import</button>
@@ -193,6 +263,20 @@ export default function GenerateLessonPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Quick-start HF links */}
+      <div className="mt-6 text-sm text-gray-400">
+        <div className="font-medium text-gray-300 mb-1">Try these popular models</div>
+        <div className="flex flex-wrap gap-2">
+          {['meta-llama/Meta-Llama-3.1-8B-Instruct','google/gemma-2-9b-it','mistralai/Mistral-7B-Instruct-v0.3'].map(m => (
+            <button key={m} className="px-2 py-1 rounded bg-gray-800 border border-gray-700" onClick={() => setHfUrl(m)}>{m}</button>
+          ))}
+        </div>
+      </div>
+
+      {snackbar && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded bg-gray-900 border border-gray-700 text-white shadow">{snackbar}</div>
       )}
     </div>
   );
