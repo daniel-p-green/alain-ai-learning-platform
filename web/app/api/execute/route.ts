@@ -6,16 +6,21 @@ import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib
 const BUCKET: Record<string, number[]> = {};
 const WINDOW_MS = 60_000;
 const MAX_RPM = Number(process.env.NEXT_PUBLIC_EXECUTE_RPM || 30);
+const GC_ON_EMPTY = true; // drop user bucket if empty after prune
 
 function allow(userId: string): { ok: boolean; retryAfter?: number } {
   const now = Date.now();
   const arr = (BUCKET[userId] ||= []);
   while (arr.length && now - arr[0] > WINDOW_MS) arr.shift();
+  if (GC_ON_EMPTY && arr.length === 0) {
+    // No recent activity; free the bucket to avoid memory growth
+    delete BUCKET[userId];
+  }
   if (arr.length >= MAX_RPM) {
     const retryAfterMs = WINDOW_MS - (now - arr[0]);
     return { ok: false, retryAfter: Math.ceil(retryAfterMs / 1000) };
   }
-  arr.push(now);
+  (BUCKET[userId] ||= []).push(now);
   return { ok: true };
 }
 
