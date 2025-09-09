@@ -241,6 +241,17 @@ export default function GenerateLessonPage() {
           </div>
           <div className="text-white font-medium">{result.preview?.title}</div>
           <div className="text-gray-300">{result.preview?.description}</div>
+          {result.preview?.model_maker && (
+            <div className="text-sm text-gray-300 border border-gray-800 rounded p-3 bg-gray-950/40">
+              <div className="font-medium text-gray-200 mb-1">Model Maker</div>
+              <div>{result.preview.model_maker.name} ({result.preview.model_maker.org_type})</div>
+              <div className="flex gap-2 mt-1">
+                {result.preview.model_maker.homepage && <a className="text-blue-400 hover:underline" href={result.preview.model_maker.homepage} target="_blank">Homepage</a>}
+                {result.preview.model_maker.repo && <a className="text-blue-400 hover:underline" href={result.preview.model_maker.repo} target="_blank">Repo</a>}
+                {result.preview.model_maker.license && <span className="text-gray-400">License: {result.preview.model_maker.license}</span>}
+              </div>
+            </div>
+          )}
           {Array.isArray(result.preview?.learning_objectives) && result.preview.learning_objectives.length > 0 && (
             <div className="text-sm text-gray-400">
               <div className="font-medium text-gray-300 mb-1">Objectives</div>

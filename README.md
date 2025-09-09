@@ -27,6 +27,9 @@ GPT‑OSS Docs
 - Fine‑Tuning: `docs/gpt-oss/fine-tuning.md`
 - RAG Recipes: `docs/gpt-oss/rag-recipes.md`
 
+Examples
+- GPT‑OSS 20B Active Learning: `docs/examples/gpt-oss-20b_active_learning.ipynb`
+
 ## What You Get
 - Backend (`backend/`): Encore.ts APIs for parsing, lesson generation, execution, and Colab export
 - Web (`web/`): Next.js app (Clerk auth) to generate, preview, and run lessons
