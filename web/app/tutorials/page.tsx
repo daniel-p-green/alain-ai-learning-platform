@@ -12,6 +12,7 @@ type Tutorial = {
   difficulty: string;
   tags: string[];
   created_at: string;
+  model_maker_name?: string | null;
 };
 
 type PaginationInfo = {
@@ -27,6 +28,7 @@ type FiltersInfo = {
   difficulties: string[];
   providers: string[];
   tags: string[];
+  modelMakers?: string[];
 };
 
 type TutorialsResponse = {
@@ -40,6 +42,7 @@ type FilterState = {
   provider: string;
   tags: string[];
   search: string;
+  modelMaker: string;
 };
 
 export default function TutorialsPage() {
@@ -49,7 +52,8 @@ export default function TutorialsPage() {
     difficulty: "",
     provider: "",
     tags: [],
-    search: ""
+    search: "",
+    modelMaker: "",
   });
 
   useEffect(() => {
@@ -65,7 +69,8 @@ export default function TutorialsPage() {
         ...(filters.difficulty && { difficulty: filters.difficulty }),
         ...(filters.provider && { provider: filters.provider }),
         ...(filters.search && { search: filters.search }),
-        ...(filters.tags.length > 0 && { tags: filters.tags.join(",") })
+        ...(filters.tags.length > 0 && { tags: filters.tags.join(",") }),
+        ...(filters.modelMaker && { modelMaker: filters.modelMaker })
       });
 
       const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
@@ -100,7 +105,8 @@ export default function TutorialsPage() {
       difficulty: "",
       provider: "",
       tags: [],
-      search: ""
+      search: "",
+      modelMaker: "",
     });
     loadTutorials(1);
   };
@@ -160,7 +166,7 @@ export default function TutorialsPage() {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Difficulty Filter */}
           <div>
             <label className="block text-sm font-medium mb-2">Difficulty</label>
@@ -191,6 +197,21 @@ export default function TutorialsPage() {
                 <option key={provider} value={provider}>
                   {provider.charAt(0).toUpperCase() + provider.slice(1)}
                 </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Model Maker Filter */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Model Maker</label>
+            <select
+              value={filters.modelMaker}
+              onChange={(e) => handleFilterChange('modelMaker', e.target.value)}
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
+            >
+              <option value="">All Creators</option>
+              {(data?.filters.modelMakers || []).map(m => (
+                <option key={m} value={m}>{m}</option>
               ))}
             </select>
           </div>
@@ -246,6 +267,10 @@ export default function TutorialsPage() {
               <span className="text-gray-500">{tutorial.provider}</span>
               <span className="text-gray-600">•</span>
               <span className="text-gray-500">{tutorial.model}</span>
+              {tutorial.model_maker_name && (<>
+                <span className="text-gray-600">•</span>
+                <span className="text-gray-400">{tutorial.model_maker_name}</span>
+              </>)}
             </div>
 
             <div className="flex flex-wrap gap-1 mb-4">
@@ -313,4 +338,3 @@ export default function TutorialsPage() {
     </div>
   );
 }
-

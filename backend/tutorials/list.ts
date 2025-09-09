@@ -11,6 +11,7 @@ interface Tutorial {
   tags: string[];
   created_at: Date;
   updated_at: Date;
+  model_maker_name?: string | null;
 }
 
 interface ListTutorialsResponse {
@@ -27,6 +28,7 @@ interface ListTutorialsResponse {
     difficulties: string[];
     providers: string[];
     tags: string[];
+    modelMakers?: string[];
   };
 }
 
@@ -37,6 +39,7 @@ interface ListQuery {
   difficulty?: string;
   provider?: string;
   search?: string;
+  modelMaker?: string;
 }
 
 // Retrieves tutorials with filtering, pagination, and metadata
@@ -56,6 +59,9 @@ export const list = api<ListQuery, ListTutorialsResponse>(
     }
     if (q.provider) {
       whereParts.push(`provider = $${params.push(q.provider)}`);
+    }
+    if (q.modelMaker) {
+      whereParts.push(`EXISTS (SELECT 1 FROM model_makers mm WHERE mm.id = tutorials.model_maker_id AND mm.name = $${params.push(q.modelMaker)})`);
     }
     if (q.tags && q.tags.length) {
       whereParts.push(`tags && $${params.push(q.tags)}::text[]`);
@@ -80,9 +86,12 @@ export const list = api<ListQuery, ListTutorialsResponse>(
     // Get tutorials with pagination
     const tutorials: Tutorial[] = [];
     const tutorialRows = tutorialsDB.query<Tutorial>([
-      `SELECT id, title, description, model, provider, difficulty, tags, created_at, updated_at
-       FROM tutorials ${whereSql}
-       ORDER BY created_at DESC
+      `SELECT t.id, t.title, t.description, t.model, t.provider, t.difficulty, t.tags, t.created_at, t.updated_at,
+              mm.name as model_maker_name
+       FROM tutorials t
+       LEFT JOIN model_makers mm ON mm.id = t.model_maker_id
+       ${whereSql}
+       ORDER BY t.created_at DESC
        LIMIT $${params.push(pageSize)} OFFSET $${params.push(offset)}`,
       ...params,
     ] as any);
@@ -92,10 +101,11 @@ export const list = api<ListQuery, ListTutorialsResponse>(
     }
 
     // Get filter options
-    const [difficulties, providers, tags] = await Promise.all([
+    const [difficulties, providers, tags, makers] = await Promise.all([
       tutorialsDB.query<{ difficulty: string }>`SELECT DISTINCT difficulty FROM tutorials ORDER BY difficulty`,
       tutorialsDB.query<{ provider: string }>`SELECT DISTINCT provider FROM tutorials ORDER BY provider`,
-      tutorialsDB.query<{ tag: string }>`SELECT DISTINCT unnest(tags) as tag FROM tutorials ORDER BY tag`
+      tutorialsDB.query<{ tag: string }>`SELECT DISTINCT unnest(tags) as tag FROM tutorials ORDER BY tag`,
+      tutorialsDB.query<{ name: string }>`SELECT DISTINCT name FROM model_makers ORDER BY name`
     ]);
 
     const filterDifficulties = difficulties.map(d => d.difficulty);
@@ -115,7 +125,8 @@ export const list = api<ListQuery, ListTutorialsResponse>(
       filters: {
         difficulties: filterDifficulties,
         providers: filterProviders,
-        tags: filterTags
+        tags: filterTags,
+        modelMakers: makers.map(m => m.name),
       }
     };
   }
