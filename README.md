@@ -1,205 +1,139 @@
-# ALAIN - Applied Learning AI Notebooks
+# ALAIN — Applied Learning AI Notebooks
 
-An interactive AI learning platform that combines theory with hands-on experience using real AI models.
+Learn models by doing. Paste a Hugging Face link → get a runnable, cost‑aware lesson with step‑by‑step prompts, code, and assessments. Teacher model: gpt‑oss‑20b (with gpt‑oss‑120b planned). Runs with hosted Poe or locally (Ollama/vLLM) via OpenAI‑compatible API.
 
 Repository
 - GitLab (primary): https://gitlab.com/daniel-p-green/alain-ai-learning-platform
-  - SSH: `git@gitlab.com:daniel-p-green/alain-ai-learning-platform.git`
+- SSH: `git@gitlab.com:daniel-p-green/alain-ai-learning-platform.git`
 
-## 🏗️ Architecture
+## What You Get
+- Backend (`backend/`): Encore.ts APIs for parsing, lesson generation, execution, and Colab export
+- Web (`web/`): Next.js app (Clerk auth) to generate, preview, and run lessons
+- Local/Offline support: Use gpt‑oss‑20b via Ollama with identical request shape
 
-This project consists of three main components:
+## Quick Start (5–10 minutes)
 
-- **Backend** (`/backend`): TypeScript API server using Encore.dev framework
-- **Frontend** (`/frontend`): React SPA with TypeScript and Vite
-- **Web** (`/web`): Next.js app with Clerk authentication
-
-## 🚀 Quick Start
+Pick one path:
+- Hosted (Poe): simplest, no local model needed
+- Local (Ollama): fully offline teacher using gpt‑oss‑20b
 
 ### Prerequisites
+- Node.js 18+
+- Go + Encore CLI (backend)
+  - macOS: `brew install encoredev/tap/encore`
+  - Linux/Windows: see Encore docs; verify with `encore --version`
+- Optional for Local: [Ollama](https://ollama.ai) and `ollama pull gpt-oss:20b`
 
-- Node.js 18+ and npm
-- Go (for Encore.dev backend)
-- Python 3.8+ (for AI/ML dependencies)
-
-### 1. Install Dependencies
-
+### 1) Install dependencies
 ```bash
-# Install all workspace dependencies
+# From repo root
 npm install
 
-# Install Python dependencies
+# Optional (for local notebooks/tools)
 pip install -r requirements.txt
 ```
 
-### 2. Set Up Environment Variables
-
-Copy the example configuration:
-
+### 2) Configure environment
 ```bash
 cp env-config-example.txt .env.local
 ```
 
-Fill in your API keys:
-- **Clerk**: Get from [Clerk Dashboard](https://dashboard.clerk.com)
-- **Poe API**: Get from [Poe API Settings](https://poe.com/api_key)
-- **OpenAI**: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
+Set in `.env.local` (web app):
+- Clerk: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`
+- For Hosted: `POE_API_KEY`
+- For Local: `OPENAI_BASE_URL` (e.g. `http://localhost:11434/v1`) and `OPENAI_API_KEY` (e.g. `ollama`)
+- Optional default: `TEACHER_PROVIDER=poe` or `openai-compatible`
 
-### 3. Configure Encore Secrets
-
-Set up secrets for the backend:
-
+Set backend secrets (Encore) — once per machine:
 ```bash
+# Hosted (Poe)
 encore secret set POE_API_KEY
-encore secret set OPENAI_API_KEY
-encore secret set OPENAI_BASE_URL
+
+# Local (Ollama/vLLM)
+encore secret set OPENAI_BASE_URL  # e.g. http://localhost:11434/v1
+encore secret set OPENAI_API_KEY   # e.g. ollama
 ```
 
-### 4. Start Development Servers
-
+### 3) Start services
 ```bash
-# Terminal 1: Backend (Encore.dev)
-npm run dev:backend
+# Terminal A — Backend (Encore.ts)
+cd backend && encore run    # http://localhost:4000
 
-# Terminal 2: Frontend (React + Vite)
-npm run dev:frontend
-
-# Terminal 3: Web App (Next.js + Clerk)
-npm run dev:web
+# Terminal B — Web (Next.js)
+cd web && npm install && npm run dev   # http://localhost:3000
 ```
 
-## 📁 Project Structure
+### 4) Use the app
+1) Open http://localhost:3000 and sign in (Clerk)
+2) Go to Generate and paste a Hugging Face model (e.g. `meta-llama/Meta-Llama-3.1-8B-Instruct`)
+3) Pick Teacher Provider: Poe (hosted) or Local (OpenAI‑compatible)
+4) Click Generate Lesson → preview → Open Tutorial → run steps and see streaming output
 
+Smoke tests without the web UI (handy if auth isn’t ready):
+```bash
+# Hosted (Poe)
+curl -s -X POST http://localhost:4000/lessons/generate \
+  -H 'Content-Type: application/json' \
+  -d '{"hfUrl":"https://huggingface.co/openai/gpt-oss-20b","difficulty":"beginner","teacherModel":"GPT-OSS-20B","includeAssessment":true,"provider":"poe"}' | jq '.success,.lesson.title'
+
+# Local (Ollama)
+curl -s -X POST http://localhost:4000/lessons/generate \
+  -H 'Content-Type: application/json' \
+  -d '{"hfUrl":"https://huggingface.co/openai/gpt-oss-20b","difficulty":"beginner","teacherModel":"GPT-OSS-20B","includeAssessment":true,"provider":"openai-compatible"}' | jq '.success,.lesson.title'
+```
+
+## Local (Ollama) Cheatsheet
+```bash
+# 1) Install & pull model
+ollama pull gpt-oss:20b
+
+# 2) Configure backend secrets
+encore secret set OPENAI_BASE_URL http://localhost:11434/v1
+encore secret set OPENAI_API_KEY ollama
+
+# 3) Start backend & web (see above)
+# 4) In the UI: Teacher Provider → Local (OpenAI‑compatible)
+```
+
+Notes
+- Teacher model aliasing is automatic: `GPT-OSS-20B` → `gpt-oss:20b` for local runs
+- 20B runs best on ≥16GB VRAM or Apple Silicon with enough unified memory; CPU offload works but is slow
+
+## How It Works
+- Paste HF URL → Backend parses model info → Teacher (gpt‑oss‑20b) generates schema‑valid lesson JSON (with an automatic repair pass) → UI renders a playable lesson with parameterized API calls (no arbitrary code) → optionally export a Colab notebook
+- Providers:
+  - Hosted: Poe (`POE_API_KEY`) with `GPT-OSS-20B` / `GPT-OSS-120B`
+  - Local: OpenAI‑compatible endpoints (Ollama, vLLM) using identical request shape
+
+## Project Structure
 ```
 alain-ai-learning-platform/
-├── backend/                 # Encore.dev TypeScript API
-│   ├── execution/          # AI model execution endpoints
-│   ├── tutorials/          # Tutorial management
-│   └── progress/           # User progress tracking
-├── frontend/               # React SPA
-│   ├── components/         # Reusable UI components
-│   └── lib/                # Utilities and configurations
-├── web/                    # Next.js authentication app
-│   └── app/                # Next.js app router
-├── requirements.txt        # Python dependencies
-└── requirements-dev.txt    # Development dependencies
+├── backend/                 # Encore.ts APIs (execution, lessons, export)
+│   ├── execution/           # Provider routing, teacher, streaming
+│   ├── tutorials/           # CRUD, import, versioning
+│   └── export/              # Colab notebook export
+├── web/                     # Next.js app (Clerk auth, UI)
+│   └── app/                 # Generate page, tutorial player, settings
+├── prompts/                 # ALAIN‑Kit prompts (Harmony format)
+├── POE_INTEGRATION_GUIDE.md # Provider usage and examples
+├── HACKATHON_README.md      # Hackathon context & architecture
+└── env-config-example.txt   # Copy to .env.local for web
 ```
 
-## 🔧 Development Scripts
+## Troubleshooting
+- Backend won’t start: install Encore CLI and run from `backend/` (`encore run`)
+- Unauthorized on web: set Clerk keys in `.env.local`, restart `npm run dev` in `web/`, and sign in
+- Provider errors: set `POE_API_KEY` for hosted or `OPENAI_BASE_URL`/`OPENAI_API_KEY` for local; set Encore secrets
+- Local is slow: reduce tokens, or try hosted Poe for the demo
+- Streaming quirks: known SSE limitation; generation still succeeds with non‑streaming fallback
 
-```bash
-# Install all dependencies
-npm run install:all
+## Build & Deploy
+- Backend (Encore Cloud): `encore auth login && git push encore`
+- Web (Vercel/Netlify/etc.): `cd web && npm run build && npm run start`
 
-# Start individual services
-npm run dev:backend     # Start Encore backend
-npm run dev:frontend    # Start React frontend
-npm run dev:web         # Start Next.js web app
+## Contributing
+Issues, MRs, and PRs are welcome. See `HACKATHON_README.md` for scope and `POE_INTEGRATION_GUIDE.md` for provider details.
 
-# Build for production
-npm run build:frontend  # Build React app
-npm run build:web       # Build Next.js app
-```
+## License
+MIT
 
-## 🔑 API Keys Setup
-
-### Clerk Authentication
-1. Sign up at [Clerk](https://clerk.com)
-2. Create a new application
-3. Copy publishable key and secret key to `.env.local`
-
-### Poe API Integration
-ALAIn supports multiple Poe integration approaches:
-
-**Recommended:** Node.js OpenAI SDK
-```bash
-npm install openai@^4.28.0
-```
-
-**Alternative:** Python SDK
-```bash
-pip install fastapi-poe
-```
-
-1. Visit [Poe API Settings](https://poe.com/api_key)
-2. Generate an API key
-3. Add to environment variables: `POE_API_KEY=your_key_here`
-
-### OpenAI API
-1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Create a new API key
-3. Add to environment variables: `OPENAI_API_KEY=your_key_here`
-
-## 🗄️ Database Setup
-
-The project uses PostgreSQL with Encore.dev's built-in database management. The database schema is automatically created through migrations.
-
-To seed sample data:
-
-```bash
-curl -X POST "http://localhost:4000/seed"
-```
-
-## 🧪 Testing
-
-```bash
-# Run Python tests
-pytest
-
-# Run frontend type checking
-cd frontend && npm run type-check
-
-# Run web app linting
-cd web && npm run lint
-```
-
-## 🚀 Deployment
-
-### Encore Cloud (Backend)
-```bash
-encore auth login
-git remote add encore encore://alain-ai-learning-platform-rui2
-git push encore
-```
-
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-# Deploy dist/ folder to your hosting provider
-```
-
-### Web App Deployment
-```bash
-cd web
-npm run build
-npm run start
-# Deploy to Vercel, Netlify, or your preferred platform
-```
-
-## 🤝 Contributing
-
-1. Fork the repository (on GitLab)
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Open a merge request (MR)
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-1. **Encore CLI not found**: Install with `brew install encoredev/tap/encore`
-2. **Port conflicts**: Check if ports 4000, 5173, 3000 are available
-3. **API key errors**: Verify environment variables are set correctly
-4. **Database issues**: Ensure PostgreSQL is running and accessible
-
-### Getting Help
-
-- Check the [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed setup instructions
-- Review the [Encore.dev documentation](https://encore.dev/docs)
-- Open an issue for bugs or feature requests
