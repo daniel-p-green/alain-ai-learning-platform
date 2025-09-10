@@ -9,16 +9,7 @@ export default function middleware(req: NextRequest) {
   if (process.env.DISABLE_CLERK_MIDDLEWARE === '1') return NextResponse.next();
   if (!hasClerk) return NextResponse.next();
   try {
-    const handler = clerkMiddleware({
-      // Keep common pages public; API handlers enforce auth explicitly
-      publicRoutes: [
-        "/",
-        "/stream",
-        "/tutorials(.*)",
-        "/frontend(.*)",
-        "/api/setup",
-      ],
-    }) as unknown as (req: NextRequest) => Response | Promise<Response>;
+    const handler = clerkMiddleware() as unknown as (req: NextRequest) => Response | Promise<Response>;
     return handler(req);
   } catch {
     // Never take down the site from middleware
