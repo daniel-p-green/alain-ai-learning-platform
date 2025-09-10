@@ -82,7 +82,7 @@ export default function SettingsPage() {
                     {p.notes && <div className="text-xs text-gray-500">{p.notes}</div>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => validate(p.id)} className="px-3 py-1 rounded bg-blue-600 text-white">
+                    <button onClick={() => validate(p.id)} className="px-3 py-1 rounded-brand bg-ikea-blue text-white hover:brightness-95">
                       Validate
                     </button>
                     <button
