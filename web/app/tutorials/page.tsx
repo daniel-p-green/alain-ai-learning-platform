@@ -48,6 +48,8 @@ type FilterState = {
 export default function TutorialsPage() {
   const [data, setData] = useState<TutorialsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [seeding, setSeeding] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterState>({
     difficulty: "",
     provider: "",
@@ -139,12 +141,43 @@ export default function TutorialsPage() {
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Tutorials</h1>
-        {data && (
-          <span className="text-sm text-gray-400">
-            {data.pagination.total} tutorials
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {data && (
+            <span className="text-sm text-gray-400">
+              {data.pagination.total} tutorials
+            </span>
+          )}
+          <button
+            onClick={async ()=>{
+              try {
+                setSeeding(true);
+                setNotice(null);
+                const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
+                const res = await fetch(`${base}/seed`, { method: 'POST' });
+                const j = await res.json().catch(()=>({}));
+                if (j?.inserted) {
+                  setNotice('Sample lessons loaded');
+                } else {
+                  setNotice('Samples already present');
+                }
+                await loadTutorials(1);
+              } catch (e) {
+                setNotice('Failed to load samples');
+              } finally {
+                setSeeding(false);
+                setTimeout(()=> setNotice(null), 2500);
+              }
+            }}
+            disabled={seeding}
+            className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-sm disabled:opacity-50"
+            title="Insert curated sample tutorials if none exist"
+          >{seeding ? 'Loading…' : 'Load Sample'}</button>
+        </div>
       </div>
+
+      {notice && (
+        <div className="text-sm text-gray-300 bg-gray-900 border border-gray-800 rounded px-3 py-2">{notice}</div>
+      )}
 
       {/* Search and Filters */}
       <div className="bg-gray-900 rounded-lg p-4 space-y-4">
@@ -159,7 +192,7 @@ export default function TutorialsPage() {
           />
           <button
             onClick={() => loadTutorials(1)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+            className="px-4 py-2 bg-ikea-blue hover:brightness-95 text-white rounded-brand"
           >
             Search
           </button>
@@ -288,7 +321,7 @@ export default function TutorialsPage() {
 
             <a
               href={`/tutorial/${tutorial.id}`}
-              className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+              className="inline-block px-4 py-2 bg-ikea-blue hover:brightness-95 text-white rounded-brand transition-colors"
             >
               Start Tutorial
             </a>
@@ -329,7 +362,7 @@ export default function TutorialsPage() {
           <p className="text-gray-400 mb-4">Try adjusting your filters or search terms</p>
           <button
             onClick={clearFilters}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+            className="px-4 py-2 bg-ikea-blue hover:brightness-95 text-white rounded-brand"
           >
             Clear Filters
           </button>

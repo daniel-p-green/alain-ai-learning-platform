@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import { PromptCell } from "../../../components/PromptCell";
+import { StreamingOutput } from "../../../components/StreamingOutput";
+import { StepNav } from "../../../components/StepNav";
 import { useAuth, useUser } from "@clerk/nextjs";
 import "../../globals.css";
 
@@ -39,7 +42,7 @@ type ExecutionState = {
 
 async function fetchTutorial(id: string): Promise<Tutorial> {
   const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-  const res = await fetch(`${base}/tutorial/${id}`, { cache: "no-store" });
+  const res = await fetch(`${base}/tutorials/${id}`, { cache: "no-store" });
   return res.json();
 }
 
@@ -60,9 +63,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [toast, setToast] = useState<string | null>(null);
   const providerStatus = providers.find((p:any)=> p.id===runProvider)?.status || 'unknown';
   const providerAvailable = providerStatus === 'available';
-  const monacoRef = useRef<HTMLDivElement | null>(null);
-  const monacoEditorRef = useRef<any>(null);
-  const [monacoReady, setMonacoReady] = useState(false);
+  // Editor handled by PromptCell component
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<{ correct: boolean; explanation?: string } | null>(null);
@@ -122,37 +123,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
     };
   }, []);
 
-  // Monaco editor lazy init
-  useEffect(() => {
-    let disposed = false;
-    async function init() {
-      if (!monacoRef.current || monacoEditorRef.current) return;
-      try {
-        const monaco = await import('monaco-editor');
-        if (disposed) return;
-        monacoEditorRef.current = monaco.editor.create(monacoRef.current!, {
-          value: prompt || '',
-          language: 'markdown',
-          theme: 'vs-dark',
-          automaticLayout: true,
-          minimap: { enabled: false },
-        });
-        monacoEditorRef.current.onDidChangeModelContent(() => {
-          const v = monacoEditorRef.current.getValue();
-          setPrompt(v);
-        });
-        setMonacoReady(true);
-      } catch {}
-    }
-    init();
-    return () => {
-      disposed = true;
-      if (monacoEditorRef.current) {
-        monacoEditorRef.current.dispose();
-        monacoEditorRef.current = null;
-      }
-    };
-  }, [prompt]);
+  // Editor now lives in PromptCell
 
   // Calculate elapsed time
   const getElapsedTime = () => {
@@ -326,7 +297,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <a className="text-blue-400 hover:underline" href="/tutorials">← Back</a>
+        <a className="text-ikea-blue hover:underline" href="/tutorials">← Back</a>
         <a className="text-xs text-gray-400 hover:underline" target="_blank" href={
           `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
         }>Report issue</a>
@@ -339,29 +310,19 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           <div className="font-semibold text-white">Model Maker</div>
           <div>{tutorial.model_maker.name} ({tutorial.model_maker.org_type})</div>
           <div className="flex gap-2 mt-1">
-            {tutorial.model_maker.homepage && <a className="text-blue-400 hover:underline" href={tutorial.model_maker.homepage} target="_blank">Homepage</a>}
-            {tutorial.model_maker.repo && <a className="text-blue-400 hover:underline" href={tutorial.model_maker.repo} target="_blank">Repo</a>}
+            {tutorial.model_maker.homepage && <a className="text-ikea-blue hover:underline" href={tutorial.model_maker.homepage} target="_blank">Homepage</a>}
+            {tutorial.model_maker.repo && <a className="text-ikea-blue hover:underline" href={tutorial.model_maker.repo} target="_blank">Repo</a>}
             {tutorial.model_maker.license && <span className="text-gray-400">License: {tutorial.model_maker.license}</span>}
           </div>
         </div>
       )}
 
       {tutorial.steps.length > 1 && (
-        <div className="flex gap-2 mt-2">
-          {tutorial.steps.map((s, i) => (
-            <button
-              key={s.id}
-              className={`px-3 py-1 rounded ${i === idx ? "bg-blue-600 text-white" : "bg-gray-800"}`}
-              onClick={() => {
-                setIdx(i);
-                setPrompt(tutorial.steps[i].code_template || "");
-                setOut("");
-              }}
-            >
-              Step {i + 1}
-            </button>
-          ))}
-        </div>
+        <StepNav
+          steps={tutorial.steps.map(s => ({ id: s.id, step_order: s.step_order, title: s.title }))}
+          currentStep={idx}
+          onStepChange={(i) => { setIdx(i); setPrompt(tutorial.steps[i].code_template || ""); setOut(""); }}
+        />
       )}
 
       {/* Error Banner */}
@@ -409,71 +370,21 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             </div>
           )}
 
-          {/* Execution Status Bar */}
-          {executionState.status !== 'idle' && (
-            <div className="bg-gray-800 rounded-lg p-3 space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-300">Status:</span>
-                <span className={`font-medium ${
-                  executionState.status === 'running' ? 'text-blue-400' :
-                  executionState.status === 'completed' ? 'text-green-400' :
-                  executionState.status === 'error' ? 'text-red-400' :
-                  executionState.status === 'cancelled' ? 'text-yellow-400' : 'text-gray-400'
-                }`}>
-                  {executionState.status === 'running' && 'Running...'}
-                  {executionState.status === 'completed' && 'Completed'}
-                  {executionState.status === 'error' && 'Error'}
-                  {executionState.status === 'cancelled' && 'Cancelled'}
-                </span>
-              </div>
-
-              {executionState.status === 'running' && (
-                <>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-300">Time:</span>
-                    <span className="text-blue-400 font-mono">{formatTime(getElapsedTime())}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-300">Tokens:</span>
-                    <span className="text-blue-400 font-mono">~{executionState.tokenCount || 0}</span>
-                  </div>
-                  <div className="w-full bg-gray-700 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full animate-pulse" style={{width: '60%'}}></div>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Monaco editor (fallback to textarea) */}
-          <div className="h-48 border border-gray-800 rounded" ref={monacoRef} style={{ display: monacoReady ? 'block' : 'none' }} />
-          {!monacoReady && (
-            <textarea
-              className="w-full min-h-32 p-3 bg-gray-900 rounded border border-gray-800 focus:border-blue-500 focus:outline-none"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your prompt here..."
-            />
-          )}
-
-          <div className="flex gap-2">
+          {/* Prompt editor and controls */}
+          <PromptCell
+            codeTemplate={prompt}
+            onChange={(v) => setPrompt(v)}
+            onExecute={run}
+            disabled={executionState.status === 'running' || !prompt.trim()}
+          />
+          {executionState.status === 'running' && (
             <button
-              className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              onClick={run}
-              disabled={executionState.status === 'running' || !prompt.trim()}
+              className="mt-2 px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors"
+              onClick={cancelExecution}
             >
-              {executionState.status === 'running' ? 'Running...' : 'Run step'}
+              Cancel
             </button>
-
-            {executionState.status === 'running' && (
-              <button
-                className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors"
-                onClick={cancelExecution}
-              >
-                Cancel
-              </button>
-            )}
-          </div>
+          )}
 
           {/* Assessments */}
           {assessments.length > 0 && (
@@ -497,7 +408,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50"
+                      className="px-3 py-1 rounded-brand bg-ikea-blue text-white disabled:opacity-50 hover:brightness-95"
                       disabled={choice == null}
                       onClick={async () => {
                         const token = await getToken();
@@ -624,14 +535,13 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             <pre className="whitespace-pre-wrap text-gray-300">{JSON.stringify(lastRequest || {}, null, 2)}</pre>
           </div>
         )}
-
-          <pre className={`min-h-64 p-3 bg-gray-900 rounded border whitespace-pre-wrap ${
-            executionState.status === 'error' ? 'border-red-700' :
-            executionState.status === 'completed' ? 'border-green-700' :
-            executionState.status === 'running' ? 'border-blue-700' : 'border-gray-800'
-          }`}>
-            {out || (executionState.status === 'idle' ? 'Click "Run step" to execute your prompt...' : '')}
-          </pre>
+        <StreamingOutput
+          output={out || (executionState.status === 'idle' ? 'Click "Run step" to execute your prompt...' : '')}
+          isStreaming={executionState.status === 'running'}
+          error={executionState.status === 'error' ? executionState.error || null : null}
+          elapsedSeconds={getElapsedTime()}
+          tokenCount={executionState.tokenCount}
+        />
 
           {/* Copy helpers */}
           <div className="bg-gray-900 border border-gray-800 rounded p-3 space-y-2">
