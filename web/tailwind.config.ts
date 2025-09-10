@@ -8,13 +8,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        // IKEA-inspired brand colors
-        ikea: {
-          blue: "#0057AD",   // IKEA Blue
-          yellow: "#FBDA0C", // IKEA Yellow
+        // Brand colors (assembly-inspired)
+        brand: {
+          blue: "#0057AD",
+          yellow: "#FBDA0C",
         },
-        ink: "#111827",      // Neutral ink for text/outlines
-        paper: "#FFFFFF",    // Default paper (use #FFFAEF if you want warm docs)
+        ink: "#111827",
+        paper: "#FFFFFF",
       },
       fontFamily: {
         // Display/wordmark stack: League Spartan (Google Font)

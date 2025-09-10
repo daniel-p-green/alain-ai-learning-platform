@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Rollback">
+  <style>
+    :root { --ink:#111827; }
+    .s { fill: none; stroke: var(--ink); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <path class="s" d="M9 7H5V3"/>
+  <path class="s" d="M5 7a8 8 0 1 0 3-5"/>
+</svg>
+

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Train">
+  <style>
+    :root { --ink:#111827; }
+    .s { fill: none; stroke: var(--ink); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <!-- gear simplified -->
+  <circle class="s" cx="12" cy="12" r="3.5"/>
+  <path class="s" d="M12 5v2M12 17v2M5 12h2M17 12h2M7.5 7.5l1.4 1.4M15.1 15.1l1.4 1.4M16.5 7.5l-1.4 1.4M8.9 15.1l-1.4 1.4"/>
+  <!-- progress arrow -->
+  <path class="s" d="M3 20h10"/>
+  <path class="s" d="M11 17l2 3l-2 3"/>
+</svg>
+

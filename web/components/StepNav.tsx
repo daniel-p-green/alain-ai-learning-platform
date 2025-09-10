@@ -20,10 +20,10 @@ export function StepNav({ steps, currentStep, onStepChange }: Props) {
       {steps.map((s, i) => (
         <button
           key={s.id}
-          className={`px-3 py-1 rounded ${i === currentStep ? "bg-blue-600 text-white" : "bg-gray-800"}`}
+          className={`px-3 py-1 ${i === currentStep ? "bg-brand-blue text-white rounded-brand" : "bg-gray-800 rounded"}`}
           onClick={() => onStepChange(i)}
         >
-          Step {i + 1}
+          {s.title?.trim() ? s.title : `Step ${i + 1}`}
         </button>
       ))}
     </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Button } from "../../components/Button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 
 type ProviderInfo = {
@@ -82,9 +83,7 @@ export default function SettingsPage() {
                     {p.notes && <div className="text-xs text-gray-500">{p.notes}</div>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => validate(p.id)} className="px-3 py-1 rounded-brand bg-ikea-blue text-white hover:brightness-95">
-                      Validate
-                    </button>
+                    <Button onClick={() => validate(p.id)}>Validate</Button>
                     <button
                       onClick={async ()=>{
                         setSmoke(null);

@@ -11,3 +11,9 @@
 - Links: point to docs or references near first use of a concept.
 - Exercises: end of each section include 1–2 short “Try this” items.
 
+Docs Conventions
+- Titles: use title case for H2/H3; keep headings concise and parallel.
+- Dashes: prefer en dashes for ranges/contrasts in prose; use ASCII hyphens in code.
+- Newlines in prints: avoid embedding literal newlines in strings that can confuse exporters; prefer `print(); print(text)` over `print('\n'+text)` in templates.
+- Links: use repository‑relative paths like `alain-ai-learning-platform/docs/...` when cross‑referencing.
+- Snippets with network calls: add a note to skip/guard in CI and offline runs.

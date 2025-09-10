@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { Button } from "./Button";
 
 type Props = {
   codeTemplate: string;
@@ -52,7 +53,7 @@ export function PromptCell({ codeTemplate, onChange, onExecute, disabled }: Prop
         editorRef.current = null;
       }
     };
-  }, [codeTemplate, onChange]);
+  }, [onChange]);
 
   // Keep editor content in sync when parent changes codeTemplate
   useEffect(() => {
@@ -78,13 +79,7 @@ export function PromptCell({ codeTemplate, onChange, onExecute, disabled }: Prop
         />
       )}
       <div>
-        <button
-          className="px-4 py-2 rounded-brand bg-ikea-blue hover:brightness-95 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          onClick={onExecute}
-          disabled={disabled}
-        >
-          Run step
-        </button>
+        <Button onClick={onExecute} disabled={disabled}>Run step</Button>
       </div>
     </div>
   );
