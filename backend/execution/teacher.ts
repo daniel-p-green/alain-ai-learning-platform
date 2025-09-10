@@ -3,6 +3,8 @@ import { secret } from "encore.dev/config";
 import { mapModelForProvider } from "./providers/aliases";
 
 const poeApiKey = secret("POE_API_KEY");
+const openaiBaseUrl = secret("OPENAI_BASE_URL");
+const openaiApiKey = secret("OPENAI_API_KEY");
 
 interface TeacherRequest {
   model: "GPT-OSS-20B" | "GPT-OSS-120B";
@@ -163,9 +165,9 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         }
         return { success: true, content };
       } else {
-        // Read from env to avoid declaring optional Encore secrets when not used
-        const baseUrl = process.env.OPENAI_BASE_URL;
-        const apiKey = process.env.OPENAI_API_KEY;
+        // Use Encore secrets for OpenAI-compatible provider
+        const baseUrl = openaiBaseUrl();
+        const apiKey = openaiApiKey();
         if (!baseUrl || !apiKey) {
           throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required for openai-compatible provider");
         }

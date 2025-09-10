@@ -1,15 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Button } from "../../components/Button";
+import { StreamingOutput } from "../../components/StreamingOutput";
 
 export default function StreamDemo() {
   const [out, setOut] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const startTimeRef = useRef<number | null>(null);
+  const [elapsed, setElapsed] = useState(0);
 
   async function run() {
     setOut("");
+    setError(null);
     setLoading(true);
+    startTimeRef.current = Date.now();
+    const timer = setInterval(() => {
+      if (startTimeRef.current) setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
+    }, 250);
     try {
       const resp = await fetch("/api/execute", {
         method: "POST",
@@ -21,7 +30,7 @@ export default function StreamDemo() {
           stream: true,
         }),
       });
-      if (!resp.ok || !resp.body) throw new Error("request failed");
+      if (!resp.ok || !resp.body) throw new Error("Request failed");
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
@@ -47,25 +56,39 @@ export default function StreamDemo() {
         }
       }
     } catch (e: any) {
-      setOut(`Error: ${e?.message || String(e)}`);
+      setError(e?.message || String(e));
     } finally {
       setLoading(false);
+      clearInterval(timer);
+      startTimeRef.current = null;
     }
   }
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>Streaming Demo</h1>
+    <div className="max-w-3xl mx-auto p-6 space-y-4">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold">Streaming Demo</h1>
+        <p className="text-gray-500 text-sm">Runs a small prompt and streams the model output in real time.</p>
+      </div>
       <SignedOut>
-        <p>Please sign in to run the demo.</p>
-        <SignInButton />
+        <div className="text-gray-300">
+          Please sign in to run the demo. <SignInButton />
+        </div>
       </SignedOut>
       <SignedIn>
-        <Button disabled={loading} onClick={run}>
-          {loading ? "Running..." : "Run"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button disabled={loading} onClick={run}>{loading ? "Running…" : "Run"}</Button>
+          <Button variant="secondary" disabled={loading || !out} onClick={()=> setOut("")}>Clear</Button>
+        </div>
+        <StreamingOutput
+          output={out}
+          isStreaming={loading}
+          error={error ? { code: "request", message: error } : null}
+          elapsedSeconds={elapsed}
+          tokenCount={undefined}
+          status={error ? 'error' : (loading ? 'info' : (out ? 'success' : 'idle'))}
+        />
       </SignedIn>
-      <pre style={{ whiteSpace: "pre-wrap", marginTop: 16 }}>{out}</pre>
     </div>
   );
 }

@@ -17,7 +17,7 @@ type Props = {
 
 export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, tokenCount, status = 'idle' }: Props) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" role="region" aria-live="polite">
       {error && (
         <div className="bg-red-900/20 border border-red-700 rounded-lg p-3">
           <div className="font-semibold text-red-400">{error.code}</div>
@@ -36,7 +36,7 @@ export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, to
             <span className="text-brand-blue font-mono">~{tokenCount || 0}</span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">
-            <div className="bg-brand-blue h-2 rounded-full animate-pulse" style={{ width: "60%" }} />
+            <div className="bg-brand-blue h-2 rounded-full animate-pulse w-3/5" />
           </div>
         </div>
       )}
@@ -51,6 +51,7 @@ export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, to
             ? 'border-brand-blue'
             : 'border-gray-800'
         }`}
+        aria-live="polite"
       >
         {output || (isStreaming ? "Streaming…" : "")}
       </pre>

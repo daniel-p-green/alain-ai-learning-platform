@@ -22,7 +22,7 @@ export function Toast({ message, variant = "info", onClose, autoHideMs = 3000 }:
       : "bg-gray-700 border-gray-600";
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50" role="status" aria-live="polite">
       <div className={`text-sm text-white px-4 py-2 rounded shadow-lg border ${color} flex items-center gap-3`}>
         <span>{message}</span>
         <button
@@ -37,4 +37,3 @@ export function Toast({ message, variant = "info", onClose, autoHideMs = 3000 }:
     </div>
   );
 }
-

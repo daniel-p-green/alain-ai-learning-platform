@@ -17,12 +17,16 @@ export async function POST(req: Request) {
 
   // 1) Generate lesson structure from HF URL
   const genStart = Date.now();
+  const genCtrl = new AbortController();
+  const genTimer = setTimeout(() => genCtrl.abort(), 60_000);
   const genResp = await fetch(backendUrl('/lessons/generate'), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning })
+    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning }),
+    signal: genCtrl.signal,
   });
   const gen = await genResp.json();
+  clearTimeout(genTimer);
   const genMs = Date.now() - genStart;
   if (!gen.success) return Response.json(gen, { status: 200 });
 
@@ -37,6 +41,8 @@ export async function POST(req: Request) {
 
   // 2) Persist lesson into tutorials
   const impStart = Date.now();
+  const impCtrl = new AbortController();
+  const impTimer = setTimeout(() => impCtrl.abort(), 60_000);
   const impResp = await fetch(backendUrl('/tutorials/import'), {
     method: "POST",
     headers: {
@@ -44,7 +50,9 @@ export async function POST(req: Request) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(lesson),
+    signal: impCtrl.signal,
   });
+  clearTimeout(impTimer);
   if (!impResp.ok) {
     const t = await impResp.text();
     return new Response(`Import failed: ${t}`, { status: 500 });
