@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "../../components/Button";
-import "../globals.css";
 
 type Tutorial = {
   id: number;

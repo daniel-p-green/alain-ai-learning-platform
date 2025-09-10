@@ -5,7 +5,6 @@ import { Button } from "../../../components/Button";
 import { StreamingOutput } from "../../../components/StreamingOutput";
 import { StepNav } from "../../../components/StepNav";
 import { useAuth, useUser } from "@clerk/nextjs";
-import "../../globals.css";
 
 type Step = {
   id: number;
