@@ -1,16 +1,16 @@
 @import "tailwindcss/preflight";
 @tailwind utilities;
 
-/* ALAIN brand tokens — Code meets Seinfeld */
+/* Web fonts: League Spartan (Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;900&display=swap');
+
+/* IKEA-inspired brand tokens */
 :root {
   /* Brand core */
-  --alain-yolk: #FFD22E;
-  --alain-yolk-shadow: #FFB800;
-  --alain-paper: #FFF6D1;
-  --alain-red: #C33228;
-  --alain-red-shadow: #8E221C;
-  --alain-ink: #1B1B1B;
-  --alain-blue: #2CA6A4;
+  --ikea-blue: #0057AD;
+  --ikea-yellow: #FBDA0C;
+  --paper: #FFFFFF; /* consider #FFFAEF for warm docs */
+  --ink: #111827;
 
   /* UI neutrals */
   --text-strong: #0F172A;
@@ -23,17 +23,17 @@
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
-/* Simple helpers to reuse tokens without Tailwind config changes */
+/* Simple helpers using tokens */
 .brand-header {
   background: var(--bg);
   color: var(--text-strong);
-  border-bottom: 1px solid color-mix(in srgb, var(--alain-ink) 12%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 
 .brand-cta {
-  background: var(--alain-yolk);
-  color: var(--alain-ink);
-  border: 1px solid var(--alain-ink);
+  background: var(--ikea-yellow);
+  color: var(--ink);
+  border: 1px solid var(--ink);
   border-radius: var(--radius);
   padding: 0.4rem 0.8rem;
 }
