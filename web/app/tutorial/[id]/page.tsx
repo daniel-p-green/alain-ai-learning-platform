@@ -61,8 +61,6 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [curl, setCurl] = useState<string>("");
   const [sdk, setSdk] = useState<string>("");
   const [toast, setToast] = useState<string | null>(null);
-  const providerStatus = providers.find((p:any)=> p.id===runProvider)?.status || 'unknown';
-  const providerAvailable = providerStatus === 'available';
   // Editor handled by PromptCell component
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
@@ -74,6 +72,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [runProvider, setRunProvider] = useState<string>("poe");
   const [runModel, setRunModel] = useState<string>("");
+  const providerStatus = providers.find((p:any)=> p.id===runProvider)?.status || 'unknown';
+  const providerAvailable = providerStatus === 'available';
 
   useEffect(() => {
     fetchTutorial(id).then((t) => {
