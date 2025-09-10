@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "../../../lib/auth";
 import { backendUrl } from "../../../lib/backend";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  const { userId } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
 
   try {
     // Proxy to backend capabilities endpoint
@@ -54,8 +54,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  const { userId } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
 
   try {
     const body = await request.json();
