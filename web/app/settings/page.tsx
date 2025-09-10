@@ -84,7 +84,8 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button onClick={() => validate(p.id)}>Validate</Button>
-                    <button
+                    <Button
+                      className="text-xs px-2 py-1"
                       onClick={async ()=>{
                         setSmoke(null);
                         const model = (p.models?.[0]?.id) || (p.id==='poe' ? 'gpt-4o-mini' : 'gpt-4o');
@@ -92,21 +93,23 @@ export default function SettingsPage() {
                         const data = await resp.json();
                         setSmoke(data.success ? `OK: ${(data.sample||'').slice(0,80)}...` : `Error: ${data?.error?.message || 'unknown'}`);
                       }}
-                      className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-white text-xs"
-                    >Run smoke test</button>
+                      variant="secondary"
+                    >Run smoke test</Button>
                     {p.id === "openai-compatible" && (
-                      <button
+                      <Button
                         type="button"
+                        className="text-xs px-2 py-1"
                         onClick={() => navigator.clipboard.writeText("export OPENAI_BASE_URL=https://api.openai.com/v1\nexport OPENAI_API_KEY=YOUR_KEY_HERE")}
-                        className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-white text-xs"
-                      >Copy env snippet</button>
+                        variant="secondary"
+                      >Copy env snippet</Button>
                     )}
                     {p.id === "poe" && (
-                      <button
+                      <Button
                         type="button"
+                        className="text-xs px-2 py-1"
                         onClick={() => navigator.clipboard.writeText("export POE_API_KEY=YOUR_KEY_HERE\n# Base URL: https://api.poe.com/v1")}
-                        className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-white text-xs"
-                      >Copy env snippet</button>
+                        variant="secondary"
+                      >Copy env snippet</Button>
                     )}
                   </div>
                 </div>

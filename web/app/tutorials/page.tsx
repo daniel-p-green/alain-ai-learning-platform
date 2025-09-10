@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import "../globals.css";
+import { Button } from "../../components/Button";
 
 type Tutorial = {
   id: number;
@@ -147,7 +147,7 @@ export default function TutorialsPage() {
               {data.pagination.total} tutorials
             </span>
           )}
-          <button
+          <Button
             onClick={async ()=>{
               try {
                 setSeeding(true);
@@ -169,9 +169,10 @@ export default function TutorialsPage() {
               }
             }}
             disabled={seeding}
-            className="px-3 py-1.5 bg-brand-blue hover:brightness-95 text-white rounded-brand text-sm disabled:opacity-50"
+            className="text-sm"
+            variant="primary"
             title="Insert curated sample tutorials if none exist"
-          >{seeding ? 'Loading…' : 'Load Sample'}</button>
+          >{seeding ? 'Loading…' : 'Load Sample'}</Button>
         </div>
       </div>
 
@@ -190,7 +191,7 @@ export default function TutorialsPage() {
             onChange={(e) => handleFilterChange('search', e.target.value)}
             className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
           />
-          <button onClick={() => loadTutorials(1)} className="px-4 py-2 bg-brand-blue hover:brightness-95 text-white rounded-brand">Search</button>
+          <Button onClick={() => loadTutorials(1)} variant="primary">Search</Button>
         </div>
 
         {/* Filters */}
@@ -246,12 +247,7 @@ export default function TutorialsPage() {
 
           {/* Clear Filters */}
           <div className="flex items-end">
-            <button
-              onClick={clearFilters}
-              className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded"
-            >
-              Clear Filters
-            </button>
+          <Button onClick={clearFilters} variant="secondary" className="w-full">Clear Filters</Button>
           </div>
         </div>
 
@@ -261,17 +257,14 @@ export default function TutorialsPage() {
             <label className="block text-sm font-medium mb-2">Tags</label>
             <div className="flex flex-wrap gap-2">
               {data.filters.tags.slice(0, 10).map(tag => (
-                <button
+                <Button
                   key={tag}
                   onClick={() => handleTagToggle(tag)}
-                  className={`px-3 py-1 rounded text-sm ${
-                    filters.tags.includes(tag)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-                  }`}
+                  variant={filters.tags.includes(tag) ? 'primary' : 'secondary'}
+                  className={filters.tags.includes(tag) ? 'text-sm px-3 py-1' : 'text-sm px-3 py-1 text-gray-300'}
                 >
                   #{tag}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -327,25 +320,13 @@ export default function TutorialsPage() {
       {/* Pagination */}
       {data?.pagination && data.pagination.totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => loadTutorials(data.pagination.page - 1)}
-            disabled={!data.pagination.hasPrev}
-            className="px-3 py-1 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded"
-          >
-            Previous
-          </button>
+          <Button onClick={() => loadTutorials(data.pagination.page - 1)} disabled={!data.pagination.hasPrev} variant="secondary" className="px-3 py-1 text-sm">Previous</Button>
 
           <span className="text-sm text-gray-400">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
 
-          <button
-            onClick={() => loadTutorials(data.pagination.page + 1)}
-            disabled={!data.pagination.hasNext}
-            className="px-3 py-1 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded"
-          >
-            Next
-          </button>
+          <Button onClick={() => loadTutorials(data.pagination.page + 1)} disabled={!data.pagination.hasNext} variant="secondary" className="px-3 py-1 text-sm">Next</Button>
         </div>
       )}
 
@@ -355,12 +336,7 @@ export default function TutorialsPage() {
           <div className="text-gray-400 mb-4">📚</div>
           <h3 className="text-lg font-medium mb-2">No tutorials found</h3>
           <p className="text-gray-400 mb-4">Try adjusting your filters or search terms</p>
-          <button
-            onClick={clearFilters}
-            className="px-4 py-2 bg-brand-blue hover:brightness-95 text-white rounded-brand"
-          >
-            Clear Filters
-          </button>
+          <Button onClick={clearFilters} variant="primary">Clear Filters</Button>
         </div>
       )}
     </div>

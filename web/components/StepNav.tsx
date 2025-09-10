@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "./Button";
 
 /**
  * StepNav
@@ -18,13 +19,14 @@ export function StepNav({ steps, currentStep, onStepChange }: Props) {
   return (
     <div className="flex gap-2 mt-2">
       {steps.map((s, i) => (
-        <button
+        <Button
           key={s.id}
-          className={`px-3 py-1 ${i === currentStep ? "bg-brand-blue text-white rounded-brand" : "bg-gray-800 rounded"}`}
+          className="px-3 py-1 text-sm"
+          variant={i === currentStep ? "primary" : "secondary"}
           onClick={() => onStepChange(i)}
         >
           {s.title?.trim() ? s.title : `Step ${i + 1}`}
-        </button>
+        </Button>
       ))}
     </div>
   );

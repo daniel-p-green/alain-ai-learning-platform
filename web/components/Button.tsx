@@ -3,7 +3,7 @@
 import React from "react";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "accent" | "secondary";
+  variant?: "primary" | "accent" | "secondary" | "danger";
 };
 
 export function Button({ variant = "primary", className = "", ...props }: ButtonProps) {
@@ -12,9 +12,9 @@ export function Button({ variant = "primary", className = "", ...props }: Button
     primary: "bg-brand-blue text-white hover:brightness-95",
     accent: "bg-brand-yellow text-ink border border-ink hover:brightness-95",
     secondary: "bg-gray-800 text-white border border-gray-700 hover:bg-gray-700",
+    danger: "bg-red-600 text-white hover:bg-red-700",
   };
   return (
     <button className={[base, variants[variant] || variants.primary, className].join(" ")} {...props} />
   );
 }
-

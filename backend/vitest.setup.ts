@@ -25,6 +25,19 @@ vi.mock('encore.dev/config', () => ({
   secret: (_: string) => () => '',
 }));
 
+// Stub Encore service to avoid initializing runtime during tests
+vi.mock('encore.dev/service', () => {
+  class Service {
+    name: string;
+    opts: any;
+    constructor(name: string, opts?: any) {
+      this.name = name;
+      this.opts = opts || {};
+    }
+  }
+  return { Service };
+});
+
 // Very lightweight in-memory SQLDatabase stub to support tutorial tests
 vi.mock('encore.dev/storage/sqldb', () => {
   type Row = Record<string, any>;
