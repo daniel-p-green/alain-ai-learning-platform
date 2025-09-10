@@ -147,17 +147,30 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
 const inflight = new Map<string, Promise<LessonGenerationResponse>>();
 
 // Extract model information from Hugging Face URL
-async function extractHFModelInfo(hfUrl: string) {
+export async function extractHFModelInfo(hfUrl: string) {
   // Strict HF parsing and host allowlisting
-  let owner: string, repo: string;
+  let ref: ReturnType<typeof parseHfUrl>;
   try {
-    const ref = parseHfUrl(hfUrl);
-    owner = ref.owner; repo = ref.repo;
+    ref = parseHfUrl(hfUrl);
   } catch {
     throw APIError.invalidArgument("Invalid Hugging Face URL format");
   }
 
-  const apiUrl = `https://huggingface.co/api/models/${owner}/${repo}`;
+  const { owner, repo, kind, revision } = ref;
+
+  // Strict offline mode: never attempt any network calls
+  const offline = (() => {
+    const v = (process.env.OFFLINE_MODE || '').toLowerCase();
+    return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+  })();
+  if (offline) {
+    return { name: repo, org: owner, url: `https://huggingface.co/${kind === 'dataset' ? 'datasets/' : kind === 'space' ? 'spaces/' : ''}${owner}/${repo}`, card: null, kind, revision } as any;
+  }
+
+  const kindPath = kind === 'dataset' ? 'datasets' : (kind === 'space' ? 'spaces' : 'models');
+  const base = `https://huggingface.co/api/${kindPath}/${owner}/${repo}`;
+  const apiUrl = revision ? `${base}?revision=${encodeURIComponent(revision)}` : base;
+
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 5000);
   try {
@@ -167,13 +180,21 @@ async function extractHFModelInfo(hfUrl: string) {
     });
     clearTimeout(t);
     if (!response.ok) {
-      return { name: `${owner}/${repo}`, org: owner, url: `https://huggingface.co/${owner}/${repo}` } as any;
+      const err = new Error(`HF fetch failed (${response.status})`);
+      (err as any).status = response.status;
+      throw err;
     }
     const card = await response.json();
-    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card } as any;
-  } catch (error) {
+    return { name: repo, org: owner, url: `https://huggingface.co/${kind === 'dataset' ? 'datasets/' : kind === 'space' ? 'spaces/' : ''}${owner}/${repo}`, card, kind, revision } as any;
+  } catch (error: any) {
     clearTimeout(t);
-    return { name: repo, org: owner, url: `https://huggingface.co/${owner}/${repo}`, card: null } as any;
+    // Surface timeout/abort distinctly
+    if (error?.name === 'AbortError') {
+      const e = new Error('HF fetch timeout');
+      (e as any).status = 408;
+      throw e;
+    }
+    throw error;
   }
 }
 

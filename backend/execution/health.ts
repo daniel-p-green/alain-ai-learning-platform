@@ -6,6 +6,9 @@ interface HealthStatus {
   timestamp: string;
   version: string;
   uptime: number;
+  offlineMode: boolean;
+  teacherProvider: 'poe' | 'openai-compatible' | string;
+  openaiBaseUrl?: string | null;
   services: {
     poe: ServiceHealth;
     openai: ServiceHealth;
@@ -25,6 +28,11 @@ export const health = api<{}, HealthStatus>(
   { expose: true, method: "GET", path: "/health" },
   async () => {
     const startTime = Date.now();
+    const offline = (() => {
+      const v = (process.env.OFFLINE_MODE || '').toLowerCase();
+      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+    })();
+    const teacherProvider = (process.env.TEACHER_PROVIDER || 'poe') as any;
     const services: HealthStatus['services'] = {
       poe: await checkPoeHealth(),
       openai: await checkOpenAIHealth(),
@@ -38,6 +46,9 @@ export const health = api<{}, HealthStatus>(
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '1.0.0',
       uptime: process.uptime(),
+      offlineMode: offline,
+      teacherProvider,
+      openaiBaseUrl: process.env.OPENAI_BASE_URL || null,
       services
     };
   }

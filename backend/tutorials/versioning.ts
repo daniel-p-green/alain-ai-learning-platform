@@ -2,6 +2,35 @@ import { api, APIError } from "encore.dev/api";
 import { tutorialsDB } from "./db";
 import { requireUserId } from "../auth";
 
+// Minimal DB/transaction interface expected by buildSnapshot.
+// Matches the shape returned by SQLDatabase and our test doubles.
+interface DBLike {
+  queryRow<T = unknown>(strings: TemplateStringsArray, ...values: any[]): Promise<T | undefined>;
+  queryAll<T = unknown>(strings: TemplateStringsArray, ...values: any[]): Promise<T[]>;
+}
+
+type TutorialRow = {
+  id: number;
+  title: string;
+  description: string;
+  model: string;
+  provider: string;
+  difficulty: string;
+  tags: unknown[] | null;
+  model_maker_id: number | null;
+  created_at: string | Date;
+  updated_at: string | Date;
+};
+
+type StepRow = {
+  step_order: number;
+  title: string;
+  content: string;
+  code_template: string | null;
+  expected_output: string | null;
+  model_params: unknown;
+};
+
 interface VersionMeta { version: number; created_at: string; author_id: string | null }
 
 export const createVersion = api<{ tutorialId: number }, { tutorialId: number; version: number }>(
@@ -90,12 +119,15 @@ export const restoreVersion = api<{ tutorialId: number; version: number }, { res
   }
 );
 
-async function buildSnapshot(tutorialId: number, db: any): Promise<any> {
-  const tutorial = await db.queryRow<any>`
+async function buildSnapshot(
+  tutorialId: number,
+  db: DBLike,
+): Promise<{ tutorial: TutorialRow | undefined; steps: StepRow[] }> {
+  const tutorial = await db.queryRow<TutorialRow>`
     SELECT id, title, description, model, provider, difficulty, tags, model_maker_id, created_at, updated_at
     FROM tutorials WHERE id = ${tutorialId}
   `;
-  const steps = await db.queryAll<any>`
+  const steps = await db.queryAll<StepRow>`
     SELECT step_order, title, content, code_template, expected_output, model_params
     FROM tutorial_steps WHERE tutorial_id = ${tutorialId}
     ORDER BY step_order

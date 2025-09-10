@@ -6,7 +6,9 @@
   "scripts": {
     "test:pure": "npm --workspace backend run test:pure",
     "test:all": "npm --workspace backend run test:all",
-    "validate:lesson": "node scripts/validate-lesson.js"
+    "validate:lesson": "node scripts/validate-lesson.js",
+    "dev:offline": "bash scripts/dev_offline.sh",
+    "dev:hosted": "bash scripts/dev_hosted.sh"
   },
   "workspaces": [
     "backend",
