@@ -5,14 +5,16 @@ function requireEnv(name: string): string | undefined {
   return v && v.length > 0 ? v : undefined;
 }
 
+export function isOffline(): boolean {
+  const v = (process.env.OFFLINE_MODE || '').toLowerCase();
+  return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+}
+
 export function validateBackendEnv() {
   if (initialized) return;
   initialized = true;
   const teacherProvider = (process.env.TEACHER_PROVIDER || 'poe').toLowerCase();
-  const offline = (() => {
-    const v = (process.env.OFFLINE_MODE || '').toLowerCase();
-    return v === '1' || v === 'true' || v === 'yes' || v === 'on';
-  })();
+  const offline = isOffline();
   // OpenAI-compatible validation or gentle defaults in offline mode
   const needOpenAI = teacherProvider === 'openai-compatible' || offline;
   if (needOpenAI) {

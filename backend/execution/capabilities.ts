@@ -1,4 +1,5 @@
 import { api } from "encore.dev/api";
+import { isOffline } from "../config/env";
 
 interface ProviderCapabilities {
   id: string;
@@ -102,10 +103,7 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
     providers.push(poeProvider);
 
     // OpenAI-compatible provider capabilities
-    const offline = (() => {
-      const v = (process.env.OFFLINE_MODE || '').toLowerCase();
-      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
-    })();
+    const offline = isOffline();
     const openAIProvider: ProviderCapabilities = {
       id: "openai-compatible",
       name: "OpenAI Compatible",

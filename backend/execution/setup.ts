@@ -1,5 +1,5 @@
 import { api } from "encore.dev/api";
-import { applyRuntimeEnv } from "../config/env";
+import { applyRuntimeEnv, isOffline } from "../config/env";
 
 type ProbeResponse = {
   offlineMode: boolean;
@@ -12,7 +12,7 @@ type ProbeResponse = {
 export const probe = api<{}, ProbeResponse>(
   { expose: true, method: "GET", path: "/setup/probe" },
   async () => {
-    const offlineMode = ((process.env.OFFLINE_MODE || '').toLowerCase() === '1' || (process.env.OFFLINE_MODE || '').toLowerCase() === 'true');
+    const offlineMode = isOffline();
     const teacherProvider = process.env.TEACHER_PROVIDER || 'poe';
     const openaiBaseUrl = process.env.OPENAI_BASE_URL || null;
     const poeConfigured = !!process.env.POE_API_KEY;
@@ -25,7 +25,17 @@ export const probe = api<{}, ProbeResponse>(
       const t = setTimeout(() => ctrl.abort(), 1200);
       const resp = await fetch(target, { method: 'GET', signal: ctrl.signal });
       clearTimeout(t);
-      ollamaDetected = resp.ok;
+      if (resp.ok) {
+        try {
+          const json = await resp.json();
+          // OpenAI-compatible shape: { data: [...] }
+          ollamaDetected = Array.isArray((json as any)?.data);
+        } catch {
+          ollamaDetected = false;
+        }
+      } else {
+        ollamaDetected = false;
+      }
     } catch {
       ollamaDetected = false;
     }
@@ -59,7 +69,7 @@ export const switchMode = api<{ mode: 'offline' | 'hosted'; baseUrl?: string; ap
 );
 
 async function currentConfig(): Promise<ProbeResponse> {
-  const offlineMode = ((process.env.OFFLINE_MODE || '').toLowerCase() === '1' || (process.env.OFFLINE_MODE || '').toLowerCase() === 'true');
+  const offlineMode = isOffline();
   const teacherProvider = process.env.TEACHER_PROVIDER || 'poe';
   const openaiBaseUrl = process.env.OPENAI_BASE_URL || null;
   const poeConfigured = !!process.env.POE_API_KEY;
@@ -69,8 +79,14 @@ async function currentConfig(): Promise<ProbeResponse> {
     const t = setTimeout(() => ctrl.abort(), 800);
     const resp = await fetch('http://localhost:11434/v1/models', { method: 'GET', signal: ctrl.signal });
     clearTimeout(t);
-    ollamaDetected = resp.ok;
+    if (resp.ok) {
+      try {
+        const json = await resp.json();
+        ollamaDetected = Array.isArray((json as any)?.data);
+      } catch {
+        ollamaDetected = false;
+      }
+    }
   } catch {}
   return { offlineMode, teacherProvider, openaiBaseUrl, ollamaDetected, poeConfigured };
 }
-

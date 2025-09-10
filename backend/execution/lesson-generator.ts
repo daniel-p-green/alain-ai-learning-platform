@@ -2,7 +2,7 @@ import { api, APIError } from "encore.dev/api";
 import { teacherGenerate } from "./teacher";
 import { requireUserId } from "../auth";
 import { allowRate } from "../utils/ratelimit";
-import { validateBackendEnv } from "../config/env";
+import { validateBackendEnv, isOffline } from "../config/env";
 import { validateLesson, applyDefaults } from "./spec/lessonSchema";
 import { parseHfUrl } from "../utils/hf";
 
@@ -159,10 +159,7 @@ export async function extractHFModelInfo(hfUrl: string) {
   const { owner, repo, kind, revision } = ref;
 
   // Strict offline mode: never attempt any network calls
-  const offline = (() => {
-    const v = (process.env.OFFLINE_MODE || '').toLowerCase();
-    return v === '1' || v === 'true' || v === 'yes' || v === 'on';
-  })();
+  const offline = isOffline();
   if (offline) {
     return { name: repo, org: owner, url: `https://huggingface.co/${kind === 'dataset' ? 'datasets/' : kind === 'space' ? 'spaces/' : ''}${owner}/${repo}`, card: null, kind, revision } as any;
   }

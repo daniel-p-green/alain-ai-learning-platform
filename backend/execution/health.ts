@@ -1,4 +1,5 @@
 import { api } from "encore.dev/api";
+import { isOffline } from "../config/env";
 import { secret } from "encore.dev/config";
 
 interface HealthStatus {
@@ -28,10 +29,7 @@ export const health = api<{}, HealthStatus>(
   { expose: true, method: "GET", path: "/health" },
   async () => {
     const startTime = Date.now();
-    const offline = (() => {
-      const v = (process.env.OFFLINE_MODE || '').toLowerCase();
-      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
-    })();
+    const offline = isOffline();
     const teacherProvider = (process.env.TEACHER_PROVIDER || 'poe') as any;
     const services: HealthStatus['services'] = {
       poe: await checkPoeHealth(),

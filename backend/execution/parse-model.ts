@@ -1,4 +1,5 @@
 import { api, APIError } from "encore.dev/api";
+import { isOffline } from "../config/env";
 
 interface ParseResponse {
   success: boolean;
@@ -15,10 +16,7 @@ export const parseModel = api<{ hfUrl: string }, ParseResponse>(
     const org = urlMatch[1];
     const name = urlMatch[2];
     // Strict offline mode: do not attempt to fetch metadata
-    const offline = (() => {
-      const v = (process.env.OFFLINE_MODE || '').toLowerCase();
-      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
-    })();
+    const offline = isOffline();
     if (offline) {
       return { success: true, model: { org, name, url: `https://huggingface.co/${org}/${name}` } };
     }
