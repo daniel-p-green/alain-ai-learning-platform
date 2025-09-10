@@ -164,11 +164,9 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         }
         return { success: true, content };
       } else {
-        // Access OpenAI-compatible secrets only when needed to avoid Cloud requiring them if unused
-        const openaiBaseUrl = secret("OPENAI_BASE_URL");
-        const openaiApiKey = secret("OPENAI_API_KEY");
-        const baseUrl = openaiBaseUrl();
-        const apiKey = openaiApiKey();
+        // Use env vars to avoid declaring Encore secrets unless explicitly desired
+        const baseUrl = process.env.OPENAI_BASE_URL;
+        const apiKey = process.env.OPENAI_API_KEY;
         if (!baseUrl || !apiKey) {
           throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required for openai-compatible provider");
         }
