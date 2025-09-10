@@ -13,3 +13,9 @@ feedback/
 # Personal hackathon notes/presentations (ignored, but keep folder)
 hackathon-notes/*
 !hackathon-notes/.gitkeep
+
+# Root-level personal notes (ignored if accidentally created)
+/CRITICAL_*.md
+/SOLO_*STRATEGY*.md
+/DEVPOST_*.md
+/IKEA_*POSITIONING*.md
