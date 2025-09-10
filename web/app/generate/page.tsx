@@ -102,7 +102,7 @@ export default function GenerateLessonPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Generate Lesson from Hugging Face URL</h1>
+      <h1 className="text-2xl font-black font-display">Generate Lesson from Hugging Face URL</h1>
       <form onSubmit={onSubmit} className="space-y-3">
         <input
           className="w-full p-2 rounded bg-gray-900 border border-gray-800"
@@ -165,7 +165,10 @@ export default function GenerateLessonPage() {
           <span className="text-xs text-gray-500">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
         <div className="flex gap-2">
-          <button className="brand-cta disabled:opacity-50" disabled={loading || !hfUrl.trim()}>
+          <button
+            className="inline-block bg-ikea-yellow text-ink border border-ink rounded-brand px-3 py-2 disabled:opacity-50"
+            disabled={loading || !hfUrl.trim()}
+          >
             {loading ? "Generating..." : "Generate Lesson"}
           </button>
           <button
@@ -250,8 +253,8 @@ export default function GenerateLessonPage() {
               <div className="font-medium text-gray-200 mb-1">Model Maker</div>
               <div>{result.preview.model_maker.name} ({result.preview.model_maker.org_type})</div>
               <div className="flex gap-2 mt-1">
-                {result.preview.model_maker.homepage && <a className="text-blue-400 hover:underline" href={result.preview.model_maker.homepage} target="_blank">Homepage</a>}
-                {result.preview.model_maker.repo && <a className="text-blue-400 hover:underline" href={result.preview.model_maker.repo} target="_blank">Repo</a>}
+                {result.preview.model_maker.homepage && <a className="text-ikea-blue hover:underline" href={result.preview.model_maker.homepage} target="_blank">Homepage</a>}
+                {result.preview.model_maker.repo && <a className="text-ikea-blue hover:underline" href={result.preview.model_maker.repo} target="_blank">Repo</a>}
                 {result.preview.model_maker.license && <span className="text-gray-400">License: {result.preview.model_maker.license}</span>}
               </div>
             </div>
@@ -272,7 +275,7 @@ export default function GenerateLessonPage() {
           )}
           <div className="flex gap-2">
             <button
-              className="px-3 py-2 rounded bg-blue-600 text-white"
+              className="px-3 py-2 rounded-brand bg-ikea-blue text-white hover:brightness-95"
               onClick={() => { window.location.href = `/tutorial/${result.tutorialId}`; }}
             >
               Open Tutorial
