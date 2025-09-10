@@ -4,11 +4,11 @@
 /* Web fonts: League Spartan (Google Fonts) */
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;900&display=swap');
 
-/* IKEA-inspired brand tokens */
+/* Brand tokens (assembly-inspired). CSS vars mirror Tailwind theme; update Tailwind first to avoid drift. */
 :root {
   /* Brand core */
-  --ikea-blue: #0057AD;
-  --ikea-yellow: #FBDA0C;
+  --brand-blue: #0057AD;
+  --brand-yellow: #FBDA0C;
   --paper: #FFFFFF; /* consider #FFFAEF for warm docs */
   --ink: #111827;
 
@@ -30,12 +30,4 @@
   border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 
-.brand-cta {
-  background: var(--ikea-yellow);
-  color: var(--ink);
-  border: 1px solid var(--ink);
-  border-radius: var(--radius);
-  padding: 0.4rem 0.8rem;
-}
-
-.brand-cta:hover { filter: brightness(0.98); }
+/* Deprecated: prefer Tailwind + Button component for CTAs */

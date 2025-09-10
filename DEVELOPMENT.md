@@ -143,4 +143,7 @@ git push origin main
 - [GitHub Integration](https://encore.dev/docs/platform/integrations/github)
 - [Encore Cloud Dashboard](https://app.encore.dev)
 
+## CI Notes
+
+- See `alain-ai-learning-platform/docs/ci-migration-notes.md` for recent CI changes and expectations (GitHub Actions removed; GitLab CI is the source of truth).
 

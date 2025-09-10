@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="200" viewBox="0 0 760 200" role="img" aria-label="ALAIN wordmark — flat">
+  <style>
+    :root {
+      --ink: #111827;    /* Ink 900 */
+      --blue: #1F3A8A;   /* Blueprint Blue 700 */
+      --paper: #FFFFFF;  /* White */
+    }
+    text { font-family: 'League Spartan', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
+  </style>
+
+  <!-- background -->
+  <rect width="100%" height="100%" fill="var(--paper)"/>
+
+  <!-- wordmark only -->
+  <text x="380" y="132" text-anchor="middle" font-size="120" font-weight="900" fill="var(--ink)" letter-spacing="6">ALAIN</text>
+
+  <!-- on-blue variant hint (commented)
+  <rect x="10" y="150" width="160" height="40" rx="10" fill="var(--blue)"/>
+  <text x="90" y="180" text-anchor="middle" font-size="28" font-weight="900" fill="#FFF">ALAIN</text>
+  -->
+</svg>
+
