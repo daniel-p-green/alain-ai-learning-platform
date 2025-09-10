@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "@/lib/auth";
 import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib/providers";
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  const { userId } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
   const body = await req.json().catch(()=>null);
   const providerId = body?.provider || 'poe';
   const model = body?.model || 'gpt-4o-mini';

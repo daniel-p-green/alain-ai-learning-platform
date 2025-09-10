@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "@/lib/auth";
 
 export async function POST(req: Request) {
-  const { userId, getToken } = await auth();
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  const { userId, getToken } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
   const body = await req.json().catch(() => null);
   if (!body?.current_content || typeof body.current_content !== 'string') {
     return new Response("current_content required", { status: 400 });
@@ -17,4 +17,3 @@ export async function POST(req: Request) {
   const data = await resp.json();
   return Response.json(data, { status: resp.status });
 }
-

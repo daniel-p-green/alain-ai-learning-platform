@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "@/lib/auth";
 import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib/providers";
 
 // Simple in-memory rate limiter per user (RPM)
@@ -25,8 +25,8 @@ function allow(userId: string): { ok: boolean; retryAfter?: number } {
 }
 
 export async function POST(req: NextRequest) {
-  const { userId, getToken } = await auth();
-  if (!userId) {
+  const { userId, getToken } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
@@ -41,8 +41,9 @@ export async function POST(req: NextRequest) {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
 
   try {
-    // Rate limit per user
-    const gate = allow(userId);
+    // Rate limit per user (use a stable placeholder in demo mode)
+    const uid = userId ?? 'demo-user';
+    const gate = allow(uid);
     if (!gate.ok) {
       return new Response(JSON.stringify({
         success: false,
