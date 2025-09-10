@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { backendUrl } from "../../../lib/backend";
 
 export async function POST(req: Request) {
   const { userId, getToken } = await auth();
@@ -6,10 +7,10 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   if (!body?.hfUrl) return new Response("hfUrl required", { status: 400 });
 
-  const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
+  // Use shared backend URL helper for consistency
 
   // 1) Call backend repair
-  const repairResp = await fetch(`${base}/lessons/repair`, {
+  const repairResp = await fetch(backendUrl('/lessons/repair'), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
 
   // 2) Import repaired lesson
   const token = await getToken();
-  const impResp = await fetch(`${base}/tutorials/import`, {
+  const impResp = await fetch(backendUrl('/tutorials/import'), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(repair.lesson)
@@ -41,4 +42,3 @@ export async function POST(req: Request) {
     first_step: repair.lesson.steps?.[0] || null,
   }});
 }
-

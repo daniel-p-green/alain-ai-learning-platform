@@ -1,8 +1,3 @@
 import { Service } from "encore.dev/service";
-export default new Service("export", {
-  cors: {
-    allowOrigins: [process.env.WEB_ORIGIN || "http://localhost:3000"],
-    allowMethods: ["GET", "POST"],
-    allowHeaders: ["Authorization", "Content-Type"],
-  },
-});
+import { corsDefaults } from "../utils/cors";
+export default new Service("export", { cors: corsDefaults });
