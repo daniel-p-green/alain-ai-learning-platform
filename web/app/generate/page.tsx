@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Button } from "../../components/Button";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
@@ -165,19 +166,10 @@ export default function GenerateLessonPage() {
           <span className="text-xs text-gray-500">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
         <div className="flex gap-2">
-          <button
-            className="inline-block bg-ikea-yellow text-ink border border-ink rounded-brand px-3 py-2 disabled:opacity-50"
-            disabled={loading || !hfUrl.trim()}
-          >
+          <Button type="submit" variant="accent" disabled={loading || !hfUrl.trim()}>
             {loading ? "Generating..." : "Generate Lesson"}
-          </button>
-          <button
-            type="button"
-            className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white"
-            onClick={() => setHfUrl("meta-llama/Meta-Llama-3.1-8B-Instruct")}
-          >
-            Use Example Model
-          </button>
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => setHfUrl("meta-llama/Meta-Llama-3.1-8B-Instruct")}>Use Example Model</Button>
         </div>
       </form>
       {loading && (
@@ -253,8 +245,8 @@ export default function GenerateLessonPage() {
               <div className="font-medium text-gray-200 mb-1">Model Maker</div>
               <div>{result.preview.model_maker.name} ({result.preview.model_maker.org_type})</div>
               <div className="flex gap-2 mt-1">
-                {result.preview.model_maker.homepage && <a className="text-ikea-blue hover:underline" href={result.preview.model_maker.homepage} target="_blank">Homepage</a>}
-                {result.preview.model_maker.repo && <a className="text-ikea-blue hover:underline" href={result.preview.model_maker.repo} target="_blank">Repo</a>}
+                {result.preview.model_maker.homepage && <a className="text-brand-blue hover:underline" href={result.preview.model_maker.homepage} target="_blank">Homepage</a>}
+                {result.preview.model_maker.repo && <a className="text-brand-blue hover:underline" href={result.preview.model_maker.repo} target="_blank">Repo</a>}
                 {result.preview.model_maker.license && <span className="text-gray-400">License: {result.preview.model_maker.license}</span>}
               </div>
             </div>
@@ -274,14 +266,12 @@ export default function GenerateLessonPage() {
             </div>
           )}
           <div className="flex gap-2">
-            <button
-              className="px-3 py-2 rounded-brand bg-ikea-blue text-white hover:brightness-95"
+            <Button
+              variant="primary"
               onClick={() => { window.location.href = `/tutorial/${result.tutorialId}`; }}
-            >
-              Open Tutorial
-            </button>
-            <button
-              className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white"
+            >Open Tutorial</Button>
+            <Button
+              variant="secondary"
               onClick={async () => {
                 const res = await fetch(`/export/colab/${result.tutorialId}`);
                 const nb = await res.json();
@@ -295,9 +285,7 @@ export default function GenerateLessonPage() {
                 a.remove();
                 URL.revokeObjectURL(url);
               }}
-            >
-              Export Notebook
-            </button>
+            >Export Notebook</Button>
           </div>
         </div>
       )}

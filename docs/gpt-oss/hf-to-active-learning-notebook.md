@@ -339,12 +339,12 @@ def try_json(text):
 - Gated/private HF models: user needs access token; document how.
 - Persistent OOM on target hardware: document required VRAM/alternatives (smaller model, quantization).
 - Provider outages: link to status pages and suggest local fallback.
-12) Background, Release Notes, and License
+## Background, Release Notes, and License
 - Add a short “About the Model” section: org, release date (from HF `lastModified`), license, intended use, and known limitations.
 - Pull metadata with `huggingface_hub.HfApi().model_info(<org/name>)` and extract sections from the README (`Intended Use`, `Limitations`, etc.).
 - Include an “Adjacent Models” list (same org/tag) to help users compare options.
 
-13) ELI5 & Metaphors (for busy readers)
+## ELI5 & Metaphors (for busy readers)
 - Generate short ELI5 explanations for Developer, PM, and CTO audiences using GPT‑OSS; otherwise fallback to a README extract.
 - Add one concrete metaphor (e.g., “multitool writer”) and 3 good vs 2 poor tasks with one‑line rationale.
 

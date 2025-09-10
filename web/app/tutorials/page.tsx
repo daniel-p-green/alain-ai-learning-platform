@@ -169,7 +169,7 @@ export default function TutorialsPage() {
               }
             }}
             disabled={seeding}
-            className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-sm disabled:opacity-50"
+            className="px-3 py-1.5 bg-brand-blue hover:brightness-95 text-white rounded-brand text-sm disabled:opacity-50"
             title="Insert curated sample tutorials if none exist"
           >{seeding ? 'Loading…' : 'Load Sample'}</button>
         </div>
@@ -190,12 +190,7 @@ export default function TutorialsPage() {
             onChange={(e) => handleFilterChange('search', e.target.value)}
             className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
           />
-          <button
-            onClick={() => loadTutorials(1)}
-            className="px-4 py-2 bg-ikea-blue hover:brightness-95 text-white rounded-brand"
-          >
-            Search
-          </button>
+          <button onClick={() => loadTutorials(1)} className="px-4 py-2 bg-brand-blue hover:brightness-95 text-white rounded-brand">Search</button>
         </div>
 
         {/* Filters */}
@@ -321,7 +316,7 @@ export default function TutorialsPage() {
 
             <a
               href={`/tutorial/${tutorial.id}`}
-              className="inline-block px-4 py-2 bg-ikea-blue hover:brightness-95 text-white rounded-brand transition-colors"
+              className="inline-block px-4 py-2 bg-brand-blue hover:brightness-95 text-white rounded-brand transition-colors"
             >
               Start Tutorial
             </a>
@@ -362,7 +357,7 @@ export default function TutorialsPage() {
           <p className="text-gray-400 mb-4">Try adjusting your filters or search terms</p>
           <button
             onClick={clearFilters}
-            className="px-4 py-2 bg-ikea-blue hover:brightness-95 text-white rounded-brand"
+            className="px-4 py-2 bg-brand-blue hover:brightness-95 text-white rounded-brand"
           >
             Clear Filters
           </button>

@@ -200,6 +200,24 @@ curl -s -X POST "$OPENAI_BASE_URL/chat/completions" \
 
 —
 
+## Refactor Summary (2025‑09‑09)
+- Component split for tutorial player:
+  - `alain-ai-learning-platform/web/components/PromptCell.tsx` — Monaco editor + run action (textarea fallback).
+  - `alain-ai-learning-platform/web/components/StreamingOutput.tsx` — Streaming output pane with error state.
+  - `alain-ai-learning-platform/web/components/StepNav.tsx` — Step navigation control.
+- `web/app/tutorial/[id]/page.tsx` now uses these components. Fetch path corrected to backend `GET /tutorials/:id`.
+  - File: `alain-ai-learning-platform/web/app/tutorial/[id]/page.tsx:41`
+- CORS enabled for browser → backend calls (methods limited to GET/POST). Set `WEB_ORIGIN` in prod:
+  - `alain-ai-learning-platform/backend/execution/encore.service.ts:1`
+  - `alain-ai-learning-platform/backend/tutorials/encore.service.ts:1`
+  - `alain-ai-learning-platform/backend/assessments/encore.service.ts:1`
+
+Notes
+- `WEB_ORIGIN` defaults to `http://localhost:3000` for local dev.
+- The player’s behavior is unchanged; the split improves readability and reuse.
+
+—
+
 ## Open Source
 - License: MIT
 - Contributions welcome: Providers, templates, assessments, UX.

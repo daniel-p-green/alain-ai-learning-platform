@@ -12,9 +12,10 @@ type Props = {
   error?: { code: string; message: string } | null;
   elapsedSeconds?: number;
   tokenCount?: number;
+  status?: 'error' | 'success' | 'info' | 'idle';
 };
 
-export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, tokenCount }: Props) {
+export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, tokenCount, status = 'idle' }: Props) {
   return (
     <div className="space-y-2">
       {error && (
@@ -28,19 +29,29 @@ export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, to
         <div className="bg-gray-900 rounded p-3 text-sm space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-300">Elapsed:</span>
-            <span className="text-ikea-blue font-mono">{Math.max(0, elapsedSeconds || 0)}s</span>
+            <span className="text-brand-blue font-mono">{Math.max(0, elapsedSeconds || 0)}s</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-300">Tokens:</span>
-            <span className="text-ikea-blue font-mono">~{tokenCount || 0}</span>
+            <span className="text-brand-blue font-mono">~{tokenCount || 0}</span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-2">
-            <div className="bg-ikea-blue h-2 rounded-full animate-pulse" style={{ width: "60%" }} />
+            <div className="bg-brand-blue h-2 rounded-full animate-pulse" style={{ width: "60%" }} />
           </div>
         </div>
       )}
 
-      <pre className="whitespace-pre-wrap bg-gray-900 border border-gray-800 rounded p-3 text-gray-100 text-sm min-h-24">
+      <pre
+        className={`whitespace-pre-wrap bg-gray-900 border rounded p-3 text-gray-100 text-sm min-h-24 ${
+          status === 'error'
+            ? 'border-red-600'
+            : status === 'success'
+            ? 'border-green-600'
+            : status === 'info'
+            ? 'border-brand-blue'
+            : 'border-gray-800'
+        }`}
+      >
         {output || (isStreaming ? "Streaming…" : "")}
       </pre>
     </div>

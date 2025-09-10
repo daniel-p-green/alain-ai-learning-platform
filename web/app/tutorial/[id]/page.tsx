@@ -297,7 +297,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <a className="text-ikea-blue hover:underline" href="/tutorials">← Back</a>
+        <a className="text-brand-blue hover:underline" href="/tutorials">← Back</a>
         <a className="text-xs text-gray-400 hover:underline" target="_blank" href={
           `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
         }>Report issue</a>
@@ -310,8 +310,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           <div className="font-semibold text-white">Model Maker</div>
           <div>{tutorial.model_maker.name} ({tutorial.model_maker.org_type})</div>
           <div className="flex gap-2 mt-1">
-            {tutorial.model_maker.homepage && <a className="text-ikea-blue hover:underline" href={tutorial.model_maker.homepage} target="_blank">Homepage</a>}
-            {tutorial.model_maker.repo && <a className="text-ikea-blue hover:underline" href={tutorial.model_maker.repo} target="_blank">Repo</a>}
+            {tutorial.model_maker.homepage && <a className="text-brand-blue hover:underline" href={tutorial.model_maker.homepage} target="_blank">Homepage</a>}
+            {tutorial.model_maker.repo && <a className="text-brand-blue hover:underline" href={tutorial.model_maker.repo} target="_blank">Repo</a>}
             {tutorial.model_maker.license && <span className="text-gray-400">License: {tutorial.model_maker.license}</span>}
           </div>
         </div>
@@ -408,7 +408,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      className="px-3 py-1 rounded-brand bg-ikea-blue text-white disabled:opacity-50 hover:brightness-95"
+                      className="px-3 py-1 rounded-brand bg-brand-blue text-white disabled:opacity-50 hover:brightness-95"
                       disabled={choice == null}
                       onClick={async () => {
                         const token = await getToken();
@@ -541,6 +541,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           error={executionState.status === 'error' ? executionState.error || null : null}
           elapsedSeconds={getElapsedTime()}
           tokenCount={executionState.tokenCount}
+          status={executionState.status === 'error' ? 'error' : executionState.status === 'completed' ? 'success' : executionState.status === 'running' ? 'info' : 'idle'}
         />
 
           {/* Copy helpers */}
@@ -600,7 +601,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           Download Colab Notebook
         </button>
         <div className="text-xs text-gray-500 mt-2">
-          Tip: To open in Google Colab, visit <a className="text-blue-400 hover:underline" href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
+          Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
         </div>
       </div>
 

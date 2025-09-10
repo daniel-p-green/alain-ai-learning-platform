@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Tools">
+  <style>
+    :root { --ink:#111827; }
+    .s { fill: none; stroke: var(--ink); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <!-- wrench + screwdriver simplified -->
+  <path class="s" d="M9 3a4 4 0 0 0 4 4l-6 6a4 4 0 0 0-4-4l6-6z"/>
+  <path class="s" d="M13.5 12.5l6 6"/>
+  <path class="s" d="M16 3v6"/>
+  <path class="s" d="M14.5 3h3l.5 1.5l-4 4l-1.5-1.5z"/>
+</svg>
+
