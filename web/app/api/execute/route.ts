@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "@/lib/auth";
 import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib/providers";
 
 // Simple in-memory rate limiter per user (RPM)
@@ -25,8 +25,8 @@ function allow(userId: string): { ok: boolean; retryAfter?: number } {
 }
 
 export async function POST(req: NextRequest) {
-  const { userId, getToken } = await auth();
-  if (!userId) {
+  const { userId, getToken } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       }), { status: 429, headers: { 'Retry-After': String(gate.retryAfter || 60) } });
     }
 
-    // Get Clerk JWT token to forward to backend
+    // Get Clerk JWT token to forward to backend (may be null in demo bypass)
     const token = await getToken();
 
     if (stream) {

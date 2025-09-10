@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "../../../lib/auth";
 import { backendUrl } from "../../../lib/backend";
 
 export async function GET() {
@@ -21,9 +21,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  // Require auth to change server runtime config
-  const { userId } = await auth();
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  // Require auth to change server runtime config (allow demo bypass if enabled)
+  const { userId } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
 
   try {
     const body = await request.json();
@@ -39,4 +39,3 @@ export async function POST(request: Request) {
     return Response.json({ success: false, message: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
 }
-
