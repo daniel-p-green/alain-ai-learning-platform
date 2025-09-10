@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { PromptCell } from "../../../components/PromptCell";
+import { Button } from "../../../components/Button";
 import { StreamingOutput } from "../../../components/StreamingOutput";
 import { StepNav } from "../../../components/StepNav";
 import { useAuth, useUser } from "@clerk/nextjs";
@@ -378,12 +379,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             disabled={executionState.status === 'running' || !prompt.trim()}
           />
           {executionState.status === 'running' && (
-            <button
-              className="mt-2 px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors"
-              onClick={cancelExecution}
-            >
-              Cancel
-            </button>
+            <Button className="mt-2" variant="danger" onClick={cancelExecution}>Cancel</Button>
           )}
 
           {/* Assessments */}
@@ -407,8 +403,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      className="px-3 py-1 rounded-brand bg-brand-blue text-white disabled:opacity-50 hover:brightness-95"
+                    <Button
                       disabled={choice == null}
                       onClick={async () => {
                         const token = await getToken();
@@ -421,9 +416,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                         const data = await resp.json();
                         setAssessmentResult(data);
                       }}
-                    >
-                      Submit
-                    </button>
+                    >Submit</Button>
                     {assessmentResult && (
                       <span className={assessmentResult.correct ? 'text-green-400' : 'text-red-400'}>
                         {assessmentResult.correct ? 'Correct!' : 'Incorrect'}
@@ -449,8 +442,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
                 </select>
-                <button
-                  className="px-3 py-1.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white"
+                <Button
+                  className="px-3 py-1.5"
                   onClick={async ()=>{
                     const score = assessmentResult ? (assessmentResult.correct ? 80 : 40) : 60;
                     const resp = await fetch('/api/adapt', {
@@ -468,7 +461,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                     const data = await resp.json();
                     if (data.success && data.adapted) setAdapted(data.adapted);
                   }}
-                >Adapt</button>
+                  variant="primary"
+                >Adapt</Button>
               </div>
             </div>
             {adapted && (
@@ -482,8 +476,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
           {/* Progress */}
           {user && (
-            <button
-              className="px-4 py-2 rounded bg-gray-700 hover:bg-gray-600 text-white"
+            <Button
+              variant="secondary"
               onClick={async () => {
                 const token = await getToken();
                 const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
@@ -498,9 +492,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   })
                 });
               }}
-            >
-              Mark Step Complete
-            </button>
+            >Mark Step Complete</Button>
           )}
         </div>
 
@@ -508,12 +500,13 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Output</h2>
           <div className="flex items-center gap-2">
-            <button
-              className="text-xs px-2 py-1 rounded bg-gray-800 border border-gray-700"
+            <Button
+              className="text-xs px-2 py-1"
               onClick={() => setShowRequest(!showRequest)}
+              variant="secondary"
             >
               {showRequest ? 'Hide Request' : 'Show Request'}
-            </button>
+            </Button>
             {executionState.status === 'completed' && (
               <span className="text-sm text-green-400 font-medium">✓ Completed</span>
             )}
@@ -527,10 +520,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           <div className="text-xs bg-gray-900 border border-gray-800 rounded p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="text-gray-400">Last request payload</div>
-              <button
-                className="px-2 py-0.5 rounded bg-gray-800 border border-gray-700 text-white"
-                onClick={() => navigator.clipboard.writeText(JSON.stringify(lastRequest || {}, null, 2))}
-              >Copy JSON</button>
+              <Button className="px-2 py-0.5" variant="secondary" onClick={() => navigator.clipboard.writeText(JSON.stringify(lastRequest || {}, null, 2))}>Copy JSON</Button>
             </div>
             <pre className="whitespace-pre-wrap text-gray-300">{JSON.stringify(lastRequest || {}, null, 2)}</pre>
           </div>
@@ -549,8 +539,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-300">Copy as</div>
               <div className="flex gap-2">
-                <button className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-xs" onClick={() => navigator.clipboard.writeText(curl)}>curl</button>
-                <button className="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-xs" onClick={() => navigator.clipboard.writeText(sdk)}>OpenAI SDK (JS)</button>
+                <Button className="px-2 py-1 text-xs" variant="secondary" onClick={() => navigator.clipboard.writeText(curl)}>curl</Button>
+                <Button className="px-2 py-1 text-xs" variant="secondary" onClick={() => navigator.clipboard.writeText(sdk)}>OpenAI SDK (JS)</Button>
               </div>
             </div>
             <pre className="text-xs whitespace-pre-wrap text-gray-400">{curl}</pre>
@@ -581,8 +571,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
       {/* Colab Export */}
       <div>
-        <button
-          className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white"
+        <Button
+          variant="secondary"
           onClick={async () => {
             const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
             const res = await fetch(`${base}/export/colab/${tutorial!.id}`);
@@ -597,9 +587,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             a.remove();
             URL.revokeObjectURL(url);
           }}
-        >
-          Download Colab Notebook
-        </button>
+        >Download Colab Notebook</Button>
         <div className="text-xs text-gray-500 mt-2">
           Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
         </div>

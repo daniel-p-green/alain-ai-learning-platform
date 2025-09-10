@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Button } from "../../components/Button";
 
 export default function StreamDemo() {
   const [out, setOut] = useState("");
@@ -60,12 +61,11 @@ export default function StreamDemo() {
         <SignInButton />
       </SignedOut>
       <SignedIn>
-        <button disabled={loading} onClick={run}>
+        <Button disabled={loading} onClick={run}>
           {loading ? "Running..." : "Run"}
-        </button>
+        </Button>
       </SignedIn>
       <pre style={{ whiteSpace: "pre-wrap", marginTop: 16 }}>{out}</pre>
     </div>
   );
 }
-
