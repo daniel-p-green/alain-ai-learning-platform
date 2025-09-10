@@ -1,5 +1,7 @@
 # Reusable Notebook Snippets
 
+Note: some snippets fetch remote resources (e.g., Hugging Face). Guard or skip in CI/offline runs.
+
 Use these drop-in code cells in any new notebook to enrich model background, license clarity, and risk awareness.
 
 ## Intended Use & Limitations (from Hugging Face README)
@@ -86,4 +88,3 @@ try:
 except Exception as e:
     print('License lookup error:', e)
 ```
-

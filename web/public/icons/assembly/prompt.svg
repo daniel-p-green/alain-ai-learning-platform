@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="Prompt">
+  <style>
+    :root { --ink:#111827; }
+    .s { fill: none; stroke: var(--ink); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <rect class="s" x="3.5" y="4" width="17" height="14" rx="2"/>
+  <path class="s" d="M6.5 10h6"/>
+  <path class="s" d="M6.5 13h10"/>
+  <circle class="s" cx="7.5" cy="8" r=".5"/>
+</svg>
+

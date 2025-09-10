@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="240" viewBox="0 0 840 240" role="img" aria-label="ALAIN wordmark — instruction tab">
+  <style>
+    :root {
+      --blue: #1F3A8A;   /* Blueprint Blue 700 */
+      --yellow: #F8C800; /* Assembly Yellow 500 */
+      --ink: #111827;    /* Ink 900 */
+      --paper: #FFFAEF;  /* Paper 50 (preview bg) */
+    }
+    text { font-family: 'League Spartan', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
+  </style>
+
+  <!-- preview background, remove if embedding on colored surface -->
+  <rect width="100%" height="100%" fill="var(--paper)"/>
+
+  <!-- instruction tab -->
+  <g>
+    <rect x="20" y="30" rx="28" ry="28" width="800" height="180" fill="var(--blue)" stroke="var(--ink)" stroke-width="8"/>
+    <!-- dog-ear accent at top-right -->
+    <path d="M800 30 L820 30 L820 50 Z" fill="var(--yellow)" stroke="var(--ink)" stroke-width="4"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="420" y="162" text-anchor="middle" font-size="120" font-weight="900" fill="#FFFFFF" letter-spacing="6">ALAIN</text>
+</svg>
+
