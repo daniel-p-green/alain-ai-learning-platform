@@ -5,6 +5,7 @@ import { Button } from "../../../components/Button";
 import { StreamingOutput } from "../../../components/StreamingOutput";
 import { StepNav } from "../../../components/StepNav";
 import { useAuth, useUser } from "@clerk/nextjs";
+import { backendUrl } from "../../../lib/backend";
 
 type Step = {
   id: number;
@@ -41,8 +42,7 @@ type ExecutionState = {
 };
 
 async function fetchTutorial(id: string): Promise<Tutorial> {
-  const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-  const res = await fetch(`${base}/tutorials/${id}`, { cache: "no-store" });
+  const res = await fetch(backendUrl(`/tutorials/${id}`), { cache: "no-store" });
   return res.json();
 }
 
@@ -406,12 +406,11 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                       disabled={choice == null}
                       onClick={async () => {
                         const token = await getToken();
-                        const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-                        const resp = await fetch(`${base}/assessments/validate`, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                          body: JSON.stringify({ assessmentId: a.id, choice })
-                        });
+                    const resp = await fetch(backendUrl('/assessments/validate'), {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                      body: JSON.stringify({ assessmentId: a.id, choice })
+                    });
                         const data = await resp.json();
                         setAssessmentResult(data);
                       }}
@@ -573,8 +572,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         <Button
           variant="secondary"
           onClick={async () => {
-            const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-            const res = await fetch(`${base}/export/colab/${tutorial!.id}`);
+            const res = await fetch(backendUrl(`/export/colab/${tutorial!.id}`));
             const nb = await res.json();
             const blob = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);

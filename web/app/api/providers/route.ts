@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { backendUrl } from "../../../lib/backend";
 
 export async function GET() {
   const { userId } = await auth();
@@ -6,8 +7,7 @@ export async function GET() {
 
   try {
     // Proxy to backend capabilities endpoint
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-    const response = await fetch(`${backendUrl}/providers`, {
+    const response = await fetch(backendUrl('/providers'), {
       headers: {
         "Content-Type": "application/json",
       },
@@ -59,9 +59,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-
-    const response = await fetch(`${backendUrl}/providers/validate`, {
+    const response = await fetch(backendUrl('/providers/validate'), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,4 +81,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { backendUrl } from "../../lib/backend";
 import { Button } from "../../components/Button";
 
 export default function GenerateLessonPage() {
@@ -273,8 +274,7 @@ export default function GenerateLessonPage() {
             <Button
               variant="secondary"
               onClick={async () => {
-                const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
-                const res = await fetch(`${base}/export/colab/${result.tutorialId}`);
+                const res = await fetch(backendUrl(`/export/colab/${result.tutorialId}`));
                 const nb = await res.json();
                 const blob = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
