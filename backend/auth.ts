@@ -5,6 +5,10 @@ export async function requireUserId(ctx: any): Promise<string> {
   const authz: string | undefined =
     ctx?.req?.header?.("Authorization") || ctx?.req?.header?.("authorization");
   if (!authz || typeof authz !== "string") {
+    // Local demo bypass: allow unauthenticated access if explicitly enabled
+    const bypass = (process.env.DEMO_ALLOW_UNAUTH || '').toLowerCase();
+    const enabled = bypass === '1' || bypass === 'true' || bypass === 'yes' || bypass === 'on';
+    if (enabled) return 'demo-user';
     throw APIError.unauthenticated("Missing Authorization header");
   }
   const m = authz.match(/^Bearer\s+(.+)/i);
@@ -21,4 +25,3 @@ export async function requireUserId(ctx: any): Promise<string> {
     throw APIError.unauthenticated("Invalid or expired token");
   }
 }
-

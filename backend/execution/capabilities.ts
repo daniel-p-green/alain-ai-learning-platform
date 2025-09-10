@@ -102,6 +102,10 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
     providers.push(poeProvider);
 
     // OpenAI-compatible provider capabilities
+    const offline = (() => {
+      const v = (process.env.OFFLINE_MODE || '').toLowerCase();
+      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+    })();
     const openAIProvider: ProviderCapabilities = {
       id: "openai-compatible",
       name: "OpenAI Compatible",
@@ -115,7 +119,7 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
         requestsPerMinute: 60,
         tokensPerMinute: 150000
       },
-      status: (process.env.OPENAI_API_KEY && process.env.OPENAI_BASE_URL) ? 'available' : 'configuring',
+      status: ((process.env.OPENAI_API_KEY && process.env.OPENAI_BASE_URL) || offline) ? 'available' : 'configuring',
       models: [
         {
           id: "gpt-4o",

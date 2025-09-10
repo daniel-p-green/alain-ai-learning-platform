@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   ClerkProvider,
   SignInButton,
@@ -21,6 +22,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const OfflineBadge = dynamic(() => import("../components/OfflineBadge"), { ssr: false });
   return (
     <ClerkProvider>
       <html lang="en">
@@ -42,6 +44,8 @@ export default function RootLayout({
                 className="hidden sm:block"
                 priority
               />
+              {/* Show small notice when backend strict offline is enabled */}
+              <OfflineBadge />
             </Link>
             <SignedOut>
               <SignInButton />

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "../../components/Button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Toast } from "../../components/Toast";
 
 type ProviderInfo = {
   id: string; name: string; description: string;
@@ -15,6 +16,10 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [smoke, setSmoke] = useState<string | null>(null);
+  const [probe, setProbe] = useState<any>(null);
+  const [wizardMsg, setWizardMsg] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [toastVariant, setToastVariant] = useState<"success" | "error" | "info">("info");
 
   async function load() {
     setLoading(true);
@@ -31,7 +36,17 @@ export default function SettingsPage() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  async function loadProbe() {
+    try {
+      const resp = await fetch('/api/setup', { cache: 'no-store' });
+      const data = await resp.json();
+      setProbe(data);
+    } catch (e: any) {
+      setProbe({ error: e?.message || String(e) });
+    }
+  }
+
+  useEffect(() => { load(); loadProbe(); }, []);
 
   async function validate(providerId: string) {
     setMessage(null);
@@ -57,6 +72,63 @@ export default function SettingsPage() {
         </div>
       </SignedOut>
       <SignedIn>
+        {/* Quick Setup Wizard */}
+        <div className="p-4 rounded border border-gray-800 bg-gray-900">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="font-semibold text-white">Setup Wizard</div>
+              <div className="text-sm text-gray-400">Get running in one click. We’ll detect local Ollama and configure the backend.</div>
+            </div>
+          </div>
+          <div className="mt-3 grid gap-2 text-sm text-gray-300">
+            <div>
+              Status: {probe?.offlineMode ? <span className="text-yellow-300">OFFLINE</span> : <span className="text-gray-300">Hosted</span>} · Provider: <span className="text-gray-200">{probe?.teacherProvider || 'unknown'}</span> · Base URL: <span className="text-gray-200">{probe?.openaiBaseUrl || 'n/a'}</span>
+            </div>
+            <div>
+              Ollama detected at localhost:11434: {probe?.ollamaDetected ? <span className="text-green-300">yes</span> : <span className="text-red-300">no</span>}
+            </div>
+            <div>
+              Poe configured: {probe?.poeConfigured ? <span className="text-green-300">yes</span> : <span className="text-yellow-300">no</span>}
+            </div>
+          </div>
+          {wizardMsg && <div className="mt-3 p-2 text-xs border border-gray-700 rounded bg-gray-950">{wizardMsg}</div>}
+          <div className="mt-3 flex items-center gap-2">
+            <Button onClick={async ()=>{
+              setWizardMsg(null);
+              const resp = await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'offline' }) });
+              const data = await resp.json();
+              if (data.success) {
+                setWizardMsg('Switched to Offline Mode (Ollama).');
+                setToastVariant('success');
+                setToastMsg('Switched to Offline Mode');
+                await loadProbe();
+                await load();
+              } else {
+                setWizardMsg(`Error: ${data.message || 'failed to switch'}`);
+                setToastVariant('error');
+                setToastMsg('Failed to switch to Offline Mode');
+              }
+            }}>Switch to Offline Mode</Button>
+            <Button variant="secondary" onClick={async ()=>{
+              setWizardMsg(null);
+              const resp = await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'hosted' }) });
+              const data = await resp.json();
+              if (data.success) {
+                setWizardMsg('Switched to Hosted Mode (Poe).');
+                setToastVariant('success');
+                setToastMsg('Switched to Hosted Mode');
+                await loadProbe();
+                await load();
+              } else {
+                setWizardMsg(`Error: ${data.message || 'failed to switch'}`);
+                setToastVariant('error');
+                setToastMsg('Failed to switch to Hosted Mode');
+              }
+            }}>Switch to Hosted (Poe)</Button>
+            <Button variant="secondary" onClick={() => navigator.clipboard.writeText('ollama pull gpt-oss:20b')}>Copy: pull Ollama model</Button>
+          </div>
+        </div>
+
         <p className="text-gray-400">Validate provider configuration (BYOK and Poe).</p>
         {message && (
           <div className="p-3 rounded bg-gray-900 border border-gray-700 text-sm">{message}</div>
@@ -128,6 +200,9 @@ export default function SettingsPage() {
           </div>
         )}
       </SignedIn>
+      {toastMsg && (
+        <Toast message={toastMsg} variant={toastVariant} onClose={() => setToastMsg(null)} />
+      )}
     </div>
   );
 }
