@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { backendUrl } from "../../../lib/backend";
 
 export async function POST(req: Request) {
   const { userId, getToken } = await auth();
@@ -6,7 +7,7 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   if (!body?.hfUrl) return new Response("hfUrl required", { status: 400 });
 
-  const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
+  // Use shared backend URL helper for consistency
   const teacherModel = body.teacherModel || "GPT-OSS-20B";
   const difficulty = body.difficulty || "beginner";
   const includeAssessment = Boolean(body.includeAssessment);
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
 
   // 1) Generate lesson structure from HF URL
   const genStart = Date.now();
-  const genResp = await fetch(`${base}/lessons/generate`, {
+  const genResp = await fetch(backendUrl('/lessons/generate'), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning })
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
 
   // 2) Persist lesson into tutorials
   const impStart = Date.now();
-  const impResp = await fetch(`${base}/tutorials/import`, {
+  const impResp = await fetch(backendUrl('/tutorials/import'), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
