@@ -13,6 +13,9 @@ import {
 } from "@clerk/nextjs";
 import "./globals.css";
 
+// next/font must be initialized at module scope
+const league = League_Spartan({ subsets: ["latin"], weight: ["700", "900"] });
+
 export const metadata: Metadata = {
   title: "ALAIN - Applied Learning AI Notebooks",
   description: "Interactive AI learning platform with real models and hands-on tutorials",
@@ -23,7 +26,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const league = League_Spartan({ subsets: ["latin"], weight: ["700", "900"] });
   const OfflineBadge = dynamic(() => import("../components/OfflineBadge"), { ssr: false });
   return (
     <ClerkProvider>
