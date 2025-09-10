@@ -11,8 +11,8 @@ export async function POST(req: Request) {
   const difficulty = body.difficulty || "beginner";
   const includeAssessment = Boolean(body.includeAssessment);
   const provider = (body.provider || process.env.TEACHER_PROVIDER || 'poe') as 'poe' | 'openai-compatible';
-  const token = await getToken();
   const includeReasoning = Boolean(body.showReasoning);
+  const token = await getToken();
 
   // 1) Generate lesson structure from HF URL
   const genStart = Date.now();
@@ -35,7 +35,6 @@ export async function POST(req: Request) {
   }
 
   // 2) Persist lesson into tutorials
-  const token = await getToken();
   const impStart = Date.now();
   const impResp = await fetch(`${base}/tutorials/import`, {
     method: "POST",
