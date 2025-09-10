@@ -2,9 +2,8 @@ import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 import { mapModelForProvider } from "./providers/aliases";
 
+// Keep Poe secret available since Poe is the default provider.
 const poeApiKey = secret("POE_API_KEY");
-const openaiBaseUrl = secret("OPENAI_BASE_URL");
-const openaiApiKey = secret("OPENAI_API_KEY");
 
 interface TeacherRequest {
   model: "GPT-OSS-20B" | "GPT-OSS-120B";
@@ -165,6 +164,9 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         }
         return { success: true, content };
       } else {
+        // Access OpenAI-compatible secrets only when needed to avoid Cloud requiring them if unused
+        const openaiBaseUrl = secret("OPENAI_BASE_URL");
+        const openaiApiKey = secret("OPENAI_API_KEY");
         const baseUrl = openaiBaseUrl();
         const apiKey = openaiApiKey();
         if (!baseUrl || !apiKey) {
