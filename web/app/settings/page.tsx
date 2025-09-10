@@ -4,11 +4,13 @@ import { Button } from "../../components/Button";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Toast } from "../../components/Toast";
 
+type ProviderModel = { id: string; name?: string };
 type ProviderInfo = {
   id: string; name: string; description: string;
   supportsStreaming: boolean; requiresAuth: boolean;
   supportsHarmonyRoles?: boolean; supportsTools?: boolean; notes?: string;
   status: "available" | "configuring" | "unavailable" | "unknown";
+  models?: ProviderModel[];
 };
 
 export default function SettingsPage() {
