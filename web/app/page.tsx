@@ -2,17 +2,17 @@ import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export default function Page() {
   return (
-    <div style={{ padding: 24 }}>
-      <section style={{ maxWidth: 920, margin: "0 auto" }}>
-        <h1 style={{ fontSize: 40, lineHeight: 1.1, margin: 0 }}>
+    <div className="p-6">
+      <section className="max-w-4xl mx-auto">
+        <h1 className="text-4xl leading-tight m-0 font-bold text-ink">
           Learn AI by Doing — Guided, Streaming, Authenticated
         </h1>
-        <p style={{ color: "#9CA3AF", fontSize: 18, marginTop: 12 }}>
+        <p className="text-gray-400 text-lg mt-3">
           Hands-on tutorials with real-time model outputs via SSE streaming.
           Sign in to start, then try the streaming demo.
         </p>
 
-        <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
+        <div className="flex gap-3 mt-5">
           <SignedOut>
             <SignInButton />
             <SignUpButton />
@@ -20,14 +20,7 @@ export default function Page() {
           <SignedIn>
             <a
               href="/stream"
-              style={{
-                padding: "10px 14px",
-                borderRadius: 8,
-                background: "#2563EB",
-                color: "white",
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
+              className="px-4 py-2 rounded-lg bg-brand-blue text-white no-underline font-semibold hover:brightness-95 transition-all"
             >
               Try Streaming Demo
             </a>

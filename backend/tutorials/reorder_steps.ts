@@ -62,7 +62,12 @@ export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
     }
 
     // Get all existing steps for the tutorial
-    const existingSteps = await tutorialsDB.queryAll<{ 
+    const existingSteps: Array<{ 
+      id: number; 
+      step_order: number; 
+      title: string;
+    }> = [];
+    const existingIter = tutorialsDB.query<{ 
       id: number; 
       step_order: number; 
       title: string;
@@ -72,6 +77,7 @@ export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
       WHERE tutorial_id = ${req.tutorialId}
       ORDER BY step_order ASC
     `;
+    for await (const row of existingIter) existingSteps.push(row);
 
     if (existingSteps.length === 0) {
       throw APIError.notFound(`no steps found for tutorial "${tutorial.title}"`);
@@ -181,7 +187,8 @@ export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
           }
 
           // Update completed_steps arrays
-          const usersWithProgress = await tx.queryAll<{ 
+          const usersWithProgress: Array<{ id: number; completed_steps: number[] }>= [];
+          const usersIter = tx.query<{ 
             id: number; 
             completed_steps: number[]; 
           }>`
@@ -190,6 +197,7 @@ export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
             WHERE tutorial_id = ${req.tutorialId}
               AND array_length(completed_steps, 1) > 0
           `;
+          for await (const u of usersIter) usersWithProgress.push(u);
 
           for (const user of usersWithProgress) {
             const updatedCompletedSteps = user.completed_steps.map(step => 

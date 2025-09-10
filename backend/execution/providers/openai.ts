@@ -1,10 +1,14 @@
 import type { ExecuteRequest, Provider } from "./index";
 import { ensureOk, httpJson, streamSSE, toAuthHeader } from "./base";
 import { mapModelForProvider } from "./aliases";
+import { secret } from "encore.dev/config";
+
+const openaiBaseUrl = secret("OPENAI_BASE_URL");
+const openaiApiKey = secret("OPENAI_API_KEY");
 
 async function complete(body: ExecuteRequest): Promise<string> {
-  const baseUrl = process.env.OPENAI_BASE_URL;
-  const apiKey = process.env.OPENAI_API_KEY;
+  const baseUrl = openaiBaseUrl();
+  const apiKey = openaiApiKey();
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), 30_000);
@@ -28,8 +32,8 @@ async function complete(body: ExecuteRequest): Promise<string> {
 }
 
 async function stream(body: ExecuteRequest, onData: (data: any) => void, signal?: AbortSignal) {
-  const baseUrl = process.env.OPENAI_BASE_URL;
-  const apiKey = process.env.OPENAI_API_KEY;
+  const baseUrl = openaiBaseUrl();
+  const apiKey = openaiApiKey();
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
   // Combine external abort with a 30s internal timeout
   const ac = new AbortController();

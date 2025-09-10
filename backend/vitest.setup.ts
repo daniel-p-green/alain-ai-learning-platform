@@ -49,6 +49,11 @@ vi.mock('encore.dev/storage/sqldb', () => {
     async exec(strings: TemplateStringsArray, ...values: any[]) { this.ops.push(() => this.db.exec(strings, ...values)); }
     async queryRow<T=Row>(strings: TemplateStringsArray, ...values: any[]): Promise<T | undefined> { return this.db.queryRow(strings, ...values); }
     async queryAll<T=Row>(strings: TemplateStringsArray, ...values: any[]): Promise<T[]> { return this.db.queryAll(strings, ...values); }
+    query<T=Row>(strings: TemplateStringsArray, ...values: any[]): AsyncIterable<T> {
+      const promise = this.db.queryAll<T>(strings, ...values);
+      async function* iter() { for (const r of await promise) yield r; }
+      return iter();
+    }
     async commit() { this.ops.forEach(fn => fn()); this.ops = []; }
     async rollback() { this.ops = []; }
   }
@@ -263,6 +268,11 @@ vi.mock('encore.dev/storage/sqldb', () => {
         return rows as any;
       }
       return [] as any;
+    }
+    query<T=Row>(strings: TemplateStringsArray, ...values: any[]): AsyncIterable<T> {
+      const promise = this.queryAll<T>(strings, ...values);
+      async function* iter() { for (const r of await promise) yield r; }
+      return iter();
     }
 
     async rawQueryRow<T=Row>(query: string, ...values: any[]): Promise<T | undefined> {

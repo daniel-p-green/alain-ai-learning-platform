@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { backendUrl } from "../../lib/backend";
 import { Button } from "../../components/Button";
+import { PreviewPanel } from "../../components/PreviewPanel";
+import type { ProviderInfo, ProviderModel } from "../../lib/types";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
@@ -17,8 +19,6 @@ export default function GenerateLessonPage() {
   type GenerateResult = { tutorialId: number; meta?: ResultMeta; preview?: Preview };
   const [result, setResult] = useState<null | GenerateResult>(null);
   const [repairing, setRepairing] = useState(false);
-  type ProviderModel = { id: string; name?: string };
-  type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
@@ -232,63 +232,24 @@ export default function GenerateLessonPage() {
       )}
 
       {result && (
-        <div className="mt-4 border border-gray-800 rounded-lg p-4 bg-gray-900 space-y-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold">Preview</h2>
-            {result.meta?.repaired && (
-              <span className="text-xs px-2 py-0.5 rounded bg-yellow-800 text-yellow-200 border border-yellow-700">Repaired</span>
-            )}
-          </div>
-          <div className="text-white font-medium">{result.preview?.title}</div>
-          <div className="text-gray-300">{result.preview?.description}</div>
-          {result.preview?.model_maker && (
-            <div className="text-sm text-gray-300 border border-gray-800 rounded p-3 bg-gray-950/40">
-              <div className="font-medium text-gray-200 mb-1">Model Maker</div>
-              <div>{result.preview.model_maker.name} ({result.preview.model_maker.org_type})</div>
-              <div className="flex gap-2 mt-1">
-                {result.preview.model_maker.homepage && <a className="text-brand-blue hover:underline" href={result.preview.model_maker.homepage} target="_blank">Homepage</a>}
-                {result.preview.model_maker.repo && <a className="text-brand-blue hover:underline" href={result.preview.model_maker.repo} target="_blank">Repo</a>}
-                {result.preview.model_maker.license && <span className="text-gray-400">License: {result.preview.model_maker.license}</span>}
-              </div>
-            </div>
-          )}
-          {Array.isArray(result.preview?.learning_objectives) && result.preview.learning_objectives.length > 0 && (
-            <div className="text-sm text-gray-400">
-              <div className="font-medium text-gray-300 mb-1">Objectives</div>
-              <ul className="list-disc pl-5">
-                {result.preview.learning_objectives.slice(0,3).map((o: string, i: number) => <li key={i}>{o}</li>)}
-              </ul>
-            </div>
-          )}
-          {result.preview?.first_step && (
-            <div className="text-sm text-gray-300">
-              <div className="font-medium text-gray-300 mb-1">Step 1: {result.preview.first_step.title}</div>
-              <div className="whitespace-pre-wrap text-gray-400">{result.preview.first_step.content}</div>
-            </div>
-          )}
-          <div className="flex gap-2">
-            <Button
-              variant="primary"
-              onClick={() => { window.location.href = `/tutorial/${result.tutorialId}`; }}
-            >Open Tutorial</Button>
-            <Button
-              variant="secondary"
-              onClick={async () => {
-                const res = await fetch(backendUrl(`/export/colab/${result.tutorialId}`));
-                const nb = await res.json();
-                const ***REMOVED*** = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(***REMOVED***);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${(result.preview?.title || 'lesson').replace(/\s+/g,'_')}.ipynb`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-              }}
-            >Export Notebook</Button>
-          </div>
-        </div>
+        <PreviewPanel
+          tutorialId={result.tutorialId}
+          preview={result.preview as any}
+          repaired={!!result.meta?.repaired}
+          onExport={async (suggestedName) => {
+            const res = await fetch(backendUrl(`/export/colab/${result.tutorialId}`));
+            const nb = await res.json();
+            const ***REMOVED*** = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(***REMOVED***);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${suggestedName}.ipynb`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          }}
+        />
       )}
 
       {/* Quick-start HF links */}
@@ -307,9 +268,3 @@ export default function GenerateLessonPage() {
     </div>
   );
 }
-          {showReasoning && result.meta?.reasoning_summary && (
-            <div className="text-sm text-gray-400">
-              <div className="font-medium text-gray-300 mb-1">Reasoning (summary)</div>
-              <div className="whitespace-pre-wrap">{result.meta.reasoning_summary}</div>
-            </div>
-          )}
