@@ -119,7 +119,10 @@ export const restoreVersion = api<{ tutorialId: number; version: number }, { res
   }
 );
 
-async function buildSnapshot(tutorialId: number, db: DBLike): Promise<{ tutorial: TutorialRow | undefined; steps: StepRow[] }> {
+async function buildSnapshot(
+  tutorialId: number,
+  db: DBLike,
+): Promise<{ tutorial: TutorialRow | undefined; steps: StepRow[] }> {
   const tutorial = await db.queryRow<TutorialRow>`
     SELECT id, title, description, model, provider, difficulty, tags, model_maker_id, created_at, updated_at
     FROM tutorials WHERE id = ${tutorialId}
