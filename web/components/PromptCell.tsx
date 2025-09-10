@@ -69,12 +69,13 @@ export function PromptCell({ codeTemplate, onChange, onExecute, disabled }: Prop
 
   return (
     <div className="space-y-2">
-      <div ref={monacoRef} className="h-48 border border-gray-800 rounded" style={{ display: ready ? "block" : "none" }} />
+      <div ref={monacoRef} className={`h-48 border border-gray-800 rounded ${ready ? "block" : "hidden"}`} />
       {!ready && (
         <textarea
           className="w-full min-h-32 p-3 bg-gray-900 rounded border border-gray-800 focus:border-blue-500 focus:outline-none"
           value={codeTemplate}
           onChange={(e) => { onChange?.(e.target.value); }}
+          aria-label="Prompt editor"
           placeholder="Enter your prompt here..."
         />
       )}

@@ -67,12 +67,14 @@ export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
     const tx = await tutorialsDB.begin();
 
     try {
-      const stepsToReorder = await tx.queryAll<{ id: number; step_order: number }>`
+      const stepsToReorder: Array<{ id: number; step_order: number }> = [];
+      const toReorderIter = tx.query<{ id: number; step_order: number }>`
         SELECT id, step_order
         FROM tutorial_steps
         WHERE tutorial_id = ${stepToDelete.tutorial_id} AND step_order > ${stepToDelete.step_order}
         ORDER BY step_order ASC
       `;
+      for await (const r of toReorderIter) stepsToReorder.push(r);
 
       // Cascade delete assessments for this step (responses cascade via FK)
       await tx.exec`
@@ -104,11 +106,13 @@ export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
       // Update completed_steps arrays for all users on this tutorial:
       //  - remove the deleted step if present
       //  - decrement any steps after the deleted position
-      const users = await tx.queryAll<{ id: number; completed_steps: number[] | null }>`
+      const usersIter = tx.query<{ id: number; completed_steps: number[] | null }>`
         SELECT id, completed_steps
         FROM user_progress
         WHERE tutorial_id = ${stepToDelete.tutorial_id}
       `;
+      const users: Array<{ id: number; completed_steps: number[] | null }> = [];
+      for await (const u of usersIter) users.push(u);
 
       for (const u of users) {
         const arr = (u.completed_steps || []) as number[];

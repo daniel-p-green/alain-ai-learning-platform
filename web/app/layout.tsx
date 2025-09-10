@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { League_Spartan } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -22,11 +23,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const league = League_Spartan({ subsets: ["latin"], weight: ["700", "900"] });
   const OfflineBadge = dynamic(() => import("../components/OfflineBadge"), { ssr: false });
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <body className={`bg-white text-ink antialiased ${league.className}`}>
+          {/* Skip link for keyboard users */}
+          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-brand-blue text-white px-3 py-1 rounded">Skip to content</a>
           <header className="brand-header flex items-center justify-between p-4">
             <Link href="/" className="flex items-center gap-3">
               <Image
@@ -59,7 +63,9 @@ export default function RootLayout({
               </div>
             </SignedIn>
           </header>
-          <main>{children}</main>
+          <main id="main" className="min-h-[calc(100vh-64px)]">
+            {children}
+          </main>
         </body>
       </html>
     </ClerkProvider>

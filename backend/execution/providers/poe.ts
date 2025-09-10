@@ -1,9 +1,12 @@
 import type { ExecuteRequest, Provider } from "./index";
 import { ensureOk, httpJson, streamSSE, toAuthHeader } from "./base";
 import { mapModelForProvider } from "./aliases";
+import { secret } from "encore.dev/config";
+
+const poeApiKey = secret("POE_API_KEY");
 
 async function complete(body: ExecuteRequest): Promise<string> {
-  const apiKey = process.env.POE_API_KEY;
+  const apiKey = poeApiKey();
   if (!apiKey) throw new Error("POE_API_KEY not configured");
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), 30_000);
@@ -29,7 +32,7 @@ async function complete(body: ExecuteRequest): Promise<string> {
 }
 
 async function stream(body: ExecuteRequest, onData: (data: any) => void, signal?: AbortSignal) {
-  const apiKey = process.env.POE_API_KEY;
+  const apiKey = poeApiKey();
   if (!apiKey) throw new Error("POE_API_KEY not configured");
   // Combine external abort with a 30s internal timeout
   const ac = new AbortController();

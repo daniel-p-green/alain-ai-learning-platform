@@ -6,6 +6,7 @@ import { StreamingOutput } from "../../../components/StreamingOutput";
 import { StepNav } from "../../../components/StepNav";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { backendUrl } from "../../../lib/backend";
+import type { ProviderInfo, ProviderModel } from "../../../lib/types";
 
 type Step = {
   id: number;
@@ -67,8 +68,6 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [assessmentResult, setAssessmentResult] = useState<{ correct: boolean; explanation?: string } | null>(null);
   const [adapted, setAdapted] = useState<string | null>(null);
   const [targetDifficulty, setTargetDifficulty] = useState<'beginner'|'intermediate'|'advanced'>('beginner');
-  type ProviderModel = { id: string; name?: string };
-  type ProviderInfo = { id: string; name: string; models?: ProviderModel[]; status?: string };
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [runProvider, setRunProvider] = useState<string>("poe");
   const [runModel, setRunModel] = useState<string>("");
@@ -352,10 +351,10 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           <div className="whitespace-pre-wrap text-gray-200">{step.content}</div>
           {/* Provider/model picker for run-time */}
           <div className="flex items-center gap-2 text-sm">
-            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)}>
+            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)} aria-label="Select AI provider">
               {providers.map((p)=> (<option key={p.id} value={p.id}>{p.name}</option>))}
             </select>
-            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runModel} onChange={(e)=> setRunModel(e.target.value)}>
+            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runModel} onChange={(e)=> setRunModel(e.target.value)} aria-label="Select AI model">
               <option value="">{tutorial?.model || 'Model'}</option>
               {(providers.find((p)=> p.id===runProvider)?.models || []).map((m)=> (
                 <option key={m.id} value={m.id}>{m.name || m.id}</option>
@@ -435,7 +434,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
               <h3 className="font-semibold">Adapt Experience</h3>
               <div className="flex items-center gap-2 text-sm">
                 <label className="text-gray-300">Target</label>
-                <select className="px-2 py-1 rounded bg-gray-900 border border-gray-700" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)}>
+                <select className="px-2 py-1 rounded bg-gray-900 border border-gray-700" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)} aria-label="Select target difficulty level">
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
@@ -586,7 +585,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           }}
         >Download Colab Notebook</Button>
         <div className="text-xs text-gray-500 mt-2">
-          Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
+          Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
         </div>
       </div>
 

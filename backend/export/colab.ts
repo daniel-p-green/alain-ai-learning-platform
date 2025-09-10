@@ -1,17 +1,23 @@
-import { api, APIError } from "encore.dev/api";
+import { api, APIError, Header } from "encore.dev/api";
 import { allowRate } from "../utils/ratelimit";
 import { tutorialsDB } from "../tutorials/db";
 import type { Notebook } from "./notebook";
 import { buildNotebook } from "./notebook";
 
-export const exportColab = api<{ tutorialId: number }, Notebook>(
+interface ExportColabParams {
+  tutorialId: number;
+  xForwardedFor?: Header<"X-Forwarded-For">;
+  xRealIP?: Header<"X-Real-IP">;
+}
+
+export const exportColab = api<ExportColabParams, Notebook>(
   { expose: true, method: "GET", path: "/export/colab/:tutorialId" },
-  async ({ tutorialId }, ctx) => {
+  async ({ tutorialId, xForwardedFor, xRealIP }) => {
     if (!tutorialId || tutorialId < 1) throw APIError.invalidArgument("tutorialId required");
     // Mild per-IP throttle to prevent scraping (auth not required)
     try {
-      const ip = (ctx?.req?.header?.("x-forwarded-for") || ctx?.req?.header?.("x-real-ip") || "anon").toString();
-      const ident = ip.split(',')[0].trim() || 'anon';
+      const ipSource = xForwardedFor || xRealIP || "anon";
+      const ident = ipSource.split(',')[0].trim() || 'anon';
       const gate = allowRate(ident, 'export_colab', Number(process.env.COLAB_EXPORT_MAX_RPM || 30), 60_000);
       if (!gate.ok) throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     } catch {}

@@ -16,3 +16,4 @@ export async function POST(req: Request) {
     return Response.json({ success: false, error: { code: 'provider_error', message } }, { status: 200 });
   }
 }
+export const runtime = 'nodejs';

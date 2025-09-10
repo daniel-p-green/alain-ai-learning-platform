@@ -1,17 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "../../components/Button";
+import type { ProviderInfo } from "../../lib/types";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Toast } from "../../components/Toast";
 
-type ProviderModel = { id: string; name?: string };
-type ProviderInfo = {
-  id: string; name: string; description: string;
-  supportsStreaming: boolean; requiresAuth: boolean;
-  supportsHarmonyRoles?: boolean; supportsTools?: boolean; notes?: string;
-  status: "available" | "configuring" | "unavailable" | "unknown";
-  models?: ProviderModel[];
-};
+// Types imported from shared definitions
 
 export default function SettingsPage() {
   const [providers, setProviders] = useState<ProviderInfo[]>([]);

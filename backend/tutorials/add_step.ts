@@ -72,12 +72,14 @@ export const addStep = api<AddStepRequest, TutorialStep>(
 
     try {
       // Check if there are any steps at or after the requested position
-      const existingSteps = await tx.queryAll<{ id: number; step_order: number }>`
+      const existingSteps: Array<{ id: number; step_order: number }> = [];
+      const existingIter = tx.query<{ id: number; step_order: number }>`
         SELECT id, step_order
         FROM tutorial_steps 
         WHERE tutorial_id = ${req.tutorialId} AND step_order >= ${req.stepOrder}
         ORDER BY step_order ASC
       `;
+      for await (const row of existingIter) existingSteps.push(row);
 
       // If inserting in the middle, increment existing step orders
       if (existingSteps.length > 0) {
@@ -96,11 +98,13 @@ export const addStep = api<AddStepRequest, TutorialStep>(
           WHERE tutorial_id = ${req.tutorialId} AND current_step >= ${req.stepOrder}
         `;
 
-        const usersWithProgress = await tx.queryAll<{ id: number; completed_steps: number[] | null }>`
+        const usersWithProgress: Array<{ id: number; completed_steps: number[] | null }> = [];
+        const usersIter = tx.query<{ id: number; completed_steps: number[] | null }>`
           SELECT id, completed_steps
           FROM user_progress
           WHERE tutorial_id = ${req.tutorialId}
         `;
+        for await (const u of usersIter) usersWithProgress.push(u);
 
         for (const u of usersWithProgress) {
           const arr = (u.completed_steps || []) as number[];
