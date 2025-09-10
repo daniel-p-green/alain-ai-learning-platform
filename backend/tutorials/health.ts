@@ -10,7 +10,7 @@ interface ServiceHealth {
 
 // Health check for tutorials service
 export const health = api<{}, ServiceHealth>(
-  { expose: true, method: "GET", path: "/health" },
+  { expose: true, method: "GET", path: "/tutorials/health" },
   async () => {
     const startTime = Date.now();
 
