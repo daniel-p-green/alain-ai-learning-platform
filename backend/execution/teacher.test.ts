@@ -104,5 +104,31 @@ describe('teacherGenerate', () => {
     // Backoff is 300ms before second attempt; allow some leeway
     expect(elapsed).toBeGreaterThanOrEqual(280);
   });
-});
 
+  it('guards non-JSON content and retries once when enabled', async () => {
+    process.env.TEACHER_JSON_RETRY = '1';
+    // First response returns non-JSON content; second returns JSON string
+    const first = new Response(JSON.stringify({
+      choices: [{ message: { content: 'not json here' } }]
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    const second = new Response(JSON.stringify({
+      choices: [{ message: { content: '{"title":"Okay","description":"D","steps":[]}' } }]
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce(first)
+      .mockResolvedValueOnce(second);
+    global.fetch = mockFetch as any;
+
+    const resp = await teacherGenerate({
+      model: 'GPT-OSS-20B',
+      messages: [{ role: 'user', content: 'Hi' }],
+      task: 'lesson_generation',
+      provider: 'openai-compatible',
+    } as any);
+
+    expect(resp.success).toBe(true);
+    expect(resp.content).toContain('"title":"Okay"');
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+});

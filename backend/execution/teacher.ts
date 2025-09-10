@@ -58,9 +58,9 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         max_tokens: req.max_tokens ?? harmonyParams.max_tokens,
       };
 
-      // Optional tools scaffold (disabled by default)
-      // Enable by setting TEACHER_ENABLE_TOOLS=1 for providers that support function calling
-      if (process.env.TEACHER_ENABLE_TOOLS === '1' && req.task === 'lesson_generation') {
+      // Tools scaffold: enable by default for lesson_generation unless explicitly disabled
+      const enableTools = req.task === 'lesson_generation' && process.env.TEACHER_ENABLE_TOOLS !== '0';
+      if (enableTools) {
         payload.tools = [
           {
             type: 'function',
@@ -115,12 +115,26 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         } catch { return ''; }
       };
 
+      const looksLikeJsonObject = (s: string): boolean => {
+        try {
+          let t = (s || '').trim();
+          if (!t) return false;
+          if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
+          const parsed = JSON.parse(t);
+          return parsed && typeof parsed === 'object' && !Array.isArray(parsed);
+        } catch { return false; }
+      };
+
       if (provider === 'poe') {
         const apiKey = poeApiKey();
         if (!apiKey) {
           throw APIError.failedPrecondition("POE_API_KEY not configured");
         }
-        const data = await withRetries(async (signal) => {
+        const runOnce = async (signal: AbortSignal, extraUserHint?: string) => {
+          const body = { ...payload } as any;
+          if (extraUserHint) {
+            body.messages = [...(payload.messages || []), { role: 'user', content: extraUserHint }];
+          }
           const response = await fetch("https://api.poe.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -128,7 +142,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
               "Content-Type": "application/json",
               "User-Agent": "ALAIN-Teacher/1.0",
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(body),
             signal,
           });
           if (!response.ok) {
@@ -140,15 +154,31 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
             throw new Error(`Poe API error: ${data.error.message || 'Unknown error'}`);
           }
           return data;
+        };
+        const data = await withRetries(async (signal) => {
+          return runOnce(signal);
         });
-        return { success: true, content: extractContent(data) };
+        let content = extractContent(data);
+        if (req.task === 'lesson_generation' && process.env.TEACHER_JSON_RETRY === '1' && !looksLikeJsonObject(content)) {
+          const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
+          content = extractContent(retry);
+        }
+        return { success: true, content };
       } else {
         const baseUrl = openaiBaseUrl();
         const apiKey = openaiApiKey();
         if (!baseUrl || !apiKey) {
           throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required for openai-compatible provider");
         }
-        const data = await withRetries(async (signal) => {
+        const runOnce = async (signal: AbortSignal, extraUserHint?: string) => {
+          const body = { ...payload } as any;
+          if (req.task === 'lesson_generation') {
+            // Prefer JSON mode when supported
+            body.response_format = { type: 'json_object' };
+          }
+          if (extraUserHint) {
+            body.messages = [...(payload.messages || []), { role: 'user', content: extraUserHint }];
+          }
           const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
             method: "POST",
             headers: {
@@ -156,7 +186,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
               "Content-Type": "application/json",
               "User-Agent": "ALAIN-Teacher/1.0",
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(body),
             signal,
           });
           if (!response.ok) {
@@ -168,8 +198,14 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
             throw new Error(`OpenAI-compatible API error: ${data.error.message || 'Unknown error'}`);
           }
           return data;
-        });
-        return { success: true, content: extractContent(data) };
+        };
+        const data = await withRetries(async (signal) => runOnce(signal));
+        let content = extractContent(data);
+        if (req.task === 'lesson_generation' && process.env.TEACHER_JSON_RETRY === '1' && !looksLikeJsonObject(content)) {
+          const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
+          content = extractContent(retry);
+        }
+        return { success: true, content };
       }
     } catch (error) {
       const errorData = mapTeacherError(error);
