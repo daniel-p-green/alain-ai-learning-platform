@@ -23,6 +23,7 @@ export function StepNav({ steps, currentStep, onStepChange }: Props) {
           key={s.id}
           className="px-3 py-1 text-sm"
           variant={i === currentStep ? "primary" : "secondary"}
+          aria-current={i === currentStep ? 'step' : undefined}
           onClick={() => onStepChange(i)}
         >
           {s.title?.trim() ? s.title : `Step ${i + 1}`}

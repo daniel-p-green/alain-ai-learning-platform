@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Web fonts: League Spartan (Google Fonts) */
-@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;900&display=swap');
+/* Web fonts are loaded via next/font in layout.tsx */
 
 /* Brand tokens (assembly-inspired). CSS vars mirror Tailwind theme; update Tailwind first to avoid drift. */
 :root {
@@ -28,7 +27,7 @@
 .brand-header {
   background: var(--bg);
   color: var(--text-strong);
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.12);
 }
 
 /* Deprecated: prefer Tailwind + Button component for CTAs */

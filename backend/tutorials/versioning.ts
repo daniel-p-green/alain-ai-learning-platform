@@ -6,7 +6,7 @@ import { requireUserId } from "../auth";
 // Matches the shape returned by SQLDatabase and our test doubles.
 interface DBLike {
   queryRow<T = unknown>(strings: TemplateStringsArray, ...values: any[]): Promise<T | undefined>;
-  queryAll<T = unknown>(strings: TemplateStringsArray, ...values: any[]): Promise<T[]>;
+  query<T = unknown>(strings: TemplateStringsArray, ...values: any[]): AsyncIterable<T>;
 }
 
 type TutorialRow = {
@@ -67,13 +67,15 @@ export const createVersion = api<{ tutorialId: number }, { tutorialId: number; v
 export const listVersions = api<{ tutorialId: number }, { versions: VersionMeta[] }>(
   { expose: true, method: "GET", path: "/tutorials/:tutorialId/versions" },
   async ({ tutorialId }) => {
-    const rows = await tutorialsDB.queryAll<VersionMeta>`
+    const iter = tutorialsDB.query<VersionMeta>`
       SELECT version, created_at, author_id
       FROM tutorial_versions
       WHERE tutorial_id = ${tutorialId}
       ORDER BY version DESC
     `;
-    return { versions: rows };
+    const versions: VersionMeta[] = [];
+    for await (const v of iter) versions.push(v);
+    return { versions };
   }
 );
 
@@ -127,10 +129,12 @@ async function buildSnapshot(
     SELECT id, title, description, model, provider, difficulty, tags, model_maker_id, created_at, updated_at
     FROM tutorials WHERE id = ${tutorialId}
   `;
-  const steps = await db.queryAll<StepRow>`
+  const iter = db.query<StepRow>`
     SELECT step_order, title, content, code_template, expected_output, model_params
     FROM tutorial_steps WHERE tutorial_id = ${tutorialId}
     ORDER BY step_order
   `;
+  const steps: StepRow[] = [];
+  for await (const s of iter) steps.push(s);
   return { tutorial, steps };
 }

@@ -194,3 +194,4 @@ function selectWebProvider(name: "poe" | "openai-compatible"): WebProvider {
       return poeProvider;
   }
 }
+export const runtime = 'nodejs';
