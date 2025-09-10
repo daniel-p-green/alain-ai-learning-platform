@@ -307,9 +307,3 @@ export default function GenerateLessonPage() {
     </div>
   );
 }
-          {showReasoning && result.meta?.reasoning_summary && (
-            <div className="text-sm text-gray-400">
-              <div className="font-medium text-gray-300 mb-1">Reasoning (summary)</div>
-              <div className="whitespace-pre-wrap">{result.meta.reasoning_summary}</div>
-            </div>
-          )}
