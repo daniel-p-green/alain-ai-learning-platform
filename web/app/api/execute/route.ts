@@ -41,8 +41,9 @@ export async function POST(req: NextRequest) {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
 
   try {
-    // Rate limit per user
-    const gate = allow(userId);
+    // Rate limit per user (use a stable placeholder in demo mode)
+    const uid = userId ?? 'demo-user';
+    const gate = allow(uid);
     if (!gate.ok) {
       return new Response(JSON.stringify({
         success: false,
