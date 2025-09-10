@@ -1,6 +1,12 @@
 export async function safeAuth(): Promise<{ userId: string | null; getToken: () => Promise<string | null> }> {
+  // If middleware is intentionally disabled, never call Clerk auth()
+  const disabled = (process.env.DISABLE_CLERK_MIDDLEWARE || "").toLowerCase() === "1";
+  if (disabled) {
+    return { userId: null, getToken: async () => null };
+  }
   try {
     const mod: any = await import("@clerk/nextjs/server");
+    // auth() throws when middleware isn’t present; keep wrapped
     const a = await mod.auth();
     return {
       userId: a?.userId ?? null,
@@ -15,4 +21,3 @@ export function demoBypassEnabled(): boolean {
   const v = (process.env.WEB_DEMO_ALLOW_UNAUTH || process.env.DEMO_ALLOW_UNAUTH || "").toLowerCase();
   return v === "1" || v === "true" || v === "yes" || v === "on";
 }
-
