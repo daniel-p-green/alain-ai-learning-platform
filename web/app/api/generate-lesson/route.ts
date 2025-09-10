@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
+import { safeAuth, demoBypassEnabled } from "../../../lib/auth";
 import { backendUrl } from "../../../lib/backend";
 
 export async function POST(req: Request) {
-  const { userId, getToken } = await auth();
-  if (!userId) return new Response("Unauthorized", { status: 401 });
+  const { userId, getToken } = await safeAuth();
+  if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
   const body = await req.json().catch(() => null);
   if (!body?.hfUrl) return new Response("hfUrl required", { status: 400 });
 
