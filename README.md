@@ -159,6 +159,9 @@ alain-ai-learning-platform/
 ├── POE_INTEGRATION_GUIDE.md # Provider usage and examples
 ├── HACKATHON_README.md      # Hackathon context & architecture
 └── env-config-example.txt   # Copy to .env.local for web
+
+Private Notes (ignored)
+- Place any personal/demo materials in `hackathon-notes/` at repo root; it’s listed in `.gitignore` and will not be committed.
 ```
 
 ## Troubleshooting

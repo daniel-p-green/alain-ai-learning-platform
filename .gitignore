@@ -9,3 +9,7 @@ node_modules
 web/app/.DS_Store
 \n+# Feedback notes (local only)
 feedback/
+
+# Personal hackathon notes/presentations (ignored, but keep folder)
+hackathon-notes/*
+!hackathon-notes/.gitkeep

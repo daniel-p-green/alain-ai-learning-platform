@@ -201,8 +201,8 @@ export default function GenerateLessonPage() {
               <label className="inline-flex items-center gap-1" title="Create an intro step if steps are missing"><input type="checkbox" defaultChecked readOnly /> add_intro_step</label>
               <label className="inline-flex items-center gap-1" title="Limit to ~3 strong steps"><input type="checkbox" defaultChecked readOnly /> compact_steps</label>
             </div>
-            <button
-              className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white disabled:opacity-50"
+            <Button
+              variant="secondary"
               disabled={repairing}
               onClick={async () => {
                 setRepairing(true);
@@ -225,7 +225,7 @@ export default function GenerateLessonPage() {
                   setTimeout(() => setSnackbar(null), 2000);
                 }
               }}
-            >Auto-fix and Import</button>
+            >Auto-fix and Import</Button>
           </div>
         </div>
       )}
@@ -273,7 +273,8 @@ export default function GenerateLessonPage() {
             <Button
               variant="secondary"
               onClick={async () => {
-                const res = await fetch(`/export/colab/${result.tutorialId}`);
+                const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
+                const res = await fetch(`${base}/export/colab/${result.tutorialId}`);
                 const nb = await res.json();
                 const ***REMOVED*** = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(***REMOVED***);
@@ -295,7 +296,7 @@ export default function GenerateLessonPage() {
         <div className="font-medium text-gray-300 mb-1">Try these popular models</div>
         <div className="flex flex-wrap gap-2">
           {['meta-llama/Meta-Llama-3.1-8B-Instruct','google/gemma-2-9b-it','mistralai/Mistral-7B-Instruct-v0.3'].map(m => (
-            <button key={m} className="px-2 py-1 rounded bg-gray-800 border border-gray-700" onClick={() => setHfUrl(m)}>{m}</button>
+            <Button key={m} variant="secondary" className="px-2 py-1 text-xs" onClick={() => setHfUrl(m)}>{m}</Button>
           ))}
         </div>
       </div>
