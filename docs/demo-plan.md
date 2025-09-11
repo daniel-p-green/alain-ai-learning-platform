@@ -39,3 +39,6 @@ P2 — Stability & QA
 Notes
 - Do not remove/redirect routes for now (will revisit).
 - Check in with Daniel for taste/ambiguous decisions.
+
+Tracking
+- This file exists to verify PR flow and link a preview build. No functional changes.
