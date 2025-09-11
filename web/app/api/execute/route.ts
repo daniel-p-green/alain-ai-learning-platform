@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
 
   const stream = body.stream !== false; // default to streaming
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
+  const streamViaBackend = (process.env.NEXT_PUBLIC_STREAM_VIA || 'web') === 'backend';
 
   try {
     // Rate limit per user (use a stable placeholder in demo mode)
@@ -55,6 +56,32 @@ export async function POST(req: NextRequest) {
     const token = await getToken();
 
     if (stream) {
+      // Option A: proxy streaming from backend SSE (Encore)
+      if (streamViaBackend) {
+        const token = await getToken();
+        const upstream = await fetch(`${backendUrl}/execute/stream`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify(body),
+          signal: req.signal,
+        });
+        if (!upstream.ok || !upstream.body) {
+          const err = await safeJson(upstream);
+          return Response.json(err || { success: false, error: { code: 'upstream_error', message: 'Backend stream failed' } }, { status: upstream.status || 502 });
+        }
+        // Pipe upstream SSE through
+        return new Response(upstream.body, {
+          headers: {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            'Cache-Control': 'no-cache, no-transform',
+            'Connection': 'keep-alive',
+          },
+        });
+      }
+      // Option B: stream via web providers (default)
       // Stream directly from web providers to client via SSE
       const provider: WebProvider = selectWebProvider(body.provider);
       // Create an SSE stream
@@ -196,3 +223,11 @@ function selectWebProvider(name: "poe" | "openai-compatible"): WebProvider {
   }
 }
 export const runtime = 'nodejs';
+
+async function safeJson(resp: Response) {
+  try {
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
