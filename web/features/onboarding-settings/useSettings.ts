@@ -41,30 +41,76 @@ export function useSettings() {
   const [providers, setProviders] = useState<ProviderConfig[]>(() => readJSON(LS.providers, DEFAULT_SETTINGS.providers));
   const [models, setModels] = useState(DEFAULT_SETTINGS.models);
   const [theme, setTheme] = useState<"light" | "dark" | "system">(() => (typeof window !== "undefined" ? ((window.localStorage.getItem(LS.uiTheme) as any) || DEFAULT_SETTINGS.ui.theme) : DEFAULT_SETTINGS.ui.theme));
+  const [brandLogo, setBrandLogo] = useState<"blue" | "yellow">(() => (typeof window !== "undefined" ? ((window.localStorage.getItem(LS.uiLogo) as any) || DEFAULT_SETTINGS.ui.brandLogo || 'blue') : 'blue'));
   const testTimers = useRef<Record<string, any>>({});
 
   // Persist on change (debounced for providers)
   useEffect(() => { writeJSON(LS.models, models); }, [models]);
   useEffect(() => { if (typeof window !== "undefined") window.localStorage.setItem(LS.uiTheme, theme); }, [theme]);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(LS.uiLogo, brandLogo);
+      // Apply document class so BrandLogo can detect without prop
+      const cls = 'theme-yellow';
+      if (brandLogo === 'yellow') document.documentElement.classList.add(cls); else document.documentElement.classList.remove(cls);
+    }
+  }, [brandLogo]);
   useEffect(() => { const t = setTimeout(() => writeJSON(LS.providers, providers), 150); return () => clearTimeout(t); }, [providers]);
 
   const setProviderField = useCallback((id: ProviderId, patch: Partial<ProviderConfig>) => {
     setProviders(prev => prev.map(p => (p.id === id ? { ...p, ...patch } : p)));
   }, []);
 
-  // Debounced stub test to simulate connectivity checks
-  const testProvider = useCallback((id: ProviderId) => {
+  // Provider smoke tests (uses existing Next.js API routes; relies on env for server-side keys)
+  const testProvider = useCallback(async (id: ProviderId) => {
     setProviderField(id, { status: "testing", lastError: null });
     console.info("alain.provider.tested", { provider: id, starting: true });
-    if (testTimers.current[id]) clearTimeout(testTimers.current[id]);
-    testTimers.current[id] = setTimeout(() => {
-      // Simple rule-of-thumb stub: success if enabled and has some config, else error
-      const p = providers.find(pr => pr.id === id);
-      const ok = !!p?.enabled && (!!p?.apiKey || ["ollama", "lmstudio"].includes(id));
-      setProviderField(id, { status: ok ? "ok" : "error", lastTestAt: Date.now(), lastError: ok ? null : "Missing credentials or disabled" });
+    const p = providers.find(pr => pr.id === id);
+    try {
+      if (!p?.enabled) throw new Error("Provider disabled");
+
+      let ok = false; let err: string | null = null;
+
+      if (id === "poe" || id === "openai-compatible") {
+        const ac = new AbortController();
+        const t = setTimeout(() => ac.abort(), 5000);
+        const resp = await fetch('/api/providers/smoke', {
+          method: 'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ provider: id, model: (models.defaultModel || 'gpt-4o-mini') }),
+          signal: ac.signal,
+        }).catch((e)=>{ throw e; });
+        clearTimeout(t);
+        const data = await resp.json().catch(()=>({ success:false, error:{ message:'invalid response' } }));
+        ok = !!data?.success;
+        err = ok ? null : (data?.error?.message || 'Provider not configured (see env vars).');
+      } else if (id === "ollama") {
+        const ac = new AbortController();
+        const t = setTimeout(() => ac.abort(), 2500);
+        const resp = await fetch('/api/providers/ollama/show?name=gpt-oss:20b', { signal: ac.signal }).catch((e)=>{ throw e; });
+        clearTimeout(t);
+        const data = await resp.json().catch(()=>({ info:null }));
+        ok = !!data?.info;
+        err = ok ? null : 'Ollama not detected on http://localhost:11434';
+      } else if (id === "lmstudio") {
+        const ac = new AbortController();
+        const t = setTimeout(() => ac.abort(), 2500);
+        const resp = await fetch('/api/lmstudio/search?term=llama&limit=1', { signal: ac.signal }).catch((e)=>{ throw e; });
+        clearTimeout(t);
+        ok = resp.status === 200;
+        err = ok ? null : 'LM Studio SDK not available on server or not running.';
+      } else if (id === "huggingface") {
+        // Not supported in this build (we do not proxy user keys). Provide a clear message.
+        ok = false;
+        err = 'Hugging Face test not supported in this build. Use Providers (hosted/local) for smoke tests.';
+      }
+
+      setProviderField(id, { status: ok ? 'ok' : 'error', lastTestAt: Date.now(), lastError: ok ? null : err || 'Test failed' });
       console.info("alain.provider.tested", { provider: id, success: ok });
-    }, 400);
-  }, [providers, setProviderField]);
+    } catch (e: any) {
+      setProviderField(id, { status: 'error', lastTestAt: Date.now(), lastError: e?.message || 'Test failed' });
+      console.info("alain.provider.tested", { provider: id, success: false });
+    }
+  }, [providers, setProviderField, models.defaultModel]);
 
   const clearAll = useCallback(() => {
     setProviders(DEFAULT_SETTINGS.providers);
@@ -73,8 +119,7 @@ export function useSettings() {
   }, []);
 
   return useMemo(
-    () => ({ providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, clearAll, exportSettings, importSettings }),
-    [providers, models, theme, setProviderField, testProvider, clearAll]
+    () => ({ providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll, exportSettings, importSettings }),
+    [providers, models, theme, brandLogo, setProviderField, testProvider, clearAll]
   );
 }
-

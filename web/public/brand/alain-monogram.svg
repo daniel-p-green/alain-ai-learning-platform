@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="ALAIN monogram">
-  <!-- Simple ellipse monogram matching ALAIN brand colors -->
-  <ellipse cx="128" cy="128" rx="110" ry="48" fill="#FFDA1A" stroke="#004580" stroke-width="8"/>
-  <!-- Stylized A mark -->
-  <path d="M98 155 L128 85 L158 155 L144 155 L136 137 L120 137 L112 155 Z" fill="#0058A3"/>
-</svg>

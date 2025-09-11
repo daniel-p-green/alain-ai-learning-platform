@@ -10,7 +10,7 @@ export function Button({ variant = "primary", className = "", type = "button", .
   const base = [
     "inline-flex items-center justify-center px-3 py-2 rounded-card transition-colors",
     "disabled:opacity-50 disabled:cursor-not-allowed",
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-alain-blue",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-alain-stroke",
     "focus-visible:ring-offset-paper-0",
   ].join(" ");
   const variants: Record<string, string> = {
