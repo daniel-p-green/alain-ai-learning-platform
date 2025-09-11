@@ -253,6 +253,7 @@ export default function GenerateLessonPage() {
             setSource('hf');
             setTeacherProvider('poe');
             setHfUrl('meta-llama/Meta-Llama-3.1-8B-Instruct');
+            setSnackbar('Generating…');
             setTimeout(() => formRef.current?.requestSubmit(), 0);
           }}
         >Use Example (Hosted)</Button>
@@ -262,6 +263,7 @@ export default function GenerateLessonPage() {
             setSource('local');
             setTargetProvider('openai-compatible');
             setTargetModel('gpt-oss:20b');
+            setSnackbar('Generating…');
             setTimeout(() => formRef.current?.requestSubmit(), 0);
           }}
         >Use Example (Local)</Button>

@@ -41,6 +41,12 @@ Whether you're a researcher testing the latest models or a developer integrating
 - 📚 [Documentation](#getting-started)
 - 💬 [Join our Community](#community)
 
+### One‑Click Demo (Judge Fast Path)
+
+- Hosted (Poe): open `/generate` → click “Use Example (Hosted)” → preview appears, then open tutorial and run a step.
+- Local (Ollama): ensure `ollama serve` and a model is available (`ollama pull gpt-oss:20b`) → `/generate` → click “Use Example (Local)”.
+- If not configured, a “Setup needed” callout links you to Settings → Environment Status, where quick presets and test buttons get you ready in seconds.
+
 ## Features
 
 - **Local/Offline First** - Full functionality without cloud dependencies
