@@ -7,6 +7,7 @@ import type { ProviderInfo, ProviderModel } from "../../lib/types";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
+  const [source, setSource] = useState<'hf'|'local'>("hf");
   const [difficulty, setDifficulty] = useState("beginner");
   const [teacherProvider, setTeacherProvider] = useState<"poe" | "openai-compatible">("poe");
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,7 @@ export default function GenerateLessonPage() {
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
 
@@ -58,6 +60,14 @@ export default function GenerateLessonPage() {
         if (alive) setProvidersLoading(false);
       }
     })();
+    (async () => {
+      try {
+        const resp = await fetch('/api/setup', { cache: 'no-store' });
+        const data = await resp.json();
+        if (!alive) return;
+        if (Array.isArray(data?.availableModels)) setAvailableModels(data.availableModels);
+      } catch {}
+    })();
     return () => { alive = false; };
   }, []);
 
@@ -68,19 +78,35 @@ export default function GenerateLessonPage() {
     setResult(null);
     setProgress("parsing");
     try {
-      const parsed = parseHfInput(hfUrl);
-      if (!parsed.ok) {
-        setError("Enter a valid Hugging Face URL or org/model (owner/repo)");
-        setLoading(false);
-        setProgress("idle");
-        return;
+      let resp: Response;
+      if (source === 'local') {
+        if (!targetModel.trim()) {
+          setError("Select or enter a local model id");
+          setLoading(false);
+          setProgress("idle");
+          return;
+        }
+        setProgress("asking");
+        resp = await fetch("/api/generate-local", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ modelId: targetModel.trim(), difficulty, includeAssessment: true, provider: 'openai-compatible', targetProvider, targetModel, showReasoning })
+        });
+      } else {
+        const parsed = parseHfInput(hfUrl);
+        if (!parsed.ok) {
+          setError("Enter a valid Hugging Face URL or org/model (owner/repo)");
+          setLoading(false);
+          setProgress("idle");
+          return;
+        }
+        setProgress("asking");
+        resp = await fetch("/api/generate-lesson", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel, showReasoning })
+        });
       }
-      setProgress("asking");
-      const resp = await fetch("/api/generate-lesson", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel, showReasoning })
-      });
       const data = await resp.json();
       if (!data.success) {
         setError(data?.error?.code === 'validation_error' ? 'Lesson validation failed' : (data?.error?.message || 'Failed to generate'));
@@ -104,14 +130,44 @@ export default function GenerateLessonPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-black font-display">Generate Lesson from Hugging Face URL</h1>
+      <h1 className="text-2xl font-black font-display">Generate Lesson</h1>
+      <div className="flex gap-2">
+        <Button variant={source==='hf'?'accent':'secondary'} onClick={()=>setSource('hf')}>From Hugging Face</Button>
+        <Button variant={source==='local'?'accent':'secondary'} onClick={()=>setSource('local')}>From Local Runtime</Button>
+      </div>
       <form onSubmit={onSubmit} className="space-y-3">
-        <input
-          className="w-full p-2 rounded bg-gray-900 border border-gray-800"
-          placeholder="https://huggingface.co/owner/repo"
-          value={hfUrl}
-          onChange={(e) => setHfUrl(e.target.value)}
-        />
+        {source === 'hf' ? (
+          <input
+            className="w-full p-2 rounded bg-gray-900 border border-gray-800"
+            placeholder="https://huggingface.co/owner/repo"
+            value={hfUrl}
+            onChange={(e) => setHfUrl(e.target.value)}
+          />
+        ) : (
+          <div className="space-y-2">
+            <label className="text-sm text-gray-300">Local model</label>
+            {availableModels.length > 0 ? (
+              <select
+                className="p-2 rounded bg-gray-900 border border-gray-800 w-full"
+                value={targetModel}
+                onChange={(e)=> setTargetModel(e.target.value)}
+              >
+                <option value="">Select a model…</option>
+                {availableModels.map((m)=> (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                className="w-full p-2 rounded bg-gray-900 border border-gray-800"
+                placeholder="e.g., llama-3-8b-instruct or gpt-oss:20b"
+                value={targetModel}
+                onChange={(e)=> setTargetModel(e.target.value)}
+              />
+            )}
+            <div className="text-xs text-gray-500">Detected models are shown when LM Studio or Ollama is running locally.</div>
+          </div>
+        )}
         {/* Provider/Model picker for runtime */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <select
@@ -167,10 +223,14 @@ export default function GenerateLessonPage() {
           <span className="text-xs text-gray-500">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
         <div className="flex gap-2">
-          <Button type="submit" variant="accent" disabled={loading || !hfUrl.trim()}>
+          <Button type="submit" variant="accent" disabled={loading || (source==='hf' ? !hfUrl.trim() : !targetModel.trim())}>
             {loading ? "Generating..." : "Generate Lesson"}
           </Button>
-          <Button type="button" variant="secondary" onClick={() => setHfUrl("meta-llama/Meta-Llama-3.1-8B-Instruct")}>Use Example Model</Button>
+          {source==='hf' ? (
+            <Button type="button" variant="secondary" onClick={() => setHfUrl("meta-llama/Meta-Llama-3.1-8B-Instruct")}>Use Example HF Model</Button>
+          ) : (
+            <Button type="button" variant="secondary" onClick={() => setTargetModel("llama-3-8b-instruct")}>Use Example Local Model</Button>
+          )}
         </div>
       </form>
       {loading && (
