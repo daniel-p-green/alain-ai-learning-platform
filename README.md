@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="hackathon-notes/ALAIN-wordmarks/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
+  <img src="brand/ALAIN-wordmarks/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
 
   <br/>
   <br/>
@@ -14,19 +14,49 @@
 
 # ALAIN — Applied Learning AI Notebooks
 
-Paste a Hugging Face link → get a runnable, cost‑aware lesson with step‑by‑step prompts, code, and assessments. Teacher model: gpt‑oss‑20b (120B planned). Runs hosted via Poe or fully local via an OpenAI‑compatible endpoint (Ollama/vLLM).
+## The open source IKEA instruction layer for AI models
 
-Hero links
-- Live Demo: <your-demo-url>
-- 3‑min Video: <your-youtube-url>
-- Devpost: <your-devpost-submission-url>
+### Learn AI with AI: pick any model in Hugging Face, Ollama, or LM Studio & get interactive how-to guides. Run locally or in the cloud with gpt-oss.
 
-Badges
-- Local/Offline supported (OFFLINE MODE)
-- Hosted via Poe (GPT‑OSS‑20B/120B)
-- OpenAI‑compatible API (Ollama/vLLM)
+---
 
-—
+## 🚀 Elevator Pitch
+
+ALAIN is the open-source IKEA instruction layer for AI models. We transform the way developers and researchers learn and experiment with AI models by providing:
+
+- **Instant, Interactive Learning**: Turn any AI model into an interactive learning environment with guided tutorials and hands-on exercises
+- **Universal Compatibility**: Works seamlessly with models from Hugging Face, Ollama, and LM Studio
+- **Flexible Deployment**: Run locally for privacy or in the cloud for convenience
+- **Open Source & Community-Driven**: Built by and for the AI community
+
+Whether you're a researcher testing the latest models or a developer integrating AI into your applications, ALAIN helps you get from model to mastery faster than ever before.
+
+---
+
+## Quick Links
+
+- 🎯 [Live Demo](#) (coming soon)
+- 🎥 [3-minute Demo Video](#)
+- 📝 [Devpost Submission](#)
+- 📚 [Documentation](#getting-started)
+- 💬 [Join our Community](#community)
+
+## Features
+
+- **Local/Offline First** - Full functionality without cloud dependencies
+- **Multi-Model Support** - Connect to any model with an OpenAI-compatible API
+- **Interactive Tutorials** - Step-by-step guides that work with your models
+- **Open Standards** - Built on open formats and protocols
+
+---
+
+## Submission Categories (Hackathon)
+
+- Best Local Agent: Offline, identical, safe. ALAIN generates interactive how‑to guides entirely on device with gpt‑oss via Ollama or LM Studio. Same UX as cloud, parameterized runs only, export to Jupyter. Local‑first without trade‑offs.
+- For Humanity: Make AI literacy universal. ALAIN lowers barriers with open source, local‑first guides that work offline in low‑connectivity classrooms, clinics, and libraries. No data leaves the device; students learn by doing, not watching.
+- Wildcard: Infrastructure for adoption. The missing instruction layer that gets models used, not just released. ALAIN isn’t another app—it’s the instruction layer that turns model cards into runnable, hands‑on lessons across providers.
+
+---
 
 ## Judge Fast Path (60–120s)
 
