@@ -90,6 +90,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 - Keyboard focus visible (`focus-visible` rings)
 - Dialog: ESC to close, initial focus, modal semantics
 
+## Brand Logo Variant
+- The header logo switches automatically based on a site setting in Settings → Appearance → "Brand logo variant" (Blue or Yellow).
+- Persistence: stored in `localStorage` key `alain.ui.logo`.
+- Implementation details:
+  - `web/components/BrandLogo.tsx` reads a `theme-yellow` class on `<html>` for CSS-driven switching and also accepts a `variant` prop.
+  - `useSettings.setBrandLogo()` writes the key and toggles `document.documentElement.classList` with `theme-yellow`.
+
 ## Events (console)
 - `alain.onboarding.started`
 - `alain.onboarding.completed`

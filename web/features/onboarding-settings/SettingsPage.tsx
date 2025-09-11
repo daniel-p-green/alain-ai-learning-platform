@@ -18,7 +18,7 @@ function TabLink({ id, current, set }: { id: string; current: string; set: (id: 
 }
 
 export default function SettingsPage() {
-  const { providers, setProviderField, testProvider, models, setModels, theme, setTheme, clearAll } = useSettings();
+  const { providers, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll } = useSettings();
   const onboarding = useOnboarding();
   const [tab, setTab] = useState<string>(() => new URLSearchParams(typeof window !== "undefined" ? window.location.search : "").get("tab") || "Account");
   useEffect(() => { if (typeof window !== "undefined") {
@@ -110,6 +110,15 @@ export default function SettingsPage() {
                   </label>
                 ))}
               </div>
+              <label className="block text-sm text-ink-700 mt-4">Brand logo variant</label>
+              <div className="mt-1 flex gap-3">
+                {["blue", "yellow"].map(v => (
+                  <label key={v} className="flex items-center gap-2">
+                    <input type="radio" name="brandLogo" checked={brandLogo === v} onChange={() => setBrandLogo(v as any)} />
+                    <span className="capitalize">{v}</span>
+                  </label>
+                ))}
+              </div>
               <div className="mt-4 p-3 rounded-[12px] border border-ink-100 bg-paper-50">
                 <div className="font-display font-bold text-[24px]">Typography Preview</div>
                 <p className="font-inter text-ink-700">Body text meets contrast guidelines. Focus rings are visible on keyboard navigation.</p>
@@ -169,4 +178,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
