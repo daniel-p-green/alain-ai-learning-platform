@@ -1,12 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="260" viewBox="0 0 960 260" role="img" aria-label="ALAIN wordmark">
-  <style>
-    :root { --red:#C33228; --ink:#1B1B1B; --blue:#2CA6A4; }
-  </style>
-  <rect width="100%" height="100%" fill="white"/>
-  <text x="60" y="185" font-family="Georgia, 'Times New Roman', serif" font-size="170" font-style="italic" fill="var(--ink)" opacity="0.35" dx="6" dy="6">Alain</text>
-  <text x="60" y="185" font-family="Georgia, 'Times New Roman', serif" font-size="170" font-style="italic" fill="var(--red)" stroke="var(--ink)" stroke-width="7" paint-order="stroke fill">Alain</text>
-  <!-- Accent caret -->
-  <path d="M515 92 l14 -22 l14 22 z" fill="var(--blue)"/>
+<svg width="1500" height="800" viewBox="0 0 1500 800" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ALAIN wordmark">
+  <!-- ALAIN primary wordmark on white ellipse with blue letters, outline stroke -->
+  <ellipse cx="750" cy="400" rx="700" ry="300" fill="#FFFFFF" stroke="#004580" stroke-width="12"/>
+  <path d="M257.861 255H333.661L442.461 519H359.861L343.061 473.2H248.861L231.861 519H149.061L257.861 255ZM274.861 406H317.061L296.261 347.8H295.661L274.861 406ZM457.295 255H534.895V451.8H625.095V519H457.295V255ZM744.783 255H820.583L929.383 519H846.783L829.983 473.2H735.783L718.783 519H635.983L744.783 255ZM761.783 406H803.983L783.183 347.8H782.583L761.783 406ZM943.017 255H1020.42V519H943.017V255ZM1127.38 325.4L1133.18 326.4V519H1055.78V255H1160.38L1246.58 447L1240.78 448.2V255H1318.18V519H1212.98L1127.38 325.4Z" fill="#0058A3"/>
 </svg>
-
