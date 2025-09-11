@@ -6,25 +6,22 @@ export const metadata = {
 
 export default function BlueprintPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 space-y-16">
+    <div className="mx-auto max-w-7xl px-6 md:px-8 py-12 space-y-16 text-ink-900">
       {/* Hero */}
       <section className="space-y-4">
-        <p className="uppercase tracking-wide text-xs text-gray-500">Imagine</p>
-        <h1 className="text-4xl md:text-6xl font-black leading-tight">
-          IKEA for AI: instruction booklets for every model
-        </h1>
-        <p className="text-lg text-gray-600 max-w-3xl">
-          ALAIN is the open‑source blueprint layer for all models. Models are the raw
-          materials. ALAIN is the instruction booklet that turns them into things you use every day.
+        <p className="uppercase tracking-wide text-xs text-ink-700">Imagine</p>
+        <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">IKEA for AI: instruction booklets for every model</h1>
+        <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-3xl">
+          ALAIN is the open-source blueprint layer for all models. Models are the raw materials. ALAIN is the instruction booklet that turns them into things you use every day.
         </p>
         <div className="flex gap-3">
-          <a href="/generate" className="inline-flex items-center px-4 py-2 rounded-brand bg-brand-blue text-white font-semibold hover:brightness-95">Generate a lesson</a>
-          <a href="/tutorials" className="inline-flex items-center px-4 py-2 rounded-brand border border-gray-800 text-ink hover:bg-gray-50">Browse tutorials</a>
+          <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Generate a lesson</a>
+          <a href="/tutorials" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Browse tutorials</a>
         </div>
       </section>
 
       {/* Problem tiles */}
-      <section className="grid md:grid-cols-3 gap-4">
+      <section className="grid md:grid-cols-3 gap-6">
         <Tile title="Model releases outpace learning" note="Docs become guesses, retries, delays."/>
         <Tile title="Adoption concentrates on a few providers" note="The long tail stalls without education."/>
         <Tile title="Small labs can’t afford DevRel" note="Great models die in obscurity."/>
@@ -32,45 +29,45 @@ export default function BlueprintPage() {
 
       {/* Solution */}
       <section className="grid md:grid-cols-2 gap-6 items-start">
-        <div className="p-6 rounded-2xl bg-gray-900 text-gray-100 border border-gray-800 space-y-3">
-          <h2 className="text-2xl font-bold">Paste link → working code in 1 click</h2>
-          <ul className="list-disc pl-5 space-y-1 text-gray-300">
+        <div className="p-6 rounded-card bg-ink-900 text-white border border-ink-100/10 space-y-3">
+          <h2 className="font-display font-semibold text-[32px] leading-[38px] tracking-tight">Paste link → working code in 1 click</h2>
+          <ul className="list-disc pl-5 space-y-1 text-white/80">
             <li>Reads model cards and repos (Hugging Face)</li>
             <li>Generates runnable lessons with setup, concepts, and MCQs</li>
             <li>1‑click Colab or fully local (Ollama/vLLM)</li>
             <li>Guardrails: citations, linting, and safe defaults</li>
           </ul>
-          <div className="text-sm text-gray-400">“What took days now takes minutes.”</div>
+          <div className="text-sm text-white/70">“What took days now takes minutes.”</div>
         </div>
-        <div className="p-6 rounded-2xl bg-white border border-gray-200 space-y-4">
-          <h3 className="text-xl font-semibold">Why it matters</h3>
-          <p className="text-gray-700">The best model doesn’t win if developers can’t use it. ALAIN makes every model equally learnable so teams can choose on merit — not marketing budget.</p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <li className="border border-gray-200 rounded-lg p-3"><b>Global</b><br/>Portuguese, Spanish, more — lower barriers worldwide.</li>
-            <li className="border border-gray-200 rounded-lg p-3"><b>Evaluate</b><br/>Side‑by‑side quality/cost/latency templates.</li>
-            <li className="border border-gray-200 rounded-lg p-3"><b>Onboard</b><br/>New hires productive on day one.</li>
-            <li className="border border-gray-200 rounded-lg p-3"><b>Private</b><br/>Local‑first mode with no external calls.</li>
+        <div className="p-6 rounded-card bg-paper-0 border border-ink-100 space-y-4 shadow-card">
+          <h3 className="font-display font-semibold text-[24px] leading-[30px] tracking-tight">Why it matters</h3>
+          <p className="font-inter text-ink-700">The best model does not win if developers cannot use it. ALAIN makes every model equally learnable so teams can choose on merit, not marketing budget.</p>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-ink-700">
+            <li className="border border-ink-100 rounded-card p-3"><b>Global</b><br/>Portuguese, Spanish, more — lower barriers worldwide.</li>
+            <li className="border border-ink-100 rounded-card p-3"><b>Evaluate</b><br/>Side‑by‑side quality/cost/latency templates.</li>
+            <li className="border border-ink-100 rounded-card p-3"><b>Onboard</b><br/>New hires productive on day one.</li>
+            <li className="border border-ink-100 rounded-card p-3"><b>Private</b><br/>Local‑first mode with no external calls.</li>
           </ul>
         </div>
       </section>
 
       {/* Slides as headers */}
       <section className="space-y-6">
-        <Slide text="Alain: The open‑source blueprint layer for all models"/>
+        <Slide text="Alain: The open-source blueprint layer for all models"/>
         <Slide text="Any model → working code in 1 click (Colab/Local)"/>
         <Slide text="Turns any model into a daily workflow"/>
       </section>
 
       {/* Closing CTA */}
-      <section className="p-6 rounded-2xl bg-gray-900 text-gray-100 border border-gray-800">
+      <section className="p-6 rounded-card bg-ink-900 text-white border border-ink-100/10">
         <div className="md:flex items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-bold">Stop reading docs. Start shipping models.</h3>
-            <p className="text-gray-300">Paste link. Get lesson. Run it. Reuse it. ALAIN makes every model ready to run.</p>
+            <h3 className="font-display font-semibold text-[32px] leading-[38px] tracking-tight">Stop reading docs. Start shipping models.</h3>
+            <p className="font-inter text-white/80">Paste link. Get lesson. Run it. Reuse it. ALAIN makes every model ready to run.</p>
           </div>
           <div className="mt-4 md:mt-0 flex gap-3">
-            <a href="/generate" className="inline-flex items-center px-4 py-2 rounded-brand bg-brand-blue text-white font-semibold hover:brightness-95">Try ALAIN</a>
-            <a href="/settings" className="inline-flex items-center px-4 py-2 rounded-brand border border-gray-700 text-gray-100 hover:bg-gray-800">Configure providers</a>
+            <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Try ALAIN</a>
+            <a href="/settings" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-white/30 text-white">Configure providers</a>
           </div>
         </div>
       </section>
@@ -80,18 +77,17 @@ export default function BlueprintPage() {
 
 function Tile({ title, note }: { title: string; note: string }) {
   return (
-    <div className="p-6 rounded-2xl bg-white border border-gray-200">
-      <div className="text-lg font-semibold">{title}</div>
-      <div className="text-sm text-gray-600 mt-1">{note}</div>
+    <div className="p-6 rounded-card bg-paper-0 border border-ink-100 shadow-card">
+      <div className="font-display font-semibold text-[20px] leading-[28px]">{title}</div>
+      <div className="text-sm font-inter text-ink-700 mt-1">{note}</div>
     </div>
   );
 }
 
 function Slide({ text }: { text: string }) {
   return (
-    <div className="p-5 rounded-2xl bg-white border border-gray-200">
-      <div className="text-xl md:text-2xl font-bold">{text}</div>
+    <div className="p-5 rounded-card bg-paper-0 border border-ink-100 shadow-card">
+      <div className="font-display font-semibold text-[24px] leading-[30px] tracking-tight">{text}</div>
     </div>
   );
 }
-

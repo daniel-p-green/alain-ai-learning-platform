@@ -4,24 +4,53 @@
 
 /* Web fonts are loaded via next/font in layout.tsx */
 
-/* Brand tokens (assembly-inspired). CSS vars mirror Tailwind theme; update Tailwind first to avoid drift. */
+/* Brand tokens: ALAIN */
 :root {
-  /* Brand core */
-  --brand-blue: #0057AD;
-  --brand-yellow: #FBDA0C;
-  --paper: #FFFFFF; /* consider #FFFAEF for warm docs */
-  --ink: #111827;
+  /* Core brand */
+  --alain-blue: #0058A3;
+  --alain-yellow: #FFDA1A;
+  --alain-stroke: #004580;
+  --alain-navy: #1E3A8A;
+  --alain-navy-alt: #1E40AF;
 
-  /* UI neutrals */
-  --text-strong: #0F172A;
-  --text-muted: #334155;
-  --panel: #F1F5F9;
-  --bg: #FFFFFF;
+  /* Neutrals */
+  --ink-900: #111827;
+  --ink-700: #374151;
+  --ink-100: #F3F4F6;
+  --paper-0: #FFFFFF;
+  --paper-50: #FAFAF9;
+  --paper-100: #F5F5F4;
 
   /* Effects */
-  --radius: 12px;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --radius-card: 14px;
+  --shadow-card: 0 1px 2px rgba(15,23,42,0.05), 0 0 0 1px rgba(17,24,39,0.06);
+  --shadow-cardHover: 0 4px 10px rgba(15,23,42,0.08), 0 0 0 1px rgba(17,24,39,0.08);
 }
+
+.theme-dark {
+  --ink-900: #F9FAFB;
+  --ink-700: #E5E7EB;
+  --ink-100: #1F2937;
+  --paper-0: #0B0F14;
+  --paper-50: #0F172A;
+  --paper-100: #111827;
+}
+
+/* Helpers */
+.surface {
+  background-color: var(--paper-50);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.prose-app {
+  color: var(--ink-900);
+}
+.prose-app h1 { @apply font-display font-bold text-[40px] leading-[44px] tracking-tight; }
+.prose-app h2 { @apply font-display font-semibold text-[32px] leading-[38px] tracking-tight; }
+.prose-app h3 { @apply font-display font-semibold text-[24px] leading-[30px] tracking-tight; }
+.prose-app p { @apply font-inter text-[18px] leading-[28px]; }
 
 /* Simple helpers using tokens */
 .brand-header {
