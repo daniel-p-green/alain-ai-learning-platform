@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type SearchItem = { id: string; name: string; exact?: boolean; staffPick?: boolean };
 type OptionItem = { index: number; name: string; sizeBytes: number; quantization?: string; fitEstimation?: string; recommended?: boolean; indexedModelIdentifier: string };
@@ -21,6 +22,8 @@ export default function LMStudioExplorerPage() {
   const [identifier, setIdentifier] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<number | null>(null);
+  const [fallbackModels, setFallbackModels] = useState<string[]>([]);
+  const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
 
   async function doSearch() {
     try {
@@ -41,6 +44,35 @@ export default function LMStudioExplorerPage() {
       setLoading(false);
     }
   }
+
+  // When SDK is unavailable (501), try a cloud-friendly fallback: list local models via providers endpoint
+  useEffect(() => {
+    if (errorCode !== 501) return;
+    (async () => {
+      try {
+        const m = await fetch('/api/providers/models', { cache: 'no-store' });
+        if (m.ok) {
+          const mj = await m.json();
+          if (Array.isArray(mj?.models)) setFallbackModels(mj.models as string[]);
+        }
+        // Optional labels from Ollama if available (size info)
+        try {
+          const tags = await fetch('/api/providers/ollama/tags', { cache: 'no-store' });
+          if (tags.ok) {
+            const tj = await tags.json();
+            if (Array.isArray(tj?.models)) {
+              const map: Record<string,string> = {};
+              for (const t of tj.models) {
+                const size = t?.size ? humanSize(t.size) : '';
+                map[t.name] = size ? `${t.name} (${size})` : t.name;
+              }
+              setLabelsByName(map);
+            }
+          }
+        } catch {}
+      } catch {}
+    })();
+  }, [errorCode]);
 
   async function loadOptions(item: SearchItem) {
     try {
@@ -92,8 +124,24 @@ export default function LMStudioExplorerPage() {
             <li>Open LM Studio → Developer tab → enable Local Server (default http://localhost:1234/v1)</li>
             <li>Refresh this page</li>
           </ul>
+          {fallbackModels.length > 0 && (
+            <div className="mt-3">
+              <div className="font-medium">Cloud fallback</div>
+              <p className="text-ink-700">We detected local models via the providers endpoint. You can use one of these in Generate:</p>
+              <ul className="mt-2 space-y-2">
+                {fallbackModels.map((m) => (
+                  <li key={m} className="flex items-center justify-between p-2 rounded-card border border-ink-100 bg-paper-0">
+                    <span className="text-sm text-ink-900">{labelsByName[m] || m}</span>
+                    <Link className="px-3 h-8 inline-flex items-center rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" href={`/generate?provider=local&model=${encodeURIComponent(m)}`}>
+                      Use in Generate
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="mt-2">
-            <a className="underline text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" href="/generate">Back to Generate</a>
+            <Link className="underline text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" href="/generate">Back to Generate</Link>
           </div>
         </div>
       )}
