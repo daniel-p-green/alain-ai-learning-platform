@@ -47,7 +47,7 @@ export default function AgentVariant() {
 
 function Primary({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center justify-center rounded-brand bg-brand-blue px-5 py-2 text-white font-semibold hover:brightness-95">
+    <Link href={href} className="inline-flex items-center justify-center rounded-card bg-alain-blue px-5 py-2 text-white font-semibold hover:brightness-95">
       {children}
     </Link>
   );
@@ -63,10 +63,9 @@ function Secondary({ href, children }: { href: string; children: React.ReactNode
 
 function Feature({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5">
+    <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card">
       <div className="text-lg font-semibold">{title}</div>
-      <div className="mt-1 text-sm text-gray-700">{desc}</div>
+      <div className="mt-1 text-sm text-ink-700">{desc}</div>
     </div>
   );
 }
-
