@@ -521,6 +521,20 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             >
               {showRequest ? 'Hide Request' : 'Show Request'}
             </Button>
+            <Button
+              className="text-xs px-2 py-1"
+              title="Copy the last request as a curl command"
+              onClick={() => {
+                if (curl) {
+                  navigator.clipboard.writeText(curl);
+                  setToast('Copied cURL');
+                  setTimeout(() => setToast(null), 1000);
+                }
+              }}
+              variant="secondary"
+            >
+              Copy cURL
+            </Button>
             {executionState.status === 'completed' && (
               <span className="text-sm text-green-400 font-medium">✓ Completed</span>
             )}
