@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import { safeAuth, demoBypassEnabled } from "../../../lib/auth";
 import { backendUrl } from "../../../lib/backend";
 
