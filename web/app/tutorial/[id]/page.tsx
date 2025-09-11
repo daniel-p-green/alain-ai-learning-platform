@@ -311,9 +311,20 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
     <div className="max-w-5xl mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <a className="text-brand-blue hover:underline" href="/tutorials">← Back</a>
-        <a className="text-xs text-gray-400 hover:underline" target="_blank" href={
-          `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
-        }>Report issue</a>
+        {(() => {
+          const repo = process.env.NEXT_PUBLIC_GITHUB_REPO; // e.g., owner/name
+          const title = `Tutorial Issue: ${String(tutorial?.title || '')}`;
+          const body = `tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`;
+          const ghUrl = repo ? `https://github.com/${repo}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}` : null;
+          return (
+            <a
+              className="text-xs text-gray-400 hover:underline"
+              target="_blank"
+              href={ghUrl || `https://github.com/new`}
+              rel="noopener noreferrer"
+            >Report issue</a>
+          );
+        })()}
       </div>
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-3xl font-bold">{tutorial.title}</h1>
