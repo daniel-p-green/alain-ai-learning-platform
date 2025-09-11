@@ -13,7 +13,5 @@ export function allowRate(userId: string, key: string, max: number, windowMs: nu
     return { ok: false, retryAfter };
   }
   arr.push(now);
-  if (arr.length === 0) store.delete(k);
   return { ok: true };
 }
-

@@ -213,14 +213,13 @@ export const generateLocalLesson = api<{
             return { success: false, error: { code: "validation_error", message: "Repaired lesson failed validation", details: v2.errors } } as any;
           }
         }
-        inflight.delete(key);
         return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
       } catch (error: any) {
-        inflight.delete(key);
         return { success: false, error: { code: 'generation_error', message: error?.message || 'Failed to generate' } } as any;
       }
     })();
     inflight.set(key, task);
+    task.finally(() => setTimeout(() => inflight.delete(key), 5000));
     return await task;
   }
 );
