@@ -143,6 +143,80 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
   }
 );
 
+// Generate structured lessons without an HF URL, using a local/runtime model id
+export const generateLocalLesson = api<{
+  modelId: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B";
+  includeAssessment?: boolean;
+  provider?: "poe" | "openai-compatible";
+  includeReasoning?: boolean;
+}, LessonGenerationResponse>(
+  { expose: true, method: "POST", path: "/lessons/generate-local" },
+  async (req, ctx) => {
+    validateBackendEnv();
+    const userId = await requireUserId(ctx);
+    const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
+    if (!gate.ok) {
+      throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
+    }
+
+    const key = `local::${req.modelId}::${req.difficulty}`;
+    const existing = inflight.get(key);
+    if (existing) return await existing;
+    const task = (async (): Promise<LessonGenerationResponse> => {
+      try {
+        const base = (process.env.OPENAI_BASE_URL || '').trim() || 'http://localhost:1234/v1';
+        const modelInfo = { name: req.modelId, org: 'local', url: base.replace(/\/$/, '') } as any;
+        const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
+        const teacherResponse = await teacherGenerate({
+          model: req.teacherModel,
+          messages: [ { role: "user", content: lessonPrompt } ],
+          task: "lesson_generation",
+          provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
+        });
+        if (!teacherResponse.success || !teacherResponse.content) {
+          throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
+        }
+        let raw = teacherResponse.content;
+        const extractReasoning = (jsonText: string): string | undefined => {
+          try {
+            let t = jsonText.trim();
+            if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
+            const o = JSON.parse(t);
+            const r = o?.reasoning_summary;
+            return typeof r === 'string' && r.trim() ? r.trim() : undefined;
+          } catch { return undefined; }
+        };
+        let reasoningSummary = extractReasoning(raw);
+        let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
+        let v1 = validateLesson(lesson);
+        let usedRepair = false;
+        if (!v1.valid) {
+          const repaired = await attemptRepairJSON(req.teacherModel, raw);
+          if (!repaired) {
+            return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
+          }
+          lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
+          usedRepair = true;
+          if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
+          const v2 = validateLesson(lesson);
+          if (!v2.valid) {
+            return { success: false, error: { code: "validation_error", message: "Repaired lesson failed validation", details: v2.errors } } as any;
+          }
+        }
+        inflight.delete(key);
+        return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
+      } catch (error: any) {
+        inflight.delete(key);
+        return { success: false, error: { code: 'generation_error', message: error?.message || 'Failed to generate' } } as any;
+      }
+    })();
+    inflight.set(key, task);
+    return await task;
+  }
+);
+
 // In-memory map of in-flight generation promises
 const inflight = new Map<string, Promise<LessonGenerationResponse>>();
 
