@@ -130,6 +130,10 @@ export default function SettingsPage() {
                   for (const p of providers.filter(pr=>pr.enabled)) { await testProvider(p.id as any); }
                   setToast('Ran tests for enabled providers');
                 }}>Test all enabled</button>
+              <button
+                className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
+                onClick={() => navigator.clipboard.writeText("# Hosted (Poe)\nexport POE_API_KEY=YOUR_KEY\n\n# Local (Ollama)\nexport OPENAI_BASE_URL=http://localhost:11434/v1\nexport OPENAI_API_KEY=ollama\n\n# Local (LM Studio)\nexport OPENAI_BASE_URL=http://localhost:1234/v1\nexport OPENAI_API_KEY=lmstudio\n")}
+              >Copy env snippets</button>
             </div>
             {toast && <div className="mt-2 text-xs text-ink-700">{toast}</div>}
           </div>
@@ -141,11 +145,44 @@ export default function SettingsPage() {
           )}
           {tab === "Providers" && (
             <div className="space-y-3">
-              {providerRow("openai-compatible", "OpenAI Compatible", true, true)}
-              {providerRow("huggingface", "Hugging Face Inference", true, true)}
-              {providerRow("ollama", "Ollama", false, true)}
-              {providerRow("lmstudio", "LM Studio", false, true)}
-              {providerRow("poe", "Poe", true, false)}
+              <div className="rounded-[12px] border border-ink-100 bg-paper-0 overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-ink-700">
+                      <th className="px-3 py-2">Provider</th>
+                      <th className="px-3 py-2">Enabled</th>
+                      <th className="px-3 py-2">Status</th>
+                      <th className="px-3 py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {providers.map(p => (
+                      <tr key={p.id} className="border-t border-ink-100">
+                        <td className="px-3 py-2 font-medium text-ink-900">{p.name}</td>
+                        <td className="px-3 py-2">
+                          <input type="checkbox" checked={!!p.enabled} onChange={e => setProviderField(p.id as any, { enabled: e.target.checked })} />
+                        </td>
+                        <td className="px-3 py-2">
+                          <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'ok' || p.status === 'available' ? 'bg-green-100 border-green-300 text-green-800' : p.status === 'testing' || p.status === 'configuring' ? 'bg-yellow-100 border-yellow-300 text-yellow-800' : 'bg-red-100 border-red-300 text-red-800'}`}>{p.status || 'unknown'}</span>
+                        </td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <button className="h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 disabled:opacity-50" disabled={p.status === 'testing'} onClick={() => testProvider(p.id as any)}>
+                              {p.status === 'testing' ? 'Testing…' : 'Test'}
+                            </button>
+                            <details>
+                              <summary className="cursor-pointer select-none">Details</summary>
+                              <div className="mt-2 p-3 border border-ink-100 rounded-[12px] bg-paper-0">
+                                {providerRow(p.id as any, p.name, ['poe','openai-compatible','huggingface'].includes(p.id as any), ['openai-compatible','ollama','lmstudio','huggingface'].includes(p.id as any))}
+                              </div>
+                            </details>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
           {tab === "Models" && (
