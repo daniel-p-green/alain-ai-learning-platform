@@ -179,12 +179,12 @@ export default function GenerateLessonPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-4">
+    <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
       <h1 className="text-2xl font-black font-display">Generate Lesson</h1>
       {source === 'local' && availableModels.length === 0 && (
-        <div className="p-3 rounded border border-yellow-700 bg-yellow-900/30 text-sm text-yellow-200">
+        <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">No local models detected</div>
-          <div className="text-yellow-100/90">Use Hosted (Poe) for instant demo, or open the LM Studio Explorer to download a model locally.</div>
+          <div className="text-ink-700">Use Hosted (Poe) for instant demo, or open the LM Studio Explorer to download a model locally.</div>
           <div className="mt-2 flex gap-2">
             <Button variant="secondary" onClick={() => { setSource('hf'); setTeacherProvider('poe'); }}>Switch to Hosted (Poe)</Button>
             <Button variant="secondary" onClick={() => { window.location.href = '/lmstudio'; }}>Open Explorer</Button>
@@ -199,7 +199,7 @@ export default function GenerateLessonPage() {
       <form onSubmit={onSubmit} className="space-y-3">
         {source === 'hf' ? (
           <input
-            className="w-full p-2 rounded bg-gray-900 border border-gray-800"
+            className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             placeholder="https://huggingface.co/owner/repo"
             value={hfUrl}
             onChange={(e) => setHfUrl(e.target.value)}
@@ -208,7 +208,7 @@ export default function GenerateLessonPage() {
           <div className="space-y-2">
             <label className="text-sm text-gray-300">Paste text</label>
             <textarea
-              className="w-full p-2 rounded bg-gray-900 border border-gray-800 min-h-[140px]"
+              className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 min-h-[140px] focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
               placeholder="Paste any content here (docs, article, notes) to generate a lesson."
               value={rawTextInput}
               onChange={(e) => setRawTextInput(e.target.value)}
@@ -219,7 +219,7 @@ export default function GenerateLessonPage() {
             <label className="text-sm text-gray-300">Local model</label>
             {availableModels.length > 0 ? (
               <select
-                className="p-2 rounded bg-gray-900 border border-gray-800 w-full"
+                className="p-2 rounded-card bg-paper-0 border border-ink-100 w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
                 value={targetModel}
                 onChange={(e)=> setTargetModel(e.target.value)}
               >
@@ -230,14 +230,14 @@ export default function GenerateLessonPage() {
               </select>
             ) : (
               <input
-                className="w-full p-2 rounded bg-gray-900 border border-gray-800"
+                className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
                 placeholder="e.g., llama-3-8b-instruct or gpt-oss:20b"
                 value={targetModel}
                 onChange={(e)=> setTargetModel(e.target.value)}
               />
             )}
             {targetModel ? <OllamaContextHint modelName={targetModel} /> : null}
-            <div className="text-xs text-gray-500">Detected models are shown when LM Studio or Ollama is running locally.</div>
+            <div className="text-xs text-ink-700">Detected models are shown when LM Studio or Ollama is running locally.</div>
             <LocalSetupHelper visible={source==='local'} />
           </div>
         )}
@@ -266,8 +266,8 @@ export default function GenerateLessonPage() {
           </select>
         </div>
         {/* Reasoning disabled for demo: keeping backend support but hiding UI */}
-        {providersLoading && <div className="text-xs text-gray-400">Loading providers…</div>}
-        {providersError && <div className="text-xs text-yellow-400">{providersError}</div>}
+        {providersLoading && <div className="text-xs text-ink-700">Loading providers…</div>}
+        {providersError && <div className="text-xs text-ink-700">{providersError}</div>}
         <select
           className="p-2 rounded bg-gray-900 border border-gray-800"
           value={difficulty}
@@ -309,17 +309,17 @@ export default function GenerateLessonPage() {
         </div>
       </form>
       {loading && (
-        <div className="text-sm text-gray-400">
+        <div className="text-sm text-ink-700">
           {progress === "parsing" && "Parsing model card…"}
           {progress === "asking" && "Asking teacher model… (and repairing if needed)"}
           {progress === "importing" && "Importing lesson…"}
         </div>
       )}
       {error && (
-        <div className="text-red-400 space-y-2">
+        <div className="text-red-700 space-y-2">
           <div>{error}</div>
           {errorDetails.length > 0 && (
-            <ul className="list-disc pl-5 text-red-300 text-sm">
+            <ul className="list-disc pl-5 text-red-700 text-sm">
               {errorDetails.map((d, i) => (
                 <li key={i}>{d}</li>
               ))}
@@ -388,17 +388,17 @@ export default function GenerateLessonPage() {
       )}
 
       {/* Quick-start HF links */}
-      <div className="mt-6 text-sm text-gray-400">
-        <div className="font-medium text-gray-300 mb-1">Try these popular models</div>
-        <div className="flex flex-wrap gap-2">
-          {['meta-llama/Meta-Llama-3.1-8B-Instruct','google/gemma-2-9b-it','mistralai/Mistral-7B-Instruct-v0.3'].map(m => (
-            <Button key={m} variant="secondary" className="px-2 py-1 text-xs" onClick={() => setHfUrl(m)}>{m}</Button>
-          ))}
+        <div className="mt-6 text-sm text-ink-700">
+          <div className="font-medium text-ink-900 mb-1">Try these popular models</div>
+          <div className="flex flex-wrap gap-2">
+            {['meta-llama/Meta-Llama-3.1-8B-Instruct','google/gemma-2-9b-it','mistralai/Mistral-7B-Instruct-v0.3'].map(m => (
+              <Button key={m} variant="secondary" className="px-2 py-1 text-xs" onClick={() => setHfUrl(m)}>{m}</Button>
+            ))}
+          </div>
         </div>
-      </div>
 
       {snackbar && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded bg-gray-900 border border-gray-700 text-white shadow">{snackbar}</div>
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 shadow-card">{snackbar}</div>
       )}
     </div>
   );
