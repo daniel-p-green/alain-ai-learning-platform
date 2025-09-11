@@ -18,12 +18,26 @@ function TabLink({ id, current, set }: { id: string; current: string; set: (id: 
 }
 
 export default function SettingsPage() {
-  const { providers, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll } = useSettings();
+  const { providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll } = useSettings();
   const onboarding = useOnboarding();
   const [tab, setTab] = useState<string>(() => new URLSearchParams(typeof window !== "undefined" ? window.location.search : "").get("tab") || "Account");
   useEffect(() => { if (typeof window !== "undefined") {
     const url = new URL(window.location.href); url.searchParams.set("tab", tab); window.history.replaceState({}, "", url.toString()); } }, [tab]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [probe, setProbe] = useState<any>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  async function refreshProbe() {
+    try {
+      const resp = await fetch('/api/setup', { cache: 'no-store' });
+      const data = await resp.json();
+      setProbe(data);
+    } catch (e: any) {
+      setProbe({ error: e?.message || String(e) });
+    }
+  }
+  useEffect(() => { refreshProbe(); }, []);
 
   function providerRow(id: ProviderId, label: string, needsKey?: boolean, needsBase?: boolean) {
     const p = providers.find(x => x.id === id)!;
@@ -73,6 +87,56 @@ export default function SettingsPage() {
           </nav>
         </aside>
         <div className="space-y-4">
+          {/* Environment Status + Quick Presets */}
+          <div className="p-4 rounded-[12px] border border-ink-100 bg-paper-0">
+            <div className="font-medium">Environment Status</div>
+            <div className="grid sm:grid-cols-2 gap-2 text-sm text-ink-700 mt-2">
+              <div>Mode: <span className="text-ink-900">{probe?.offlineMode ? 'Offline' : 'Hosted'}</span></div>
+              <div>Provider: <span className="text-ink-900">{probe?.teacherProvider || 'unknown'}</span></div>
+              <div>Base URL: <span className="text-ink-900">{probe?.openaiBaseUrl || 'n/a'}</span></div>
+              <div>Ollama: <span className={probe?.ollamaDetected ? 'text-green-700' : 'text-red-700'}>{probe?.ollamaDetected ? 'detected' : 'not found'}</span></div>
+              <div>LM Studio: <span className={probe?.lmStudioDetected ? 'text-green-700' : 'text-red-700'}>{probe?.lmStudioDetected ? 'detected' : 'not found'}</span></div>
+              <div>Poe API key: <span className={probe?.poeConfigured ? 'text-green-700' : 'text-yellow-700'}>{probe?.poeConfigured ? 'configured' : 'missing'}</span></div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                className="h-9 px-3 rounded-[12px] bg-alain-blue text-white disabled:opacity-50"
+                disabled={busy !== null}
+                onClick={async ()=>{
+                  try {
+                    setBusy('local');
+                    await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode:'offline', baseUrl:'http://localhost:11434/v1', apiKey:'ollama' }) });
+                    setModels({ ...models, defaultModel: 'gpt-oss:20b', recent: ['openai/gpt-oss-20b', ...(models.recent||[])] });
+                    setProviders(providers.map(p=> p.id==='openai-compatible' ? { ...p, enabled:true } : p));
+                    setToast('Preset applied: Local GPT‑OSS (Ollama)');
+                  } finally { setBusy(null); refreshProbe(); }
+                }}>Quick Preset: Local GPT‑OSS (Ollama)</button>
+              <button
+                className="h-9 px-3 rounded-[12px] border-2 border-alain-blue text-alain-blue bg-white disabled:opacity-50"
+                disabled={busy !== null}
+                onClick={async ()=>{
+                  try {
+                    setBusy('hosted');
+                    await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode:'hosted' }) });
+                    setModels({ ...models, defaultModel: 'gpt-4o-mini' });
+                    setProviders(providers.map(p=> p.id==='poe' ? { ...p, enabled:true } : p));
+                    setToast('Preset applied: Hosted (Poe)');
+                  } finally { setBusy(null); refreshProbe(); }
+                }}>Quick Preset: Hosted (Poe)</button>
+              <a href="/generate?hf=openai/gpt-oss-20b&provider=local&model=gpt-oss:20b" className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0 inline-flex items-center">Load Sample (gpt‑oss‑20b)</a>
+              <button
+                className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
+                onClick={async ()=>{
+                  for (const p of providers.filter(pr=>pr.enabled)) { await testProvider(p.id as any); }
+                  setToast('Ran tests for enabled providers');
+                }}>Test all enabled</button>
+              <button
+                className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
+                onClick={() => navigator.clipboard.writeText("# Hosted (Poe)\nexport POE_API_KEY=YOUR_KEY\n\n# Local (Ollama)\nexport OPENAI_BASE_URL=http://localhost:11434/v1\nexport OPENAI_API_KEY=ollama\n\n# Local (LM Studio)\nexport OPENAI_BASE_URL=http://localhost:1234/v1\nexport OPENAI_API_KEY=lmstudio\n")}
+              >Copy env snippets</button>
+            </div>
+            {toast && <div className="mt-2 text-xs text-ink-700">{toast}</div>}
+          </div>
           {tab === "Account" && (
             <div className="p-4 rounded-[12px] border border-ink-100 bg-paper-0">
               <div className="font-medium">Account</div>
@@ -81,11 +145,51 @@ export default function SettingsPage() {
           )}
           {tab === "Providers" && (
             <div className="space-y-3">
-              {providerRow("openai-compatible", "OpenAI Compatible", true, true)}
-              {providerRow("huggingface", "Hugging Face Inference", true, true)}
-              {providerRow("ollama", "Ollama", false, true)}
-              {providerRow("lmstudio", "LM Studio", false, true)}
-              {providerRow("poe", "Poe", true, false)}
+              <div className="rounded-[12px] border border-ink-100 bg-paper-0 overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-ink-700">
+                      <th className="px-3 py-2">Provider</th>
+                      <th className="px-3 py-2">Enabled</th>
+                      <th className="px-3 py-2">Status</th>
+                      <th className="px-3 py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {providers.map(p => (
+                      <tr key={p.id} className="border-t border-ink-100">
+                        <td className="px-3 py-2 font-medium text-ink-900">{p.name}</td>
+                        <td className="px-3 py-2">
+                          <input type="checkbox" checked={!!p.enabled} onChange={e => setProviderField(p.id as any, { enabled: e.target.checked })} />
+                        </td>
+                        <td className="px-3 py-2">
+                          <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'ok' || p.status === 'available' ? 'bg-green-100 border-green-300 text-green-800' : p.status === 'testing' || p.status === 'configuring' ? 'bg-yellow-100 border-yellow-300 text-yellow-800' : 'bg-red-100 border-red-300 text-red-800'}`}>{p.status || 'unknown'}</span>
+                        </td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <button aria-busy={p.status === 'testing'} className={`h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 disabled:opacity-50 ${p.status==='testing'?'animate-pulse':''}`} disabled={p.status === 'testing'} onClick={() => testProvider(p.id as any)}>
+                              {p.status === 'testing' ? 'Testing…' : 'Test'}
+                            </button>
+                            <details>
+                              <summary className="cursor-pointer select-none">Logs</summary>
+                              <div className="mt-2 p-2 border border-ink-100 rounded-[12px] bg-paper-50 text-xs text-ink-700">
+                                <div>Last tested: {p.lastTestAt ? new Date(p.lastTestAt).toLocaleString() : 'never'}</div>
+                                {p.lastError ? (<pre className="mt-1 whitespace-pre-wrap">{p.lastError}</pre>) : (<div>No errors</div>)}
+                              </div>
+                            </details>
+                            <details>
+                              <summary className="cursor-pointer select-none">Details</summary>
+                              <div className="mt-2 p-3 border border-ink-100 rounded-[12px] bg-paper-0">
+                                {providerRow(p.id as any, p.name, ['poe','openai-compatible','huggingface'].includes(p.id as any), ['openai-compatible','ollama','lmstudio','huggingface'].includes(p.id as any))}
+                              </div>
+                            </details>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
           {tab === "Models" && (

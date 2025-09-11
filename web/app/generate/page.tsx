@@ -28,6 +28,22 @@ export default function GenerateLessonPage() {
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
   const [snackbar, setSnackbar] = useState<string | null>(null);
+  const [envBanner, setEnvBanner] = useState<any>(null);
+
+  // Prefill from query params for quick demo links
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const q = new URLSearchParams(window.location.search);
+    const hf = q.get('hf');
+    const provider = q.get('provider');
+    const m = q.get('model');
+    if (hf) { setSource('hf'); setHfUrl(hf); }
+    if (m) setTargetModel(m);
+    if (provider) {
+      if (provider === 'local') setSource('local');
+      setTargetProvider(provider);
+    }
+  }, []);
 
   // Provider capabilities
   const [providersLoading, setProvidersLoading] = useState(false);
@@ -108,6 +124,17 @@ export default function GenerateLessonPage() {
     }
   }, [availableModels]);
 
+  // Read environment probe for confidence banner
+  useEffect(() => {
+    (async () => {
+      try {
+        const resp = await fetch('/api/setup', { cache: 'no-store' });
+        const data = await resp.json();
+        setEnvBanner(data);
+      } catch {}
+    })();
+  }, []);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -181,6 +208,12 @@ export default function GenerateLessonPage() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
       <h1 className="text-2xl font-black font-display">Generate Lesson</h1>
+      <p className="text-sm text-ink-700">Works offline. Same UX as cloud. Export to Jupyter.</p>
+      {envBanner && (
+        <div className="mt-2 text-xs text-ink-700 border border-ink-100 rounded-card bg-paper-0 p-2">
+          <span className="font-medium">Env:</span> {envBanner.offlineMode ? 'Offline' : 'Hosted'} · Provider: {envBanner.teacherProvider || 'unknown'} · Base URL: {envBanner.openaiBaseUrl || 'n/a'}
+        </div>
+      )}
       {source === 'local' && availableModels.length === 0 && (
         <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">No local models detected</div>
