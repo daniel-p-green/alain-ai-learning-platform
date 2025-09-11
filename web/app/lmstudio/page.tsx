@@ -20,6 +20,7 @@ export default function LMStudioExplorerPage() {
   const [downloading, setDownloading] = useState(false);
   const [identifier, setIdentifier] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<number | null>(null);
 
   async function doSearch() {
     try {
@@ -28,7 +29,10 @@ export default function LMStudioExplorerPage() {
       if (term) params.set("term", term);
       params.set("limit", "10");
       const res = await fetch(`/api/lmstudio/search?${params.toString()}`, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`Search failed (${res.status})`);
+      if (!res.ok) {
+        setErrorCode(res.status);
+        throw new Error(`Search failed (${res.status})`);
+      }
       const j = await res.json();
       setResults(j.results || []);
     } catch (e: any) {
@@ -42,7 +46,10 @@ export default function LMStudioExplorerPage() {
     try {
       setSelected(item); setOptions(null); setError(null); setIdentifier("");
       const res = await fetch(`/api/lmstudio/options/${encodeURIComponent(item.id)}`, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`Options failed (${res.status})`);
+      if (!res.ok) {
+        setErrorCode(res.status);
+        throw new Error(`Options failed (${res.status})`);
+      }
       const j = await res.json();
       setOptions(j.options || []);
     } catch (e: any) {
@@ -59,7 +66,10 @@ export default function LMStudioExplorerPage() {
         body: JSON.stringify({ id: selected?.id, optionIndex: idx }),
       });
       const j = await res.json();
-      if (!res.ok) throw new Error(j?.error?.message || `Download failed (${res.status})`);
+      if (!res.ok) {
+        setErrorCode(res.status);
+        throw new Error(j?.error?.message || `Download failed (${res.status})`);
+      }
       setIdentifier(j.identifier || "");
     } catch (e: any) {
       setError(e?.message || String(e));
@@ -74,6 +84,19 @@ export default function LMStudioExplorerPage() {
     <main className="max-w-4xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-black font-display">LM Studio Model Explorer</h1>
       <p className="text-sm text-gray-400">Search curated models, view quantization options, and download locally via LM Studio.</p>
+      {errorCode === 501 && (
+        <div className="p-3 rounded border border-yellow-700 bg-yellow-900/30 text-sm text-yellow-200">
+          <div className="font-medium">SDK not available or LM Studio not running</div>
+          <ul className="list-disc pl-5 mt-1 space-y-1">
+            <li>Install SDK in web server: <code>npm i @lmstudio/sdk</code></li>
+            <li>Open LM Studio → Developer tab → enable Local Server (default http://localhost:1234/v1)</li>
+            <li>Refresh this page</li>
+          </ul>
+          <div className="mt-2">
+            <a className="underline text-yellow-100" href="/generate">Back to Generate</a>
+          </div>
+        </div>
+      )}
       <div className="flex gap-2">
         <input className="flex-1 p-2 rounded bg-gray-900 border border-gray-800" value={term} onChange={e => setTerm(e.target.value)} placeholder="Search term (e.g. llama-3)" />
         <button className="px-3 py-2 rounded bg-blue-600 disabled:opacity-60" onClick={doSearch} disabled={loading}>{loading ? 'Searching…' : 'Search'}</button>
@@ -122,4 +145,3 @@ export default function LMStudioExplorerPage() {
     </main>
   );
 }
-

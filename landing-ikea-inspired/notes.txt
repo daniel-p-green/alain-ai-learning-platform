@@ -1,0 +1,9 @@
+Implementation notes
+
+- Alternates: The optional alternates live in <template id="alternates"> inside index.html. To swap a headline or CTA helper text, read a child <span> and place it where desired. Keep the originals in place; alternates are options only.
+- Imagine hook rotator: Controlled by the small inline script near the end of index.html. It cycles through <template id="imagine-hooks"> every 6 seconds. To disable rotation, remove the setInterval.
+- Placeholders: Replace [LIKE_THIS] in hrefs for CTAs, footer links, and email (mailto:[LIKE_THIS]) with real URLs or addresses. Also populate proof metrics where [LIKE_THIS] is present.
+- Hackathon badges: Update or extend the badges in the hero aside and ecosystem section by editing the <span class="badge"> labels directly in index.html.
+- Accessibility: Landmarks (header, nav, main, section, footer) are present. Menu and accordion are keyboard operable with visible focus. Alt-equivalents for pictograms are documented in content.json under accessibility.alt_images.
+- Theming: All design tokens are CSS variables in the <style> block. Adjust --brand and --accent to tweak the IKEA‑inspired palette while keeping WCAG AA contrast.
+

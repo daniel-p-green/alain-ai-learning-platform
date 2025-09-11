@@ -301,7 +301,10 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
         }>Report issue</a>
       </div>
-      <h1 className="text-3xl font-bold">{tutorial.title}</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-3xl font-bold">{tutorial.title}</h1>
+        <span className="text-xs px-2 py-1 rounded border border-gray-700 bg-gray-900 text-gray-300">Runtime: {runtime}</span>
+      </div>
       <p className="text-gray-400">{tutorial.description}</p>
 
       {tutorial.model_maker && (

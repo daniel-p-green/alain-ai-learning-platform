@@ -1,7 +1,8 @@
 export async function GET(_req: Request, ctx: { params: { id: string } }) {
   const { id } = ctx.params;
   try {
-    const mod = await import("@lmstudio/sdk").catch(() => null as any);
+    const name = '@lmstudio/sdk';
+    const mod = await (Function('n', 'return import(n)') as any)(name).catch(() => null as any);
     if (!mod || !mod.LMStudioClient) {
       return Response.json({ options: [], error: { message: "LM Studio SDK not available" } }, { status: 501 });
     }
@@ -21,3 +22,5 @@ export async function GET(_req: Request, ctx: { params: { id: string } }) {
     return Response.json({ options: [], error: { message: error instanceof Error ? error.message : 'Options failed' } }, { status: 500 });
   }
 }
+
+export const runtime = 'nodejs';

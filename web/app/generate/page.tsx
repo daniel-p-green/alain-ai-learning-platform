@@ -24,6 +24,7 @@ export default function GenerateLessonPage() {
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [modelsProvider, setModelsProvider] = useState<string | null>(null);
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
 
@@ -68,6 +69,7 @@ export default function GenerateLessonPage() {
           const data = await resp.json();
           if (!alive) return;
           if (Array.isArray(data?.models)) setAvailableModels(data.models);
+          if (data?.provider) setModelsProvider(data.provider);
           return;
         }
       } catch {}
@@ -80,6 +82,16 @@ export default function GenerateLessonPage() {
     })();
     return () => { alive = false; };
   }, []);
+
+  // Default to Local Runtime when models are detected; otherwise default to Hosted/HF
+  useEffect(() => {
+    if (availableModels.length > 0) {
+      setSource('local');
+      setTargetModel(prev => prev || availableModels[0]);
+    } else {
+      setSource('hf');
+    }
+  }, [availableModels]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -141,6 +153,16 @@ export default function GenerateLessonPage() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-black font-display">Generate Lesson</h1>
+      {source === 'local' && availableModels.length === 0 && (
+        <div className="p-3 rounded border border-yellow-700 bg-yellow-900/30 text-sm text-yellow-200">
+          <div className="font-medium">No local models detected</div>
+          <div className="text-yellow-100/90">Use Hosted (Poe) for instant demo, or open the LM Studio Explorer to download a model locally.</div>
+          <div className="mt-2 flex gap-2">
+            <Button variant="secondary" onClick={() => { setSource('hf'); setTeacherProvider('poe'); }}>Switch to Hosted (Poe)</Button>
+            <Button variant="secondary" onClick={() => { window.location.href = '/lmstudio'; }}>Open Explorer</Button>
+          </div>
+        </div>
+      )}
       <div className="flex gap-2">
         <Button variant={source==='hf'?'accent':'secondary'} onClick={()=>setSource('hf')}>From Hugging Face</Button>
         <Button variant={source==='local'?'accent':'secondary'} onClick={()=>setSource('local')}>From Local Runtime</Button>
