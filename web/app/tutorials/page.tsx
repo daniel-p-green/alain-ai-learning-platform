@@ -124,12 +124,12 @@ export default function TutorialsPage() {
 
   if (loading && !data) {
     return (
-      <div className="max-w-5xl mx-auto p-6">
+      <div className="mx-auto max-w-7xl px-6 md:px-8 py-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-700 rounded w-1/4"></div>
+          <div className="h-8 bg-ink-100 rounded w-1/4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-800 rounded"></div>
+              <div key={i} className="h-32 bg-paper-100 rounded-card border border-ink-100"></div>
             ))}
           </div>
         </div>
@@ -138,12 +138,12 @@ export default function TutorialsPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="mx-auto max-w-7xl px-6 md:px-8 py-8 space-y-6 text-ink-900">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Tutorials</h1>
+        <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">Tutorials</h1>
         <div className="flex items-center gap-3">
           {data && (
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-ink-700">
               {data.pagination.total} tutorials
             </span>
           )}
@@ -177,11 +177,11 @@ export default function TutorialsPage() {
       </div>
 
       {notice && (
-        <div className="text-sm text-gray-300 bg-gray-900 border border-gray-800 rounded px-3 py-2">{notice}</div>
+        <div className="text-sm text-ink-900 bg-paper-50 border border-ink-100 rounded-card px-3 py-2">{notice}</div>
       )}
 
       {/* Search and Filters */}
-      <div className="bg-gray-900 rounded-lg p-4 space-y-4">
+      <div className="bg-paper-50 border border-ink-100 rounded-card p-4 space-y-4">
         {/* Search */}
         <div className="flex gap-2">
           <input
@@ -189,7 +189,7 @@ export default function TutorialsPage() {
             placeholder="Search tutorials..."
             value={filters.search}
             onChange={(e) => handleFilterChange('search', e.target.value)}
-            className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
+            className="flex-1 px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
           />
           <Button onClick={() => loadTutorials(1)} variant="primary">Search</Button>
         </div>
@@ -198,11 +198,11 @@ export default function TutorialsPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Difficulty Filter */}
           <div>
-            <label className="block text-sm font-medium mb-2">Difficulty</label>
+            <label className="block text-sm font-medium mb-2 text-ink-900">Difficulty</label>
             <select
               value={filters.difficulty}
               onChange={(e) => handleFilterChange('difficulty', e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               <option value="">All Levels</option>
               {data?.filters.difficulties.map(difficulty => (
@@ -215,11 +215,11 @@ export default function TutorialsPage() {
 
           {/* Provider Filter */}
           <div>
-            <label className="block text-sm font-medium mb-2">Provider</label>
+            <label className="block text-sm font-medium mb-2 text-ink-900">Provider</label>
             <select
               value={filters.provider}
               onChange={(e) => handleFilterChange('provider', e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               <option value="">All Providers</option>
               {data?.filters.providers.map(provider => (
@@ -232,11 +232,11 @@ export default function TutorialsPage() {
 
           {/* Model Maker Filter */}
           <div>
-            <label className="block text-sm font-medium mb-2">Model Maker</label>
+            <label className="block text-sm font-medium mb-2 text-ink-900">Model Maker</label>
             <select
               value={filters.modelMaker}
               onChange={(e) => handleFilterChange('modelMaker', e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded focus:border-blue-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               <option value="">All Creators</option>
               {(data?.filters.modelMakers || []).map(m => (
@@ -254,14 +254,14 @@ export default function TutorialsPage() {
         {/* Tags */}
         {data?.filters.tags && data.filters.tags.length > 0 && (
           <div>
-            <label className="block text-sm font-medium mb-2">Tags</label>
+            <label className="block text-sm font-medium mb-2 text-ink-900">Tags</label>
             <div className="flex flex-wrap gap-2">
               {data.filters.tags.slice(0, 10).map(tag => (
                 <Button
                   key={tag}
                   onClick={() => handleTagToggle(tag)}
                   variant={filters.tags.includes(tag) ? 'primary' : 'secondary'}
-                  className={filters.tags.includes(tag) ? 'text-sm px-3 py-1' : 'text-sm px-3 py-1 text-gray-300'}
+                  className={filters.tags.includes(tag) ? 'text-sm px-3 py-1' : 'text-sm px-3 py-1 text-ink-700'}
                 >
                   #{tag}
                 </Button>
@@ -272,27 +272,27 @@ export default function TutorialsPage() {
       </div>
 
       {/* Tutorial Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {data?.tutorials.map((tutorial) => (
-          <div key={tutorial.id} className="border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors">
+          <div key={tutorial.id} className="border border-ink-100 rounded-card p-4 bg-paper-0 shadow-card hover:shadow-cardHover transition-shadow">
             <div className="flex items-start justify-between mb-2">
-              <h2 className="text-xl font-semibold">{tutorial.title}</h2>
+              <h2 className="font-display font-semibold text-[20px] leading-[28px]">{tutorial.title}</h2>
               <span className={`px-2 py-0.5 rounded text-xs font-medium ${getDifficultyColor(tutorial.difficulty)}`}>
                 {tutorial.difficulty}
               </span>
             </div>
 
-            <p className="text-gray-400 mb-3 line-clamp-2">{tutorial.description}</p>
+            <p className="text-ink-700 mb-3 line-clamp-2 font-inter">{tutorial.description}</p>
 
             <div className="flex items-center gap-2 mb-3 text-sm">
-              <span className="text-gray-500">{tutorial.provider}</span>
-              <span className="text-gray-600">•</span>
-              <span className="text-gray-500">{tutorial.model}</span>
+              <span className="text-ink-700">{tutorial.provider}</span>
+              <span className="text-ink-700">•</span>
+              <span className="text-ink-700">{tutorial.model}</span>
               {process.env.NEXT_PUBLIC_GITHUB_REPO && (
                 <>
-                  <span className="text-gray-600">•</span>
+                  <span className="text-ink-700">•</span>
                   <a
-                    className="text-brand-blue hover:underline"
+                    className="text-alain-blue hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
                     target="_blank"
                     rel="noopener noreferrer"
                     href={buildColabUrl(tutorial.provider, tutorial.model)}
@@ -300,19 +300,19 @@ export default function TutorialsPage() {
                 </>
               )}
               {tutorial.model_maker_name && (<>
-                <span className="text-gray-600">•</span>
-                <span className="text-gray-400">{tutorial.model_maker_name}</span>
+                <span className="text-ink-700">•</span>
+                <span className="text-ink-700">{tutorial.model_maker_name}</span>
               </>)}
             </div>
 
             <div className="flex flex-wrap gap-1 mb-4">
               {tutorial.tags?.slice(0, 4).map((tag) => (
-                <span key={tag} className="px-2 py-0.5 bg-gray-800 rounded text-xs">
+                <span key={tag} className="px-2 py-0.5 bg-paper-100 border border-ink-100 rounded text-xs text-ink-700">
                   #{tag}
                 </span>
               ))}
               {tutorial.tags && tutorial.tags.length > 4 && (
-                <span className="px-2 py-0.5 bg-gray-800 rounded text-xs">
+                <span className="px-2 py-0.5 bg-paper-100 border border-ink-100 rounded text-xs text-ink-700">
                   +{tutorial.tags.length - 4}
                 </span>
               )}
@@ -320,7 +320,7 @@ export default function TutorialsPage() {
 
             <a
               href={`/tutorial/${tutorial.id}`}
-              className="inline-block px-4 py-2 bg-brand-blue hover:brightness-95 text-white rounded-brand transition-colors"
+              className="inline-block h-10 px-4 py-2 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               Start Tutorial
             </a>
@@ -333,7 +333,7 @@ export default function TutorialsPage() {
         <div className="flex items-center justify-center gap-2">
           <Button onClick={() => loadTutorials(data.pagination.page - 1)} disabled={!data.pagination.hasPrev} variant="secondary" className="px-3 py-1 text-sm">Previous</Button>
 
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-ink-700">
             Page {data.pagination.page} of {data.pagination.totalPages}
           </span>
 
@@ -344,9 +344,9 @@ export default function TutorialsPage() {
       {/* Empty State */}
       {data?.tutorials.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">📚</div>
-          <h3 className="text-lg font-medium mb-2">No tutorials found</h3>
-          <p className="text-gray-400 mb-4">Try adjusting your filters or search terms</p>
+          <div className="text-ink-700 mb-4">📚</div>
+          <h3 className="font-display font-semibold text-[24px] leading-[30px] mb-2">No tutorials found</h3>
+          <p className="font-inter text-ink-700 mb-4">Try adjusting your filters or search terms</p>
           <Button onClick={clearFilters} variant="primary">Clear Filters</Button>
         </div>
       )}

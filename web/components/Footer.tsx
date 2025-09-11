@@ -1,0 +1,44 @@
+export default function Footer() {
+  return (
+    <footer className="mt-16 bg-paper-50 border-t border-ink-100 text-ink-700">
+      <div className="mx-auto max-w-7xl px-6 md:px-8 py-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <div className="font-display font-semibold text-ink-900">ALAIN</div>
+            <p className="mt-2 text-sm">Open AI learning with clear blueprints and accessible UI.</p>
+          </div>
+          <div>
+            <div className="font-display font-semibold text-ink-900">Product</div>
+            <ul className="mt-2 space-y-1 text-sm">
+              <li><a className="hover:underline" href="/tutorials">Tutorials</a></li>
+              <li><a className="hover:underline" href="/generate">Generate</a></li>
+              <li><a className="hover:underline" href="/settings">Settings</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-display font-semibold text-ink-900">Docs</div>
+            <ul className="mt-2 space-y-1 text-sm">
+              <li><a className="hover:underline" href="/blueprint">Blueprint</a></li>
+              <li><a className="hover:underline" href="/phases">Phases</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-display font-semibold text-ink-900">Community</div>
+            <ul className="mt-2 space-y-1 text-sm">
+              <li><a className="hover:underline" href="#">GitHub</a></li>
+              <li><a className="hover:underline" href="#">X</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-8 pt-6 border-t border-ink-100 text-xs flex items-center justify-between">
+          <div>© {new Date().getFullYear()} ALAIN</div>
+          <div className="flex gap-3 text-ink-700">
+            <a href="#" className="hover:underline">Privacy</a>
+            <a href="#" className="hover:underline">Terms</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
