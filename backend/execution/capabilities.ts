@@ -114,7 +114,7 @@ export const getCapabilities = api<{}, CapabilitiesResponse>(
       requiresAuth: true,
       supportsHarmonyRoles: false,
       supportsTools: false,
-      notes: 'Local/offline via Ollama or vLLM; use gpt-oss:20b for 20B.',
+      notes: 'Local/offline via Ollama (11434), LM Studio (1234), or vLLM; use gpt-oss:20b for 20B.',
       rateLimits: {
         requestsPerMinute: 60,
         tokensPerMinute: 150000
@@ -175,13 +175,19 @@ export const validateProvider = api<{ providerId: string }, { valid: boolean; me
           break;
 
         case "openai-compatible":
-          const hasOpenAIKey = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.length > 0;
-          const hasOpenAIBase = process.env.OPENAI_BASE_URL && process.env.OPENAI_BASE_URL.length > 0;
-          if (!hasOpenAIKey || !hasOpenAIBase) {
-            return {
-              valid: false,
-              message: "OpenAI API key and base URL required. Configure OPENAI_API_KEY and OPENAI_BASE_URL"
-            };
+          {
+            const base = (process.env.OPENAI_BASE_URL || '').trim();
+            const key = (process.env.OPENAI_API_KEY || '').trim();
+            const hasOpenAIBase = base.length > 0;
+            const isLocal = /^(http:\/\/)?(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?\//.test(base + '/');
+            const hasKey = key.length > 0;
+            if (!hasOpenAIBase) {
+              return { valid: false, message: "OPENAI_BASE_URL required (e.g., http://localhost:11434/v1 or http://localhost:1234/v1)" };
+            }
+            // Allow keyless when pointing to local runtimes like Ollama (11434) or LM Studio (1234)
+            if (!hasKey && !isLocal) {
+              return { valid: false, message: "OPENAI_API_KEY required for non-local endpoints" };
+            }
           }
           break;
 

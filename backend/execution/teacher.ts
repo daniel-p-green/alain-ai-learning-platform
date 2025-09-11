@@ -1,6 +1,7 @@
 import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 import { mapModelForProvider } from "./providers/aliases";
+import { loadAlainKitPrompt } from "./prompts/loader";
 
 const poeApiKey = secret("POE_API_KEY");
 const openaiBaseUrl = secret("OPENAI_BASE_URL");
@@ -44,9 +45,21 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
       // Set harmony-compatible parameters based on task
       const harmonyParams = getHarmonyParams(req.task);
 
-      // Prepare harmony-formatted messages
+      // Prepare messages: optionally load system/developer from prompt files when TEACHER_PROMPT_PHASE is set
       const supportsHarmonyRoles = provider === 'poe';
-      const harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
+      const phase = (process.env.TEACHER_PROMPT_PHASE || '').trim() as any;
+      let harmonyMessages: Array<{ role: string; content: string }>; 
+      if (phase) {
+        try {
+          const { system, developer } = loadAlainKitPrompt(phase);
+          harmonyMessages = composeMessagesWithFile(system, developer, req.messages, supportsHarmonyRoles);
+        } catch {
+          // Fallback to default formatter if loading fails
+          harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
+        }
+      } else {
+        harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
+      }
       
       // Provider-specific execution
       const payload: any = {
@@ -275,6 +288,28 @@ Calls to these tools must go to the commentary channel: 'functions'.`
     content: systemMessage.content + "\n\n" + getDeveloperInstructions(task)
   };
   return [downgradedSystem as any, ...messages];
+}
+
+// Compose messages using file-based system/developer content, with provider downgrade if needed
+function composeMessagesWithFile(
+  systemBody: string,
+  developerBody: string,
+  messages: Array<{ role: string; content: string }>,
+  supportsHarmonyRoles: boolean
+) {
+  if (supportsHarmonyRoles) {
+    return [
+      { role: 'system', content: systemBody },
+      { role: 'developer', content: developerBody },
+      ...messages,
+    ] as any;
+  }
+  // Provider without developer support: fold developer into system
+  const downgraded = {
+    role: 'system',
+    content: `${systemBody}\n\n${developerBody}`,
+  } as any;
+  return [downgraded, ...messages] as any;
 }
 
 // Get task-specific developer instructions following harmony format

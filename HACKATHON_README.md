@@ -43,6 +43,17 @@ Notebook export (Colab)
   - MCQ assessment cells with inline graders, plus an interactive ipywidgets variant (radio buttons + submit + feedback)
 - No arbitrary code execution; only parameterized API calls using OpenAI-compatible client
 
+Notebook export (Python renderer)
+- Convert lesson JSON to `.ipynb` using `nbformat`:
+  - `npm run render:lesson -- --in lessons/example/lesson.json --out notebooks/example/lesson.ipynb`
+  - Adds intro, provider setup, a tagged `smoke` cell, per-step execution scaffolds, and MCQ cells.
+  - Compatible with future `nbclient` smoke execution in CI.
+
+Notebook smoke checks (CI-friendly)
+- Execute a minimal subset with nbclient:
+  - `npm run smoke:notebook -- --in notebooks/example/lesson.ipynb --out reports/lesson.validation.json --allow-missing-keys`
+  - If `OPENAI_API_KEY`/`POE_API_KEY` are absent, the run is marked `skipped` (non-failing). Set keys to actually execute.
+
 UI improvements (magical MVP)
 - Model picker: choose provider (Poe/BYOK) and a default model when generating lessons and when running steps in the player.
 - Public Directory: added “Model Maker” filter alongside Difficulty/Provider/Tags. Cards now surface the maker name when available.

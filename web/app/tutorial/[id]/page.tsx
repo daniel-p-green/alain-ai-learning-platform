@@ -62,6 +62,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [curl, setCurl] = useState<string>("");
   const [sdk, setSdk] = useState<string>("");
   const [toast, setToast] = useState<string | null>(null);
+  const [runtime, setRuntime] = useState<string>("OpenAI-compatible");
   // Editor handled by PromptCell component
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
@@ -82,6 +83,19 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       setRunModel(t?.model || '');
     });
   }, [id]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const resp = await fetch('/api/setup', { cache: 'no-store' });
+        const data = await resp.json();
+        const base = (data?.openaiBaseUrl || '').toString();
+        if (/1234\b/.test(base)) setRuntime('LM Studio');
+        else if (/11434\b/.test(base)) setRuntime('Ollama');
+        else setRuntime('OpenAI-compatible');
+      } catch {}
+    })();
+  }, []);
 
   // Load providers for model suggestions
   useEffect(() => {
@@ -301,7 +315,10 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           `https://gitlab.com/daniel-p-green/alain-ai-learning-platform/-/issues/new?issue%5Btitle%5D=Tutorial%20Issue:%20${encodeURIComponent(String(tutorial?.title||''))}&issue%5Bdescription%5D=${encodeURIComponent(`tutorial_id=${tutorial?.id}\nstep=${step?.step_order}`)}`
         }>Report issue</a>
       </div>
-      <h1 className="text-3xl font-bold">{tutorial.title}</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-3xl font-bold">{tutorial.title}</h1>
+        <span className="text-xs px-2 py-1 rounded border border-gray-700 bg-gray-900 text-gray-300">Runtime: {runtime}</span>
+      </div>
       <p className="text-gray-400">{tutorial.description}</p>
 
       {tutorial.model_maker && (
@@ -553,7 +570,14 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   <div className="text-white font-mono">{formatTime(getElapsedTime())}</div>
                 </div>
                 <div>
-                  <span className="text-gray-400">Est. Tokens:</span>
+                  <span className="text-gray-400">Est. Tokens
+                    <span
+                      className="ml-1 text-xs text-gray-500 cursor-help"
+                      title="Approximate only, derived from streamed characters (~4 chars per token). Provider-reported usage may differ."
+                    >
+                      ⓘ
+                    </span>
+                  </span>
                   <div className="text-white font-mono">~{executionState.tokenCount}</div>
                 </div>
                 <div className="col-span-2">
@@ -584,9 +608,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             URL.revokeObjectURL(url);
           }}
         >Download Colab Notebook</Button>
-        <div className="text-xs text-gray-500 mt-2">
-          Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
-        </div>
+        <ColabHint tutorial={tutorial} />
       </div>
 
       {toast && (
@@ -611,6 +633,29 @@ function CostHint({ provider, model, tokens }: { provider: string; model: string
     <div className="text-white font-mono inline-flex items-center gap-2">
       ~${cost.toFixed(4)}
       <span className="text-xs text-gray-500" title="Rough estimate; varies by provider and direction.">ⓘ</span>
+    </div>
+  );
+}
+
+function ColabHint({ tutorial }: { tutorial: Tutorial }) {
+  const repo = process.env.NEXT_PUBLIC_GITHUB_REPO; // e.g., your-org/your-repo
+  const branch = process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main';
+  let colabUrl: string | null = null;
+  if (repo) {
+    // notebooks/<provider>/<owner>/<repo>/lesson.ipynb pattern
+    const segments = (tutorial.model || '').split('/').map(encodeURIComponent);
+    const path = ['notebooks', encodeURIComponent(tutorial.provider), ...segments, 'lesson.ipynb'].join('/');
+    colabUrl = `https://colab.research.google.com/github/${repo}/***REMOVED***/${encodeURIComponent(branch)}/${path}`;
+  }
+  return (
+    <div className="text-xs text-gray-500 mt-2">
+      Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>.
+      {colabUrl && (
+        <>
+          {' '}Or open directly: <a className="text-brand-blue hover:underline" href={colabUrl} target="_blank" rel="noopener noreferrer">Open in Colab</a>.
+        </>
+      )}
+      {' '}The first cells include provider setup and a quick smoke test.
     </div>
   );
 }

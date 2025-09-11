@@ -31,6 +31,24 @@ export async function POST(req: Request) {
   if (!gen.success) return Response.json(gen, { status: 200 });
 
   const lesson = gen.lesson;
+  // Optional HF enrichment: license (non-offline)
+  try {
+    if (body?.hfUrl && typeof body.hfUrl === 'string') {
+      const m = body.hfUrl.match(/huggingface\.co\/(?:models\/)?([^\/]+)\/([^\/?#]+)/) || body.hfUrl.match(/^([^\s\/]+)\/([^\s]+)/);
+      if (m) {
+        const repo = `${m[1]}/${m[2]}`;
+        const infoResp = await fetch(`${new URL('/api/hf/model', req.url).toString()}?repo=${encodeURIComponent(repo)}`, { cache: 'no-store' });
+        if (infoResp.ok) {
+          const info = await infoResp.json();
+          if (info && info.license) {
+            const maker = (lesson as any).model_maker || { name: m[1], org_type: 'organization' };
+            maker.license = info.license;
+            (lesson as any).model_maker = maker;
+          }
+        }
+      }
+    }
+  } catch {}
   // Optional overrides from UI (provider/model picker)
   if (body.targetProvider && typeof body.targetProvider === 'string') {
     lesson.provider = body.targetProvider;
