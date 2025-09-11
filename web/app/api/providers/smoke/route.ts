@@ -10,7 +10,10 @@ export async function POST(req: Request) {
   const provider: WebProvider = providerId === 'openai-compatible' ? openAIProvider : poeProvider;
   try {
     const text = await provider.execute({ provider: providerId, model, messages: [{ role: 'user', content: 'ping' }], stream: false });
-    return Response.json({ success: true, sample: (text||'').slice(0,120) });
+    return new Response(JSON.stringify({ success: true, sample: (text||'').slice(0,120) }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : 'provider smoke test failed';
     const hints: string[] = [];
@@ -21,7 +24,10 @@ export async function POST(req: Request) {
     if (providerId === 'openai-compatible') {
       if (!process.env.OPENAI_BASE_URL || !process.env.OPENAI_API_KEY) hints.push('Set OPENAI_BASE_URL and OPENAI_API_KEY (e.g., http://localhost:11434/v1 and ollama).');
     }
-    return Response.json({ success: false, error: { code: 'provider_error', message, hints } }, { status: 200 });
+    return new Response(JSON.stringify({ success: false, error: { code: 'provider_error', message, hints } }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
 export const runtime = 'nodejs';
