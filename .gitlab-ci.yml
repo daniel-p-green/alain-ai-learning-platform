@@ -18,6 +18,7 @@ stages:
   - lint
   - build
   - test
+  - validate
 
 install:
   stage: setup
@@ -90,3 +91,49 @@ test:
       if [ -d web ]; then (cd web && npm test --if-present) || true; fi
     - |
       if [ -d backend ]; then (cd backend && npm test --if-present) || true; fi
+
+validate_lessons:
+  stage: validate
+  needs: ["install"]
+  image: node:20-bullseye
+  script:
+    - |
+      if [ -d lessons ]; then \
+        count=$(find lessons -type f -name "*.json" | wc -l); \
+        if [ "$count" -gt 0 ]; then \
+          echo "Validating $count lesson JSON file(s)"; \
+          npm run validate:lesson -- $(find lessons -type f -name "*.json"); \
+        else \
+          echo "No lesson JSON files found under lessons/"; \
+        fi; \
+      else \
+        echo "No lessons/ directory"; \
+      fi
+
+smoke_notebooks:
+  stage: validate
+  image: python:3.11-slim
+  before_script:
+    - pip install -q nbformat nbclient
+    - mkdir -p reports
+  script:
+    - |
+      if [ -d notebooks ]; then \
+        set -e; \
+        nbs=$(find notebooks -type f -name "*.ipynb" | wc -l); \
+        if [ "$nbs" -gt 0 ]; then \
+          echo "Running smoke on $nbs notebook(s)"; \
+          for nb in $(find notebooks -type f -name "*.ipynb"); do \
+            out="reports/$(echo "$nb" | sed 's#[/ ]#_#g').validation.json"; \
+            python scripts/notebook_smoke.py --in "$nb" --out "$out" --first-n 1 --timeout 60 --allow-missing-keys; \
+          done; \
+        else \
+          echo "No notebooks found under notebooks/"; \
+        fi; \
+      else \
+        echo "No notebooks/ directory"; \
+      fi
+  artifacts:
+    paths:
+      - reports/
+    when: always

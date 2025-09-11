@@ -288,6 +288,17 @@ export default function TutorialsPage() {
               <span className="text-gray-500">{tutorial.provider}</span>
               <span className="text-gray-600">•</span>
               <span className="text-gray-500">{tutorial.model}</span>
+              {process.env.NEXT_PUBLIC_GITHUB_REPO && (
+                <>
+                  <span className="text-gray-600">•</span>
+                  <a
+                    className="text-brand-blue hover:underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={buildColabUrl(tutorial.provider, tutorial.model)}
+                  >Open in Colab</a>
+                </>
+              )}
               {tutorial.model_maker_name && (<>
                 <span className="text-gray-600">•</span>
                 <span className="text-gray-400">{tutorial.model_maker_name}</span>
@@ -341,4 +352,12 @@ export default function TutorialsPage() {
       )}
     </div>
   );
+}
+
+function buildColabUrl(provider: string, model: string) {
+  const repo = process.env.NEXT_PUBLIC_GITHUB_REPO!; // assumed set by caller
+  const branch = process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main';
+  const segments = (model || '').split('/').map(encodeURIComponent);
+  const path = ['notebooks', encodeURIComponent(provider), ...segments, 'lesson.ipynb'].join('/');
+  return `https://colab.research.google.com/github/${repo}/blob/${encodeURIComponent(branch)}/${path}`;
 }

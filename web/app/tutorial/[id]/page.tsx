@@ -584,9 +584,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
             URL.revokeObjectURL(url);
           }}
         >Download Colab Notebook</Button>
-        <div className="text-xs text-gray-500 mt-2">
-          Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>. The first cells include provider setup and a quick smoke test.
-        </div>
+        <ColabHint tutorial={tutorial} />
       </div>
 
       {toast && (
@@ -611,6 +609,29 @@ function CostHint({ provider, model, tokens }: { provider: string; model: string
     <div className="text-white font-mono inline-flex items-center gap-2">
       ~${cost.toFixed(4)}
       <span className="text-xs text-gray-500" title="Rough estimate; varies by provider and direction.">ⓘ</span>
+    </div>
+  );
+}
+
+function ColabHint({ tutorial }: { tutorial: Tutorial }) {
+  const repo = process.env.NEXT_PUBLIC_GITHUB_REPO; // e.g., your-org/your-repo
+  const branch = process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main';
+  let colabUrl: string | null = null;
+  if (repo) {
+    // notebooks/<provider>/<owner>/<repo>/lesson.ipynb pattern
+    const segments = (tutorial.model || '').split('/').map(encodeURIComponent);
+    const path = ['notebooks', encodeURIComponent(tutorial.provider), ...segments, 'lesson.ipynb'].join('/');
+    colabUrl = `https://colab.research.google.com/github/${repo}/blob/${encodeURIComponent(branch)}/${path}`;
+  }
+  return (
+    <div className="text-xs text-gray-500 mt-2">
+      Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>.
+      {colabUrl && (
+        <>
+          {' '}Or open directly: <a className="text-brand-blue hover:underline" href={colabUrl} target="_blank" rel="noopener noreferrer">Open in Colab</a>.
+        </>
+      )}
+      {' '}The first cells include provider setup and a quick smoke test.
     </div>
   );
 }
