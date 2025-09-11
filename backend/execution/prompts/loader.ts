@@ -7,6 +7,9 @@ const START = "<|start|>";
 const END = "<|end|>";
 const MESSAGE = "<|message|>";
 
+// Simple in-memory cache to avoid repeated disk reads
+const cache = new Map<string, Sections>();
+
 function extractRole(raw: string, role: string): string {
   const header = `${START}${role}${MESSAGE}`;
   const i = raw.indexOf(header);
@@ -31,12 +34,29 @@ export function loadHarmonyPrompt(relOrAbsPath: string): Sections {
   const p = path.isAbsolute(relOrAbsPath)
     ? relOrAbsPath
     : path.resolve(process.cwd(), relOrAbsPath);
+  const key = `file:${p}`;
+  if (cache.has(key)) return cache.get(key)!;
   const raw = fs.readFileSync(p, "utf8");
-  return parseHarmonyPrompt(raw);
+  const sections = parseHarmonyPrompt(raw);
+  cache.set(key, sections);
+  return sections;
 }
 
 // Convenience loader for ALAIN-Kit phase prompts.
 export function loadAlainKitPrompt(phase: "research" | "design" | "develop" | "validate" | "orchestrator"): Sections {
-  const rel = path.join("prompts", "alain-kit", `${phase}.harmony.txt`);
-  return loadHarmonyPrompt(rel);
+  const customRoot = (process.env.PROMPT_ROOT || "").trim();
+  const candidates = [
+    customRoot ? path.join(customRoot, `${phase}.harmony.txt`) : "",
+    path.resolve(__dirname, "../../../prompts/alain-kit", `${phase}.harmony.txt`),
+    path.resolve(process.cwd(), "prompts/alain-kit", `${phase}.harmony.txt`),
+  ].filter(Boolean) as string[];
+
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) return loadHarmonyPrompt(p);
+    } catch {}
+  }
+  // Last resort: attempt CWD relative and throw if missing
+  const fallback = path.resolve(process.cwd(), "prompts/alain-kit", `${phase}.harmony.txt`);
+  return loadHarmonyPrompt(fallback);
 }
