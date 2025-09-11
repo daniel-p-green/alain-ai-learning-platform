@@ -233,6 +233,19 @@ export default function GenerateLessonPage() {
           <span className="font-medium">Env:</span> {envBanner.offlineMode ? 'Offline' : 'Hosted'} · Provider: {envBanner.teacherProvider || 'unknown'} · Base URL: {envBanner.openaiBaseUrl || 'n/a'}
         </div>
       )}
+      {envBanner && (
+        (() => {
+          const readyHosted = envBanner.teacherProvider === 'poe' && !!envBanner.poeConfigured;
+          const readyLocal = !!envBanner.offlineMode && !!envBanner.openaiBaseUrl;
+          if (readyHosted || readyLocal) return null;
+          return (
+            <div className="mt-2 p-3 rounded-card bg-paper-50 border border-ink-100 text-sm text-ink-900">
+              <div className="font-medium">Setup needed</div>
+              <div className="text-ink-700">Use Settings → Environment Status to apply a quick preset (Hosted Poe or Local GPT‑OSS), then run tests. Or click one of the example buttons below.</div>
+            </div>
+          );
+        })()
+      )}
       <div className="mt-2 flex flex-wrap gap-2">
         <Button
           variant="secondary"
