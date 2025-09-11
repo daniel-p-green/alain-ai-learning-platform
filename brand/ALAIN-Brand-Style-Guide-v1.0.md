@@ -5,6 +5,55 @@
 - Primary device: yellow ellipse with optical centering and tight tracking. Wordmark sits inside the ellipse and stays centered on the X axis.
 - Type system pairs Montserrat for headers and Inter for body with League Spartan for the logo.
 
+---
+
+## Addendum v1.0.1 — Accessibility and UI Spec Updates
+
+This addendum addresses contrast, logo geometry precision, UI scale gaps, and component specs for the hackathon demo.
+
+Highlights
+- Lock ellipse ratio to 2.33 (7:3) for consistency.
+- Avoid yellow on white; use blue on yellow/yellow on blue, or add `alain-stroke` border.
+- Add UI label sizes and caption/micro to the type scale.
+- Expand neutrals (ink 50–900) and add semantic colors (success, danger, warning).
+- Use 12 px corner radius everywhere; focus rings use `alain-stroke`.
+- Theme-aware logo switching (blue primary by default; yellow variant allowed on yellow header).
+
+Logo geometry (precise values)
+- Ellipse ratio: 2.33. Default ellipse: 1400×600 on a 1500×800 canvas.
+- Baseline nudge examples (exports from 1500×800 master): 160w → +2 px, 320w → +4 px, 480w → +6 px.
+- Tracking: −10 at ≤24 px, −12 at 24–40 px, −15 at ≥48 px (optically adjust).
+- Side padding inside ellipse: 15% per side.
+
+Type scale (complete)
+- H1 40/44, H2 32/38, H3 24/30
+- UI Label Large 16/24, UI Label Medium 15/22
+- Body 18/28, Caption 12/18, Micro 10/16
+
+Color & contrast
+- Neutrals: `ink` 50–900 (Tailwind configured). Surfaces: `paper` 0/50/100.
+- Semantics: success `#16A34A`, danger `#DC2626`, warning `#D97706`.
+- Focus ring color: `alain-stroke` `#004580`.
+- Never use yellow text on white (fails ~1.37:1). Use blue on yellow or add stroke.
+
+UI component specs
+- Buttons
+  - Primary: bg `alain.blue`, text white, focus ring `alain.stroke`, hover brightness −5%
+  - Secondary: bg `paper.0`, border `ink.100`, text `ink.900`
+  - Accent: bg `alain.yellow`, text `alain.blue`, border `alain.stroke`
+- Inputs: border `ink.100`, bg `paper.0`, focus ring `alain.stroke`, disabled 40% opacity
+- Cards: radius 12 px; shadow `0 1px 3px rgba(0,0,0,0.12)`; hover elevation
+- Navigation: primary blue‑bg logo by default; yellow‑bg logo allowed on yellow header theme
+
+Self‑audit (revised)
+- Ratio 2.33 locked; default 1400×600 ellipse.
+- Tracking −10/−12/−15 by size; baseline nudge +2–6 px.
+- Inside padding 15% per side. Clear space 16% of ellipse width/height.
+- Contrast AA for text; no yellow‑on‑white.
+- Radius 12 px; focus ring `alain-stroke`.
+
+---
+
 ## Logo Construction and Ratios
 - Canvas reference: 1500×800.
 - Ellipse ratio: width to height 2.3 to 2.45. Default ellipse 1400×600.
@@ -230,4 +279,3 @@ Flagged TODOs
 - Confirm PMS spot swatches on press before wide rollout.
 - Capture raster mockups for photo placements that demonstrate the stroke and underlay guidance.
 - Package a font license note for League Spartan, Montserrat, and Inter in the repo docs.
-
