@@ -29,6 +29,7 @@ Option B — Strict Offline (Ollama)
 3) Open http://localhost:3000
 4) Paste `openai/gpt-oss-20b` → Provider: Local (OpenAI‑compatible) → Generate.
 5) Click "Download Colab Notebook" (works offline; no third-party calls in export).
+6) Note: Exported notebook includes a Pre‑flight cell that verifies API connectivity before running steps.
 Note: For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
 
 Option C — Local (LM Studio)
@@ -37,9 +38,18 @@ Option C — Local (LM Studio)
 3) Open http://localhost:3000
 4) In Generate: select “From Local Runtime” (auto-selected if detected), pick a model (e.g., `llama-3-8b-instruct`) and click Generate
 5) Run a step, then click “Download Colab Notebook”
+6) Note: The “Local Setup Helper” appears under the Local model picker with a copyable `ollama pull gpt-oss:20b` command and a Test Connection button.
 Notes:
 - Streaming is handled via the Next.js API route using SSE; Encore streaming is disabled in this MVP.
 - For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
+
+Option D — From Text (Docs → Lesson)
+1) On the Generate page, click “From Text”.
+2) Paste a snippet (e.g., a section from OpenAI docs on Harmony‑style prompting).
+3) Choose Teacher Provider (Poe or Local), then Generate → Preview → Export.
+Notes:
+- This bypasses Hugging Face metadata entirely; great for live copy‑paste demos.
+- Exported notebooks include the Pre‑flight check cell.
 
 Minimal offline cURL (no web UI)
 - Enable local demo bypass in backend env: `DEMO_ALLOW_UNAUTH=1`
