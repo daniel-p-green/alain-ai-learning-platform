@@ -6,6 +6,7 @@ import MobileNav from "./MobileNav";
 
 export default function NavBar() {
   const OfflineBadge = dynamic(() => import("./OfflineBadge"), { ssr: false });
+  const LocalRuntimeStatus = dynamic(() => import("./LocalRuntimeStatus"), { ssr: false });
   return (
     <nav className="bg-paper-0 border-b border-ink-100 text-ink-900">
       <div className="mx-auto max-w-7xl px-6 md:px-8 h-16 flex items-center justify-between">
@@ -22,6 +23,7 @@ export default function NavBar() {
         </div>
         <div className="hidden md:flex items-center gap-3">
           <OfflineBadge />
+          <LocalRuntimeStatus />
           <Link href="/generate" className="inline-flex items-center h-10 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Get Started</Link>
         </div>
         <div className="md:hidden">
@@ -31,4 +33,3 @@ export default function NavBar() {
     </nav>
   );
 }
-

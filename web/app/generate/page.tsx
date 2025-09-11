@@ -4,10 +4,12 @@ import { backendUrl } from "../../lib/backend";
 import { Button } from "../../components/Button";
 import { PreviewPanel } from "../../components/PreviewPanel";
 import type { ProviderInfo, ProviderModel } from "../../lib/types";
+import LocalSetupHelper from "../../components/LocalSetupHelper";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
-  const [source, setSource] = useState<'hf'|'local'>("hf");
+  const [source, setSource] = useState<'hf'|'local'|'text'>("hf");
+  const [rawTextInput, setRawTextInput] = useState("");
   const [difficulty, setDifficulty] = useState("beginner");
   const [teacherProvider, setTeacherProvider] = useState<"poe" | "openai-compatible">("poe");
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,6 @@ export default function GenerateLessonPage() {
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
   const [snackbar, setSnackbar] = useState<string | null>(null);
-  const [showReasoning, setShowReasoning] = useState(false);
 
   // Provider capabilities
   const [providersLoading, setProvidersLoading] = useState(false);
@@ -126,7 +127,20 @@ export default function GenerateLessonPage() {
         resp = await fetch("/api/generate-local", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ modelId: targetModel.trim(), difficulty, includeAssessment: true, provider: 'openai-compatible', targetProvider, targetModel, showReasoning })
+          body: JSON.stringify({ modelId: targetModel.trim(), difficulty, includeAssessment: true, provider: 'openai-compatible', targetProvider, targetModel })
+        });
+      } else if (source === 'text') {
+        if (!rawTextInput.trim()) {
+          setError("Paste some text to generate a lesson from.");
+          setLoading(false);
+          setProgress("idle");
+          return;
+        }
+        setProgress("asking");
+        resp = await fetch("/api/generate-from-text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ textContent: rawTextInput, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
         });
       } else {
         const parsed = parseHfInput(hfUrl);
@@ -140,7 +154,7 @@ export default function GenerateLessonPage() {
         resp = await fetch("/api/generate-lesson", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel, showReasoning })
+          body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
         });
       }
       const data = await resp.json();
@@ -180,6 +194,7 @@ export default function GenerateLessonPage() {
       <div className="flex gap-2">
         <Button variant={source==='hf'?'accent':'secondary'} onClick={()=>setSource('hf')}>From Hugging Face</Button>
         <Button variant={source==='local'?'accent':'secondary'} onClick={()=>setSource('local')}>From Local Runtime</Button>
+        <Button variant={source==='text'?'accent':'secondary'} onClick={()=>setSource('text')}>From Text</Button>
       </div>
       <form onSubmit={onSubmit} className="space-y-3">
         {source === 'hf' ? (
@@ -189,6 +204,16 @@ export default function GenerateLessonPage() {
             value={hfUrl}
             onChange={(e) => setHfUrl(e.target.value)}
           />
+        ) : source === 'text' ? (
+          <div className="space-y-2">
+            <label className="text-sm text-gray-300">Paste text</label>
+            <textarea
+              className="w-full p-2 rounded bg-gray-900 border border-gray-800 min-h-[140px]"
+              placeholder="Paste any content here (docs, article, notes) to generate a lesson."
+              value={rawTextInput}
+              onChange={(e) => setRawTextInput(e.target.value)}
+            />
+          </div>
         ) : (
           <div className="space-y-2">
             <label className="text-sm text-gray-300">Local model</label>
@@ -213,6 +238,7 @@ export default function GenerateLessonPage() {
             )}
             {targetModel ? <OllamaContextHint modelName={targetModel} /> : null}
             <div className="text-xs text-gray-500">Detected models are shown when LM Studio or Ollama is running locally.</div>
+            <LocalSetupHelper visible={source==='local'} />
           </div>
         )}
         {/* Provider/Model picker for runtime */}
@@ -239,10 +265,7 @@ export default function GenerateLessonPage() {
             ))}
           </select>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-300">
-          <input id="show-reasoning" type="checkbox" checked={showReasoning} onChange={(e)=> setShowReasoning(e.target.checked)} />
-          <label htmlFor="show-reasoning">Show Reasoning (beta)</label>
-        </div>
+        {/* Reasoning disabled for demo: keeping backend support but hiding UI */}
         {providersLoading && <div className="text-xs text-gray-400">Loading providers…</div>}
         {providersError && <div className="text-xs text-yellow-400">{providersError}</div>}
         <select
@@ -270,11 +293,16 @@ export default function GenerateLessonPage() {
           <span className="text-xs text-gray-500">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
         <div className="flex gap-2">
-          <Button type="submit" variant="accent" disabled={loading || (source==='hf' ? !hfUrl.trim() : !targetModel.trim())}>
+          <Button type="submit" variant="accent" disabled={loading || (source==='hf' ? !hfUrl.trim() : source==='text' ? !rawTextInput.trim() : !targetModel.trim())}>
             {loading ? "Generating..." : "Generate Lesson"}
           </Button>
           {source==='hf' ? (
             <Button type="button" variant="secondary" onClick={() => setHfUrl("meta-llama/Meta-Llama-3.1-8B-Instruct")}>Use Example HF Model</Button>
+          ) : source==='text' ? (
+            <>
+              <Button type="button" variant="secondary" onClick={() => setRawTextInput('Harmony-style prompting is a technique for guiding large language models to produce more structured, reliable, and high-quality output. It involves providing a detailed, role-based prompt that specifies the desired format, constraints, and persona for the model. This method is particularly effective for tasks that require JSON output or complex, multi-step reasoning.')}>Use Example Text</Button>
+              <Button type="button" variant="secondary" onClick={() => { setSource('text'); setRawTextInput('Harmony-style prompting is a technique for guiding large language models to produce more structured, reliable, and high-quality output. It involves providing a detailed, role-based prompt that specifies the desired format, constraints, and persona for the model. This method is particularly effective for tasks that require JSON output or complex, multi-step reasoning.'); setTeacherProvider('poe'); setDifficulty('intermediate'); }}>Harmony Prompting Preset</Button>
+            </>
           ) : (
             <Button type="button" variant="secondary" onClick={() => setTargetModel("llama-3-8b-instruct")}>Use Example Local Model</Button>
           )}
