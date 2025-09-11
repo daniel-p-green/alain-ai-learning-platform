@@ -36,7 +36,7 @@ export default function AnthropicVariant() {
 
 function Primary({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center rounded-brand bg-brand-blue px-5 py-2 text-white font-semibold hover:brightness-95">
+    <Link href={href} className="inline-flex items-center rounded-card bg-alain-blue px-5 py-2 text-white font-semibold hover:brightness-95">
       {children}
     </Link>
   );
@@ -58,4 +58,3 @@ function Card({ title, desc, color }: { title: string; desc: string; color: stri
     </div>
   );
 }
-
