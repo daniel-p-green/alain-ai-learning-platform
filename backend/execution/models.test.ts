@@ -65,5 +65,32 @@ describe('listProviderModels (minimal)', () => {
     expect(Array.isArray(out.models)).toBe(true);
     expect(out.models).toContain('llama-3');
   });
-});
 
+  it('falls back to LM Studio when Ollama is down', async () => {
+    // No OPENAI_BASE_URL to force probing both defaults
+    delete process.env.OPENAI_BASE_URL;
+    const seq: Array<Response> = [
+      // First probe (Ollama): down
+      new Response(null, { status: 500 }),
+      // Second probe (LM Studio): ok
+      new Response(JSON.stringify({ data: [{ id: 'qwen2.5-7b-instruct' }] }), { status: 200, headers: { 'Content-Type': 'application/json' } }),
+    ];
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce(seq[0])
+      .mockResolvedValueOnce(seq[1]);
+    global.fetch = mockFetch as any;
+
+    const out = await (listProviderModels as any)({});
+    expect(out.provider).toBe('lm-studio');
+    expect(out.models).toContain('qwen2.5-7b-instruct');
+  });
+
+  it('returns unknown when no local providers respond', async () => {
+    delete process.env.OPENAI_BASE_URL;
+    const mockFetch = vi.fn().mockResolvedValue(new Response(null, { status: 500 }));
+    global.fetch = mockFetch as any;
+    const out = await (listProviderModels as any)({});
+    expect(out.provider).toBe('unknown');
+    expect(Array.isArray(out.models)).toBe(true);
+  });
+});
