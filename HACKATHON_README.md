@@ -62,6 +62,7 @@ UI improvements (magical MVP)
 - Fix-it actions: on validation errors, click “Auto-fix and Import” to repair missing fields/steps.
 - Instant preview: after generation, preview title, description, objectives, and first step with one-click “Open Tutorial” or “Export Notebook”.
 - Transparent execution: “Show Request” reveals the JSON payload; copy as curl or OpenAI SDK is one click away.
+- New: A “Copy cURL” button sits next to “Show Request” in the player toolbar for instant sharing.
 - Adapt Experience (beta): On tutorial pages, tailor content for Beginner/Intermediate/Advanced. Original content remains unchanged.
  - Local Setup Helper: Under the Local model picker, copy `ollama pull gpt‑oss:20b` and click “Test Connection” to verify local models.
 
