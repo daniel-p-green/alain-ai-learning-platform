@@ -60,37 +60,37 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Settings</h1>
+    <div className="max-w-3xl mx-auto px-6 py-8 space-y-6 text-ink-900">
+      <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">Settings</h1>
       <SignedOut>
-        <div className="text-gray-300">
+        <div className="font-inter text-ink-700">
           Please sign in to manage settings. <SignInButton />
         </div>
       </SignedOut>
       <SignedIn>
         {/* Quick Setup Wizard */}
-        <div className="p-4 rounded border border-gray-800 bg-gray-900">
+        <div className="p-4 rounded-card border border-ink-100 bg-paper-50">
           <div className="flex items-start justify-between">
             <div>
-              <div className="font-semibold text-white">Setup Wizard</div>
-              <div className="text-sm text-gray-400">Get running in one click. We’ll detect local Ollama/LM Studio and configure the backend.</div>
+              <div className="font-display font-semibold text-ink-900">Setup Wizard</div>
+              <div className="text-sm font-inter text-ink-700">Get running in one click. We will detect local Ollama or LM Studio and configure the backend.</div>
             </div>
           </div>
-          <div className="mt-3 grid gap-2 text-sm text-gray-300">
+          <div className="mt-3 grid gap-2 text-sm font-inter text-ink-700">
             <div>
-              Status: {probe?.offlineMode ? <span className="text-yellow-300">OFFLINE</span> : <span className="text-gray-300">Hosted</span>} · Provider: <span className="text-gray-200">{probe?.teacherProvider || 'unknown'}</span> · Base URL: <span className="text-gray-200">{probe?.openaiBaseUrl || 'n/a'}</span>
+              Status: {probe?.offlineMode ? <span className="text-alain-yellow">OFFLINE</span> : <span className="text-ink-700">Hosted</span>} · Provider: <span className="text-ink-900">{probe?.teacherProvider || 'unknown'}</span> · Base URL: <span className="text-ink-900">{probe?.openaiBaseUrl || 'n/a'}</span>
             </div>
             <div>
-              Ollama detected at localhost:11434: {probe?.ollamaDetected ? <span className="text-green-300">yes</span> : <span className="text-red-300">no</span>}
+              Ollama detected at localhost:11434: {probe?.ollamaDetected ? <span className="text-green-700">yes</span> : <span className="text-red-700">no</span>}
             </div>
             <div>
-              LM Studio detected at localhost:1234: {probe?.lmStudioDetected ? <span className="text-green-300">yes</span> : <span className="text-red-300">no</span>}
+              LM Studio detected at localhost:1234: {probe?.lmStudioDetected ? <span className="text-green-700">yes</span> : <span className="text-red-700">no</span>}
             </div>
             <div>
-              Poe configured: {probe?.poeConfigured ? <span className="text-green-300">yes</span> : <span className="text-yellow-300">no</span>}
+              Poe configured: {probe?.poeConfigured ? <span className="text-green-700">yes</span> : <span className="text-alain-yellow">no</span>}
             </div>
           </div>
-          {wizardMsg && <div className="mt-3 p-2 text-xs border border-gray-700 rounded bg-gray-950">{wizardMsg}</div>}
+          {wizardMsg && <div className="mt-3 p-2 text-xs border border-ink-100 rounded bg-paper-100 text-ink-900">{wizardMsg}</div>}
           <div className="mt-3 flex items-center gap-2">
             <Button onClick={async ()=>{
               setWizardMsg(null);
@@ -161,30 +161,30 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <p className="text-gray-400">Validate provider configuration (BYOK and Poe).</p>
+        <p className="font-inter text-ink-700">Validate provider configuration (BYOK and Poe).</p>
         {message && (
-          <div className="p-3 rounded bg-gray-900 border border-gray-700 text-sm">{message}</div>
+          <div className="p-3 rounded-card bg-paper-50 border border-ink-100 text-sm text-ink-900">{message}</div>
         )}
         {loading ? (
-          <div className="text-gray-400">Loading providers…</div>
+          <div className="font-inter text-ink-700">Loading providers…</div>
         ) : (
           <div className="grid gap-3">
             {providers.map(p => (
-              <div key={p.id} className="p-3 rounded border border-gray-800 bg-gray-900">
+              <div key={p.id} className="p-3 rounded-card border border-ink-100 bg-paper-50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-white flex items-center gap-2">
+                    <div className="font-medium text-ink-900 flex items-center gap-2">
                       {p.name}
-                      <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'available' ? 'bg-green-900/40 border-green-700 text-green-300' : p.status === 'configuring' ? 'bg-yellow-900/40 border-yellow-700 text-yellow-300' : 'bg-red-900/40 border-red-700 text-red-300'}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'available' ? 'bg-green-100 border-green-300 text-green-800' : p.status === 'configuring' ? 'bg-yellow-100 border-yellow-300 text-yellow-800' : 'bg-red-100 border-red-300 text-red-800'}`}>
                         {p.status}
                       </span>
                     </div>
-                    <div className="text-sm text-gray-400">{p.description}</div>
-                    <div className="text-xs text-gray-500 mt-1">Status: {p.status}</div>
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="text-sm text-ink-700">{p.description}</div>
+                    <div className="text-xs text-ink-700 mt-1">Status: {p.status}</div>
+                    <div className="text-xs text-ink-700 mt-1">
                       Capabilities: {p.supportsHarmonyRoles ? 'harmony-roles ' : ''}{p.supportsTools ? 'tools ' : ''}
                     </div>
-                    {p.notes && <div className="text-xs text-gray-500">{p.notes}</div>}
+                    {p.notes && <div className="text-xs text-ink-700">{p.notes}</div>}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button onClick={() => validate(p.id)}>Validate</Button>
@@ -218,12 +218,12 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 {p.id === "openai-compatible" && (
-                  <div className="text-xs text-gray-500 mt-2">
-                  Set OPENAI_BASE_URL and OPENAI_API_KEY in backend env. Example base URL: https://api.openai.com/v1 or http://localhost:11434/v1 (Ollama).
+                  <div className="text-xs text-ink-700 mt-2">
+                    Set OPENAI_BASE_URL and OPENAI_API_KEY in backend env. Example base URL: https://api.openai.com/v1 or http://localhost:11434/v1 (Ollama).
                   </div>
                 )}
                 {p.id === "poe" && (
-                  <div className="text-xs text-gray-500 mt-2">
+                  <div className="text-xs text-ink-700 mt-2">
                     Set POE_API_KEY in backend env. Provider base: https://api.poe.com/v1
                   </div>
                 )}

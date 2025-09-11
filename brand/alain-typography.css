@@ -1,0 +1,22 @@
+/* ALAIN Typography Utilities (v1.0) */
+:root {
+  --alain-blue: #0058A3;
+  --alain-yellow: #FFDA1A;
+  --alain-stroke: #004580;
+  --alain-navy-print: #1E3A8A;
+  --alain-navy-print-alt: #1E40AF;
+  --black-900: #111827;
+  --white: #FFFFFF;
+}
+
+@tailwind utilities;
+
+@layer utilities {
+  .heading-1 { @apply font-montserrat font-bold text-h1 tracking-tight text-black-900; }
+  .heading-2 { @apply font-montserrat font-semibold text-h2 tracking-tight text-black-900; }
+  .heading-3 { @apply font-montserrat font-semibold text-h3 tracking-tight text-black-900; }
+  .body-text { @apply font-inter text-body text-black-900; }
+  .body-strong { @apply font-inter font-medium text-body text-black-900; }
+  .small-text { @apply font-inter text-small text-black-900; }
+}
+
