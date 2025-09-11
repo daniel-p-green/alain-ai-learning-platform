@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "./Button";
+import { backendUrl } from "../lib/backend";
 
 type ModelMaker = { name: string; org_type: string; homepage?: string|null; license?: string|null; repo?: string|null };
 type Preview = { title: string; description: string; learning_objectives: string[]; first_step?: { title: string; content: string } | null; model_maker?: ModelMaker | null };
@@ -64,7 +65,7 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
           variant="secondary"
           onClick={async () => {
             try {
-              const res = await fetch((process.env.NEXT_PUBLIC_BACKEND_BASE || 'http://localhost:4000') + `/tutorials/${tutorialId}`);
+              const res = await fetch(backendUrl(`/tutorials/${tutorialId}`));
               const lesson = await res.json();
               const blob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
               const url = URL.createObjectURL(blob);

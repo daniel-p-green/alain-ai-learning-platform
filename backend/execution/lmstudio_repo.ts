@@ -9,7 +9,8 @@ export const lmstudioSearch = api<{}, { message: string }>(
 
 export const lmstudioOptions = api<{ id: string }, { message: string }>(
   { expose: true, method: "GET", path: "/lmstudio/options/:id" },
-  async ({ id }) => ({ message: "LM Studio options disabled in backend; use web/app/api/lmstudio/options/[id]" })
+  // Note: _id is intentionally unused. Declared to satisfy Encore's path param schema; route remains disabled.
+  async ({ id: _id }) => ({ message: "LM Studio options disabled in backend; use web/app/api/lmstudio/options/[id]" })
 );
 
 export const lmstudioDownload = api<{}, { message: string }>(
