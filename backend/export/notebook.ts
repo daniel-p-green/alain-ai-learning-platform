@@ -91,6 +91,39 @@ export function buildNotebook(
   ];
   cells.push({ cell_type: "code", metadata: {}, source: envSource, outputs: [], execution_count: null });
 
+  // 3b) Pre-flight connection check
+  cells.push({
+    cell_type: "code",
+    metadata: {},
+    source: [
+      "# Pre-flight check: verify API connectivity\n",
+      "from openai import OpenAI\n",
+      "import os, sys\n",
+      "base = os.environ.get('OPENAI_BASE_URL')\n",
+      "key = os.environ.get('OPENAI_API_KEY')\n",
+      "if not base or not key:\n",
+      "    print('❌ Missing OPENAI_BASE_URL or OPENAI_API_KEY. Set them above.')\n",
+      "else:\n",
+      "    try:\n",
+      "        client = OpenAI(base_url=base, api_key=key)\n",
+      "        # lightweight call: list models or small completion\n",
+      "        ok = False\n",
+      "        try:\n",
+      "            _ = client.models.list()\n",
+      "            ok = True\n",
+      "        except Exception:\n",
+      "            # Fallback to a 1-token chat call\n",
+      "            _ = client.chat.completions.create(model=\"${meta.model}\", messages=[{\"role\":\"user\",\"content\":\"ping\"}], max_tokens=1)\n",
+      "            ok = True\n",
+      "        if ok:\n",
+      "            print('✅ API key is working and connected to provider.')\n",
+      "    except Exception as e:\n",
+      "        print('❌ Connection failed. Please check your API key and base URL.\\n', e)\n",
+    ],
+    outputs: [],
+    execution_count: null,
+  });
+
   // 4) Quick smoke test
   cells.push({
     cell_type: "code",
