@@ -144,7 +144,7 @@ export default function TutorialsPage() {
         <div className="flex items-center gap-3">
           {data && (
             <span className="text-sm text-ink-700">
-              {data.pagination.total} tutorials
+              {(data?.pagination?.total ?? data?.tutorials?.length ?? 0)} tutorials
             </span>
           )}
           <Button
@@ -205,7 +205,7 @@ export default function TutorialsPage() {
               className="w-full px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               <option value="">All Levels</option>
-              {data?.filters.difficulties.map(difficulty => (
+              {data?.filters?.difficulties?.map(difficulty => (
                 <option key={difficulty} value={difficulty}>
                   {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
                 </option>
@@ -222,7 +222,7 @@ export default function TutorialsPage() {
               className="w-full px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               <option value="">All Providers</option>
-              {data?.filters.providers.map(provider => (
+              {data?.filters?.providers?.map(provider => (
                 <option key={provider} value={provider}>
                   {provider.charAt(0).toUpperCase() + provider.slice(1)}
                 </option>
@@ -239,7 +239,7 @@ export default function TutorialsPage() {
               className="w-full px-3 py-2 bg-paper-0 border border-ink-100 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             >
               <option value="">All Creators</option>
-              {(data?.filters.modelMakers || []).map(m => (
+              {(data?.filters?.modelMakers || []).map(m => (
                 <option key={m} value={m}>{m}</option>
               ))}
             </select>
@@ -252,11 +252,11 @@ export default function TutorialsPage() {
         </div>
 
         {/* Tags */}
-        {data?.filters.tags && data.filters.tags.length > 0 && (
+        {data?.filters?.tags && data.filters.tags.length > 0 && (
           <div>
             <label className="block text-sm font-medium mb-2 text-ink-900">Tags</label>
             <div className="flex flex-wrap gap-2">
-              {data.filters.tags.slice(0, 10).map(tag => (
+              {data.filters.tags.slice(0, 10)?.map(tag => (
                 <Button
                   key={tag}
                   onClick={() => handleTagToggle(tag)}
@@ -273,7 +273,7 @@ export default function TutorialsPage() {
 
       {/* Tutorial Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {data?.tutorials.map((tutorial) => (
+        {data?.tutorials?.map((tutorial) => (
           <div key={tutorial.id} className="border border-ink-100 rounded-card p-4 bg-paper-0 shadow-card hover:shadow-cardHover transition-shadow">
             <div className="flex items-start justify-between mb-2">
               <h2 className="font-display font-semibold text-[20px] leading-[28px]">{tutorial.title}</h2>
@@ -329,7 +329,7 @@ export default function TutorialsPage() {
       </div>
 
       {/* Pagination */}
-      {data?.pagination && data.pagination.totalPages > 1 && (
+      {data?.pagination && (data.pagination.totalPages > 1) && (
         <div className="flex items-center justify-center gap-2">
           <Button onClick={() => loadTutorials(data.pagination.page - 1)} disabled={!data.pagination.hasPrev} variant="secondary" className="px-3 py-1 text-sm">Previous</Button>
 
@@ -342,7 +342,7 @@ export default function TutorialsPage() {
       )}
 
       {/* Empty State */}
-      {data?.tutorials.length === 0 && (
+      {data?.tutorials?.length === 0 && (
         <div className="text-center py-12">
           <div className="text-ink-700 mb-4">📚</div>
           <h3 className="font-display font-semibold text-[24px] leading-[30px] mb-2">No tutorials found</h3>

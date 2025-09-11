@@ -1,15 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="ALAIN monogram">
-  <style>
-    :root { --yolk:#FFD22E; --ink:#1B1B1B; --red:#C33228; --blue:#2CA6A4; }
-  </style>
-  <!-- shadow -->
-  <rect x="28" y="64" width="200" height="128" rx="64" ry="64" fill="var(--ink)" opacity="0.35"/>
-  <!-- lozenge -->
-  <rect x="24" y="56" width="200" height="128" rx="64" ry="64" fill="var(--yolk)" stroke="var(--ink)" stroke-width="8"/>
-  <!-- A -->
-  <text x="124" y="150" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="110" font-style="italic" fill="var(--red)" stroke="var(--ink)" stroke-width="5" paint-order="stroke fill">A</text>
-  <!-- blue caret -->
-  <path d="M162 84 l9 -14 l9 14 z" fill="var(--blue)"/>
+  <!-- Simple ellipse monogram matching ALAIN brand colors -->
+  <ellipse cx="128" cy="128" rx="110" ry="48" fill="#FFDA1A" stroke="#004580" stroke-width="8"/>
+  <!-- Stylized A mark -->
+  <path d="M98 155 L128 85 L158 155 L144 155 L136 137 L120 137 L112 155 Z" fill="#0058A3"/>
 </svg>
-
