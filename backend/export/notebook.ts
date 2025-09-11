@@ -97,6 +97,47 @@ export function buildNotebook(
     execution_count: null,
   });
 
+  // 4b) Optional: Tool Use demo (works well on LM Studio with native tool models)
+  if (meta.provider === 'openai-compatible') {
+    cells.push({
+      cell_type: "code",
+      metadata: {},
+      source: [
+        "# Tool Use demo (LM Studio recommended)\n",
+        "# This shows how to pass OpenAI-compatible 'tools' and handle tool_calls.\n",
+        "from openai import OpenAI\n",
+        "import os, json, datetime\n",
+        "client = OpenAI(base_url=os.environ['OPENAI_BASE_URL'], api_key=os.environ['OPENAI_API_KEY'])\n",
+        "tools = [{\n",
+        "  'type': 'function',\n",
+        "  'function': {\n",
+        "    'name': 'get_current_time',\n",
+        "    'description': 'Return the current local time as an ISO string',\n",
+        "    'parameters': { 'type': 'object', 'properties': {} }\n",
+        "  }\n",
+        "}]\n",
+        `messages = [{"role":"user","content":"Tell me a joke, then use a tool to tell the current time."}]\n`,
+        `resp = client.chat.completions.create(model="${meta.model}", messages=messages, tools=tools)\n`,
+        "m = resp.choices[0].message\n",
+        "print('finish_reason:', resp.choices[0].finish_reason)\n",
+        "if getattr(m, 'tool_calls', None):\n",
+        "    for tc in m.tool_calls:\n",
+        "        if tc.function and tc.function.name == 'get_current_time':\n",
+        "            tool_out = datetime.datetime.now().isoformat()\n",
+        "            # Feed tool result back to the model for a final answer\n",
+        "            messages.append({'role': 'assistant', 'tool_calls': [tc]})\n",
+        "            messages.append({'role': 'tool', 'content': tool_out})\n",
+        `            final = client.chat.completions.create(model="${meta.model}", messages=messages)\n`,
+        "            print(final.choices[0].message.content)\n",
+        "else:\n",
+        "    # No tool call requested; show normal content\n",
+        "    print(m.content)\n",
+      ],
+      outputs: [],
+      execution_count: null,
+    });
+  }
+
   // Utility to find assessments per step
   function listAssessments(step_order: number) {
     return assessments.filter(a => a.step_order === step_order);

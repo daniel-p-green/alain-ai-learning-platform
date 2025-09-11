@@ -1,5 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { teacherGenerate } from "./teacher";
+import { inferModelInfo } from "./models";
 import { requireUserId } from "../auth";
 import { allowRate } from "../utils/ratelimit";
 import { validateBackendEnv } from "../config/env";
@@ -167,7 +168,14 @@ export const generateLocalLesson = api<{
     const task = (async (): Promise<LessonGenerationResponse> => {
       try {
         const base = (process.env.OPENAI_BASE_URL || '').trim() || 'http://localhost:1234/v1';
-        const modelInfo = { name: req.modelId, org: 'local', url: base.replace(/\/$/, '') } as any;
+        const inferred = inferModelInfo(req.modelId);
+        const modelInfo = {
+          name: req.modelId,
+          org: inferred.maker || 'local',
+          url: base.replace(/\/$/, ''),
+          toolUse: inferred.toolUse,
+          family: inferred.family,
+        } as any;
         const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
         const teacherResponse = await teacherGenerate({
           model: req.teacherModel,
@@ -280,6 +288,8 @@ Model Information:
 - Organization: ${modelInfo.org}
 - URL: ${modelInfo.url}
 - Difficulty Level: ${difficulty}
+${modelInfo.family ? `- Family: ${modelInfo.family}` : ''}
+${modelInfo.toolUse ? `- Tool Use: ${modelInfo.toolUse}` : ''}
 
 Requirements:
 1. Create 3-5 progressive lesson steps
@@ -287,6 +297,7 @@ Requirements:
 3. Focus on real-world applications
 4. Provide clear learning objectives
 5. Include model maker information when available
+${modelInfo.toolUse === 'native' ? '6. Include one short step demonstrating Tool Use via OpenAI-compatible "tools" with a simple function (e.g., get_current_time). Keep it safe and local.' : ''}
 
 ${includeAssessment ? '6. Generate 3-5 multiple choice questions with explanations' : ''}
 
