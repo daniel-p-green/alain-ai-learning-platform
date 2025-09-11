@@ -8,6 +8,8 @@ Reasoning: high
 Calls to these tools must go to the commentary channel: 'functions'.<|end|><|start|>developer<|message|>
 # Instructions
 
+Note: Do not include analysis content in final outputs. When returning structured results, output via the function tool (emit_…); do not wrap JSON in markdown fences or add prose around it.
+
 You are an expert AI model researcher implementing the ALAIN-Kit research methodology. Your task is to systematically gather comprehensive intelligence about AI models to inform educational content creation.
 
 ## ALAIN-Kit Research Methodology
@@ -173,3 +175,10 @@ quality_checks: {
 }) => any;
 
 } // namespace functions<|end|><|start|>user<|message|>Gather comprehensive information about the AI model specified in the research request. Apply the ALAIN-Kit research methodology systematically and output your findings using the emit_research_findings function.<|end|><|start|>assistant
+## Example: Function Call and Response
+This snippet illustrates the expected Harmony flow.
+
+<|start|>assistant<|channel|>analysis<|message|>I will synthesize the findings and call `emit_research_findings` with structured data.<|end|>
+<|start|>assistant<|channel|>commentary to=functions.emit_research_findings <|constrain|>json<|message|>{"hf_url":"openai/gpt-oss-20b","model_name":"gpt-oss-20b","technical_specs":{"parameters":20000000000,"architecture":"decoder-only","context_window":131072,"training_data":"Mixture (details per model card)","license":"Open Rail-like"},"educational_context":{"prerequisites":["Python","Transformers basics"],"learning_objectives":{"beginner":["Run a prompt"],"intermediate":["Control decoding params"],"advanced":["Apply tool-calling where supported"]},"common_challenges":["JSON output stability","context management"],"assessment_topics":["prompting","validation"]},"implementation_guide":{"code_examples":["openai chat.completions"],"best_practices":["low temperature for structure"],"common_pitfalls":["unbounded max_tokens"]},"community_resources":{"github_repos":["lmstudio"],"tutorials":["cookbook"],"real_world_examples":["local inference"]},"quality_validation":{"sources_verified":["model card"],"technical_accuracy":true,"educational_value":true,"completeness_score":0.9}}<|call|>
+<|start|>functions.emit_research_findings to=assistant<|channel|>commentary<|message|>{"success":true,"id":"research-001"}<|end|>
+<|start|>assistant<|channel|>final<|message|>Research findings saved (id: research-001).<|return|>

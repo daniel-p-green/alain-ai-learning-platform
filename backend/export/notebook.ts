@@ -44,6 +44,18 @@ export function buildNotebook(
   }
   cells.push({ cell_type: "markdown", metadata: {}, source: intro });
 
+  // 1b) Reproducibility tips
+  const repro: string[] = [
+    "\n---\n\n",
+    "### Reproducibility Tips\n",
+    "- Avoid network access in core cells.\n",
+    "- Seed randomness where applicable (e.g., numpy, random).\n",
+    "- Pin package versions in your own environment if needed.\n",
+    "- Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` via env (or Colab userdata).\n",
+    "- Widgets optional: text-based MCQs are provided if widgets are unavailable.\n",
+  ];
+  cells.push({ cell_type: "markdown", metadata: {}, source: repro });
+
   // 2) Setup: install deps
   cells.push({
     cell_type: "code",
