@@ -29,6 +29,21 @@ export default function GenerateLessonPage() {
   const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
+  // Prefill from query params for quick demo links
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const q = new URLSearchParams(window.location.search);
+    const hf = q.get('hf');
+    const provider = q.get('provider');
+    const m = q.get('model');
+    if (hf) { setSource('hf'); setHfUrl(hf); }
+    if (m) setTargetModel(m);
+    if (provider) {
+      if (provider === 'local') setSource('local');
+      setTargetProvider(provider);
+    }
+  }, []);
+
   // Provider capabilities
   const [providersLoading, setProvidersLoading] = useState(false);
   const [providersError, setProvidersError] = useState<string | null>(null);
