@@ -316,7 +316,7 @@ export default function GenerateLessonPage() {
         {/* Provider/Model picker for runtime */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <select
-            className="p-2 rounded bg-gray-900 border border-gray-800"
+            className="p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke"
             value={targetProvider}
             onChange={(e) => setTargetProvider(e.target.value)}
             title="Choose provider for running steps"
@@ -326,7 +326,7 @@ export default function GenerateLessonPage() {
             ))}
           </select>
           <select
-            className="p-2 rounded bg-gray-900 border border-gray-800"
+            className="p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke"
             value={targetModel}
             onChange={(e) => setTargetModel(e.target.value)}
             title="Default model for steps"
