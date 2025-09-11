@@ -51,19 +51,19 @@ export default function SettingsPage() {
           {needsKey && (
             <div>
               <label htmlFor={`${id}-key`} className="block text-sm text-ink-700">API key</label>
-              <input id={`${id}-key`} type="password" value={p.apiKey || ""} onChange={e => setProviderField(id, { apiKey: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" />
+              <input id={`${id}-key`} type="password" value={p.apiKey || ""} onChange={e => setProviderField(id, { apiKey: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke" />
               <p className="text-xs text-ink-700 mt-1">We never send keys to our servers. Keys stay on your device.</p>
             </div>
           )}
           {needsBase && (
             <div>
               <label htmlFor={`${id}-base`} className="block text-sm text-ink-700">Base URL</label>
-              <input id={`${id}-base`} type="text" value={p.baseUrl || ""} onChange={e => setProviderField(id, { baseUrl: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" />
+              <input id={`${id}-base`} type="text" value={p.baseUrl || ""} onChange={e => setProviderField(id, { baseUrl: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke" />
             </div>
           )}
         </div>
         <div className="mt-3 flex items-center gap-2">
-          <button data-testid={`settings-prov-${id}-test`} className="h-9 px-3 rounded-[12px] bg-white text-alain-blue border-2 border-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue disabled:opacity-50" onClick={() => testProvider(id)} disabled={p.status === "testing"}>
+          <button data-testid={`settings-prov-${id}-test`} className="h-9 px-3 rounded-[12px] bg-white text-alain-blue border-2 border-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke disabled:opacity-50" onClick={async () => { const ok = await testProvider(id); setToast(`${label}: ${ok ? 'ok' : 'error'}`); }} disabled={p.status === "testing"}>
             {p.status === "testing" ? "Testing…" : p.status === "ok" ? "Tested ✓" : "Test connection"}
           </button>
           {p.status === "error" && <span className="text-sm text-red-700">{p.lastError || "Unable to connect."}</span>}
@@ -127,8 +127,13 @@ export default function SettingsPage() {
               <button
                 className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
                 onClick={async ()=>{
-                  for (const p of providers.filter(pr=>pr.enabled)) { await testProvider(p.id as any); }
-                  setToast('Ran tests for enabled providers');
+                  const enabled = providers.filter(pr=>pr.enabled);
+                  let pass = 0, fail = 0;
+                  for (const pr of enabled) {
+                    const ok = await testProvider(pr.id as any);
+                    if (ok) pass++; else fail++;
+                  }
+                  setToast(`Tests completed: ${pass} passed, ${fail} failed`);
                 }}>Test all enabled</button>
               <button
                 className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
@@ -163,7 +168,19 @@ export default function SettingsPage() {
                           <input type="checkbox" checked={!!p.enabled} onChange={e => setProviderField(p.id as any, { enabled: e.target.checked })} />
                         </td>
                         <td className="px-3 py-2">
-                          <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'ok' || p.status === 'available' ? 'bg-green-100 border-green-300 text-green-800' : p.status === 'testing' || p.status === 'configuring' ? 'bg-yellow-100 border-yellow-300 text-yellow-800' : 'bg-red-100 border-red-300 text-red-800'}`}>{p.status || 'unknown'}</span>
+                          {(() => {
+                            const s = (p.status as any) || 'unknown';
+                            const good = s === 'ok';
+                            const warn = s === 'testing';
+                            const cls = good
+                              ? 'bg-green-100 border-green-300 text-green-800'
+                              : warn
+                              ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
+                              : 'bg-red-100 border-red-300 text-red-800';
+                            return (
+                              <span className={`text-xs px-2 py-0.5 rounded border ${cls}`}>{s}</span>
+                            );
+                          })()}
                         </td>
                         <td className="px-3 py-2">
                           <div className="flex items-center gap-2">

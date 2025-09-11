@@ -62,7 +62,7 @@ export function useSettings() {
   }, []);
 
   // Provider smoke tests (uses existing Next.js API routes; relies on env for server-side keys)
-  const testProvider = useCallback(async (id: ProviderId) => {
+  const testProvider = useCallback(async (id: ProviderId): Promise<boolean> => {
     setProviderField(id, { status: "testing", lastError: null });
     console.info("alain.provider.tested", { provider: id, starting: true });
     const p = providers.find(pr => pr.id === id);
@@ -114,9 +114,11 @@ export function useSettings() {
 
       setProviderField(id, { status: ok ? 'ok' : 'error', lastTestAt: Date.now(), lastError: ok ? null : err || 'Test failed' });
       console.info("alain.provider.tested", { provider: id, success: ok });
+      return ok;
     } catch (e: any) {
       setProviderField(id, { status: 'error', lastTestAt: Date.now(), lastError: e?.message || 'Test failed' });
       console.info("alain.provider.tested", { provider: id, success: false });
+      return false;
     }
   }, [providers, setProviderField, models.defaultModel]);
 
