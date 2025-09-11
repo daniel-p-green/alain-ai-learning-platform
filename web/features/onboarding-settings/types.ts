@@ -29,6 +29,7 @@ export type ModelPref = {
 export type UISettings = {
   theme: "light" | "dark" | "system";
   density?: "comfortable" | "compact";
+  brandLogo?: "blue" | "yellow"; // switches header logo variant
 };
 
 export type Settings = {
@@ -51,7 +52,7 @@ export const DEFAULT_PROVIDERS: ProviderConfig[] = [
 export const DEFAULT_SETTINGS: Settings = {
   providers: DEFAULT_PROVIDERS,
   models: { defaultModel: undefined, recent: [] },
-  ui: { theme: "light", density: "comfortable" },
+  ui: { theme: "light", density: "comfortable", brandLogo: "blue" },
   demo: { loadDemoData: false },
 };
 
@@ -62,5 +63,5 @@ export const LS = {
   providers: "alain.providers",
   models: "alain.models",
   uiTheme: "alain.ui.theme",
+  uiLogo: "alain.ui.logo",
 } as const;
-
