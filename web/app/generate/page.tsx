@@ -24,6 +24,7 @@ export default function GenerateLessonPage() {
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
   const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
 
@@ -68,7 +69,21 @@ export default function GenerateLessonPage() {
           const data = await resp.json();
           if (!alive) return;
           if (Array.isArray(data?.models)) setAvailableModels(data.models);
-          // provider type available via data.provider if needed
+          // Enrich labels from Ollama when local provider looks like Ollama
+          try {
+            const tags = await fetch('/api/providers/ollama/tags', { cache: 'no-store' });
+            if (tags.ok) {
+              const tj = await tags.json();
+              if (Array.isArray(tj?.models)) {
+                const map: Record<string,string> = {};
+                for (const m of tj.models) {
+                  const size = m?.size ? humanSize(m.size) : '';
+                  map[m.name] = size ? `${m.name} (${size})` : m.name;
+                }
+                setLabelsByName(map);
+              }
+            }
+          } catch {}
           return;
         }
       } catch {}
@@ -185,7 +200,7 @@ export default function GenerateLessonPage() {
               >
                 <option value="">Select a model…</option>
                 {availableModels.map((m)=> (
-                  <option key={m} value={m}>{m}</option>
+                  <option key={m} value={m}>{labelsByName[m] || m}</option>
                 ))}
               </select>
             ) : (
@@ -196,6 +211,7 @@ export default function GenerateLessonPage() {
                 onChange={(e)=> setTargetModel(e.target.value)}
               />
             )}
+            {targetModel ? <OllamaContextHint modelName={targetModel} /> : null}
             <div className="text-xs text-gray-500">Detected models are shown when LM Studio or Ollama is running locally.</div>
           </div>
         )}
@@ -357,5 +373,38 @@ export default function GenerateLessonPage() {
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded bg-gray-900 border border-gray-700 text-white shadow">{snackbar}</div>
       )}
     </div>
+  );
+}
+
+function humanSize(bytes: number): string {
+  const units = ['B','KB','MB','GB','TB'];
+  let n = Math.max(0, Number(bytes || 0));
+  let i = 0;
+  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+  const prec = n < 10 && i > 0 ? 1 : 0;
+  return `${n.toFixed(prec)} ${units[i]}`;
+}
+
+function OllamaContextHint({ modelName }: { modelName: string }) {
+  const [ctx, setCtx] = useState<number | null>(null);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const u = new URL('/api/providers/ollama/show', window.location.origin);
+        u.searchParams.set('name', modelName);
+        const resp = await fetch(u.toString(), { cache: 'no-store' });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (!alive) return;
+        const v = Number(data?.info?.context_length || 0);
+        if (v > 0) setCtx(v);
+      } catch {}
+    })();
+    return () => { alive = false; };
+  }, [modelName]);
+  if (!ctx) return null;
+  return (
+    <div className="text-xs text-gray-500">Context length: ~{ctx} tokens</div>
   );
 }

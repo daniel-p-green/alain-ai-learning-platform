@@ -570,7 +570,14 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                   <div className="text-white font-mono">{formatTime(getElapsedTime())}</div>
                 </div>
                 <div>
-                  <span className="text-gray-400">Est. Tokens:</span>
+                  <span className="text-gray-400">Est. Tokens
+                    <span
+                      className="ml-1 text-xs text-gray-500 cursor-help"
+                      title="Approximate only, derived from streamed characters (~4 chars per token). Provider-reported usage may differ."
+                    >
+                      ⓘ
+                    </span>
+                  </span>
                   <div className="text-white font-mono">~{executionState.tokenCount}</div>
                 </div>
                 <div className="col-span-2">
