@@ -8,18 +8,35 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Brand colors (assembly-inspired)
+        // Back-compat alias for existing usage
         brand: {
-          blue: "#0057AD",
-          yellow: "#FBDA0C",
+          blue: "#0058A3", // alain-blue
+          yellow: "#FFDA1A", // alain-yellow
         },
-        ink: "#111827",
-        paper: "#FFFFFF",
+        // ALAIN brand tokens
+        alain: {
+          blue: "#0058A3",
+          yellow: "#FFDA1A",
+          stroke: "#004580",
+          navy: "#1E3A8A",
+          navyAlt: "#1E40AF",
+        },
+        ink: {
+          DEFAULT: "#111827",
+          900: "#111827",
+          700: "#374151",
+          100: "#F3F4F6",
+        },
+        paper: {
+          0: "#FFFFFF",
+          50: "#FAFAF9",
+          100: "#F5F5F4",
+        },
       },
       fontFamily: {
-        // Display/wordmark stack: League Spartan (Google Font)
+        // Display/headers: Montserrat
         display: [
-          "League Spartan",
+          "Montserrat",
           "Inter",
           "ui-sans-serif",
           "system-ui",
@@ -29,9 +46,20 @@ export default {
           "Arial",
           "sans-serif",
         ],
-        // App UI default stack
-        sans: [
+        // Body: Inter
+        inter: [
           "Inter",
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+        ],
+        // Logo only: League Spartan
+        logo: [
+          "League Spartan",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
@@ -53,11 +81,14 @@ export default {
         ],
       },
       borderRadius: {
-        brand: "12px", // for pills/tabs/buttons
+        brand: "12px", // existing
         tab: "10px",
+        card: "14px",
       },
       boxShadow: {
         brand: "0 1px 2px rgba(15, 23, 42, 0.06)",
+        card: "0 1px 2px rgba(15,23,42,0.05), 0 0 0 1px rgba(17,24,39,0.06)",
+        cardHover: "0 4px 10px rgba(15,23,42,0.08), 0 0 0 1px rgba(17,24,39,0.08)",
       },
     },
   },

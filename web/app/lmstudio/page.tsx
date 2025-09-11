@@ -81,63 +81,63 @@ export default function LMStudioExplorerPage() {
   useEffect(() => { doSearch().catch(()=>{}); }, []);
 
   return (
-    <main className="max-w-4xl mx-auto p-6 space-y-4">
-      <h1 className="text-2xl font-black font-display">LM Studio Model Explorer</h1>
-      <p className="text-sm text-gray-400">Search curated models, view quantization options, and download locally via LM Studio.</p>
+    <main className="mx-auto max-w-7xl px-6 md:px-8 py-8 space-y-6 text-ink-900">
+      <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">LM Studio Model Explorer</h1>
+      <p className="font-inter text-[16px] leading-[26px] text-ink-700">Search curated models, view quantization options, and download locally via LM Studio.</p>
       {errorCode === 501 && (
-        <div className="p-3 rounded border border-yellow-700 bg-yellow-900/30 text-sm text-yellow-200">
+        <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">SDK not available or LM Studio not running</div>
-          <ul className="list-disc pl-5 mt-1 space-y-1">
+          <ul className="list-disc pl-5 mt-1 space-y-1 text-ink-700">
             <li>Install SDK in web server: <code>npm i @lmstudio/sdk</code></li>
             <li>Open LM Studio → Developer tab → enable Local Server (default http://localhost:1234/v1)</li>
             <li>Refresh this page</li>
           </ul>
           <div className="mt-2">
-            <a className="underline text-yellow-100" href="/generate">Back to Generate</a>
+            <a className="underline text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" href="/generate">Back to Generate</a>
           </div>
         </div>
       )}
       <div className="flex gap-2">
-        <input className="flex-1 p-2 rounded bg-gray-900 border border-gray-800" value={term} onChange={e => setTerm(e.target.value)} placeholder="Search term (e.g. llama-3)" />
-        <button className="px-3 py-2 rounded bg-blue-600 disabled:opacity-60" onClick={doSearch} disabled={loading}>{loading ? 'Searching…' : 'Search'}</button>
+        <input className="flex-1 px-3 py-2 rounded bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={term} onChange={e => setTerm(e.target.value)} placeholder="Search term (e.g. llama-3)" />
+        <button className="px-4 h-10 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" onClick={doSearch} disabled={loading}>{loading ? 'Searching…' : 'Search'}</button>
       </div>
-      {error && <div className="p-2 text-red-300 bg-red-950/30 border border-red-900 rounded">{error}</div>}
+      {error && <div className="p-2 text-red-800 bg-red-50 border border-red-200 rounded-card">{error}</div>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h2 className="font-semibold">Results</h2>
+          <h2 className="font-display font-semibold text-[24px] leading-[30px] tracking-tight">Results</h2>
           <ul className="space-y-2">
             {results.map(r => (
-              <li key={r.id} className="p-2 rounded border border-gray-800 flex items-center justify-between">
+              <li key={r.id} className="p-3 rounded-card border border-ink-100 bg-paper-0 shadow-card flex items-center justify-between">
                 <div>
-                  <div className="font-medium">{r.name} {r.staffPick ? '⭐' : ''} {r.exact ? '(exact)' : ''}</div>
+                  <div className="font-medium text-ink-900">{r.name} {r.staffPick ? '⭐' : ''} {r.exact ? '(exact)' : ''}</div>
                 </div>
-                <button className="px-2 py-1 rounded bg-gray-700 hover:bg-gray-600" onClick={() => loadOptions(r)}>Options</button>
+                <button className="px-3 h-9 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" onClick={() => loadOptions(r)}>Options</button>
               </li>
             ))}
-            {results.length === 0 && !loading && <li className="text-sm text-gray-500">No results.</li>}
+            {results.length === 0 && !loading && <li className="text-sm text-ink-700">No results.</li>}
           </ul>
         </div>
         <div>
-          <h2 className="font-semibold">Download Options {selected ? `for ${selected.name}` : ''}</h2>
-          {!options && selected && <p className="text-sm text-gray-500">Loading options…</p>}
+          <h2 className="font-display font-semibold text-[24px] leading-[30px] tracking-tight">Download Options {selected ? `for ${selected.name}` : ''}</h2>
+          {!options && selected && <p className="text-sm text-ink-700">Loading options…</p>}
           {options && (
             <ul className="space-y-2">
               {options.map(o => (
-                <li key={o.index} className="p-2 rounded border border-gray-800 flex items-center justify-between">
+                <li key={o.index} className="p-3 rounded-card border border-ink-100 bg-paper-0 shadow-card flex items-center justify-between">
                   <div>
                     <div className="font-mono text-sm">{o.name}</div>
-                    <div className="text-xs text-gray-400">{o.quantization || 'quant?'} • {humanSize(o.sizeBytes)} • fit: {o.fitEstimation || 'unknown'} {o.recommended ? ' (recommended)' : ''}</div>
+                    <div className="text-xs text-ink-700">{o.quantization || 'quant?'} • {humanSize(o.sizeBytes)} • fit: {o.fitEstimation || 'unknown'} {o.recommended ? ' (recommended)' : ''}</div>
                   </div>
-                  <button className="px-2 py-1 rounded bg-green-700 hover:bg-green-600 disabled:opacity-60" onClick={() => download(o.index)} disabled={downloading}>{downloading ? 'Downloading…' : 'Download'}</button>
+                  <button className="px-3 h-9 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" onClick={() => download(o.index)} disabled={downloading}>{downloading ? 'Downloading…' : 'Download'}</button>
                 </li>
               ))}
             </ul>
           )}
           {identifier && (
-            <div className="mt-2 p-2 rounded border border-gray-800">
-              <div className="text-sm">Model identifier:</div>
-              <div className="font-mono text-xs break-all">{identifier}</div>
-              <div className="text-xs text-gray-400 mt-1">Use this identifier with provider <code>lmstudio</code> in your Execute calls.</div>
+            <div className="mt-2 p-3 rounded-card border border-ink-100 bg-paper-0 shadow-card">
+              <div className="text-sm text-ink-900">Model identifier:</div>
+              <div className="font-mono text-xs break-all text-ink-900">{identifier}</div>
+              <div className="text-xs text-ink-700 mt-1">Use this identifier with provider <code>lmstudio</code> in your Execute calls.</div>
             </div>
           )}
         </div>
