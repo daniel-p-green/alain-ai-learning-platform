@@ -73,7 +73,7 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between">
             <div>
               <div className="font-semibold text-white">Setup Wizard</div>
-              <div className="text-sm text-gray-400">Get running in one click. We’ll detect local Ollama and configure the backend.</div>
+              <div className="text-sm text-gray-400">Get running in one click. We’ll detect local Ollama/LM Studio and configure the backend.</div>
             </div>
           </div>
           <div className="mt-3 grid gap-2 text-sm text-gray-300">
@@ -82,6 +82,9 @@ export default function SettingsPage() {
             </div>
             <div>
               Ollama detected at localhost:11434: {probe?.ollamaDetected ? <span className="text-green-300">yes</span> : <span className="text-red-300">no</span>}
+            </div>
+            <div>
+              LM Studio detected at localhost:1234: {probe?.lmStudioDetected ? <span className="text-green-300">yes</span> : <span className="text-red-300">no</span>}
             </div>
             <div>
               Poe configured: {probe?.poeConfigured ? <span className="text-green-300">yes</span> : <span className="text-yellow-300">no</span>}
@@ -105,6 +108,38 @@ export default function SettingsPage() {
                 setToastMsg('Failed to switch to Offline Mode');
               }
             }}>Switch to Offline Mode</Button>
+            <Button onClick={async ()=>{
+              setWizardMsg(null);
+              const resp = await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'offline', baseUrl: 'http://localhost:1234/v1', apiKey: 'lmstudio' }) });
+              const data = await resp.json();
+              if (data.success) {
+                setWizardMsg('Configured for LM Studio (local).');
+                setToastVariant('success');
+                setToastMsg('Using LM Studio at localhost:1234');
+                await loadProbe();
+                await load();
+              } else {
+                setWizardMsg(`Error: ${data.message || 'failed to switch'}`);
+                setToastVariant('error');
+                setToastMsg('Failed to configure LM Studio');
+              }
+            }}>Use LM Studio (local)</Button>
+            <Button onClick={async ()=>{
+              setWizardMsg(null);
+              const resp = await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'offline', baseUrl: 'http://localhost:11434/v1', apiKey: 'ollama' }) });
+              const data = await resp.json();
+              if (data.success) {
+                setWizardMsg('Configured for Ollama (local).');
+                setToastVariant('success');
+                setToastMsg('Using Ollama at localhost:11434');
+                await loadProbe();
+                await load();
+              } else {
+                setWizardMsg(`Error: ${data.message || 'failed to switch'}`);
+                setToastVariant('error');
+                setToastMsg('Failed to configure Ollama');
+              }
+            }}>Use Ollama (local)</Button>
             <Button variant="secondary" onClick={async ()=>{
               setWizardMsg(null);
               const resp = await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'hosted' }) });
@@ -122,6 +157,7 @@ export default function SettingsPage() {
               }
             }}>Switch to Hosted (Poe)</Button>
             <Button variant="secondary" onClick={() => navigator.clipboard.writeText('ollama pull gpt-oss:20b')}>Copy: pull Ollama model</Button>
+            <Button variant="secondary" onClick={() => navigator.clipboard.writeText('Open LM Studio → Download a model → Start server on port 1234')}>LM Studio: quick instructions</Button>
           </div>
         </div>
 
@@ -167,7 +203,7 @@ export default function SettingsPage() {
                       <Button
                         type="button"
                         className="text-xs px-2 py-1"
-                        onClick={() => navigator.clipboard.writeText("export OPENAI_BASE_URL=https://api.openai.com/v1\nexport OPENAI_API_KEY=YOUR_KEY_HERE")}
+                        onClick={() => navigator.clipboard.writeText("# LM Studio\nexport OPENAI_BASE_URL=http://localhost:1234/v1\nexport OPENAI_API_KEY=lmstudio\n\n# Ollama\n# export OPENAI_BASE_URL=http://localhost:11434/v1\n# export OPENAI_API_KEY=ollama\n\n# OpenAI (cloud)\n# export OPENAI_BASE_URL=https://api.openai.com/v1\n# export OPENAI_API_KEY=YOUR_KEY_HERE")}
                         variant="secondary"
                       >Copy env snippet</Button>
                     )}
