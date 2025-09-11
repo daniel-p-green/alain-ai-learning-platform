@@ -7,8 +7,9 @@ export async function GET(req: Request) {
   const term = (url.searchParams.get('term') || '').trim();
   const limit = Math.max(1, Math.min(25, Number(url.searchParams.get('limit') || 10)));
   try {
-    // Dynamic import so web build doesn't hard-require the SDK
-    const mod = await import("@lmstudio/sdk").catch(() => null as any);
+    // Dynamic import via runtime indirection to avoid bundler resolution when SDK isn't installed
+    const name = '@lmstudio/sdk';
+    const mod = await (Function('n', 'return import(n)') as any)(name).catch(() => null as any);
     if (!mod || !mod.LMStudioClient) {
       return Response.json({
         results: [],
@@ -28,3 +29,5 @@ export async function GET(req: Request) {
     return Response.json({ results: [], error: { message: error instanceof Error ? error.message : 'Search failed' } }, { status: 500 });
   }
 }
+
+export const runtime = 'nodejs';

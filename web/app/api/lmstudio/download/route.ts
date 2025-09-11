@@ -7,7 +7,8 @@ export async function POST(req: Request) {
   const optionIndex = Number(body?.optionIndex ?? 0);
   if (!id) return Response.json({ error: { message: 'id required' } }, { status: 400 });
   try {
-    const mod = await import("@lmstudio/sdk").catch(() => null as any);
+    const name = '@lmstudio/sdk';
+    const mod = await (Function('n', 'return import(n)') as any)(name).catch(() => null as any);
     if (!mod || !mod.LMStudioClient) {
       return Response.json({ error: { message: "LM Studio SDK not available" } }, { status: 501 });
     }
@@ -24,3 +25,5 @@ export async function POST(req: Request) {
     return Response.json({ error: { message: msg } }, { status: 500 });
   }
 }
+
+export const runtime = 'nodejs';

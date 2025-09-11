@@ -20,6 +20,7 @@ Option A — Hosted (Poe)
 1) Run backend and web (see Quick Start).
 2) In the web UI: paste `openai/gpt-oss-20b` → Provider: Poe → Generate → Open Tutorial.
 3) From the tutorial page, click "Download Colab Notebook" to export a ready-to-run `.ipynb` (uses backend `/export/colab/:id`).
+Note: Streaming is handled via the Next.js API route using SSE. Encore backend streaming is disabled in this MVP.
 
 Option B — Strict Offline (Ollama)
 1) `ollama pull gpt-oss:20b`
@@ -28,6 +29,7 @@ Option B — Strict Offline (Ollama)
 3) Open http://localhost:3000
 4) Paste `openai/gpt-oss-20b` → Provider: Local (OpenAI‑compatible) → Generate.
 5) Click "Download Colab Notebook" (works offline; no third-party calls in export).
+Note: For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
 
 Minimal offline cURL (no web UI)
 - Enable local demo bypass in backend env: `DEMO_ALLOW_UNAUTH=1`
