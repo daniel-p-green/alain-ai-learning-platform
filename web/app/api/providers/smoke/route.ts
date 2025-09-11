@@ -13,7 +13,15 @@ export async function POST(req: Request) {
     return Response.json({ success: true, sample: (text||'').slice(0,120) });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : 'provider smoke test failed';
-    return Response.json({ success: false, error: { code: 'provider_error', message } }, { status: 200 });
+    const hints: string[] = [];
+    if (providerId === 'poe') {
+      if (!process.env.POE_API_KEY) hints.push('Set POE_API_KEY in the web server environment (e.g., Vercel) and redeploy.');
+      if (/401|unauthor/i.test(message)) hints.push('Poe returned Unauthorized. Rotate the key or verify the project has API access.');
+    }
+    if (providerId === 'openai-compatible') {
+      if (!process.env.OPENAI_BASE_URL || !process.env.OPENAI_API_KEY) hints.push('Set OPENAI_BASE_URL and OPENAI_API_KEY (e.g., http://localhost:11434/v1 and ollama).');
+    }
+    return Response.json({ success: false, error: { code: 'provider_error', message, hints } }, { status: 200 });
   }
 }
 export const runtime = 'nodejs';

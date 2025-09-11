@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { backendUrl } from "../../lib/backend";
 import { Button } from "../../components/Button";
 import { PreviewPanel } from "../../components/PreviewPanel";
@@ -29,6 +29,7 @@ export default function GenerateLessonPage() {
   const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [envBanner, setEnvBanner] = useState<any>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   // Prefill from query params for quick demo links
   useEffect(() => {
@@ -184,11 +185,29 @@ export default function GenerateLessonPage() {
           body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
         });
       }
-      const data = await resp.json();
-      if (!data.success) {
+      let data: any = null;
+      const ct = resp.headers.get('content-type') || '';
+      if (!resp.ok) {
+        // Friendly error for unauthorized or plain-text responses
+        if (ct.includes('application/json')) {
+          const j = await resp.json().catch(()=>({}));
+          const msg = j?.error?.message || `HTTP ${resp.status}`;
+          setError(msg);
+          setErrorDetails(Array.isArray(j?.error?.details) ? j.error.details : []);
+        } else {
+          const t = await resp.text().catch(()=>`HTTP ${resp.status}`);
+          const hint = resp.status === 401 ? 'Unauthorized — sign in or enable demo bypass (WEB_DEMO_ALLOW_UNAUTH=1), and configure providers in Settings.' : '';
+          setError(`${t}${hint ? ` (${hint})` : ''}`);
+          setErrorDetails([]);
+        }
+        setProgress('idle');
+        return;
+      }
+      data = ct.includes('application/json') ? await resp.json() : { success:false, error:{ message:'Unexpected non‑JSON response' } };
+      if (!data?.success) {
         setError(data?.error?.code === 'validation_error' ? 'Lesson validation failed' : (data?.error?.message || 'Failed to generate'));
         setErrorDetails(Array.isArray(data?.error?.details) ? data.error.details : []);
-        setProgress("idle");
+        setProgress('idle');
         return;
       }
       setProgress("done");
@@ -214,6 +233,26 @@ export default function GenerateLessonPage() {
           <span className="font-medium">Env:</span> {envBanner.offlineMode ? 'Offline' : 'Hosted'} · Provider: {envBanner.teacherProvider || 'unknown'} · Base URL: {envBanner.openaiBaseUrl || 'n/a'}
         </div>
       )}
+      <div className="mt-2 flex flex-wrap gap-2">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setSource('hf');
+            setTeacherProvider('poe');
+            setHfUrl('meta-llama/Meta-Llama-3.1-8B-Instruct');
+            setTimeout(() => formRef.current?.requestSubmit(), 0);
+          }}
+        >Use Example (Hosted)</Button>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setSource('local');
+            setTargetProvider('openai-compatible');
+            setTargetModel('gpt-oss:20b');
+            setTimeout(() => formRef.current?.requestSubmit(), 0);
+          }}
+        >Use Example (Local)</Button>
+      </div>
       {source === 'local' && availableModels.length === 0 && (
         <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">No local models detected</div>
@@ -229,7 +268,7 @@ export default function GenerateLessonPage() {
         <Button variant={source==='local'?'accent':'secondary'} onClick={()=>setSource('local')}>From Local Runtime</Button>
         <Button variant={source==='text'?'accent':'secondary'} onClick={()=>setSource('text')}>From Text</Button>
       </div>
-      <form onSubmit={onSubmit} className="space-y-3">
+      <form ref={formRef} onSubmit={onSubmit} className="space-y-3">
         {source === 'hf' ? (
           <input
             className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
