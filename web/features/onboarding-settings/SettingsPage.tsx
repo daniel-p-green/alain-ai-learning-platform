@@ -18,12 +18,26 @@ function TabLink({ id, current, set }: { id: string; current: string; set: (id: 
 }
 
 export default function SettingsPage() {
-  const { providers, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll } = useSettings();
+  const { providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll } = useSettings();
   const onboarding = useOnboarding();
   const [tab, setTab] = useState<string>(() => new URLSearchParams(typeof window !== "undefined" ? window.location.search : "").get("tab") || "Account");
   useEffect(() => { if (typeof window !== "undefined") {
     const url = new URL(window.location.href); url.searchParams.set("tab", tab); window.history.replaceState({}, "", url.toString()); } }, [tab]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [probe, setProbe] = useState<any>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  async function refreshProbe() {
+    try {
+      const resp = await fetch('/api/setup', { cache: 'no-store' });
+      const data = await resp.json();
+      setProbe(data);
+    } catch (e: any) {
+      setProbe({ error: e?.message || String(e) });
+    }
+  }
+  useEffect(() => { refreshProbe(); }, []);
 
   function providerRow(id: ProviderId, label: string, needsKey?: boolean, needsBase?: boolean) {
     const p = providers.find(x => x.id === id)!;
@@ -73,6 +87,52 @@ export default function SettingsPage() {
           </nav>
         </aside>
         <div className="space-y-4">
+          {/* Environment Status + Quick Presets */}
+          <div className="p-4 rounded-[12px] border border-ink-100 bg-paper-0">
+            <div className="font-medium">Environment Status</div>
+            <div className="grid sm:grid-cols-2 gap-2 text-sm text-ink-700 mt-2">
+              <div>Mode: <span className="text-ink-900">{probe?.offlineMode ? 'Offline' : 'Hosted'}</span></div>
+              <div>Provider: <span className="text-ink-900">{probe?.teacherProvider || 'unknown'}</span></div>
+              <div>Base URL: <span className="text-ink-900">{probe?.openaiBaseUrl || 'n/a'}</span></div>
+              <div>Ollama: <span className={probe?.ollamaDetected ? 'text-green-700' : 'text-red-700'}>{probe?.ollamaDetected ? 'detected' : 'not found'}</span></div>
+              <div>LM Studio: <span className={probe?.lmStudioDetected ? 'text-green-700' : 'text-red-700'}>{probe?.lmStudioDetected ? 'detected' : 'not found'}</span></div>
+              <div>Poe API key: <span className={probe?.poeConfigured ? 'text-green-700' : 'text-yellow-700'}>{probe?.poeConfigured ? 'configured' : 'missing'}</span></div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                className="h-9 px-3 rounded-[12px] bg-alain-blue text-white disabled:opacity-50"
+                disabled={busy !== null}
+                onClick={async ()=>{
+                  try {
+                    setBusy('local');
+                    await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode:'offline', baseUrl:'http://localhost:11434/v1', apiKey:'ollama' }) });
+                    setModels({ ...models, defaultModel: 'gpt-oss:20b', recent: ['openai/gpt-oss-20b', ...(models.recent||[])] });
+                    setProviders(providers.map(p=> p.id==='openai-compatible' ? { ...p, enabled:true } : p));
+                    setToast('Preset applied: Local GPT‑OSS (Ollama)');
+                  } finally { setBusy(null); refreshProbe(); }
+                }}>Quick Preset: Local GPT‑OSS (Ollama)</button>
+              <button
+                className="h-9 px-3 rounded-[12px] border-2 border-alain-blue text-alain-blue bg-white disabled:opacity-50"
+                disabled={busy !== null}
+                onClick={async ()=>{
+                  try {
+                    setBusy('hosted');
+                    await fetch('/api/setup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode:'hosted' }) });
+                    setModels({ ...models, defaultModel: 'gpt-4o-mini' });
+                    setProviders(providers.map(p=> p.id==='poe' ? { ...p, enabled:true } : p));
+                    setToast('Preset applied: Hosted (Poe)');
+                  } finally { setBusy(null); refreshProbe(); }
+                }}>Quick Preset: Hosted (Poe)</button>
+              <a href="/generate?hf=openai/gpt-oss-20b&provider=local&model=gpt-oss:20b" className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0 inline-flex items-center">Load Sample (gpt‑oss‑20b)</a>
+              <button
+                className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
+                onClick={async ()=>{
+                  for (const p of providers.filter(pr=>pr.enabled)) { await testProvider(p.id as any); }
+                  setToast('Ran tests for enabled providers');
+                }}>Test all enabled</button>
+            </div>
+            {toast && <div className="mt-2 text-xs text-ink-700">{toast}</div>}
+          </div>
           {tab === "Account" && (
             <div className="p-4 rounded-[12px] border border-ink-100 bg-paper-0">
               <div className="font-medium">Account</div>
