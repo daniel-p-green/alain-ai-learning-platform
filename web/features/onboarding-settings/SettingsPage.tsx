@@ -167,9 +167,16 @@ export default function SettingsPage() {
                         </td>
                         <td className="px-3 py-2">
                           <div className="flex items-center gap-2">
-                            <button className="h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 disabled:opacity-50" disabled={p.status === 'testing'} onClick={() => testProvider(p.id as any)}>
+                            <button aria-busy={p.status === 'testing'} className={`h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 disabled:opacity-50 ${p.status==='testing'?'animate-pulse':''}`} disabled={p.status === 'testing'} onClick={() => testProvider(p.id as any)}>
                               {p.status === 'testing' ? 'Testing…' : 'Test'}
                             </button>
+                            <details>
+                              <summary className="cursor-pointer select-none">Logs</summary>
+                              <div className="mt-2 p-2 border border-ink-100 rounded-[12px] bg-paper-50 text-xs text-ink-700">
+                                <div>Last tested: {p.lastTestAt ? new Date(p.lastTestAt).toLocaleString() : 'never'}</div>
+                                {p.lastError ? (<pre className="mt-1 whitespace-pre-wrap">{p.lastError}</pre>) : (<div>No errors</div>)}
+                              </div>
+                            </details>
                             <details>
                               <summary className="cursor-pointer select-none">Details</summary>
                               <div className="mt-2 p-3 border border-ink-100 rounded-[12px] bg-paper-0">

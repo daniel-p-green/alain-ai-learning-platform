@@ -99,9 +99,17 @@ export function useSettings() {
         ok = resp.status === 200;
         err = ok ? null : 'LM Studio SDK not available on server or not running.';
       } else if (id === "huggingface") {
-        // Not supported in this build (we do not proxy user keys). Provide a clear message.
-        ok = false;
-        err = 'Hugging Face test not supported in this build. Use Providers (hosted/local) for smoke tests.';
+        // Ask backend to validate HF token if available (Encore Cloud may hold it)
+        const ac = new AbortController();
+        const t = setTimeout(() => ac.abort(), 5000);
+        const resp = await fetch('/api/providers', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ providerId: 'huggingface' }), signal: ac.signal,
+        }).catch((e)=>{ throw e; });
+        clearTimeout(t);
+        const data = await resp.json().catch(()=>({ valid:false, message:'invalid response' }));
+        ok = !!data?.valid;
+        err = ok ? null : (data?.message || 'HF token not configured on backend');
       }
 
       setProviderField(id, { status: ok ? 'ok' : 'error', lastTestAt: Date.now(), lastError: ok ? null : err || 'Test failed' });
