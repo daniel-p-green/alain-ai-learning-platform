@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ALAIN — The open‑source blueprint layer for all models</title>
+  <meta name="description" content="IKEA‑inspired blueprints that turn raw models into daily workflows: runnable lessons, guardrails, citations, and 1‑click Colab or local.">
+  <meta property="og:title" content="ALAIN — The open‑source blueprint layer for all models">
+  <meta property="og:description" content="IKEA‑inspired blueprints that turn raw models into daily workflows: runnable lessons, guardrails, citations, and 1‑click Colab or local.">
+  <style>
+    :root{
+      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      --text-0:#0b1220;
+      --text-1:#2b3445;
+      --muted:#6b7280;
+      --bg-0:#ffffff;
+      --bg-1:#f6f7fb;
+      --line:#e5e7eb;
+      --accent-1:#1f4ab8; /* deep blueprint blue (distinct from IKEA) */
+      --accent-2:#f0c419; /* warm assembly yellow (distinct from IKEA) */
+      --accent-1-ink:#ffffff;
+      --radius-s:6px;
+      --radius-m:12px;
+      --shadow-s: 0 1px 2px rgba(0,0,0,.05);
+      --shadow-m: 0 6px 20px rgba(0,0,0,.08);
+      --space-1:4px;
+      --space-2:8px;
+      --space-3:12px;
+      --space-4:16px;
+      --space-5:20px;
+      --space-6:24px;
+      --space-8:32px;
+      --space-10:40px;
+      --space-12:48px;
+      --space-16:64px;
+      --content-w:1200px;
+      --bp-sm:520px;
+      --bp-md:768px;
+      --bp-lg:1024px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg-0);color:var(--text-0);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+    a{color:var(--accent-1);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width:var(--content-w);margin:0 auto;padding:0 var(--space-4)}
+    .btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:10px 16px;border:1px solid transparent;background:var(--accent-1);color:var(--accent-1-ink);box-shadow:var(--shadow-s);font-weight:600}
+    .btn.secondary{background:transparent;border-color:var(--line);color:var(--text-0)}
+    .btn:focus,.link-like:focus{outline:3px solid #93c5fd;outline-offset:2px}
+    .tag{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff}
+    header{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--line);z-index:50}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .brand .logo{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--accent-1),#153a97)}
+    .nav-links{display:flex;gap:16px;align-items:center}
+    .nav-links a{padding:8px 10px;border-radius:8px}
+    .nav-links a:hover{background:var(--bg-1)}
+    .menu-btn{display:none}
+    @media (max-width: 860px){
+      .nav-links{display:none}
+      .menu-btn{display:inline-flex}
+      .mobile-menu{display:none;position:fixed;inset:64px 0 0; background:rgba(255,255,255,.98);border-top:1px solid var(--line);padding:var(--space-6)}
+      .mobile-menu.open{display:block}
+      .mobile-menu a{display:block;padding:12px 8px;border-radius:8px}
+      .mobile-menu a:active,.mobile-menu a:focus{background:var(--bg-1)}
+    }
+    .hero{padding:var(--space-16) 0 var(--space-12);background:linear-gradient(180deg,#fff, #fafbff)}
+    .hero-grid{display:grid;gap:24px;grid-template-columns: 1.2fr 1fr}
+    .hero h1{font-size:40px;line-height:1.1;margin:0 0 14px}
+    .hero p.sub{font-size:18px;color:var(--text-1);margin:0 0 20px}
+    .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+    .diagram .step{border:1px dashed #ccd3e0;border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center;background:#fff}
+    .step .n{font-weight:800;color:#6676a5}
+    svg{display:block}
+    .slides{margin-top:var(--space-8);border-top:1px solid var(--line);padding-top:var(--space-6);display:grid;gap:8px}
+    .slides .line{display:flex;gap:10px;align-items:center}
+    .section{padding:var(--space-12) 0}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    @media (max-width: 860px){.hero-grid,.diagram,.two-col{grid-template-columns:1fr}}
+    .cards{display:grid;grid-template-columns: repeat(3, 1fr);gap:16px}
+    @media (max-width: 1024px){.cards{grid-template-columns:1fr 1fr}}
+    @media (max-width: 640px){.cards{grid-template-columns:1fr}}
+    .card{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff;box-shadow:var(--shadow-s)}
+    .card h3{margin:6px 0 8px}
+    .muted{color:var(--muted)}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width: 640px){.kpis{grid-template-columns:1fr}}
+    .kpi{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+    .badges{display:flex;flex-wrap:wrap;gap:8px}
+    details.faq{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+    details.faq + details.faq{margin-top:10px}
+    summary{font-weight:600;cursor:pointer;list-style:none}
+    summary::-webkit-details-marker{display:none}
+    .cta-band{padding:var(--space-12) 0;background:linear-gradient(180deg,#fefefe,#f7faff);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    footer{padding:var(--space-12) 0;background:var(--bg-1);border-top:1px solid var(--line)}
+    .foot-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:20px}
+    @media (max-width: 860px){.foot-grid{grid-template-columns:1fr 1fr}}
+    .foot-col h4{margin:0 0 8px}
+    .foot-col a{display:block;padding:6px 0;color:var(--text-1)}
+    .sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    /* focus */
+    a,button,[role="button"]{outline:none}
+    a:focus-visible,button:focus-visible,[role="button"]:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+  </style>
+  <link rel="preload" as="image" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
+  <meta name="theme-color" content="#1f4ab8">
+</head>
+<body>
+  <a href="#main" class="sr-only">Skip to content</a>
+  <header role="banner" aria-label="Site header">
+    <div class="container nav" >
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>ALAIN</span>
+      </div>
+      <nav aria-label="Primary">
+        <div class="nav-links" id="nav-links">
+          <a href="#problem">Problem</a>
+          <a href="#solution">Solution</a>
+          <a href="#demo">Demo</a>
+          <a href="#builds">Builds</a>
+          <a href="#safety">Safety</a>
+          <a href="#ecosystem">Ecosystem</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </nav>
+      <button class="btn menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile menu">
+      <div class="container">
+        <a href="#problem">Problem</a>
+        <a href="#solution">Solution</a>
+        <a href="#demo">Demo</a>
+        <a href="#builds">Builds</a>
+        <a href="#safety">Safety</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div>
+          <h1 id="hero-title">Blueprints that make any model usable</h1>
+          <p class="sub">Paste a model link. Alain turns docs into runnable lessons with guardrails and citations—1‑click in Colab or locally via Ollama.</p>
+          <div class="cta">
+            <a class="btn" href="[LIKE_THIS]">Paste a link</a>
+            <a class="btn secondary" href="[LIKE_THIS]">See a sample</a>
+          </div>
+
+          <div class="diagram" aria-label="Step by step demo">
+            <div class="step">
+              <div class="n">1</div>
+              <svg width="28" height="28" role="img" aria-labelledby="ico-paste-title"><title id="ico-paste-title">Clipboard and link icon</title><rect x="5" y="3" width="18" height="22" rx="3" fill="#fff" stroke="#9aa7c7"/><path d="M9 9h10M9 13h8M9 17h6" stroke="#1f4ab8" stroke-width="1.5"/></svg>
+              <div>Paste a model link</div>
+            </div>
+            <div class="step">
+              <div class="n">2</div>
+              <svg width="28" height="28" role="img" aria-labelledby="ico-ingest-title"><title id="ico-ingest-title">Model card and repo ingest icon</title><rect x="2" y="5" width="24" height="16" rx="3" fill="#fff" stroke="#9aa7c7"/><path d="M5 10h10M5 14h14" stroke="#1f4ab8"/><circle cx="20" cy="17" r="3" fill="#f0c419"/></svg>
+              <div>Ingest card and repo</div>
+            </div>
+            <div class="step">
+              <div class="n">3</div>
+              <svg width="28" height="28" role="img" aria-labelledby="ico-notebook-title"><title id="ico-notebook-title">Runnable notebook icon</title><rect x="4" y="6" width="20" height="18" rx="2" fill="#fff" stroke="#9aa7c7"/><path d="M8 10h10M8 14h8M8 18h6" stroke="#1f4ab8"/><circle cx="8" cy="6" r="3" fill="#1f4ab8"/></svg>
+              <div>Generate a runnable notebook</div>
+            </div>
+            <div class="step">
+              <div class="n">4</div>
+              <svg width="28" height="28" role="img" aria-labelledby="ico-run-title"><title id="ico-run-title">Run in Colab or locally</title><polygon points="9,8 20,14 9,20" fill="#1f4ab8"/><rect x="3" y="22" width="22" height="3" rx="1.5" fill="#f0c419"/></svg>
+              <div>Run 1‑click in Colab or locally</div>
+            </div>
+          </div>
+
+          <div class="slides" aria-label="Slide lines">
+            <div class="line"><span class="tag"><span style="width:8px;height:8px;border-radius:999px;background:var(--accent-2)"></span>Slide</span><span>Alain: The open-source blueprint layer for all models</span></div>
+            <div class="line"><span class="tag">Slide</span><span>Model releases outpace learning</span></div>
+            <div class="line"><span class="tag">Slide</span><span>Adoption concentrates on a few providers; the long tail stalls</span></div>
+            <div class="line"><span class="tag">Slide</span><span>Runnable lessons for any model… 1-click Colab/Local</span></div>
+            <div class="line"><span class="tag">Slide</span><span>Turns any model into a daily workflow.</span></div>
+          </div>
+
+          <div class="slides" aria-label="Imagine hooks (optional)">
+            <div class="line" id="imagineHook">
+              <span class="tag" title="Optional variant">Imagine</span>
+              <span>Imagine IKEA, but only rich teams get instruction manuals. Everyone else gets a box of parts. That is AI today. Alain changes that.</span>
+            </div>
+            <template id="imagineOptions">
+              <span>Imagine every model on Hugging Face being as easy to use as GPT-4. Documentation that writes itself. A level field.</span>
+              <span>Imagine spending $500K training a model that nobody uses because you cannot afford documentation. Multiply by 100 launches a month. Alain stops that.</span>
+            </template>
+          </div>
+        </div>
+
+        <aside aria-label="Ecosystem and hackathon" class="card">
+          <div class="badges" style="margin-bottom:10px">
+            <span class="tag">gpt-oss-120b</span>
+            <span class="tag">gpt-oss-20b</span>
+            <span class="tag">Hugging Face</span>
+            <span class="tag">NVIDIA</span>
+            <span class="tag">Ollama</span>
+            <span class="tag">vLLM</span>
+            <span class="tag">LM Studio</span>
+            <span class="tag">OpenAI</span>
+          </div>
+          <p class="muted" style="margin:0">
+            gpt-oss-120b and gpt-oss-20b are here... Hugging Face, NVIDIA, Ollama, vLLM, LM Studio and OpenAI are co-hosting a six week hackathon. The challenge is to apply these models.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="problem" aria-labelledby="problem-title">
+      <div class="container two-col">
+        <div>
+          <h2 id="problem-title">The gap between releases and learning</h2>
+          <ul>
+            <li>Model releases outpace learning</li>
+            <li>Adoption concentrates on a few providers; the long tail stalls</li>
+            <li>Retries and delays rise as docs fall behind</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p style="margin:0">Today, models ship faster than teams can learn. Docs become guesses, retries, and delays. Adoption clusters around a few providers, while the long tail, often cheaper or better for specific jobs, gets ignored.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="solution" aria-labelledby="solution-title">
+      <div class="container two-col">
+        <div>
+          <h2 id="solution-title">An instruction booklet for every model</h2>
+          <ul>
+            <li>Open‑source blueprints that teach by doing</li>
+            <li>Works across providers; pick the best fit for each job</li>
+            <li>Reusable lessons with guardrails, citations, and quick checks</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p style="margin:0">Alain is the open‑source blueprint layer for all models. Think IKEA for AI. Models are the raw materials. Alain is the instruction booklet that turns them into things you use every day.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="demo" aria-labelledby="demo-title">
+      <div class="container">
+        <h2 id="demo-title">Paste link → Get lesson → Run it</h2>
+        <div class="two-col">
+          <div class="card">
+            <ol>
+              <li>Paste a model link</li>
+              <li>Alain ingests the card and repo</li>
+              <li>Generates a runnable notebook with setup, concepts, examples, and MCQs</li>
+              <li>One‑click to run in Colab or locally; learn model‑specific quirks</li>
+            </ol>
+          </div>
+          <div class="card">
+            <p style="margin:0">Here’s Alain. I paste a model link. Alain ingests the card and repo, then generates a runnable notebook: setup, key concepts, examples, and quick MCQs. Guardrails and citations included. One‑click to run in Colab or locally. It even teaches model‑specific quirks, like when to use harmony prompting versus completions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="builds" aria-labelledby="builds-title">
+      <div class="container">
+        <h2 id="builds-title">Three fast builds</h2>
+        <div class="cards">
+          <article class="card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <svg width="28" height="28" role="img" aria-labelledby="ico-globe-title"><title id="ico-globe-title">Globe for localization</title><circle cx="14" cy="14" r="11" fill="#fff" stroke="#9aa7c7"/><path d="M4 14h20M14 4v20M7 8c2.5 2.5 2.5 9.5 0 12M21 8c-2.5 2.5-2.5 9.5 0 12" stroke="#1f4ab8"/></svg>
+              <h3 style="margin:0">Localization</h3>
+            </div>
+            <p class="muted">Turn any model into a Portuguese lesson with checkpoints to lower barriers.</p>
+            <a class="link-like" href="[LIKE_THIS]">Learn more</a>
+          </article>
+          <article class="card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <svg width="28" height="28" role="img" aria-labelledby="ico-compare-title"><title id="ico-compare-title">Side‑by‑side comparison icon</title><rect x="3" y="6" width="9" height="16" rx="2" fill="#fff" stroke="#9aa7c7"/><rect x="16" y="6" width="9" height="16" rx="2" fill="#fff" stroke="#9aa7c7"/><path d="M5 12h5M18 10h5M18 14h5" stroke="#1f4ab8"/></svg>
+              <h3 style="margin:0">Evaluation and ranking</h3>
+            </div>
+            <p class="muted">Side‑by‑side template tracking quality, latency, and cost across models.</p>
+            <a class="link-like" href="[LIKE_THIS]">Learn more</a>
+          </article>
+          <article class="card">
+            <div style="display:flex;gap:10px;align-items:center">
+              <svg width="28" height="28" role="img" aria-labelledby="ico-onboarding-title"><title id="ico-onboarding-title">Flat‑pack box for onboarding</title><path d="M4 10l10-6 10 6v10l-10 6-10-6V10z" fill="#fff" stroke="#9aa7c7"/><path d="M4 10l10 6 10-6" stroke="#1f4ab8"/></svg>
+              <h3 style="margin:0">Onboarding</h3>
+            </div>
+            <p class="muted">Starter packs that make docs a day‑one workflow for new hires.</p>
+            <a class="link-like" href="[LIKE_THIS]">Learn more</a>
+          </article>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <p style="margin:0">Three fast builds. One, localization: the same model becomes a Portuguese lesson with checkpoints, lowering barriers for non‑English teams. Two, evaluation and ranking: a side‑by‑side template that tracks quality, latency,and cost across models so teams can choose the right fit and re‑validate over time. Three, onboarding: new hires get a starter pack that turns docs into day‑one workflows. Safety is built‑in: linting, required citations, and a local‑first option via Ollama so teams can learn without sending data out.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="safety" aria-labelledby="safety-title">
+      <div class="container two-col">
+        <div>
+          <h2 id="safety-title">Safety and trust by default</h2>
+          <ul>
+            <li>Linting and required citations in every lesson</li>
+            <li>Local‑first option via Ollama—learn without sending data out</li>
+            <li>Clear guardrails and MCQs to reinforce key concepts</li>
+          </ul>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:12px">
+          <svg width="40" height="40" role="img" aria-labelledby="ico-shield-title"><title id="ico-shield-title">Shield for safety</title><path d="M20 4l12 6v8c0 8-12 12-12 12S8 26 8 18v-8l12-6z" fill="#fff" stroke="#9aa7c7"/><path d="M14 20l4 4 8-8" stroke="#1f4ab8" stroke-width="2"/></svg>
+          <p style="margin:0">Required citations and linting are built in. Local‑first keeps learning private.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="proof" aria-labelledby="proof-title">
+      <div class="container">
+        <h2 id="proof-title">Proof it works</h2>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="muted">Retries reduced</div>
+            <div style="font-size:22px;font-weight:800">~2/3 fewer</div>
+            <div class="muted">Teams cut retries by roughly two‑thirds in pilots.</div>
+          </div>
+          <div class="kpi">
+            <div class="muted">Time to first good output</div>
+            <div style="font-size:22px;font-weight:800">30–40% faster</div>
+            <div class="muted">First good output reached 30–40% faster.</div>
+          </div>
+          <div class="kpi">
+            <div class="muted">Long‑tail access</div>
+            <div style="font-size:22px;font-weight:800">More models</div>
+            <div class="muted">Easier to test and adopt non‑default providers.</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <p style="margin:0">IKEA without instructions is just wood and screws. AI without blueprints is just models and docs. Alain turns raw materials into daily furniture: your evaluation bench, your team’s onboarding desk, your customer demo table. In pilots, teams cut retries by roughly two‑thirds and reached first good output 30 to 40 percent faster.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ecosystem" aria-labelledby="ecosystem-title">
+      <div class="container">
+        <h2 id="ecosystem-title">Ecosystem and hackathon</h2>
+        <div class="badges" style="margin-bottom:8px">
+          <span class="tag">gpt-oss-120b</span>
+          <span class="tag">gpt-oss-20b</span>
+          <span class="tag">Hugging Face</span>
+          <span class="tag">NVIDIA</span>
+          <span class="tag">Ollama</span>
+          <span class="tag">vLLM</span>
+          <span class="tag">LM Studio</span>
+          <span class="tag">OpenAI</span>
+        </div>
+        <p class="muted" style="margin:0">gpt-oss-120b and gpt-oss-20b are here... Hugging Face, NVIDIA, Ollama, vLLM, LM Studio and OpenAI are co-hosting a six week hackathon. The challenge is to apply these models.</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <h2 id="faq-title">Data and Privacy</h2>
+        <details class="faq">
+          <summary>Do lessons send my data to third parties?</summary>
+          <div class="muted">No. Use the local‑first path via Ollama to run everything on your machine.</div>
+        </details>
+        <details class="faq">
+          <summary>How are citations enforced?</summary>
+          <div class="muted">Required citations are embedded into notebooks and linted before sharing.</div>
+        </details>
+        <details class="faq">
+          <summary>Can my team review guardrails?</summary>
+          <div class="muted">Yes. Guardrails are visible, versioned, and editable in each notebook.</div>
+        </details>
+        <details class="faq">
+          <summary>What about credentials and secrets?</summary>
+          <div class="muted">Use local environment variables or vault providers; secrets never appear in notebooks.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="cta-band" id="cta" aria-labelledby="cta-title">
+      <div class="container two-col">
+        <div>
+          <h2 id="cta-title">Turns any model into a daily workflow.</h2>
+          <p class="muted">Paste link. Get lesson. Run it. Reuse it. Make every model teach itself.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <a class="btn" href="[LIKE_THIS]">Get started</a>
+          <a class="btn secondary" href="[LIKE_THIS]">Contact</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container foot-grid">
+      <div class="foot-col">
+        <div class="brand" style="margin-bottom:8px">
+          <div class="logo" aria-hidden="true"></div>
+          <strong>ALAIN</strong>
+        </div>
+        <p class="muted" style="margin:0">ALAIN democratizes AI adoption. Every model gets professional onboarding for free. Small teams compete on merit, not marketing budget. The best model wins, not the biggest documentation budget.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#demo">Demo</a>
+        <a href="#builds">Builds</a>
+        <a href="#safety">Safety</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="[LIKE_THIS]">About</a>
+        <a href="[LIKE_THIS]">Careers</a>
+        <a href="mailto:[LIKE_THIS]">Email</a>
+      </div>
+      <div class="foot-col">
+        <h4>Resources</h4>
+        <a href="[LIKE_THIS]">Docs</a>
+        <a href="[LIKE_THIS]">GitHub</a>
+        <a href="[LIKE_THIS]">Colab</a>
+      </div>
+    </div>
+  </footer>
+
+  <template id="alternateSlogans">
+    <span>Any model → Working code in 1 click (Colab/Local)</span>
+    <span>Alain makes every model production-ready in minutes, not days</span>
+  </template>
+
+  <script>
+    // Mobile navigation
+    (function(){
+      const btn = document.getElementById('menuBtn');
+      const menu = document.getElementById('mobileMenu');
+      if(!btn || !menu) return;
+      btn.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        if(open){ menu.querySelector('a')?.focus(); }
+      });
+      menu.addEventListener('click', (e) => {
+        if(e.target.tagName === 'A'){ menu.classList.remove('open'); btn.setAttribute('aria-expanded','false'); btn.focus(); }
+      });
+    })();
+
+    // FAQ accordion: ensure keyboard and single-open optional behavior
+    (function(){
+      const faqs = document.querySelectorAll('details.faq');
+      faqs.forEach(d => {
+        d.addEventListener('toggle', () => {
+          if(d.open){
+            faqs.forEach(o => { if(o!==d) o.open = false; });
+          }
+        });
+      });
+    })();
+
+    // Imagine hook rotator (optional)
+    (function(){
+      const host = document.getElementById('imagineHook');
+      const tpl = document.getElementById('imagineOptions');
+      if(!host || !tpl) return;
+      const options = Array.from(tpl.content.children).map(n => n.textContent.trim());
+      let idx = 0;
+      setInterval(() => {
+        idx = (idx + 1) % (options.length + 1);
+        if(idx === 0){
+          host.querySelector('span:last-child').textContent = "Imagine IKEA, but only rich teams get instruction manuals. Everyone else gets a box of parts. That is AI today. Alain changes that.";
+        }else{
+          host.querySelector('span:last-child').textContent = options[idx-1];
+        }
+      }, 6000);
+    })();
+  </script>
+</body>
+</html>
+
