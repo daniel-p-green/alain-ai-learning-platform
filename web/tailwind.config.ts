@@ -21,16 +21,37 @@ export default {
           navy: "#1E3A8A",
           navyAlt: "#1E40AF",
         },
+        // Expanded neutrals for flexible UI contrast
         ink: {
           DEFAULT: "#111827",
-          900: "#111827",
-          700: "#374151",
+          50: "#F9FAFB",
           100: "#F3F4F6",
+          200: "#E5E7EB",
+          300: "#D1D5DB",
+          400: "#9CA3AF",
+          500: "#6B7280",
+          600: "#4B5563",
+          700: "#374151",
+          800: "#1F2937",
+          900: "#111827",
         },
         paper: {
           0: "#FFFFFF",
           50: "#FAFAF9",
           100: "#F5F5F4",
+        },
+        // Semantics
+        success: {
+          600: "#16A34A",
+          700: "#15803D",
+        },
+        danger: {
+          600: "#DC2626",
+          700: "#B91C1C",
+        },
+        warning: {
+          600: "#D97706",
+          700: "#B45309",
         },
       },
       fontFamily: {
@@ -81,13 +102,13 @@ export default {
         ],
       },
       borderRadius: {
-        brand: "12px", // existing
+        brand: "12px", // single radius for consistency
         tab: "10px",
-        card: "14px",
+        card: "12px",
       },
       boxShadow: {
         brand: "0 1px 2px rgba(15, 23, 42, 0.06)",
-        card: "0 1px 2px rgba(15,23,42,0.05), 0 0 0 1px rgba(17,24,39,0.06)",
+        card: "0 1px 3px rgba(0,0,0,0.12)",
         cardHover: "0 4px 10px rgba(15,23,42,0.08), 0 0 0 1px rgba(17,24,39,0.08)",
       },
     },
