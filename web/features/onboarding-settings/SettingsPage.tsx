@@ -51,19 +51,19 @@ export default function SettingsPage() {
           {needsKey && (
             <div>
               <label htmlFor={`${id}-key`} className="block text-sm text-ink-700">API key</label>
-              <input id={`${id}-key`} type="password" value={p.apiKey || ""} onChange={e => setProviderField(id, { apiKey: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" />
+              <input id={`${id}-key`} type="password" value={p.apiKey || ""} onChange={e => setProviderField(id, { apiKey: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke" />
               <p className="text-xs text-ink-700 mt-1">We never send keys to our servers. Keys stay on your device.</p>
             </div>
           )}
           {needsBase && (
             <div>
               <label htmlFor={`${id}-base`} className="block text-sm text-ink-700">Base URL</label>
-              <input id={`${id}-base`} type="text" value={p.baseUrl || ""} onChange={e => setProviderField(id, { baseUrl: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" />
+              <input id={`${id}-base`} type="text" value={p.baseUrl || ""} onChange={e => setProviderField(id, { baseUrl: e.target.value })} className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke" />
             </div>
           )}
         </div>
         <div className="mt-3 flex items-center gap-2">
-          <button data-testid={`settings-prov-${id}-test`} className="h-9 px-3 rounded-[12px] bg-white text-alain-blue border-2 border-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue disabled:opacity-50" onClick={() => testProvider(id)} disabled={p.status === "testing"}>
+          <button data-testid={`settings-prov-${id}-test`} className="h-9 px-3 rounded-[12px] bg-white text-alain-blue border-2 border-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke disabled:opacity-50" onClick={async () => { const ok = await testProvider(id); setToast(`${label}: ${ok ? 'ok' : 'error'}`); }} disabled={p.status === "testing"}>
             {p.status === "testing" ? "Testing…" : p.status === "ok" ? "Tested ✓" : "Test connection"}
           </button>
           {p.status === "error" && <span className="text-sm text-red-700">{p.lastError || "Unable to connect."}</span>}
