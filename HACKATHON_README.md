@@ -241,7 +241,8 @@ Notes
 —
 
 ## Submission Details
-- Repo: https://gitlab.com/daniel-p-green/alain-ai-learning-platform
+- Repo: https://github.com/daniel-p-green/alain-ai-learning-platform
+- Mirror (historical): https://gitlab.com/daniel-p-green/alain-ai-learning-platform
 - Leap Project ID: <add here>
 - How to run: See “Run Locally” above and `alain-ai-learning-platform/README.md`.
 - Contact: hackathon@leap.new (per event instructions)
