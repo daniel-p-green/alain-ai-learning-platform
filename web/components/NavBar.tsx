@@ -4,6 +4,7 @@ import Image from "next/image";
 import BrandLogo from "./BrandLogo";
 import dynamic from "next/dynamic";
 import MobileNav from "./MobileNav";
+import EnvStatusBadge from "./EnvStatusBadge";
 
 export default function NavBar() {
   const OfflineBadge = dynamic(() => import("./OfflineBadge"), { ssr: false });
@@ -25,6 +26,7 @@ export default function NavBar() {
         <div className="hidden md:flex items-center gap-3">
           <OfflineBadge />
           <LocalRuntimeStatus />
+          <EnvStatusBadge />
           <Link href="/generate" className="inline-flex items-center h-10 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Get Started</Link>
         </div>
         <div className="md:hidden">
