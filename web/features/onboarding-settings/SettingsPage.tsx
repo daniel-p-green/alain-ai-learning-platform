@@ -213,7 +213,7 @@ export default function SettingsPage() {
             <div className="p-4 rounded-[12px] border border-ink-100 bg-paper-0">
               <div className="font-medium">Models</div>
               <label htmlFor="default-model" className="block text-sm text-ink-700 mt-2">Default model</label>
-              <input id="default-model" data-testid="default-model" type="text" className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={models.defaultModel || ""} onChange={e => setModels({ ...models, defaultModel: e.target.value })} />
+              <input id="default-model" data-testid="default-model" type="text" className="mt-1 w-full h-10 px-3 rounded-[12px] border border-ink-100 bg-white text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke" value={models.defaultModel || ""} onChange={e => setModels({ ...models, defaultModel: e.target.value })} />
               <div className="mt-3">
                 <button className="h-9 px-3 rounded-[12px] border-2 border-alain-blue text-alain-blue bg-white" onClick={() => setModels({ ...models, recent: [] })}>Clear history</button>
               </div>
