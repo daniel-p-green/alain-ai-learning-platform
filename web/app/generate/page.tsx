@@ -62,10 +62,20 @@ export default function GenerateLessonPage() {
     })();
     (async () => {
       try {
-        const resp = await fetch('/api/setup', { cache: 'no-store' });
-        const data = await resp.json();
+        // Prefer dedicated models endpoint; fall back to setup probe
+        const resp = await fetch('/api/providers/models', { cache: 'no-store' });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (!alive) return;
+          if (Array.isArray(data?.models)) setAvailableModels(data.models);
+          return;
+        }
+      } catch {}
+      try {
+        const resp2 = await fetch('/api/setup', { cache: 'no-store' });
+        const data2 = await resp2.json();
         if (!alive) return;
-        if (Array.isArray(data?.availableModels)) setAvailableModels(data.availableModels);
+        if (Array.isArray(data2?.availableModels)) setAvailableModels(data2.availableModels);
       } catch {}
     })();
     return () => { alive = false; };
