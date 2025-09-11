@@ -12,8 +12,8 @@ export default function NavBar() {
       <div className="mx-auto max-w-7xl px-6 md:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue rounded">
-            {/* Use a single primary logo everywhere (no separate monogram/wordmark) */}
-            <Image src="/brand/alain-wordmark.svg" alt="ALAIN" width={160} height={40} priority />
+            {/* ALAIN primary logo (blue background variant for legibility) */}
+            <Image src="/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN" width={160} height={40} priority />
           </Link>
           <div className="hidden md:flex items-center gap-6 ml-6">
             <Link href="/tutorials" className="text-sm text-ink-700 hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue rounded">Tutorials</Link>
