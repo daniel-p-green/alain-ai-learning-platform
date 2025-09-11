@@ -168,10 +168,10 @@ export function buildNotebook(
     // Step execution scaffold (uses global client from smoke test)
     const prompt = (s.code_template || '').endsWith("\n") ? (s.code_template || '') : (s.code_template || '') + "\n";
     const t = s.model_params?.temperature ?? 0.7;
-    const safePrompt = prompt.replace(/'''/g, "\\'\\'\\'");
+    const promptJson = JSON.stringify(prompt);
     const stepSource = [
       "# Run the step prompt using the configured provider\n",
-      `PROMPT = '''${safePrompt}'''\n`,
+      `PROMPT = ${promptJson}\n`,
       "from openai import OpenAI\n",
       "import os\n",
       "client = OpenAI(base_url=os.environ['OPENAI_BASE_URL'], api_key=os.environ['OPENAI_API_KEY'])\n",
