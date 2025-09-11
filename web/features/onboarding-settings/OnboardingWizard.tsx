@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import BrandLogo from "../../components/BrandLogo";
 import React, { useMemo, useState } from "react";
 import { useOnboarding } from "./useOnboarding";
 import { DEFAULT_SETTINGS, ProviderConfig, ProviderId } from "./types";
@@ -66,7 +67,7 @@ export default function OnboardingWizard() {
         }
       >
         <div className="flex flex-col items-center gap-4">
-          <Image src="/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width={480} height={256} className="rounded-[12px] shadow-card" />
+          <BrandLogo width={480} height={256} className="rounded-[12px] shadow-card" />
           <p className="font-inter text-ink-700 text-center">
             We keep your keys on your device. We never send keys to our servers.
           </p>
@@ -252,4 +253,3 @@ export default function OnboardingWizard() {
     </OnboardingStep>
   );
 }
-
