@@ -7,9 +7,9 @@ export const lmstudioSearch = api<{}, { message: string }>(
   async () => ({ message: "LM Studio search disabled in backend; use web/app/api/lmstudio/search" })
 );
 
-export const lmstudioOptions = api<{}, { message: string }>(
+export const lmstudioOptions = api<{ id: string }, { message: string }>(
   { expose: true, method: "GET", path: "/lmstudio/options/:id" },
-  async () => ({ message: "LM Studio options disabled in backend; use web/app/api/lmstudio/options/[id]" })
+  async ({ id }) => ({ message: "LM Studio options disabled in backend; use web/app/api/lmstudio/options/[id]" })
 );
 
 export const lmstudioDownload = api<{}, { message: string }>(
