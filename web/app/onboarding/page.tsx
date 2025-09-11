@@ -1,4 +1,3 @@
-"use client";
 import OnboardingWizard from "../../features/onboarding-settings/OnboardingWizard";
 
 export const metadata = {

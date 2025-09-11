@@ -1,4 +1,3 @@
-"use client";
 import SettingsPage from "../../features/onboarding-settings/SettingsPage";
 
 export const metadata = {
