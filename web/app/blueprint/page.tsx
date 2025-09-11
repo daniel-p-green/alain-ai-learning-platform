@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "ALAIN — IKEA for AI (Blueprint Layer)",
+  title: "ALAIN - The Instruction Layer",
   description:
-    "ALAIN turns any model into runnable, teachable workflows – the open-source blueprint layer for all models.",
+    "The open source IKEA instruction layer for AI models. Learn AI with AI: pick any model in Hugging Face, Ollama, or LM Studio and get interactive how-to guides. Run locally or in the cloud with gpt-oss.",
 };
 
 export default function BlueprintPage() {
@@ -10,9 +10,9 @@ export default function BlueprintPage() {
       {/* Hero */}
       <section className="space-y-4">
         <p className="uppercase tracking-wide text-xs text-ink-700">Imagine</p>
-        <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">IKEA for AI: instruction booklets for every model</h1>
+        <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">The instruction layer for AI models</h1>
         <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-3xl">
-          ALAIN is the open-source blueprint layer for all models. Models are the raw materials. ALAIN is the instruction booklet that turns them into things you use every day.
+          ALAIN is the open source IKEA instruction layer for AI models. Models are the raw materials; ALAIN is the instruction booklet that turns them into things you use every day.
         </p>
         <div className="flex gap-3">
           <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Generate a lesson</a>

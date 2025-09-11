@@ -181,6 +181,7 @@ export default function GenerateLessonPage() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
       <h1 className="text-2xl font-black font-display">Generate Lesson</h1>
+      <p className="text-sm text-ink-700">Works offline. Same UX as cloud. Export to Jupyter.</p>
       {source === 'local' && availableModels.length === 0 && (
         <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">No local models detected</div>
