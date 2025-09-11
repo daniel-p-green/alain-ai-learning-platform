@@ -10,7 +10,9 @@
     "render:lesson": "python3 scripts/json_to_notebook.py",
     "smoke:notebook": "python3 scripts/notebook_smoke.py",
     "dev:offline": "bash scripts/dev_offline.sh",
-    "dev:hosted": "bash scripts/dev_hosted.sh"
+    "dev:hosted": "bash scripts/dev_hosted.sh",
+    "smoke:hosted": "bash scripts/smoke/hosted.sh",
+    "smoke:offline": "bash scripts/smoke/offline.sh"
   },
   "workspaces": [
     "backend",

@@ -8,6 +8,8 @@ Reasoning: high
 Calls to these tools must go to the commentary channel: 'functions'.<|end|><|start|>developer<|message|>
 # Instructions
 
+Note: Do not include analysis content in final outputs. When returning structured results, output via the function tool (emit_…); do not wrap JSON in markdown fences or add prose around it.
+
 You are an expert educational technology quality assurance specialist implementing the ALAIN-Kit validation methodology. Your task is to systematically validate and test interactive learning notebooks for technical functionality, learning effectiveness, and user experience excellence.
 
 ## ALAIN-Kit Validation Methodology
@@ -372,3 +374,10 @@ success_metrics: string[]
 }) => any;
 
 } // namespace functions<|end|><|start|>user<|message|>Conduct comprehensive validation testing on the interactive notebook implementation. Apply the ALAIN-Kit validation methodology systematically and output your findings using the emit_validation_report function.<|end|><|start|>assistant
+## Example: Function Call and Response
+This snippet illustrates the expected Harmony flow.
+
+<|start|>assistant<|channel|>analysis<|message|>I will run validation checks and call `emit_validation_report` with results.<|end|>
+<|start|>assistant<|channel|>commentary to=functions.emit_validation_report <|constrain|>json<|message|>{"notebook_title":"Intro to GPT-OSS","validation_timestamp":"2025-09-11T00:00:00Z","overall_quality_score":0.88,"validation_results":{"technical_validation":{"code_execution_status":"pass","widget_functionality_score":0.9,"performance_benchmarks":{"average_execution_time":1.2,"memory_usage":512,"platform_compatibility":["colab","jupyter"]},"dependency_resolution":true,"export_capabilities":true},"educational_validation":{"learning_objective_alignment":{"clarity_score":0.9,"achievement_score":0.85,"assessment_effectiveness":0.82},"content_quality":{"accuracy_score":0.9,"clarity_score":0.85,"completeness_score":0.8},"assessment_validation":{"question_quality_score":0.85,"feedback_quality_score":0.8,"fairness_score":0.9}},"user_experience_validation":{"interface_usability":{"navigation_score":0.9,"clarity_score":0.9,"responsiveness_score":0.9},"visual_design":{"aesthetics_score":0.85,"readability_score":0.9,"accessibility_score":0.85},"engagement_factors":{"motivation_score":0.85,"interactivity_score":0.85,"completion_rate":0.78}},"platform_compatibility":{"google_colab":{"execution_verified":true,"performance_score":0.9,"features_supported":["widgets","pip"]},"jupyter_environments":{"notebook_supported":true,"lab_supported":true,"offline_capable":true},"mobile_responsive":true,"cross_browser_compatible":true}},"critical_issues":{"blocking_issues":[],"major_issues":[],"minor_issues":["widget styling"]},"improvement_recommendations":{"immediate_actions":["pin widget version"],"short_term_improvements":["add seed setting"],"long_term_enhancements":["broader dataset examples"]},"deployment_readiness":{"ready_for_production":true,"recommended_platforms":["colab","jupyter"],"minimum_requirements":{"hardware":"2+ GB RAM","software":["python3","openai"],"network":"OpenAI-compatible endpoint"},"monitoring_requirements":["error logs","latency"]},"quality_assurance_summary":{"automated_tests_passed":12,"manual_tests_completed":6,"user_testing_participants":3,"overall_confidence_level":"high"}}<|call|>
+<|start|>functions.emit_validation_report to=assistant<|channel|>commentary<|message|>{"success":true,"id":"vr-001"}<|end|>
+<|start|>assistant<|channel|>final<|message|>Validation report generated (id: vr-001).<|return|>

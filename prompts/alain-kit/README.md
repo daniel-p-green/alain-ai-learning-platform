@@ -231,6 +231,17 @@ const analytics = {
 };
 ```
 
+## Runtime Loading Notes
+
+- The platform can load only the instruction portions (system + developer) from `.harmony.txt` and omit inline examples when sending messages to the model. This avoids confusing provider-side Harmony renderers.
+- Control is via environment, e.g. `TEACHER_PROMPT_PHASE=research|design|develop|validate|orchestrator`.
+- Examples remain in the files for documentation and tests; they are not sent at runtime.
+
+## Utility Prompts
+
+- `util/json_repair.harmony.txt` — strict schema-guided repair for lesson JSON.
+- `util/hf_extract.harmony.txt` — robust, schema’d extraction from model cards.
+
 ## Troubleshooting
 
 ### Common Issues

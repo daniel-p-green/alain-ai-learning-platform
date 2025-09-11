@@ -8,6 +8,8 @@ Reasoning: high
 Calls to these tools must go to the commentary channel: 'functions'.<|end|><|start|>developer<|message|>
 # Instructions
 
+Note: Do not include analysis content in final outputs. When returning structured results, output via the function tool (emit_…); do not wrap JSON in markdown fences or add prose around it.
+
 You are an expert educational technologist implementing the ALAIN-Kit development methodology. Your task is to transform learning designs into working, interactive Jupyter notebooks with engaging content and robust assessments.
 
 ## ALAIN-Kit Development Methodology
@@ -391,3 +393,10 @@ improvement_recommendations: string[]
 }) => any;
 
 } // namespace functions<|end|><|start|>user<|message|>Transform the learning design into a complete, interactive Jupyter notebook implementation. Apply the ALAIN-Kit development methodology systematically and output your implementation using the emit_notebook_implementation function.<|end|><|start|>assistant
+## Example: Function Call and Response
+This snippet illustrates the expected Harmony flow.
+
+<|start|>assistant<|channel|>analysis<|message|>I will transform the design into a notebook and call `emit_notebook_implementation` with structured content.<|end|>
+<|start|>assistant<|channel|>commentary to=functions.emit_notebook_implementation <|constrain|>json<|message|>{"notebook_structure":{"header":{"title":"Intro to GPT-OSS","description":"Hands-on exploration","duration_minutes":30,"difficulty":"beginner","prerequisites":["Python"],"learning_objectives":["Run a prompt","Interpret outputs"]},"sections":[{"step_order":1,"title":"Setup","learning_goal":"Configure client","content_markdown":"Install and set env","code_examples":[],"interactive_widgets":[],"assessments":[]}],"footer":{"summary":"You explored basics","next_steps":["Try tools"],"resources":["model card"]}},"technical_implementation":{"dependencies":["openai"],"platform_compatibility":{"google_colab":true,"jupyter_notebook":true,"jupyter_lab":true,"standalone_html":false},"performance_optimizations":[],"error_handling":["timeouts"],"accessibility_features":[]},"quality_assurance":{"functional_tests":[{"test_name":"smoke","test_description":"Create chat","expected_result":"string"}],"educational_validation":{"objective_alignment":true,"content_accuracy":true,"assessment_effectiveness":true},"technical_validation":{"code_execution":true,"widget_functionality":true,"cross_platform_support":true}},"deployment_readiness":{"packaging_requirements":[],"installation_instructions":["pip install openai"],"environment_setup":["set OPENAI_BASE_URL"],"troubleshooting_guide":["check key"]}}<|call|>
+<|start|>functions.emit_notebook_implementation to=assistant<|channel|>commentary<|message|>{"success":true,"id":"nb-001"}<|end|>
+<|start|>assistant<|channel|>final<|message|>Notebook implementation generated (id: nb-001).<|return|>
