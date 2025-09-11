@@ -31,6 +31,16 @@ Option B — Strict Offline (Ollama)
 5) Click "Download Colab Notebook" (works offline; no third-party calls in export).
 Note: For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
 
+Option C — Local (LM Studio)
+1) Open LM Studio and enable the Local Server (default `http://localhost:1234/v1`)
+2) One command: from repo root run `npm run dev:offline` (or your usual dev flow)
+3) Open http://localhost:3000
+4) In Generate: select “From Local Runtime” (auto-selected if detected), pick a model (e.g., `llama-3-8b-instruct`) and click Generate
+5) Run a step, then click “Download Colab Notebook”
+Notes:
+- Streaming is handled via the Next.js API route using SSE; Encore streaming is disabled in this MVP.
+- For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
+
 Minimal offline cURL (no web UI)
 - Enable local demo bypass in backend env: `DEMO_ALLOW_UNAUTH=1`
 ```bash
