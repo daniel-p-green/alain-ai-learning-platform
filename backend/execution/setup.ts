@@ -6,6 +6,7 @@ type ProbeResponse = {
   teacherProvider: string;
   openaiBaseUrl?: string | null;
   ollamaDetected: boolean;
+  lmStudioDetected: boolean;
   poeConfigured: boolean;
 };
 
@@ -17,20 +18,25 @@ export const probe = api<{}, ProbeResponse>(
     const openaiBaseUrl = process.env.OPENAI_BASE_URL || null;
     const poeConfigured = !!process.env.POE_API_KEY;
 
-    // Probe local Ollama quickly
-    const target = 'http://localhost:11434/v1/models';
+    // Probe local Ollama and LM Studio quickly
     let ollamaDetected = false;
+    let lmStudioDetected = false;
     try {
       const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 1200);
-      const resp = await fetch(target, { method: 'GET', signal: ctrl.signal });
+      const t = setTimeout(() => ctrl.abort(), 1000);
+      const resp = await fetch('http://localhost:11434/v1/models', { method: 'GET', signal: ctrl.signal });
       clearTimeout(t);
       ollamaDetected = resp.ok;
-    } catch {
-      ollamaDetected = false;
-    }
+    } catch {}
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 1000);
+      const resp = await fetch('http://localhost:1234/v1/models', { method: 'GET', signal: ctrl.signal });
+      clearTimeout(t);
+      lmStudioDetected = resp.ok;
+    } catch {}
 
-    return { offlineMode, teacherProvider, openaiBaseUrl, ollamaDetected, poeConfigured };
+    return { offlineMode, teacherProvider, openaiBaseUrl, ollamaDetected, lmStudioDetected, poeConfigured };
   }
 );
 
@@ -64,6 +70,7 @@ async function currentConfig(): Promise<ProbeResponse> {
   const openaiBaseUrl = process.env.OPENAI_BASE_URL || null;
   const poeConfigured = !!process.env.POE_API_KEY;
   let ollamaDetected = false;
+  let lmStudioDetected = false;
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 800);
@@ -71,6 +78,12 @@ async function currentConfig(): Promise<ProbeResponse> {
     clearTimeout(t);
     ollamaDetected = resp.ok;
   } catch {}
-  return { offlineMode, teacherProvider, openaiBaseUrl, ollamaDetected, poeConfigured };
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 800);
+    const resp = await fetch('http://localhost:1234/v1/models', { method: 'GET', signal: ctrl.signal });
+    clearTimeout(t);
+    lmStudioDetected = resp.ok;
+  } catch {}
+  return { offlineMode, teacherProvider, openaiBaseUrl, ollamaDetected, lmStudioDetected, poeConfigured };
 }
-
