@@ -48,6 +48,7 @@ The backend can load only the instruction portions (system + developer) and igno
 Implementation:
 - Loader: `backend/execution/prompts/loader.ts`
 - Teacher integration: `backend/execution/teacher.ts`
+- Override root: set `PROMPT_ROOT=/absolute/path/to/prompts/alain-kit` (optional; otherwise module‑relative paths are used)
 
 Note: Provider‑side Harmony rendering (Poe, LM Studio, Transformers Serve) handles message formatting. We do not inject raw `<|start|>…` tokens into message content.
 
@@ -105,4 +106,4 @@ Q: How do I opt‑in to file‑based instructions?
 - prompts/alain-kit/README.md — Prompt overview and format details
 - backend/execution/prompts/loader.ts — Instruction‑only prompt loader
 - backend/execution/teacher.ts — Optional integration via env flag
-
+- Deployment note: ensure `prompts/` are included in backend deploy artifacts (Docker/Encore)
