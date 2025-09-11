@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ALAIN — Demo Sites Index</title>
+    <style>
+      :root { --brand:#1f5aa6; --line:#e5e8ec; --text:#121417; --muted:#5a6872; --surface:#f7f9fb; --radius:10px; }
+      *{box-sizing:border-box} body{margin:0;font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial;color:var(--text);background:#fff}
+      header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:12px 16px}
+      .wrap{max-width:1000px;margin:0 auto;padding:24px 16px}
+      h1{margin:0;font-size:24px}
+      .grid{display:grid;gap:16px}
+      @media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+      .card{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:#fff}
+      .card h2{margin:0 0 8px 0;font-size:18px}
+      .muted{color:var(--muted)}
+      a.btn{display:inline-block;margin-top:8px;padding:10px 12px;border-radius:8px;border:2px solid var(--brand);color:#fff;background:var(--brand);text-decoration:none;font-weight:700}
+      a.btn.secondary{background:#fff;color:var(--brand)}
+      ul{margin:8px 0 0 18px}
+      footer{margin-top:24px;color:var(--muted);font-size:14px}
+      code{background:var(--surface);padding:2px 6px;border-radius:6px}
+    </style>
+  </head>
+  <body>
+    <header><div class="wrap"><h1>ALAIN — Demo Sites</h1></div></header>
+    <main class="wrap">
+      <p class="muted">Quick links to local demo pages. Served via <code>http://127.0.0.1:8000</code>.</p>
+      <div class="grid">
+        <article class="card">
+          <h2>IKEA‑inspired Landing Page</h2>
+          <p class="muted">Standalone, production‑grade HTML + CSS page with minimal JS.</p>
+          <a class="btn" href="./landing-ikea-inspired/index.html">Open landing page</a>
+          <a class="btn secondary" href="./landing-ikea-inspired/content.json" style="margin-left:8px">View content JSON</a>
+        </article>
+        <article class="card">
+          <h2>Backend Frontend (Built)</h2>
+          <p class="muted">Compiled app output from <code>backend/frontend/dist</code>.</p>
+          <a class="btn" href="./backend/frontend/dist/index.html">Open built app</a>
+        </article>
+        <article class="card">
+          <h2>Next.js App (web)</h2>
+          <p class="muted">Run with <code>cd web && npm run dev</code> to preview. Not served by this static server.</p>
+          <a class="btn secondary" href="./web/">Open folder</a>
+        </article>
+        <article class="card">
+          <h2>Alt Repo — Built Frontend</h2>
+          <p class="muted">From <code>alain-ai-learning-platform-rui2/backend/frontend/dist</code> (alternate concept build).</p>
+          <a class="btn" href="../alain-ai-learning-platform-rui2/backend/frontend/dist/index.html">Open alt build</a>
+        </article>
+        <article class="card">
+          <h2>LEAP Hack Prototype</h2>
+          <p class="muted">Static concept page at <code>leap-hack-2025/index.html</code>.</p>
+          <a class="btn" href="../leap-hack-2025/index.html">Open prototype</a>
+        </article>
+      </div>
+      <footer>
+        Missing a demo? Add its link here: <code>alain-ai-learning-platform/demo-sites.html</code>.
+      </footer>
+    </main>
+  </body>
+</html>

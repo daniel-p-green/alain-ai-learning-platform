@@ -1,5 +1,17 @@
 # Changelog
 
+## 2025-09-10 — Demo polish and reliability
+
+Highlights
+- Default Generate page to Local Runtime when local models are detected; otherwise default to Hosted (Poe).
+- Add fallback hint on Generate when no local models (quick switch to Hosted or open LM Studio Explorer).
+- LM Studio Explorer: actionable banner when SDK missing (install steps + enable Local Server), link back to Generate.
+- Tutorial UI: add a Runtime badge (LM Studio/Ollama/OpenAI-compatible) next to the title.
+- Notebook export: include a Runtime line in the intro section.
+- README: clarify streaming via Next.js SSE; Encore backend streaming disabled in MVP; note `DEMO_ALLOW_UNAUTH=1` for local demos.
+- Stability: hardened Next.js LM Studio API routes to dynamically import `/sdk` and declare Node.js runtime.
+- Cleanup: removed accidentally added `landing-ikea-inspired/` assets from the repository.
+
 ## v0.2.0 — Provider unification, teacher hardening, UX polish
 
 Highlights

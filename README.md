@@ -19,6 +19,8 @@ Badges
 Option A — Hosted (Poe)
 1) Run backend and web (see Quick Start).
 2) In the web UI: paste `openai/gpt-oss-20b` → Provider: Poe → Generate → Open Tutorial.
+3) From the tutorial page, click "Download Colab Notebook" to export a ready-to-run `.ipynb` (uses backend `/export/colab/:id`).
+Note: Streaming is handled via the Next.js API route using SSE. Encore backend streaming is disabled in this MVP.
 
 Option B — Strict Offline (Ollama)
 1) `ollama pull gpt-oss:20b`
@@ -26,6 +28,18 @@ Option B — Strict Offline (Ollama)
    - Starts backend + web with `OFFLINE_MODE=1`, `TEACHER_PROVIDER=openai-compatible`, and sensible defaults for Ollama.
 3) Open http://localhost:3000
 4) Paste `openai/gpt-oss-20b` → Provider: Local (OpenAI‑compatible) → Generate.
+5) Click "Download Colab Notebook" (works offline; no third-party calls in export).
+Note: For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
+
+Option C — Local (LM Studio)
+1) Open LM Studio and enable the Local Server (default `http://localhost:1234/v1`)
+2) One command: from repo root run `npm run dev:offline` (or your usual dev flow)
+3) Open http://localhost:3000
+4) In Generate: select “From Local Runtime” (auto-selected if detected), pick a model (e.g., `llama-3-8b-instruct`) and click Generate
+5) Run a step, then click “Download Colab Notebook”
+Notes:
+- Streaming is handled via the Next.js API route using SSE; Encore streaming is disabled in this MVP.
+- For local demos, you may set `DEMO_ALLOW_UNAUTH=1` to bypass auth.
 
 Minimal offline cURL (no web UI)
 - Enable local demo bypass in backend env: `DEMO_ALLOW_UNAUTH=1`
@@ -61,7 +75,7 @@ What’s Novel
 - Backend parses model ref (no network in OFFLINE_MODE) → teacher (gpt‑oss‑20b by default) generates schema‑valid lesson JSON (with one‑shot repair) → UI renders a playable lesson → optional Colab export.
 - Providers
   - Hosted: Poe (`POE_API_KEY`) with `GPT-OSS-20B` / `GPT-OSS-120B`
-  - Local: OpenAI‑compatible endpoints (Ollama, vLLM) using identical request shape
+  - Local: OpenAI‑compatible endpoints (Ollama, LM Studio, vLLM) using identical request shape
 
 Concrete references
 - Provider aliasing: `poe` vs local
@@ -149,6 +163,13 @@ encore secret set OPENAI_BASE_URL http://localhost:11434/v1
 encore secret set OPENAI_API_KEY ollama
 ```
 
+Local (LM Studio) cheatsheet
+```bash
+# In LM Studio: enable Local Server (default http://localhost:1234/v1)
+encore secret set OPENAI_BASE_URL http://localhost:1234/v1
+encore secret set OPENAI_API_KEY lmstudio
+```
+
 Notes
 - Teacher aliasing: `GPT-OSS-20B` → `gpt-oss:20b` for local runs
 - 20B needs ≥16GB VRAM or Apple Silicon with enough unified memory; CPU offload works but is slow
@@ -197,6 +218,35 @@ Docs & Tools
 - Author Checklist: `docs/notebooks/notebook-quality-checklist.md`
 - Teaching Template: `docs/templates/teaching_template.ipynb`
 - More: `docs/notebooks/*`, `docs/gpt-oss/*`
+
+—
+
+## Phases Orchestration (Thin Web Stub)
+- Endpoint: `POST /api/phases`
+  - Body: `{ phase: 'Research'|'Design'|'Develop'|'Validate', provider: 'poe'|'openai-compatible', model: 'GPT-OSS-20B'|..., input?: any }`
+  - Behavior: Loads the Harmony prompt for the requested phase from `prompts/alain-kit/<phase>.harmony.txt`, composes a simple user message with your `input`, and calls the configured provider via our existing provider abstraction (Poe or OpenAI‑compatible). Returns `{ ok, content }`.
+  - File: `web/app/api/phases/route.ts:1`
+- UI: visit `/phases` for a minimal four‑button page that hits the API and shows activity.
+  - File: `web/app/phases/page.tsx:1`
+
+Develop/Validate automation
+- If `phase` is `Develop` or `Validate`, the API attempts to parse the model output as JSON (strips code fences), then:
+  - Writes lesson JSON to `lessons/<provider>/<model>/lesson.json`
+  - If `autoRender` (default true): renders notebook to `notebooks/<provider>/<model>/lesson.ipynb`
+  - Runs a smoke check and writes `reports/<provider>/<model>/validation.json`
+  - The API response includes `artifacts` with file paths and (if available) the parsed smoke report.
+
+Environment for providers (web):
+- Poe hosted: set `POE_API_KEY`
+- OpenAI‑compatible (local/cloud): set `OPENAI_BASE_URL`, `OPENAI_API_KEY`
+
+—
+
+## Colab Link Builder (Optional)
+- Set `NEXT_PUBLIC_GITHUB_REPO` to `org/repo` and optional `NEXT_PUBLIC_GITHUB_BRANCH` (default `main`).
+- The tutorial page will show an “Open in Colab” link that assumes notebooks are published under:
+  - `notebooks/<provider>/<owner>/<repo>/lesson.ipynb`
+- File: `web/app/tutorial/[id]/page.tsx:1`
 
 —
 
