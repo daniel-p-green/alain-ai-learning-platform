@@ -163,7 +163,19 @@ export default function SettingsPage() {
                           <input type="checkbox" checked={!!p.enabled} onChange={e => setProviderField(p.id as any, { enabled: e.target.checked })} />
                         </td>
                         <td className="px-3 py-2">
-                          <span className={`text-xs px-2 py-0.5 rounded border ${p.status === 'ok' || p.status === 'available' ? 'bg-green-100 border-green-300 text-green-800' : p.status === 'testing' || p.status === 'configuring' ? 'bg-yellow-100 border-yellow-300 text-yellow-800' : 'bg-red-100 border-red-300 text-red-800'}`}>{p.status || 'unknown'}</span>
+                          {(() => {
+                            const s = (p.status as any) || 'unknown';
+                            const good = s === 'ok';
+                            const warn = s === 'testing';
+                            const cls = good
+                              ? 'bg-green-100 border-green-300 text-green-800'
+                              : warn
+                              ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
+                              : 'bg-red-100 border-red-300 text-red-800';
+                            return (
+                              <span className={`text-xs px-2 py-0.5 rounded border ${cls}`}>{s}</span>
+                            );
+                          })()}
                         </td>
                         <td className="px-3 py-2">
                           <div className="flex items-center gap-2">
