@@ -127,8 +127,13 @@ export default function SettingsPage() {
               <button
                 className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
                 onClick={async ()=>{
-                  for (const p of providers.filter(pr=>pr.enabled)) { await testProvider(p.id as any); }
-                  setToast('Ran tests for enabled providers');
+                  const enabled = providers.filter(pr=>pr.enabled);
+                  let pass = 0, fail = 0;
+                  for (const pr of enabled) {
+                    const ok = await testProvider(pr.id as any);
+                    if (ok) pass++; else fail++;
+                  }
+                  setToast(`Tests completed: ${pass} passed, ${fail} failed`);
                 }}>Test all enabled</button>
               <button
                 className="h-9 px-3 rounded-[12px] border border-ink-100 bg-paper-0"
