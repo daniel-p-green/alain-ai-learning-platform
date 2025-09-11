@@ -62,6 +62,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   const [curl, setCurl] = useState<string>("");
   const [sdk, setSdk] = useState<string>("");
   const [toast, setToast] = useState<string | null>(null);
+  const [runtime, setRuntime] = useState<string>("OpenAI-compatible");
   // Editor handled by PromptCell component
   const [assessments, setAssessments] = useState<Array<{ id:number; question:string; options:string[] }>>([]);
   const [choice, setChoice] = useState<number | null>(null);
@@ -82,6 +83,19 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       setRunModel(t?.model || '');
     });
   }, [id]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const resp = await fetch('/api/setup', { cache: 'no-store' });
+        const data = await resp.json();
+        const base = (data?.openaiBaseUrl || '').toString();
+        if (/1234\b/.test(base)) setRuntime('LM Studio');
+        else if (/11434\b/.test(base)) setRuntime('Ollama');
+        else setRuntime('OpenAI-compatible');
+      } catch {}
+    })();
+  }, []);
 
   // Load providers for model suggestions
   useEffect(() => {

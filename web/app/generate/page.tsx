@@ -24,7 +24,6 @@ export default function GenerateLessonPage() {
   const [targetProvider, setTargetProvider] = useState<string>("poe");
   const [targetModel, setTargetModel] = useState<string>("");
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-  const [modelsProvider, setModelsProvider] = useState<string | null>(null);
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
 
@@ -69,7 +68,7 @@ export default function GenerateLessonPage() {
           const data = await resp.json();
           if (!alive) return;
           if (Array.isArray(data?.models)) setAvailableModels(data.models);
-          if (data?.provider) setModelsProvider(data.provider);
+          // provider type available via data.provider if needed
           return;
         }
       } catch {}
