@@ -33,11 +33,13 @@ Tagline: Learn models by doing.
 - Public Directory: Link in the header to explore tutorials with search and filters.
 - React SPA: Lightweight demo of the tutorial player.
 - Execution API (Encore.ts): Unified SSE endpoint for streaming completions.
+ - From Text generation: Paste any text (docs/article) to generate a runnable lesson (no HF metadata required).
 
 Notebook export (Colab)
 - Exported notebooks now include:
   - Provider setup cells (install OpenAI SDK, set OPENAI_BASE_URL/API_KEY; Poe defaults to https://api.poe.com/v1)
   - Secure auth cell for Colab: reads secrets from Colab `userdata` when available and falls back to a hidden `getpass()` prompt
+  - A Pre‑flight connection check cell that validates API connectivity before heavier steps
   - A quick smoke test cell to verify keys work with the selected model
   - Each lesson step rendered as markdown + a runnable code cell that sends the step prompt to the model
   - MCQ assessment cells with inline graders, plus an interactive ipywidgets variant (radio buttons + submit + feedback)
@@ -61,6 +63,7 @@ UI improvements (magical MVP)
 - Instant preview: after generation, preview title, description, objectives, and first step with one-click “Open Tutorial” or “Export Notebook”.
 - Transparent execution: “Show Request” reveals the JSON payload; copy as curl or OpenAI SDK is one click away.
 - Adapt Experience (beta): On tutorial pages, tailor content for Beginner/Intermediate/Advanced. Original content remains unchanged.
+ - Local Setup Helper: Under the Local model picker, copy `ollama pull gpt‑oss:20b` and click “Test Connection” to verify local models.
 
 Quick start
 1) Install: `npm install`

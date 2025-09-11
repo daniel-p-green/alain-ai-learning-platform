@@ -19,6 +19,38 @@ vi.mock('encore.dev/api', () => {
 
 import { extractHFModelInfo } from './lesson-generator';
 
+describe('generateFromText (happy path)', () => {
+  const originalFetch = global.fetch as any;
+  beforeEach(() => {
+    vi.resetModules();
+    vi.resetAllMocks();
+  });
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it('returns a valid lesson when teacher outputs minimal JSON', async () => {
+    vi.doMock('../auth', () => ({ requireUserId: vi.fn().mockResolvedValue('u-1') }));
+    const minimal = JSON.stringify({
+      title: 'Intro to Harmony Prompting',
+      description: 'Learn structured prompting basics.',
+      steps: [ { title: 'What is it?', content: 'Harmony-style prompting overview.' } ]
+    });
+    vi.doMock('./teacher', () => ({ teacherGenerate: vi.fn().mockResolvedValue({ success: true, content: minimal }) }));
+    const mod = await import('./lesson-generator');
+    const res: any = await (mod.generateFromText as any)({
+      textContent: 'Harmony Prompting is a structured prompting approach...',
+      difficulty: 'beginner',
+      teacherModel: 'GPT-OSS-20B',
+      provider: 'poe',
+    }, {});
+    expect(res.success).toBe(true);
+    expect(res.lesson?.title).toContain('Harmony');
+    expect(Array.isArray(res.lesson?.steps)).toBe(true);
+    expect(res.lesson?.steps.length).toBeGreaterThan(0);
+  });
+});
+
 describe('extractHFModelInfo error propagation', () => {
   const originalFetch = global.fetch as any;
 
@@ -48,4 +80,3 @@ describe('extractHFModelInfo error propagation', () => {
     await expect(extractHFModelInfo('https://huggingface.co/openai/clip')).rejects.toMatchObject({ message: expect.stringContaining('timeout') });
   });
 });
-
