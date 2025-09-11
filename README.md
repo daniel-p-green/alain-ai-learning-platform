@@ -1,3 +1,17 @@
+<div align="center">
+
+  <img src="hackathon-notes/ALAIN-wordmarks/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
+
+  <br/>
+  <br/>
+
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Teacher-GPT--OSS--20B-4b8" alt="Teacher: GPT-OSS-20B">
+  <img src="https://img.shields.io/badge/Providers-Poe_%7C_OpenAI--compatible-795" alt="Providers: Poe | OpenAI-compatible">
+  <img src="https://img.shields.io/badge/Mode-Offline_Supported-2aa" alt="Offline Supported">
+
+</div>
+
 # ALAIN — Applied Learning AI Notebooks
 
 Paste a Hugging Face link → get a runnable, cost‑aware lesson with step‑by‑step prompts, code, and assessments. Teacher model: gpt‑oss‑20b (120B planned). Runs hosted via Poe or fully local via an OpenAI‑compatible endpoint (Ollama/vLLM).
@@ -224,6 +238,15 @@ alain-ai-learning-platform/
 
 Docs & Tools
 - Notebook Linter: `scripts/notebook_linter.py`
+
+### Onboarding + Settings (Web)
+- New self-contained module lives at `web/features/onboarding-settings/`.
+- Routes:
+  - `/onboarding` — 5-step wizard. Keys never leave the device.
+  - `/settings` — tabs: Account, Providers, Models, Appearance, Onboarding & Demo, Advanced.
+- Reset onboarding: Settings → Onboarding & Demo → Reset onboarding.
+- LocalStorage keys: `alain.onboarding.version`, `alain.onboarding.completed`, `alain.providers`, `alain.models`, `alain.ui.theme`.
+- Module docs: `web/features/onboarding-settings/README_OnboardingSettings.md`.
 - Best Practices: `docs/notebooks/notebook-best-practices.md`
 - Author Checklist: `docs/notebooks/notebook-quality-checklist.md`
 - Teaching Template: `docs/templates/teaching_template.ipynb`
