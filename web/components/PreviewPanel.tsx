@@ -60,8 +60,27 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
             await onExport(suggested);
           }}
         >Export Notebook</Button>
+        <Button
+          variant="secondary"
+          onClick={async () => {
+            try {
+              const res = await fetch((process.env.NEXT_PUBLIC_BACKEND_BASE || 'http://localhost:4000') + `/tutorials/${tutorialId}`);
+              const lesson = await res.json();
+              const blob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${(preview.title || 'lesson').replace(/\s+/g,'_')}.json`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              URL.revokeObjectURL(url);
+            } catch {
+              // noop
+            }
+          }}
+        >Download JSON</Button>
       </div>
     </div>
   );
 }
-

@@ -82,7 +82,7 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
       // Generate lesson content using teacher model
       const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
 
-      const teacherResponse = await teacherGenerate({
+      const teacherResponse = await teacherGenerateWithRetry({
         model: req.teacherModel,
         messages: [
           {
@@ -177,7 +177,7 @@ export const generateLocalLesson = api<{
           family: inferred.family,
         } as any;
         const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
-        const teacherResponse = await teacherGenerate({
+        const teacherResponse = await teacherGenerateWithRetry({
           model: req.teacherModel,
           messages: [ { role: "user", content: lessonPrompt } ],
           task: "lesson_generation",
@@ -227,6 +227,24 @@ export const generateLocalLesson = api<{
 
 // In-memory map of in-flight generation promises
 const inflight = new Map<string, Promise<LessonGenerationResponse>>();
+
+// Minimal retry wrapper to smooth over transient hiccups
+async function teacherGenerateWithRetry(args: Parameters<typeof teacherGenerate>[0], maxAttempts = 2) {
+  let attempt = 0;
+  let lastErr: any;
+  while (attempt < maxAttempts) {
+    try {
+      return await teacherGenerate(args as any);
+    } catch (err) {
+      lastErr = err;
+      attempt++;
+      if (attempt >= maxAttempts) break;
+      const jitter = 200 + Math.floor(Math.random() * 200);
+      await new Promise(r => setTimeout(r, jitter));
+    }
+  }
+  throw lastErr;
+}
 
 // Extract model information from Hugging Face URL
 export async function extractHFModelInfo(hfUrl: string) {
@@ -282,6 +300,7 @@ export async function extractHFModelInfo(hfUrl: string) {
 
 // Build comprehensive lesson generation prompt
 function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean, includeReasoning?: boolean): string {
+  const wantReasoning = includeReasoning === true; // opt-in only
   const basePrompt = `Generate a comprehensive, structured lesson for the AI model: ${modelInfo.name}
 
 Model Information:
@@ -305,7 +324,7 @@ Format your response as a JSON object with this structure:
 {
   "title": "Lesson Title",
   "description": "Brief description",
-  ${includeReasoning ? '"reasoning_summary": "2-4 sentences explaining why you chose this teaching approach and step ordering.",' : ''}
+${wantReasoning ? '"reasoning_summary": "2-4 sentences explaining why you chose this teaching approach and step ordering.",' : ''}
   "learning_objectives": ["Objective 1", "Objective 2"],
   "steps": [
     {
@@ -339,6 +358,25 @@ Format your response as a JSON object with this structure:
 Generate high-quality educational content that follows best practices for AI learning.`;
 
   return basePrompt;
+}
+
+// Build prompt when the source material is raw text pasted by the user
+function buildLessonFromTextPrompt(textContent: string, difficulty: string, includeAssessment?: boolean, includeReasoning?: boolean): string {
+  const snippet = textContent.length > 2000 ? textContent.slice(0, 2000) + "\n..." : textContent;
+  const wantReasoning = includeReasoning === true; // opt-in only
+  const prompt = `You are an expert AI educator. Create a structured, practical lesson from the following source material. Focus on clarity, hands-on steps, and real-world utility. Do not include external links unless they are in the source text.\n\nSOURCE MATERIAL (verbatim excerpt):\n---\n${snippet}\n---\n\nDifficulty Level: ${difficulty}\n${includeAssessment ? 'Include 3-5 multiple choice questions with explanations.' : ''}\n\nOutput a single JSON object with the following structure:\n{
+  "title": "Lesson Title",
+  "description": "Brief description",
+  ${wantReasoning ? '"reasoning_summary": "2-4 sentences explaining your teaching strategy and step ordering.",' : ''}
+  "learning_objectives": ["Objective 1", "Objective 2"],
+  "steps": [
+    { "step_order": 1, "title": "Step Title", "content": "Step content in markdown", "code_template": "Optional code", "expected_output": "Optional", "model_params": {"temperature": 0.7} }
+  ]${includeAssessment ? `,
+  "assessments": [
+    { "question": "Question text?", "options": ["A","B","C","D"], "correct_index": 0, "explanation": "Why this is correct", "difficulty": "${difficulty}", "tags": ["core"] }
+  ]` : ''}
+}`;
+  return prompt;
 }
 
 // Parse and validate generated lesson content
@@ -451,4 +489,88 @@ function mapLessonGenerationError(error: any): { code: string; message: string; 
     code: "internal_error",
     message: "Internal lesson generation error"
   };
+}
+
+// Generate a lesson directly from pasted text input
+export const generateFromText = api<{
+  textContent: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B";
+  includeAssessment?: boolean;
+  provider?: "poe" | "openai-compatible";
+  includeReasoning?: boolean;
+}, LessonGenerationResponse>(
+  { expose: true, method: "POST", path: "/lessons/generate-from-text" },
+  async (req, ctx) => {
+    validateBackendEnv();
+    const userId = await requireUserId(ctx);
+    const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
+    if (!gate.ok) {
+      throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
+    }
+    const text = (req.textContent || '').trim();
+    if (!text) return { success: false, error: { code: 'invalid_argument', message: 'textContent required' } } as any;
+
+    const key = `text::${hashKey(text)}::${req.difficulty}`;
+    const existing = inflight.get(key);
+    if (existing) return await existing;
+
+    const task = (async (): Promise<LessonGenerationResponse> => {
+      try {
+        const lessonPrompt = buildLessonFromTextPrompt(text, req.difficulty, req.includeAssessment, req.includeReasoning);
+        const teacherResponse = await teacherGenerateWithRetry({
+          model: req.teacherModel,
+          messages: [ { role: 'user', content: lessonPrompt } ],
+          task: 'lesson_generation',
+          provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
+        });
+        if (!teacherResponse.success || !teacherResponse.content) {
+          throw new Error(teacherResponse.error?.message || 'Teacher model failed to generate lesson');
+        }
+        let raw = teacherResponse.content;
+        const extractReasoning = (jsonText: string): string | undefined => {
+          try {
+            let t = jsonText.trim();
+            if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
+            const o = JSON.parse(t);
+            const r = o?.reasoning_summary;
+            return typeof r === 'string' && r.trim() ? r.trim() : undefined;
+          } catch { return undefined; }
+        };
+        let reasoningSummary = extractReasoning(raw);
+        const modelInfo = { name: 'Custom Content', org: 'user', url: 'about:blank' } as any;
+        let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
+        let v1 = validateLesson(lesson);
+        let usedRepair = false;
+        if (!v1.valid) {
+          const repaired = await attemptRepairJSON(req.teacherModel, raw);
+          if (!repaired) {
+            return { success: false, error: { code: 'validation_error', message: 'Generated lesson failed validation', details: v1.errors } } as any;
+          }
+          lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
+          usedRepair = true;
+          if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
+          const v2 = validateLesson(lesson);
+          if (!v2.valid) {
+            return { success: false, error: { code: 'validation_error', message: 'Lesson invalid after repair', details: v2.errors } } as any;
+          }
+        }
+        return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
+      } catch (error: any) {
+        return { success: false, error: { code: 'generation_error', message: error?.message || 'Failed to generate' } } as any;
+      }
+    })();
+    inflight.set(key, task);
+    task.finally(() => setTimeout(() => inflight.delete(key), 5000));
+    return await task;
+  }
+);
+
+function hashKey(s: string): string {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h) + s.charCodeAt(i);
+    h |= 0;
+  }
+  return String(Math.abs(h));
 }
