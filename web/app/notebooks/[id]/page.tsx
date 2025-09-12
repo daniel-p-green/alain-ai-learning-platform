@@ -28,6 +28,9 @@ export default async function NotebookPage({ params, searchParams }: { params: {
           <form action={`/api/notebooks/${rec.meta.id}/remix`} method="post">
             <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold">Remix</button>
           </form>
+          <form action={`/api/notebooks/${rec.meta.id}/export/alain`} method="post">
+            <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-900 text-white font-medium">Export ALAIN (PR)</button>
+          </form>
           <form action={`/api/notebooks/${rec.meta.id}/publish-request`} method="post">
             <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-medium">Request Publish</button>
           </form>

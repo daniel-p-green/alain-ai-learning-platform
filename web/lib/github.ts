@@ -82,3 +82,18 @@ export async function listDir(owner: string, repo: string, path: string, branch:
     return [];
   }
 }
+
+export async function getBranchHeadSha(owner: string, repo: string, branch: string): Promise<string> {
+  const json = await ghFetch(`/repos/${owner}/${repo}/git/ref/heads/${encodeURIComponent(branch)}`);
+  return json.object?.sha as string;
+}
+
+export async function createBranch(owner: string, repo: string, newBranch: string, fromSha: string) {
+  const body = { ref: `refs/heads/${newBranch}`, sha: fromSha };
+  return ghFetch(`/repos/${owner}/${repo}/git/refs`, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } });
+}
+
+export async function createPullRequest(owner: string, repo: string, base: string, head: string, title: string, body: string) {
+  const payload = { title, head, base, body };
+  return ghFetch(`/repos/${owner}/${repo}/pulls`, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json' } });
+}
