@@ -15,7 +15,7 @@ export default async function NotebookPage({ params, searchParams }: { params: {
   }
   return (
     <div className="mx-auto max-w-3xl p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">{rec.meta.title}</h1>
           <p className="text-sm text-ink-600">{rec.meta.sourceType}{rec.meta.sourceOrg ? ` • ${rec.meta.sourceOrg}` : ""}</p>
@@ -57,14 +57,14 @@ function NotebookActions({ id }: { id: string }) {
     }
   }
   return (
-    <div className="flex gap-2 items-center">
-      <a href={`/notebooks/${id}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">Edit</a>
+    <div className="flex flex-wrap gap-2 items-center justify-end">
+      <a href={`/notebooks/${id}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium whitespace-nowrap w-full sm:w-auto">Edit</a>
       <form action={`/api/notebooks/${id}/remix`} method="post">
-        <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold">Remix</button>
+        <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold whitespace-nowrap w-full sm:w-auto">Remix</button>
       </form>
-      <button onClick={exportPR} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-900 text-white font-medium">Export ALAIN (PR)</button>
+      <button onClick={exportPR} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-900 text-white font-medium whitespace-nowrap w-full sm:w-auto">Export ALAIN (PR)</button>
       <form action={`/api/notebooks/${id}/publish-request`} method="post">
-        <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-medium">Request Publish</button>
+        <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-medium whitespace-nowrap w-full sm:w-auto">Request Publish</button>
       </form>
       {toast && (
         <span className="text-xs text-ink-600">{toast}</span>
