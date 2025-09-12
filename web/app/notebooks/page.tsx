@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-type Item = { id: string; path: string; title?: string; sourceType?: string; sourceOrg?: string; tags?: string[]; published?: boolean };
+type Item = { id: string; path: string; title?: string; sourceType?: string; sourceOrg?: string; tags?: string[]; published?: boolean; moderation?: string; excerpt?: string };
 
 export default function NotebooksGallery() {
   const [items, setItems] = useState<Item[]>([]);
@@ -49,16 +49,21 @@ export default function NotebooksGallery() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((i) => (
-          <Link key={i.id} href={`/notebooks/${i.id}`} className="rounded border p-4 hover:border-alain-blue">
-            <div className="font-semibold">{i.title || i.id}</div>
-            <div className="text-xs text-ink-600">{i.sourceType || "user"}{i.sourceOrg ? ` • ${i.sourceOrg}` : ""}</div>
-            {i.tags && i.tags.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {i.tags.map((t) => (
-                  <span key={t} className="text-[10px] px-2 py-0.5 rounded bg-ink-200 text-ink-900">{t}</span>
-                ))}
-              </div>
-            )}
+          <Link key={i.id} href={`/notebooks/${i.id}`} className="rounded border hover:border-alain-blue overflow-hidden group">
+            <div className="h-24 bg-gradient-to-br from-alain-blue/10 to-alain-yellow/10 p-3">
+              <div className="text-sm text-ink-700 line-clamp-4">{i.excerpt || ""}</div>
+            </div>
+            <div className="p-4">
+              <div className="font-semibold group-hover:text-alain-blue">{i.title || i.id}</div>
+              <div className="text-xs text-ink-600">{i.sourceType || "user"}{i.sourceOrg ? ` • ${i.sourceOrg}` : ""}</div>
+              {i.tags && i.tags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {i.tags.map((t) => (
+                    <span key={t} className="text-[10px] px-2 py-0.5 rounded bg-ink-200 text-ink-900">{t}</span>
+                  ))}
+                </div>
+              )}
+            </div>
           </Link>
         ))}
         {filtered.length === 0 && (

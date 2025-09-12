@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^5.0.0",
     "@monaco-editor/react": "^4.6.0",
+    "@upstash/redis": "^1.31.6",
     "@uiw/react-markdown-preview": "^5.1.0",
     "@uiw/react-md-editor": "^4.0.6",
     "next": "^14.2.5",
