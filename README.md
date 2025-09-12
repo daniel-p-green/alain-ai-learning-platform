@@ -104,6 +104,7 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 - `examples/poe/`: Standalone Poe API examples
 - `hackathon-notes/`: Devpost materials and judging notes
 - `scripts/`: Smoke tests and conversion utilities
+- `test_sandbox/`: Scratch tests and local notes (ignored by git). Put temporary test scripts and outputs here to avoid cluttering the root.
 
 ---
 
