@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   // Public read-only APIs (discovery, health)
   "/api/health(.*)",
   "/api/providers(.*)",
+  "/api/notebooks(.*)",
   // Static assets and _next are excluded by matcher below
 ]);
 

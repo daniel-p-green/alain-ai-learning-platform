@@ -23,9 +23,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const sha = await getFileSha(owner, repo, path, branch);
     const res = await putFile({ owner, repo, branch, path, content: JSON.stringify(nb, null, 2), message: `Update notebook ${id}: ${title}`, sha });
     if (existing) putNotebook({ meta: existing.meta, nb });
-    return NextResponse.json({ ok: true, path: res.content.path });
+    return NextResponse.json({ ok: true, path: res.content.path, commitUrl: (res as any).content?.html_url });
   } catch (e: any) {
     return NextResponse.json({ error: `github: ${e.message}` }, { status: 500 });
   }
 }
-
