@@ -3,7 +3,7 @@ import Link from "next/link";
 import BrandLogo from "./BrandLogo";
 import dynamic from "next/dynamic";
 import MobileNav from "./MobileNav";
-import EnvStatusBadge from "./EnvStatusBadge";
+// EnvStatusBadge (Poe status) removed from top nav for now
 import { useUser } from "@clerk/nextjs";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
@@ -32,7 +32,6 @@ export default function NavBar() {
         <div className="hidden md:flex items-center gap-3">
           <OfflineBadge />
           <LocalRuntimeStatus />
-          <EnvStatusBadge />
           {/* Auth: show Sign In when signed out; avatar menu when signed in */}
           <SignedOut>
             <div className="flex items-center gap-2">
