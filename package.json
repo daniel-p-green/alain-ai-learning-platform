@@ -17,5 +17,8 @@
   "workspaces": [
     "backend",
     "web"
-  ]
+  ],
+  "dependencies": {
+    "openai": "^5.20.1"
+  }
 }

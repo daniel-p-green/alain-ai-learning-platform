@@ -45,11 +45,11 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
       // Set harmony-compatible parameters based on task
       const harmonyParams = getHarmonyParams(req.task);
 
-      // Prepare messages: optionally load system/developer from prompt files when TEACHER_PROMPT_PHASE is set
-      const supportsHarmonyRoles = provider === 'poe';
+      // Prepare messages: use standard OpenAI format for Poe, Harmony for local
+      const supportsHarmonyRoles = provider === 'openai-compatible';
       const phase = (process.env.TEACHER_PROMPT_PHASE || '').trim() as any;
       let harmonyMessages: Array<{ role: string; content: string }>; 
-      if (phase) {
+      if (phase && supportsHarmonyRoles) {
         try {
           const { system, developer } = loadAlainKitPrompt(phase);
           harmonyMessages = composeMessagesWithFile(system, developer, req.messages, supportsHarmonyRoles);
