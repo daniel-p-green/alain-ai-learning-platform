@@ -38,21 +38,15 @@ export function buildNotebookFromLesson(lesson: any) {
       `resp = client.chat.completions.create(model=${JSON.stringify(meta.model || '')}, messages=[{"role":"user","content":PROMPT}], temperature=${t}, max_tokens=${MAX_TOKENS})\n`,
       "print(resp.choices[0].message.content)\n",
     ], outputs: [], execution_count: null });
-    // Add assessments if available
+    // Add assessments if available (interactive only to encourage active participation)
     const qs = listAssessments(order);
     for (const a of qs) {
-      const mcq = [
-        `# Assessment for Step ${order}\n`,
-        `question = ${JSON.stringify(a.question || '')}\n`,
-        `options = ${JSON.stringify(a.options || [])}\n`,
-        `correct_index = ${Number(a.correct_index ?? 0)}\n`,
-        `print('Q:', question)\n`,
-        `for i, o in enumerate(options):\n    print(f"{i}. {o}")\n`,
-        `choice = 0  # <- change this to your answer index\n`,
-        `print('Correct!' if choice == correct_index else 'Incorrect')\n`,
-        `${a.explanation ? `print('Explanation:', ${JSON.stringify(a.explanation)})\n` : ''}`,
-      ];
-      cells.push({ cell_type: 'code', metadata: {}, source: mcq, outputs: [], execution_count: null });
+      // Brief instruction markdown encouraging interaction
+      cells.push({ cell_type: 'markdown', metadata: {}, source: [
+        `> Assessment for Step ${order}: Select an answer in the widget below.`,
+        `\n`,
+        `> Tip: Don't use Run All here; interact with the quiz to check understanding.\n`,
+      ]});
 
       const widget = [
         `# Interactive quiz for Step ${order}\n`,
@@ -69,7 +63,7 @@ export function buildNotebookFromLesson(lesson: any) {
         `    out.clear_output()\n`,
         `    sel = rb.value if hasattr(rb, 'value') else 0\n`,
         `    if sel == correct:\n`,
-        `      display(Markdown('**Correct!**'${a.explanation ? ` + ' — ' + ${JSON.stringify(a.explanation)}` : ''}))\n`,
+        `      display(Markdown('**Correct!**'${a.explanation ? ` + ' - ' + ${JSON.stringify(a.explanation)}` : ''}))\n`,
         `    else:\n`,
         `      display(Markdown('Incorrect, please try again.'))\n`,
         `btn.on_click(on_click)\n`,
