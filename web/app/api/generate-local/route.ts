@@ -4,8 +4,13 @@ import { backendUrl } from "../../../lib/backend";
 export async function POST(req: Request) {
   const { userId, getToken } = await safeAuth();
   if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
-  const body = await req.json().catch(() => null);
-  if (!body?.modelId) return new Response("modelId required", { status: 400 });
+  let body: any = null;
+  try {
+    body = await req.json();
+  } catch {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
+  if (!body?.modelId || typeof body.modelId !== 'string') return new Response("modelId required", { status: 400 });
 
   const teacherModel = body.teacherModel || "GPT-OSS-20B";
   const difficulty = body.difficulty || "beginner";
@@ -23,9 +28,18 @@ export async function POST(req: Request) {
     body: JSON.stringify({ modelId: body.modelId, difficulty, teacherModel, includeAssessment, provider, includeReasoning }),
     signal: genCtrl.signal,
   });
-  const gen = await genResp.json();
+  let gen: any = null;
+  try {
+    gen = await genResp.json();
+  } catch {
+    clearTimeout(genTimer);
+    return new Response("Upstream generation returned invalid JSON", { status: 502 });
+  }
   clearTimeout(genTimer);
-  if (!gen.success) return Response.json(gen, { status: 200 });
+  if (!genResp.ok) {
+    return Response.json({ success: false, error: { code: 'backend_error', message: gen?.error?.message || 'Generation failed' } }, { status: genResp.status });
+  }
+  if (!gen.success) return Response.json(gen, { status: 422 });
 
   const lesson = gen.lesson;
   // Optional overrides from UI
@@ -65,4 +79,3 @@ export async function POST(req: Request) {
 
   return Response.json({ success: true, tutorialId: imp.tutorialId, meta: { repaired: !!gen?.meta?.repaired, reasoning_summary: gen?.meta?.reasoning_summary }, preview });
 }
-

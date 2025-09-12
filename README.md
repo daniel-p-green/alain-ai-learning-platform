@@ -53,6 +53,7 @@ GITHUB_BRANCH=main
 NOTEBOOKS_DIR=notebooks
 # Optional: LESSONS_DIR=alain-lessons
 # Optional KV: REDIS_URL=..., REDIS_TOKEN=...
+# Optional: NOTEBOOK_MAX_TOKENS=400
 ```
 
 Open http://localhost:3000
@@ -92,6 +93,9 @@ Admin role: in Clerk Dashboard → your user → publicMetadata, set `{ "role": 
 - Deleted `alain-landing/` static prototype.
 - Moved root-level Poe example scripts to `examples/poe/`.
 - Standardized package manager on npm; removed `bun.lock`.
+- Stricter lesson schema: top-level now disallows unknown fields; `id` is allowed; `model_maker.homepage`/`repo` require valid URIs.
+- API error semantics: logical generation/repair failures return 422; invalid upstream responses return 502; backend non-2xx statuses are propagated.
+- Notebook export: `NOTEBOOK_MAX_TOKENS` env can adjust token limit in generated Colab cells (default 400).
 
 ## Tech Stack
 - Frontend: Next.js (App Router), React, Tailwind, Monaco, @uiw/react-md-editor

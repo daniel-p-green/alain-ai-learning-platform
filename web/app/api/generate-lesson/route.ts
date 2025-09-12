@@ -4,8 +4,13 @@ import { backendUrl } from "../../../lib/backend";
 export async function POST(req: Request) {
   const { userId, getToken } = await safeAuth();
   if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
-  const body = await req.json().catch(() => null);
-  if (!body?.hfUrl) return new Response("hfUrl required", { status: 400 });
+  let body: any = null;
+  try {
+    body = await req.json();
+  } catch {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
+  if (!body?.hfUrl || typeof body.hfUrl !== 'string') return new Response("hfUrl required", { status: 400 });
 
   // Use shared backend URL helper for consistency
   const teacherModel = body.teacherModel || "GPT-OSS-20B";
@@ -25,10 +30,19 @@ export async function POST(req: Request) {
     body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning }),
     signal: genCtrl.signal,
   });
-  const gen = await genResp.json();
+  let gen: any = null;
+  try {
+    gen = await genResp.json();
+  } catch {
+    clearTimeout(genTimer);
+    return new Response("Upstream generation returned invalid JSON", { status: 502 });
+  }
   clearTimeout(genTimer);
   const genMs = Date.now() - genStart;
-  if (!gen.success) return Response.json(gen, { status: 200 });
+  if (!genResp.ok) {
+    return Response.json({ success: false, error: { code: 'backend_error', message: gen?.error?.message || 'Generation failed' } }, { status: genResp.status });
+  }
+  if (!gen.success) return Response.json(gen, { status: 422 });
 
   const lesson = gen.lesson;
   // Optional HF enrichment: license (non-offline)
@@ -39,7 +53,8 @@ export async function POST(req: Request) {
         const repo = `${m[1]}/${m[2]}`;
         const infoResp = await fetch(`${new URL('/api/hf/model', req.url).toString()}?repo=${encodeURIComponent(repo)}`, { cache: 'no-store' });
         if (infoResp.ok) {
-          const info = await infoResp.json();
+          let info: any = null;
+          try { info = await infoResp.json(); } catch { info = null; }
           if (info && info.license) {
             const maker = (lesson as any).model_maker || { name: m[1], org_type: 'organization' };
             maker.license = info.license;
@@ -48,7 +63,9 @@ export async function POST(req: Request) {
         }
       }
     }
-  } catch {}
+  } catch {
+    // Best-effort enrichment; ignore failures
+  }
   // Optional overrides from UI (provider/model picker)
   if (body.targetProvider && typeof body.targetProvider === 'string') {
     lesson.provider = body.targetProvider;

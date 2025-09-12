@@ -1,3 +1,5 @@
+const MAX_TOKENS = Number(process.env.NOTEBOOK_MAX_TOKENS || '400');
+
 export function buildNotebookFromLesson(lesson: any) {
   const cells: any[] = [];
   const meta = lesson || {};
@@ -33,7 +35,7 @@ export function buildNotebookFromLesson(lesson: any) {
     const t = s?.model_params?.temperature ?? 0.7;
     cells.push({ cell_type: 'code', metadata: {}, source: [
       `PROMPT = """\n${prompt}\n"""\n`,
-      `resp = client.chat.completions.create(model=${JSON.stringify(meta.model || '')}, messages=[{"role":"user","content":PROMPT}], temperature=${t}, max_tokens=400)\n`,
+      `resp = client.chat.completions.create(model=${JSON.stringify(meta.model || '')}, messages=[{"role":"user","content":PROMPT}], temperature=${t}, max_tokens=${MAX_TOKENS})\n`,
       "print(resp.choices[0].message.content)\n",
     ], outputs: [], execution_count: null });
     // Add assessments if available
