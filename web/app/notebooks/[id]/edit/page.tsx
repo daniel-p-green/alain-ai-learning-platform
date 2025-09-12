@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CodeEditor from "@/components/CodeEditor";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import { useParams, useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ export default function EditNotebookPage() {
   const [cells, setCells] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [editorTheme, setEditorTheme] = useState<"vs-dark" | "light" | "vs-light">(() => (typeof window !== 'undefined' && localStorage.getItem('nb_editor_theme') as any) || "vs-dark");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaSourceType, setMetaSourceType] = useState<"company" | "user">("user");
   const [metaOrg, setMetaOrg] = useState("");
@@ -55,7 +56,7 @@ export default function EditNotebookPage() {
   }
 
   function addCell(kind: "markdown" | "code") {
-    setCells((prev) => [...prev, { cell_type: kind, source: "", metadata: {} }]);
+    setCells((prev) => [...prev, { cell_type: kind, source: "", metadata: kind === 'code' ? { lang: 'python' } : {} }]);
   }
 
   function removeCell(idx: number) {
@@ -95,6 +96,13 @@ export default function EditNotebookPage() {
       <h1 className="text-2xl font-semibold">Edit Notebook</h1>
       <p className="text-sm text-ink-600">Notebook ID: {id}</p>
       {error && <div className="text-red-500 text-sm">{error}</div>}
+      <div className="flex items-center gap-3 text-sm">
+        <span className="text-ink-600">Editor theme</span>
+        <select value={editorTheme} onChange={(e) => { const v = e.target.value as any; setEditorTheme(v); if (typeof window !== 'undefined') localStorage.setItem('nb_editor_theme', v); }} className="rounded border px-2 py-1">
+          <option value="vs-dark">Dark</option>
+          <option value="vs-light">Light</option>
+        </select>
+      </div>
       <div className="space-y-3">
         <div className="rounded border p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
@@ -141,7 +149,21 @@ export default function EditNotebookPage() {
             {c.cell_type === "markdown" ? (
               <MarkdownEditor value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} />
             ) : (
-              <CodeEditor value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} height={200} />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="text-ink-600">Language</span>
+                  <select value={(c.metadata?.lang as string) || 'python'} onChange={(e) => {
+                    const lang = e.target.value; setCells((prev) => prev.map((cell, i) => i === idx ? { ...cell, metadata: { ...(cell.metadata || {}), lang } } : cell));
+                  }} className="rounded border px-2 py-1">
+                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="typescript">TypeScript</option>
+                    <option value="bash">Bash</option>
+                    <option value="json">JSON</option>
+                  </select>
+                </div>
+                <CodeEditor language={(c.metadata?.lang as string) || 'python'} theme={editorTheme} value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} height={220} />
+              </div>
             )}
           </div>
         ))}
