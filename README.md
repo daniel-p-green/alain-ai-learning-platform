@@ -13,121 +13,93 @@
 
 </div>
 
-# Applied Learning AI Notebooks (ALAIN)
-The open source IKEA instruction layer for AI models.
-Learn AI with AI: paste any model (Hugging Face, Ollama, LM Studio), get an interactive how‑to guide, run locally or in the cloud with gpt‑oss.
+# ALAIN — Applied Learning AI Notebooks
+The open‑source “IKEA‑style” instruction layer for AI models.
+
+Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. Export to Jupyter/Colab. Run locally or hosted with identical UX.
 
 ---
 
 ## Quick Links
 - Live Demo: https://alain-ruddy.vercel.app
-- Docs: `web/docs/DEVELOPER_GUIDE.md`
+- Try Now: https://alain-ruddy.vercel.app/generate
+- Developer Guide: `web/docs/DEVELOPER_GUIDE.md`
 - Devpost Write‑Up: `hackathon-notes/DEVPOST-Submission.md`
- - Hackathon: https://openai.devpost.com
+- Hackathon: https://openai.devpost.com
 
 ---
 
-## What’s Inside
+## What Is ALAIN?
+ALAIN turns a model reference into an interactive tutorial that teaches setup, safe usage, and best practices. It generates a lesson you can run in‑browser and export to a notebook — no heavy backend required.
 
-- Gallery: Browse notebooks with titles, tags, thumbnails, and filters.
-- Uploads & Drafts: Signed‑in users upload .ipynb, “Request Publish”, and track status in My Notebooks.
-- Moderation (admin): Approve/Reject, publish state reflected in gallery.
-- Viewer + Runner: Run code cells in‑browser (Python via Pyodide; JS/TS via Web Worker).
-- Editor: Monaco (code), rich Markdown, drag‑reorder, metadata editor (title, tags, org, license, source URL, publish).
-- Export to ALAIN: One‑click export to ALAIN JSON and open a GitHub PR.
-- Storage: Notebooks saved to GitHub; read‑through on cold start. Optional KV cache to reduce GitHub reads.
-- Examples: `examples/poe` contains standalone Poe integration scripts for quick testing.
+### Why ALAIN
+- Paste a model link → get a guided, runnable lesson.
+- Works online or fully local via OpenAI‑compatible endpoints (e.g., Ollama, LM Studio).
+- In‑browser execution for Python (Pyodide) and JS/TS (Web Worker).
+- One‑click export to Jupyter/Colab for sharing and grading.
 
-## Quick Start (Web)
+---
 
-Requirements
-- Node.js 18+
-- Clerk app (GitHub/Hugging Face providers configured in Clerk)
-- GitHub repo to store notebooks
+## Try It In 2 Minutes
+1) Open the demo and pick “From Text” → https://alain-ruddy.vercel.app/generate
+2) Paste a model (e.g., https://huggingface.co/openai/gpt-oss-20b) and click Generate
+3) Open the tutorial, run a step, Export to Colab
 
-Install & Run
-```
-cd web
-npm install
-npm run dev
-```
+Tip: On Vercel or web‑only use, enable “Force fallback mode (no backend)” on the Generate page.
 
-Environment (create `web/.env.local`)
-```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
-CLERK_SECRET_KEY=...
-GITHUB_TOKEN=...                  # repo contents:write
-GITHUB_REPO=owner/name
-GITHUB_BRANCH=main
-NOTEBOOKS_DIR=notebooks
-# Optional: LESSONS_DIR=alain-lessons
-# Optional KV: REDIS_URL=..., REDIS_TOKEN=...
-# Optional: NOTEBOOK_MAX_TOKENS=400
-```
+---
 
-Open http://localhost:3000
-- Gallery: `/notebooks`
-- Upload: `/upload` (signed‑in)
-- My drafts: `/my/notebooks` (signed‑in)
-- Moderation: `/admin/moderation` (admin)
+## Local Setup (Web)
+- Requirements: Node.js 18+
+- Steps:
+  - `cd web && npm install && npm run dev`
+  - Create `web/.env.local` with Clerk + GitHub vars (see `env-config-example.txt`)
+  - Open http://localhost:3000 and head to `/generate`
 
-Tip: For From Text demos without the backend (e.g., Vercel), tick “Force fallback mode (no backend)” on the Generate page. This creates a local in‑memory tutorial you can open and “Render to Colab (web)”.
+Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 
-Admin role: in Clerk Dashboard → your user → publicMetadata, set `{ "role": "admin" }`.
+---
 
-## Key Routes
-- Public: `/`, `/generate`, `/notebooks`, `/notebooks/[id]`, `/api/notebooks`
-- Signed‑in: `/upload`, `/my/notebooks`, `POST /api/notebooks/[id]/publish-request`
-- Admin: `/admin/moderation`, `POST /api/admin/moderation/[id]/approve`, `POST /api/admin/moderation/[id]/reject`
+## Features
+- Gallery with search, filters, thumbnails
+- Upload drafts, Request Publish, and admin moderation
+- Notebook viewer + editor (Monaco + Markdown), drag‑reorder, metadata
+- Client‑side runners: Python (Pyodide), JS/TS (Worker)
+- Export to ALAIN JSON and open a GitHub PR
+- Optional caching with Upstash to reduce GitHub reads
 
-## Execution
-- Python (client): Pyodide; no server required; offline‑friendly.
-- JS/TS (client): Web Worker sandbox with timeout and console capture.
-- Server‑side: `POST /api/exec` stub returns NOT_IMPLEMENTED; integrate a secure sandbox when ready.
+---
 
-## Export to ALAIN (PR)
-- On a notebook page, click “Export ALAIN (PR)”:
-  - Creates branch `export/alain-{id}-{timestamp}`
-  - Writes `LESSONS_DIR/{id}.json` (default `alain-lessons/`)
-  - Opens a PR targeting `GITHUB_BRANCH` (default `main`)
+## How It Works
+- Teacher: GPT‑OSS‑20B synthesizes lessons under a strict JSON schema with auto‑repair.
+- Providers: Hosted (Poe) and OpenAI‑compatible (local: Ollama/LM Studio) share the same request shape.
+- Execution: Runs client‑side for quick feedback; server execution path stubbed for future sandboxing.
 
-## Deployment (Vercel)
-- Project → Settings → General → Root Directory = `web`
-- Enable “Include files outside the Root Directory in the Build Step”
-- Project → Settings → Git → Production Branch = `main`
-- `web/vercel.json` uses `ignoreCommand` to skip builds when `web/` unchanged
-- Configure env vars (Clerk, GitHub; optional KV)
+---
 
-## Housekeeping (Cleanup)
-- Removed unused experimental landing routes (Concepts, Brand Demo variants) from `web/app/` and middleware.
-- Deleted `alain-landing/` static prototype.
-- Moved root-level Poe example scripts to `examples/poe/`.
-- Standardized package manager on npm; removed `bun.lock`.
-- Stricter lesson schema: top-level now disallows unknown fields; `id` is allowed; `model_maker.homepage`/`repo` require valid URIs.
-- API error semantics: logical generation/repair failures return 422; invalid upstream responses return 502; backend non-2xx statuses are propagated.
-- Notebook export: `NOTEBOOK_MAX_TOKENS` env can adjust token limit in generated Colab cells (default 400).
-
-## Tech Stack
+## Tech At A Glance
 - Frontend: Next.js (App Router), React, Tailwind, Monaco, @uiw/react-md-editor
 - Auth: Clerk (GitHub/Hugging Face via Clerk)
 - Storage: GitHub Contents API
-- Optional Cache: Upstash Redis (lazy‑loaded; build does not require `@upstash/redis`)
-- DevOps: Vercel (web)
+- Optional Cache: Upstash Redis (lazy‑loaded)
+- Backend: Encore.dev TypeScript services (execution, tutorials, export)
+- Export: nbformat/Jupyter; in‑browser Colab rendering
+
+---
 
 ## Repository Structure
-- `web/`: Next.js app (App Router), UI, editors, in‑browser runners
-- `backend/`: Encore.dev TypeScript services (execution, tutorials, export)
-- `prompts/`: ALAIN‑Kit prompt templates used by the teacher model
+- `web/`: Next.js app (UI, editors, in‑browser runners)
+- `backend/`: Encore.dev TypeScript services
+- `prompts/`: ALAIN‑Kit prompt templates
 - `schemas/`: Lesson JSON schema
-- `examples/poe/`: Standalone scripts for Poe API integration
+- `examples/poe/`: Standalone Poe API examples
 - `hackathon-notes/`: Devpost materials and judging notes
-- `scripts/`: Utilities for smoke tests and notebook conversion
+- `scripts/`: Smoke tests and conversion utilities
 
 ---
 
 ## Devpost Write‑Up
-
-For the full hackathon narrative, judging guidance, and screenshots, see `hackathon-notes/DEVPOST-Submission.md`.
+See `hackathon-notes/DEVPOST-Submission.md` for the full story, judging guidance, and screenshots.
 
 ## License
 
