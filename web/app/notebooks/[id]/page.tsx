@@ -18,12 +18,14 @@ export default async function NotebookPage({ params }: { params: { id: string } 
           <h1 className="text-2xl font-semibold">{rec.meta.title}</h1>
           <p className="text-sm text-ink-600">{rec.meta.sourceType}{rec.meta.sourceOrg ? ` • ${rec.meta.sourceOrg}` : ""}</p>
         </div>
-        <form action={`/api/notebooks/${rec.meta.id}/remix`} method="post">
-          <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold">Remix</button>
-        </form>
+        <div className="flex gap-2">
+          <a href={`/notebooks/${rec.meta.id}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">Edit</a>
+          <form action={`/api/notebooks/${rec.meta.id}/remix`} method="post">
+            <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold">Remix</button>
+          </form>
+        </div>
       </div>
       <NotebookViewer nb={rec.nb} />
     </div>
   );
 }
-

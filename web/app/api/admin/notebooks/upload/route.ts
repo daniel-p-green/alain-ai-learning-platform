@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
 import { putNotebook, type NotebookMeta } from "@/lib/notebookStore";
+import { ghEnv, getFileSha, putFile } from "@/lib/github";
 
 export const runtime = "nodejs";
 
@@ -38,7 +39,16 @@ export async function POST(req: Request) {
     tags,
     createdAt: new Date().toISOString(),
   };
-  putNotebook({ meta, nb });
-  return NextResponse.json({ ok: true, id, meta });
+  // Persist to GitHub repo
+  try {
+    const { owner, repo, branch, baseDir } = ghEnv();
+    const path = `${baseDir}/${id}.ipynb`;
+    const existingSha = await getFileSha(owner, repo, path, branch);
+    const res = await putFile({ owner, repo, branch, path, content: JSON.stringify(nb, null, 2), message: `Add notebook ${id}: ${title}`, sha: existingSha });
+    // Stash to memory for fast read
+    putNotebook({ meta, nb });
+    return NextResponse.json({ ok: true, id, meta, path: res.content.path });
+  } catch (e: any) {
+    return NextResponse.json({ error: `github: ${e.message}` }, { status: 500 });
+  }
 }
-
