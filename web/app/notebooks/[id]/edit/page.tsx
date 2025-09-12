@@ -167,7 +167,7 @@ export default function EditNotebookPage() {
             )}
           </div>
         ))}
-        <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
           <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Markdown</button>
           <button type="button" onClick={() => addCell("code")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Code</button>
         </div>
@@ -176,11 +176,11 @@ export default function EditNotebookPage() {
         <summary className="cursor-pointer text-sm text-ink-600">Advanced: Edit raw JSON</summary>
         <textarea className="w-full h-[40vh] font-mono text-xs rounded border p-3 mt-2" value={jsonText} onChange={(e) => setJsonText(e.target.value)} />
       </details>
-      <div className="flex gap-3">
-        <button onClick={onSave} disabled={busy} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50">
+      <div className="flex flex-wrap gap-3">
+        <button onClick={onSave} disabled={busy} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50 w-full sm:w-auto whitespace-nowrap">
           {busy ? "Saving…" : "Save"}
         </button>
-        <button onClick={() => router.push(`/notebooks/${id}`)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">
+        <button onClick={() => router.push(`/notebooks/${id}`)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium w-full sm:w-auto whitespace-nowrap">
           Cancel
         </button>
       </div>

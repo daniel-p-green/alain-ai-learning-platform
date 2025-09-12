@@ -52,7 +52,7 @@ export default function PhasesPage() {
         <h1 className="text-2xl font-semibold">ALAIN Phases</h1>
         <p className="text-ink-700">Research → Design → Develop → Validate</p>
       </div>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button phase="Research" />
         <Button phase="Design" />
         <Button phase="Develop" />
