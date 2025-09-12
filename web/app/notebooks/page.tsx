@@ -58,8 +58,18 @@ export default function NotebooksGallery() {
               </div>
             )}
             <div className="p-4">
-              <div className="font-semibold group-hover:text-alain-blue">{i.title || i.id}</div>
-              <div className="text-xs text-ink-600">{i.sourceType || "user"}{i.sourceOrg ? ` • ${i.sourceOrg}` : ""}</div>
+              <div className="font-semibold group-hover:text-alain-blue flex items-center gap-2">
+                {i.sourceType === 'company' && <span className="text-[10px] px-1.5 py-0.5 rounded bg-alain-blue text-white">Company</span>}
+                <span>{i.title || i.id}</span>
+              </div>
+              <div className="text-xs text-ink-600 flex items-center gap-2">
+                <span>{i.sourceType || 'user'}{i.sourceOrg ? ` • ${i.sourceOrg}` : ''}</span>
+                {typeof i.published !== 'undefined' && (
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${i.published ? 'bg-green-200 text-green-900' : (i.moderation==='rejected' ? 'bg-red-200 text-red-900' : 'bg-yellow-200 text-yellow-900')}`}>
+                    {i.published ? 'Published' : (i.moderation==='rejected' ? 'Rejected' : 'Pending')}
+                  </span>
+                )}
+              </div>
               {i.tags && i.tags.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">
                   {i.tags.map((t) => (
