@@ -49,7 +49,7 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
           <div className="whitespace-pre-wrap text-ink-700">{preview.first_step.content}</div>
         </div>
       )}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Button variant="primary" onClick={() => { window.location.href = `/tutorial/${tutorialId}`; }}>Open Tutorial</Button>
         <Button
           variant="secondary"

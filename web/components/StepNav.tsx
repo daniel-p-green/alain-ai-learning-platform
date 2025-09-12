@@ -17,7 +17,7 @@ type Props = {
 export function StepNav({ steps, currentStep, onStepChange }: Props) {
   if (!steps?.length) return null;
   return (
-    <div className="flex gap-2 mt-2">
+    <div className="flex flex-wrap gap-2 mt-2">
       {steps.map((s, i) => (
         <Button
           key={s.id}
