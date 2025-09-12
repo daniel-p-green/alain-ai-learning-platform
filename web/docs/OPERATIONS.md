@@ -32,3 +32,4 @@
 
 ## Caching
 - Optional Upstash KV caches listing and notebook JSON to reduce GitHub reads on cold starts.
+- KV is lazy-loaded and fully optional: if REDIS_URL/REDIS_TOKEN are not set, caching no-ops and the app builds without @upstash/redis installed.
