@@ -1,0 +1,84 @@
+import { Buffer } from "buffer";
+
+type PutFileParams = {
+  owner: string;
+  repo: string;
+  branch: string;
+  path: string;
+  content: string; // raw text (will be base64-encoded)
+  message: string;
+  sha?: string; // required for updates
+};
+
+async function ghFetch(path: string, init: RequestInit = {}) {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) throw new Error("GITHUB_TOKEN not set");
+  const base = "https://api.github.com";
+  const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token}`,
+    "X-GitHub-Api-Version": "2022-11-28",
+  } as Record<string, string>;
+  init.headers = { ...(init.headers || {}), ...headers };
+  const res = await fetch(base + path, init);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`GitHub API ${res.status}: ${text}`);
+  }
+  return res.json();
+}
+
+export async function getFileSha(owner: string, repo: string, path: string, branch: string): Promise<string | undefined> {
+  try {
+    const json = await ghFetch(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`);
+    return json.sha as string | undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export async function putFile(params: PutFileParams) {
+  const { owner, repo, branch, path, content, message, sha } = params;
+  const body = {
+    message,
+    content: Buffer.from(content, "utf-8").toString("base64"),
+    branch,
+    ...(sha ? { sha } : {}),
+  };
+  const json = await ghFetch(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+  });
+  return json as { content: { path: string; sha: string; html_url: string } };
+}
+
+export function ghEnv() {
+  const repo = process.env.GITHUB_REPO || ""; // owner/name
+  if (!repo.includes("/")) throw new Error("GITHUB_REPO must be 'owner/name'");
+  const [owner, name] = repo.split("/", 2);
+  const branch = process.env.GITHUB_BRANCH || "main";
+  const baseDir = process.env.NOTEBOOKS_DIR || "notebooks";
+  return { owner, repo: name, branch, baseDir };
+}
+
+export async function getFileContent(owner: string, repo: string, path: string, branch: string): Promise<{ content: string; sha?: string } | null> {
+  try {
+    const json = await ghFetch(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`);
+    if (json.encoding !== "base64" || !json.content) return null;
+    const buf = Buffer.from(json.content, "base64");
+    return { content: buf.toString("utf-8"), sha: json.sha };
+  } catch {
+    return null;
+  }
+}
+
+export async function listDir(owner: string, repo: string, path: string, branch: string): Promise<Array<{ path: string; name: string; sha: string }>> {
+  try {
+    const json = await ghFetch(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`);
+    if (!Array.isArray(json)) return [];
+    return json.filter((e: any) => e.type === "file").map((e: any) => ({ path: e.path as string, name: e.name as string, sha: e.sha as string }));
+  } catch {
+    return [];
+  }
+}
