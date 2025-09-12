@@ -139,9 +139,9 @@ export default function TutorialsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 md:px-8 py-8 space-y-6 text-ink-900">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">Tutorials</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {data && (
             <span className="text-sm text-ink-700">
               {(data?.pagination?.total ?? data?.tutorials?.length ?? 0)} tutorials
@@ -183,7 +183,7 @@ export default function TutorialsPage() {
       {/* Search and Filters */}
       <div className="bg-paper-50 border border-ink-100 rounded-card p-4 space-y-4">
         {/* Search */}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <input
             type="text"
             placeholder="Search tutorials..."

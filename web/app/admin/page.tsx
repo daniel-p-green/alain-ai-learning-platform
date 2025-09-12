@@ -90,7 +90,7 @@ export default function AdminPage() {
           <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} /> Publish
         </label>
         {error && <div className="text-red-500 text-sm">{error}</div>}
-        <button disabled={busy} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50">
+        <button disabled={busy} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50 w-full sm:w-auto whitespace-nowrap">
           {busy ? "Uploading…" : "Upload"}
         </button>
       </form>
