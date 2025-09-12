@@ -84,6 +84,64 @@ Admin role: in Clerk Dashboard → your user → publicMetadata, set `{ "role": 
 
 ---
 
+## About The Project (Devpost version)
+
+Inspiration: New models drop weekly, but adoption lags. Docs are passive, scattered, and inconsistent; "hello world" takes hours. I wanted a system where you paste a model link and get a hands‑on, runnable lesson that teaches best practices, pitfalls, and cost awareness — in minutes, locally or in the cloud.
+
+What It Does: Turns a model reference (Hugging Face, LM Studio, Ollama) into a guided, interactive tutorial with setup, runnable steps, and quick assessments. Lessons export to Jupyter/Colab and run via hosted or local OpenAI‑compatible endpoints with the same request shape.
+
+### How We Built It
+- Backend (Encore.ts):
+  - Execution service (provider routing, SSE)
+  - Tutorials service (CRUD, validation)
+  - Export service (Colab/Jupyter generation)
+- Teacher Model: GPT‑OSS‑20B with Harmony prompts, strict JSON schema, and auto‑repair to guarantee well‑formed lessons.
+- Frontend (Next.js):
+  - Model picker with instant preview
+  - Streaming output with real‑time progress
+  - "Show Request" + cURL copy functionality
+  - Directory with search/filters
+- Local/Offline: Identical UX across Poe (hosted) and OpenAI‑compatible endpoints (Ollama/LM Studio/vLLM).
+- ALAIN‑Kit: Research → Design → Develop → Validate workflow bakes instructional design into generation.
+
+### Challenges We Overcame
+- Unstructured Inputs: Model cards vary widely; solved with schema‑first generation + repair loop
+- Provider Differences: Normalized on OpenAI‑compatible requests with intelligent routing/fallbacks
+- Safety vs. Interactivity: Kept execution strictly parameterized (no arbitrary code) while preserving hands‑on learning
+- Cost Transparency: Added token estimates and preflight checks so users understand tradeoffs before they run
+
+### What We Learned
+- AI Teaching AI Works: GPT‑OSS can consistently synthesize high‑quality tutorials from heterogeneous sources
+- Schema‑First Wins: JSON schemas with validation/repair deliver reliability under messy real‑world inputs
+- Abstraction Matters: A clean provider layer unlocks seamless hosted ↔ local switching
+- Offline Is Empowering: True local capability enables classrooms, air‑gapped labs, and low‑connectivity regions
+- Community Effects: Standardized, shareable "blueprints" compound learning and reduce onboarding from hours to minutes
+
+### Technology Stack
+- Languages & Frameworks: TypeScript, React, Next.js, Tailwind CSS
+- Backend & Runtime: Encore.ts (Go/TypeScript), Node.js
+- AI & Providers: GPT‑OSS‑20B (teacher), Poe API (hosted), OpenAI‑compatible endpoints (Ollama, LM Studio)
+- Data & Auth: PostgreSQL, Clerk
+- Notebooks & Tools: nbformat/Jupyter, ipywidgets, Vitest, Docker
+- Dev & Ops: Vercel (web), Encore Cloud (backend), GitHub Actions (CI/CD)
+
+### Try It Out
+- Live Demo: [Demo URL]
+- GitHub: https://github.com/daniel-p-green/alain-ai-learning-platform
+
+Quick Local Start
+- Install: `npm install`
+- Offline (Ollama): `ollama pull gpt-oss:20b` then `npm run dev:offline`
+- Open: http://localhost:3000 → Generate → Run a step → Export to Colab
+
+### Additional Highlights
+- Key Features: Adapt Experience (Beginner/Intermediate/Advanced); Public Gallery with filters; "Show Request" + cURL copy; Schema validation with auto‑repair; Secure Colab export with preflight
+- Safety: No arbitrary code execution; only parameterized API calls. Secrets handled via Encore/Clerk. Preflight connectivity and smoke tests included
+- One‑Liner: Paste model link → get a runnable, graded lesson. Run locally or in the cloud with identical UX.
+
+### Built With (tags)
+clerk · docker · encore-cloud · encore.ts · github-actions · go · google-colab · gpt-oss-20b · ipywidgets · json · jupyter · lm-studio · nbformat · next.js · node.js · ollama · openai-compatible-api · poe-api · postgresql · react · sse · tailwind-css · typescript · vercel · vitest · vllm
+
 ## Submission Categories (Hackathon)
 
 - Best Local Agent: Offline, identical, safe. ALAIN generates interactive how‑to guides entirely on device with gpt‑oss via Ollama or LM Studio. Same UX as cloud, parameterized runs only, export to Jupyter. Local‑first without trade‑offs.
