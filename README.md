@@ -16,7 +16,7 @@
 
 ## The open source IKEA instruction layer for AI models
 
-### Learn AI with AI: pick any model in Hugging Face, Ollama, or LM Studio & get interactive how-to guides. Run locally or in the cloud with gpt-oss.
+Learn AI with AI. Paste any model (Hugging Face, Ollama, LM Studio) and get an interactive, runnable tutorial with setup, best practices, and export to Colab/Jupyter — locally or in the cloud.
 
 ---
 
@@ -35,38 +35,52 @@ Whether you're a researcher testing the latest models or a developer integrating
 
 ## Quick Links
 
-- 🎯 [Live Demo](#) (coming soon)
-- 🎥 [3-minute Demo Video](#)
-- 📝 [Devpost Submission](#)
-- 📚 [Documentation](#getting-started)
-- 💬 [Join our Community](#community)
+- Web docs: `web/docs/OPERATIONS.md`, `web/docs/DEVELOPER_GUIDE.md`
+- Gallery: `/notebooks` • Upload: `/upload` • Moderation (admin): `/admin/moderation`
 
-## About The Project
+## What’s Included (current)
 
-Inspiration
-New models drop weekly, but adoption lags. Docs are passive and inconsistent; “hello world” takes hours. ALAIN converts a model link into a hands‑on, runnable lesson that teaches setup, best practices, pitfalls, and cost awareness — in minutes, locally or in the cloud.
-
-What It Does
-Paste a model reference (Hugging Face, LM Studio, or Ollama) and get a guided, interactive tutorial with setup, runnable steps, and quick assessments. Lessons export to Jupyter/Colab and run via hosted (Poe) or local OpenAI‑compatible endpoints (Ollama/LM Studio/vLLM) with the same request shape.
-
-How We Built It
-- Backend (Encore.ts): execute/lessons/export; streaming handled at the Next.js API layer (SSE) for this demo; lessons validated against a schema before render/export.
-- Teacher model: GPT‑OSS‑20B (hosted via Poe) or local OpenAI‑compatible endpoints; Harmony prompts with strict JSON schema and a one‑shot repair pass.
-- Frontend (Next.js): Generate with one‑click samples (Hosted/Local), Settings with quick presets and tests, streaming output, and Colab/Jupyter export from a tutorial.
+- Gallery with metadata, thumbnails, search/filters (`/notebooks`)
+- Upload + author drafts (`/upload`), “Request Publish”, My Notebooks (`/my/notebooks`)
+- Admin moderation queue: Approve/Reject, publish state (`/admin/moderation`)
+- Viewer with per‑cell execution (client):
+  - Python via Pyodide (in‑browser, offline)
+  - JavaScript/TypeScript via Web Worker sandbox
+- Editor: Monaco for code, rich markdown, drag‑reorder, notebook metadata editor
+- Export to ALAIN JSON + open GitHub PR (button on viewer)
+- GitHub storage for notebooks; read‑through on cold start
+- Optional Upstash KV caching to reduce GitHub reads (lazy/optional)
 
 
-### One‑Click Demo (Judge Fast Path)
+## Quick Start (Web)
 
-- Hosted (Poe): open `/generate` → click “Use Example (Hosted)” → preview appears, then open tutorial and run a step.
-- Local (Ollama): ensure `ollama serve` and a model is available (`ollama pull gpt-oss:20b`) → `/generate` → click “Use Example (Local)”.
-- If not configured, a “Setup needed” callout links you to Settings → Environment Status, where quick presets and test buttons get you ready in seconds.
+1) From repo root: `cd web && npm install && npm run dev`
+2) Create `web/.env.local` with Clerk + GitHub:
 
-## Features
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
+GITHUB_TOKEN=...                  # repo contents:write
+GITHUB_REPO=owner/name
+GITHUB_BRANCH=main
+NOTEBOOKS_DIR=notebooks
+# Optional: LESSONS_DIR=alain-lessons
+# Optional KV: REDIS_URL=..., REDIS_TOKEN=...
+```
 
-- **Local/Offline First** - Full functionality without cloud dependencies
-- **Multi-Model Support** - Connect to any model with an OpenAI-compatible API
-- **Interactive Tutorials** - Step-by-step guides that work with your models
-- **Open Standards** - Built on open formats and protocols
+3) Open http://localhost:3000
+   - Gallery: `/notebooks`
+   - Upload: `/upload` (signed‑in)
+   - My drafts: `/my/notebooks` (signed‑in)
+   - Moderation: `/admin/moderation` (admin)
+
+Admin role: in Clerk Dashboard → your user → publicMetadata, set `{ "role": "admin" }`.
+
+## Execution
+
+- Python: client‑side via Pyodide (safe, offline)
+- JS/TS: client‑side via Web Worker sandbox
+- Server‑side: `/api/exec` stub ready; integrate a secure sandbox when desired
 
 ---
 
@@ -271,7 +285,7 @@ Roadmap
 
 —
 
-## Project Structure
+## Project Structure (high‑level)
 ```
 alain-ai-learning-platform/
 ├── backend/                 # Encore.ts APIs (execution, lessons, export)
@@ -281,26 +295,24 @@ alain-ai-learning-platform/
 ├── web/                     # Next.js app (Clerk auth, UI)
 │   └── app/                 # Generate page, tutorial player, settings
 ├── prompts/                 # ALAIN‑Kit prompts (Harmony format)
-├── POE_INTEGRATION_GUIDE.md # Provider usage and examples
-├── HACKATHON_README.md      # Hackathon context & architecture
+├── web/docs                 # Web app docs (operations + developer)
 └── env-config-example.txt   # Copy to .env.local for web
 ```
 
 Docs & Tools
 - Notebook Linter: `scripts/notebook_linter.py`
 
-### Onboarding + Settings (Web)
-- New self-contained module lives at `web/features/onboarding-settings/`.
-- Routes:
-  - `/onboarding` — 5-step wizard. Keys never leave the device.
-  - `/settings` — tabs: Account, Providers, Models, Appearance, Onboarding & Demo, Advanced.
-- Reset onboarding: Settings → Onboarding & Demo → Reset onboarding.
-- LocalStorage keys: `alain.onboarding.version`, `alain.onboarding.completed`, `alain.providers`, `alain.models`, `alain.ui.theme`.
-- Module docs: `web/features/onboarding-settings/README_OnboardingSettings.md`.
-- Best Practices: `docs/notebooks/notebook-best-practices.md`
-- Author Checklist: `docs/notebooks/notebook-quality-checklist.md`
-- Teaching Template: `docs/templates/teaching_template.ipynb`
-- More: `docs/notebooks/*`, `docs/gpt-oss/*`
+## Vercel (web)
+
+- Project Settings → General → Root Directory = `web`
+- Enable “Include files outside the Root Directory in the Build Step”
+- Production Branch: `main`
+- `web/vercel.json` uses `ignoreCommand` to skip deploys when `web/` unchanged
+
+## Notes
+
+- KV cache is optional and lazy‑loaded; builds do not require `@upstash/redis` unless `REDIS_URL` and `REDIS_TOKEN` are present.
+- Export to ALAIN writes JSON to a new branch (`export/alain-…`) and opens a PR targeting `GITHUB_BRANCH`.
 
 —
 
