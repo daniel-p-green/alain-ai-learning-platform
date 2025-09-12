@@ -11,6 +11,10 @@
   <a href="https://developer.poe.com/server-bots"><img src="https://img.shields.io/badge/Providers-Poe_%7C_OpenAI--compatible-795" alt="Providers: Poe | OpenAI-compatible"></a>
   <a href="web/docs/OPERATIONS.md#execution"><img src="https://img.shields.io/badge/Mode-Offline_Supported-2aa" alt="Offline Supported"></a>
 
+  <br/>
+  <br/>
+  <p><strong>AI Manuals for AI Models.</strong><br>Turn developer docs into active learning, powered by OpenAI gpt‑oss 20B.</p>
+
 </div>
 
 # ALAIN: Applied Learning AI Notebooks
