@@ -59,6 +59,7 @@ Open http://localhost:3000
 - Upload: `/upload` (signed‑in)
 - My drafts: `/my/notebooks` (signed‑in)
 - Moderation: `/admin/moderation` (admin)
+ - Tip: For From Text demos without the backend (e.g., Vercel), tick “Force fallback mode (no backend)” on the Generate page. This creates a local in‑memory tutorial you can open and “Render to Colab (web)”.
 
 Admin role: in Clerk Dashboard → your user → publicMetadata, set `{ "role": "admin" }`.
 
