@@ -50,9 +50,13 @@ export default function NotebooksGallery() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((i) => (
           <Link key={i.id} href={`/notebooks/${i.id}`} className="rounded border hover:border-alain-blue overflow-hidden group">
-            <div className="h-24 bg-gradient-to-br from-alain-blue/10 to-alain-yellow/10 p-3">
-              <div className="text-sm text-ink-700 line-clamp-4">{i.excerpt || ""}</div>
-            </div>
+            {i.thumb ? (
+              <img src={i.thumb} alt="thumbnail" className="h-24 w-full object-cover" />
+            ) : (
+              <div className="h-24 bg-gradient-to-br from-alain-blue/10 to-alain-yellow/10 p-3">
+                <div className="text-sm text-ink-700 line-clamp-4">{i.excerpt || ""}</div>
+              </div>
+            )}
             <div className="p-4">
               <div className="font-semibold group-hover:text-alain-blue">{i.title || i.id}</div>
               <div className="text-xs text-ink-600">{i.sourceType || "user"}{i.sourceOrg ? ` • ${i.sourceOrg}` : ""}</div>

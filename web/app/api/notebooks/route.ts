@@ -28,6 +28,18 @@ export async function GET(req: Request) {
         if (!fc) return { id: f.name.replace(/\.ipynb$/, ""), path: f.path };
         const nb = JSON.parse(fc.content);
         const meta = nb?.metadata || {};
+        let thumb: string | undefined = undefined;
+        if (Array.isArray(nb?.cells)) {
+          for (const c of nb.cells) {
+            if (c.cell_type !== 'code' || !Array.isArray(c.outputs)) continue;
+            for (const o of c.outputs) {
+              const data = o?.data || o?.png || undefined;
+              const png = data?.["image/png"];
+              if (png) { thumb = `data:image/png;base64,${Array.isArray(png) ? png.join("") : png}`; break; }
+            }
+            if (thumb) break;
+          }
+        }
         const firstCell = Array.isArray(nb?.cells) ? nb.cells.find((c: any) => c.cell_type === 'markdown') : undefined;
         const excerpt = firstCell ? String(Array.isArray(firstCell.source) ? firstCell.source.join("") : firstCell.source).replace(/[#*>`\-]/g, '').slice(0, 180) : undefined;
         const item = {
@@ -40,6 +52,8 @@ export async function GET(req: Request) {
           published: !!meta.published,
           moderation: meta.moderation || undefined,
           excerpt,
+          author: meta.author || undefined,
+          thumb,
         };
         if (kvEnabled()) await kvSet(metaKey, item, 300);
         return item;
