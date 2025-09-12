@@ -5,6 +5,7 @@ export function buildNotebookFromLesson(lesson: any) {
   const desc = meta.description || '';
   cells.push({ cell_type: 'markdown', metadata: {}, source: [`# ${title}\n`, `\n`, `${desc}\n`] });
   cells.push({ cell_type: 'code', metadata: {}, source: ["!pip -q install openai>=1.34.0\n"], outputs: [], execution_count: null });
+  // Provider env and client setup
   cells.push({ cell_type: 'code', metadata: {}, source: [
     "from openai import OpenAI\n",
     "import os\n",
@@ -12,8 +13,20 @@ export function buildNotebookFromLesson(lesson: any) {
     "key = os.environ.get('OPENAI_API_KEY') or 'ollama'\n",
     "client = OpenAI(base_url=base, api_key=key)\n",
   ], outputs: [], execution_count: null });
+  // Pre-flight connectivity check
+  cells.push({ cell_type: 'code', metadata: {}, source: [
+    "# Pre-flight: attempt a tiny call\n",
+    "try:\n",
+    "  _ = client.models.list()\n",
+    "  print('✅ Connected to provider.')\n",
+    "except Exception as e:\n",
+    "  print('⚠️ Pre-flight failed:', e)\n",
+  ], outputs: [], execution_count: null });
   const steps = Array.isArray(meta.steps) ? meta.steps : [];
   let order = 1;
+  const assessments = Array.isArray((lesson as any).assessments) ? (lesson as any).assessments : [];
+  const listAssessments = (order: number) => assessments.filter((a: any) => a.step_order === order);
+
   for (const s of steps) {
     cells.push({ cell_type: 'markdown', metadata: {}, source: [`## Step ${order}: ${s.title || ''}\n`, `\n`, `${s.content || ''}\n`] });
     const prompt = (s.code_template || '').toString();
@@ -23,6 +36,47 @@ export function buildNotebookFromLesson(lesson: any) {
       `resp = client.chat.completions.create(model=${JSON.stringify(meta.model || '')}, messages=[{"role":"user","content":PROMPT}], temperature=${t}, max_tokens=400)\n`,
       "print(resp.choices[0].message.content)\n",
     ], outputs: [], execution_count: null });
+    // Add assessments if available
+    const qs = listAssessments(order);
+    for (const a of qs) {
+      const mcq = [
+        `# Assessment for Step ${order}\n`,
+        `question = ${JSON.stringify(a.question || '')}\n`,
+        `options = ${JSON.stringify(a.options || [])}\n`,
+        `correct_index = ${Number(a.correct_index ?? 0)}\n`,
+        `print('Q:', question)\n`,
+        `for i, o in enumerate(options):\n    print(f"{i}. {o}")\n`,
+        `choice = 0  # <- change this to your answer index\n`,
+        `print('Correct!' if choice == correct_index else 'Incorrect')\n`,
+        `${a.explanation ? `print('Explanation:', ${JSON.stringify(a.explanation)})\n` : ''}`,
+      ];
+      cells.push({ cell_type: 'code', metadata: {}, source: mcq, outputs: [], execution_count: null });
+
+      const widget = [
+        `# Interactive quiz for Step ${order}\n`,
+        `import ipywidgets as widgets\n`,
+        `from IPython.display import display, Markdown\n`,
+        `q = ${JSON.stringify(a.question || '')}\n`,
+        `opts = ${JSON.stringify(a.options || [])}\n`,
+        `correct = ${Number(a.correct_index ?? 0)}\n`,
+        `rb = widgets.RadioButtons(options=[(o, i) for i, o in enumerate(opts)], description='', disabled=False)\n`,
+        `btn = widgets.Button(description='Submit Answer')\n`,
+        `out = widgets.Output()\n`,
+        `def on_click(b):\n`,
+        `  with out:\n`,
+        `    out.clear_output()\n`,
+        `    sel = rb.value if hasattr(rb, 'value') else 0\n`,
+        `    if sel == correct:\n`,
+        `      display(Markdown('**Correct!**'${a.explanation ? ` + ' — ' + ${JSON.stringify(a.explanation)}` : ''}))\n`,
+        `    else:\n`,
+        `      display(Markdown('Incorrect, please try again.'))\n`,
+        `btn.on_click(on_click)\n`,
+        `display(Markdown(f"### {q}"))\n`,
+        `display(rb, btn, out)\n`,
+      ];
+      cells.push({ cell_type: 'code', metadata: {}, source: widget, outputs: [], execution_count: null });
+    }
+
     order += 1;
   }
   return {
@@ -32,4 +86,3 @@ export function buildNotebookFromLesson(lesson: any) {
     nbformat_minor: 5,
   };
 }
-
