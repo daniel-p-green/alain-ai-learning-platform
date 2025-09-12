@@ -29,15 +29,15 @@ export default function BlueprintPage() {
 
       {/* Solution */}
       <section className="grid md:grid-cols-2 gap-6 items-start">
-        <div className="p-6 rounded-card bg-ink-900 text-white border border-ink-100/10 space-y-3">
+        <div className="p-6 rounded-card bg-alain-card text-ink-900 border border-alain-stroke/15 space-y-3 shadow-alain-sm">
           <h2 className="font-display font-semibold text-[32px] leading-[38px] tracking-tight">Paste link → working code in 1 click</h2>
-          <ul className="list-disc pl-5 space-y-1 text-white/80">
+          <ul className="list-disc pl-5 space-y-1 text-ink-700">
             <li>Reads model cards and repos (Hugging Face)</li>
             <li>Generates runnable lessons with setup, concepts, and MCQs</li>
             <li>1‑click Colab or fully local (Ollama/vLLM)</li>
             <li>Guardrails: citations, linting, and safe defaults</li>
           </ul>
-          <div className="text-sm text-white/70">“What took days now takes minutes.”</div>
+          <div className="text-sm text-ink-700">“What took days now takes minutes.”</div>
         </div>
         <div className="p-6 rounded-card bg-paper-0 border border-ink-100 space-y-4 shadow-card">
           <h3 className="font-display font-semibold text-[24px] leading-[30px] tracking-tight">Why it matters</h3>
@@ -59,15 +59,15 @@ export default function BlueprintPage() {
       </section>
 
       {/* Closing CTA */}
-      <section className="p-6 rounded-card bg-ink-900 text-white border border-ink-100/10">
+      <section className="p-6 rounded-card bg-alain-card text-ink-900 border border-alain-stroke/15 shadow-alain-sm">
         <div className="md:flex items-center justify-between gap-6">
           <div>
             <h3 className="font-display font-semibold text-[32px] leading-[38px] tracking-tight">Stop reading docs. Start shipping models.</h3>
-            <p className="font-inter text-white/80">Paste link. Get lesson. Run it. Reuse it. ALAIN makes every model ready to run.</p>
+            <p className="font-inter text-ink-700">Paste link. Get lesson. Run it. Reuse it. ALAIN makes every model ready to run.</p>
           </div>
           <div className="mt-4 md:mt-0 flex gap-3">
             <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Try ALAIN</a>
-            <a href="/settings" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-white/30 text-white">Configure providers</a>
+            <a href="/settings" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-alain-stroke/30 text-alain-blue">Configure providers</a>
           </div>
         </div>
       </section>

@@ -15,38 +15,38 @@ type Props = {
 export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props) {
   if (!preview) return null;
   return (
-    <div className="mt-4 border border-gray-800 rounded-lg p-4 bg-gray-900 space-y-3">
+    <div className="mt-4 border border-ink-100 rounded-card p-4 bg-paper-0 space-y-3 shadow-alain-sm">
       <div className="flex items-center gap-2">
         <h2 className="text-xl font-semibold">Preview</h2>
         {repaired && (
-          <span className="text-xs px-2 py-0.5 rounded bg-yellow-800 text-yellow-200 border border-yellow-700">Repaired</span>
+          <span className="text-xs px-2 py-0.5 rounded-alain-lg bg-alain-yellow text-alain-blue border border-alain-stroke/20">Repaired</span>
         )}
       </div>
-      <div className="text-white font-medium">{preview.title}</div>
-      <div className="text-gray-300">{preview.description}</div>
+      <div className="text-alain-text font-medium">{preview.title}</div>
+      <div className="text-ink-700">{preview.description}</div>
       {preview.model_maker && (
-        <div className="text-sm text-gray-300 border border-gray-800 rounded p-3 bg-gray-950/40">
-          <div className="font-medium text-gray-200 mb-1">Model Maker</div>
+        <div className="text-sm text-ink-700 border border-ink-100 rounded-card p-3 bg-alain-card">
+          <div className="font-medium text-alain-text mb-1">Model Maker</div>
           <div>{preview.model_maker.name} ({preview.model_maker.org_type})</div>
           <div className="flex gap-2 mt-1">
             {preview.model_maker.homepage && <a className="text-brand-blue hover:underline" href={preview.model_maker.homepage} target="_blank">Homepage</a>}
             {preview.model_maker.repo && <a className="text-brand-blue hover:underline" href={preview.model_maker.repo} target="_blank">Repo</a>}
-            {preview.model_maker.license && <span className="text-gray-400">License: {preview.model_maker.license}</span>}
+            {preview.model_maker.license && <span className="text-ink-600">License: {preview.model_maker.license}</span>}
           </div>
         </div>
       )}
       {Array.isArray(preview.learning_objectives) && preview.learning_objectives.length > 0 && (
-        <div className="text-sm text-gray-400">
-          <div className="font-medium text-gray-300 mb-1">Objectives</div>
+        <div className="text-sm text-ink-700">
+          <div className="font-medium text-alain-text mb-1">Objectives</div>
           <ul className="list-disc pl-5">
             {preview.learning_objectives.slice(0,3).map((o: string, i: number) => <li key={i}>{o}</li>)}
           </ul>
         </div>
       )}
       {preview.first_step && (
-        <div className="text-sm text-gray-300">
-          <div className="font-medium text-gray-300 mb-1">Step 1: {preview.first_step.title}</div>
-          <div className="whitespace-pre-wrap text-gray-400">{preview.first_step.content}</div>
+        <div className="text-sm text-ink-700">
+          <div className="font-medium text-alain-text mb-1">Step 1: {preview.first_step.title}</div>
+          <div className="whitespace-pre-wrap text-ink-700">{preview.first_step.content}</div>
         </div>
       )}
       <div className="flex gap-2">

@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="brand/ALAIN-wordmarks/ALAIN_logo_primary_blue-bg.png" alt="ALAIN logo" width="420" />
+  <img src="web/public/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
 
   <br/>
   <br/>
@@ -12,7 +12,7 @@
 
 </div>
 
-# ALAIN — Applied Learning AI Notebooks
+# ALAIN — The IKEA Instruction Layer for AI Models
 
 ## The open source IKEA instruction layer for AI models
 
@@ -40,6 +40,20 @@ Whether you're a researcher testing the latest models or a developer integrating
 - 📝 [Devpost Submission](#)
 - 📚 [Documentation](#getting-started)
 - 💬 [Join our Community](#community)
+
+## About The Project
+
+Inspiration
+New models drop weekly, but adoption lags. Docs are passive and inconsistent; “hello world” takes hours. ALAIN converts a model link into a hands‑on, runnable lesson that teaches setup, best practices, pitfalls, and cost awareness — in minutes, locally or in the cloud.
+
+What It Does
+Paste a model reference (Hugging Face, LM Studio, or Ollama) and get a guided, interactive tutorial with setup, runnable steps, and quick assessments. Lessons export to Jupyter/Colab and run via hosted (Poe) or local OpenAI‑compatible endpoints (Ollama/LM Studio/vLLM) with the same request shape.
+
+How We Built It
+- Backend (Encore.ts): execute/lessons/export; streaming handled at the Next.js API layer (SSE) for this demo; lessons validated against a schema before render/export.
+- Teacher model: GPT‑OSS‑20B (hosted via Poe) or local OpenAI‑compatible endpoints; Harmony prompts with strict JSON schema and a one‑shot repair pass.
+- Frontend (Next.js): Generate with one‑click samples (Hosted/Local), Settings with quick presets and tests, streaming output, and Colab/Jupyter export from a tutorial.
+
 
 ### One‑Click Demo (Judge Fast Path)
 

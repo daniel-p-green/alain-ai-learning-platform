@@ -44,7 +44,7 @@ function Primary({ href, children }: { href: string; children: React.ReactNode }
 
 function Secondary({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center rounded-brand border border-gray-800 px-5 py-2 text-ink hover:bg-gray-50">
+    <Link href={href} className="inline-flex items-center rounded-brand border border-ink-100 px-5 py-2 text-ink-900 hover:bg-paper-50">
       {children}
     </Link>
   );

@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`bg-paper-0 text-ink-900 antialiased ${league.variable} ${inter.variable} ${montserrat.variable} font-inter`}>
+        <body className={`bg-alain-bg text-alain-text antialiased ${league.variable} ${inter.variable} ${montserrat.variable} font-inter`}>
           {/* Skip link for keyboard users */}
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-alain-blue text-white px-3 py-1 rounded">Skip to content</a>
           {/* NavBar with mobile drawer */}

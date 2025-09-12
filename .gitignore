@@ -13,3 +13,17 @@ hackathon-notes/*
 !hackathon-notes/.gitkeep
 
 # Root-level personal notes are kept in hackathon-notes/
+
+# Ignore stray top-level brand assets (real app assets live in web/public/brand)
+/brand/
+
+# Node/Next build and local env noise (web)
+web/.env.local
+web/.next
+web/tsconfig.tsbuildinfo
+*.tsbuildinfo
+*.log
+
+# Test sandbox directory
+test_sandbox/
+.vercel

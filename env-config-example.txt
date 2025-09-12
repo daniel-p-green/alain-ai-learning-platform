@@ -7,7 +7,7 @@ CLERK_SECRET_KEY=your_clerk_secret_key_here
 
 # === AI API CONFIGURATION ===
 # Poe API Key (get from https://poe.com/api_key)
-POE_API_KEY=your_poe_api_key_here
+POE_API_KEY=***REMOVED***
 
 # OpenAI Compatible API Configuration
 OPENAI_BASE_URL=https://api.openai.com/v1
@@ -16,7 +16,7 @@ TEACHER_PROVIDER=poe
 
 # === BACKEND SECRETS (for Encore.dev) ===
 # These are configured through Encore.dev dashboard
-# POE_API_KEY=your_poe_api_key_here
+# POE_API_KEY=***REMOVED***
 # OPENAI_BASE_URL=https://api.openai.com/v1
 # OPENAI_API_KEY=your_openai_api_key_here
 # TEACHER_PROVIDER=poe # or 'openai-compatible' for local (e.g., Ollama)
