@@ -4,7 +4,7 @@ import BrandLogo from "./BrandLogo";
 import dynamic from "next/dynamic";
 import MobileNav from "./MobileNav";
 import EnvStatusBadge from "./EnvStatusBadge";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export default function NavBar() {
   const OfflineBadge = dynamic(() => import("./OfflineBadge"), { ssr: false });
@@ -29,11 +29,18 @@ export default function NavBar() {
           <EnvStatusBadge />
           {/* Auth: show Sign In when signed out; avatar menu when signed in */}
           <SignedOut>
-            <SignInButton>
-              <button className="inline-flex items-center h-10 px-3 rounded-alain-lg bg-white/10 hover:bg-white/20 text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">
-                Sign in
-              </button>
-            </SignInButton>
+            <div className="flex items-center gap-2">
+              <SignInButton>
+                <button className="inline-flex items-center h-10 px-3 rounded-alain-lg bg-white/10 hover:bg-white/20 text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">
+                  Sign in
+                </button>
+              </SignInButton>
+              <SignUpButton>
+                <button className="inline-flex items-center h-10 px-3 rounded-alain-lg bg-white text-alain-blue hover:opacity-90 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">
+                  Sign up
+                </button>
+              </SignUpButton>
+            </div>
           </SignedOut>
           <SignedIn>
             <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} afterSignOutUrl="/" />
