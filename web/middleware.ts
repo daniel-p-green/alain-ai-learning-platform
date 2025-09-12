@@ -13,6 +13,15 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware((auth, req) => {
+  // Admin-only routes
+  const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
+  if (isAdminRoute(req)) {
+    const claims: any = auth().sessionClaims;
+    if (claims?.publicMetadata?.role !== "admin") {
+      // Not admin: block
+      return new Response("Forbidden", { status: 403 });
+    }
+  }
   if (isPublicRoute(req)) return;
   auth().protect();
 });
