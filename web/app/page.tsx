@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default function Page() {
-  redirect("/blueprint");
-}
+export { metadata } from "./blueprint/page";
+export { default } from "./blueprint/page";
