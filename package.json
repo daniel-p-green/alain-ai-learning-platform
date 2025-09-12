@@ -2,7 +2,7 @@
   "name": "leap-app",
   "version": "1.0.0",
   "type": "module",
-  "packageManager": "bun",
+  "packageManager": "npm@10",
   "scripts": {
     "test:pure": "npm --workspace backend run test:pure",
     "test:all": "npm --workspace backend run test:all",
