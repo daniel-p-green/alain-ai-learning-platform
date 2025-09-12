@@ -33,7 +33,10 @@ function manualValidate(obj) {
       if (!s || typeof s !== 'object') errors.push(`steps[${i}] must be object`);
       if (!s?.title || typeof s.title !== 'string') errors.push(`steps[${i}].title required`);
       if (!s?.content || typeof s.content !== 'string') errors.push(`steps[${i}].content required`);
-      if (s?.step_order != null && typeof s.step_order !== 'number') errors.push(`steps[${i}].step_order must be number`);
+      if (s?.step_order != null) {
+        if (typeof s.step_order !== 'number') errors.push(`steps[${i}].step_order must be number`);
+        else if (s.step_order < 1) errors.push(`steps[${i}].step_order must be >= 1`);
+      }
       if (s?.code_template != null && typeof s.code_template !== 'string') errors.push(`steps[${i}].code_template must be string`);
       if (s?.content && s.content.length > LIMITS.maxContentLen) errors.push(`steps[${i}].content too long`);
       if (s?.code_template && s.code_template.length > LIMITS.maxCodeLen) errors.push(`steps[${i}].code_template too long`);
@@ -127,4 +130,3 @@ async function main() {
 }
 
 main();
-

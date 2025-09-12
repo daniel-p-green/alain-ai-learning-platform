@@ -43,3 +43,8 @@
 - A quick end-to-end smoke for the web fallback is available at `scripts/web_smoke_from_text.sh`.
 - Usage:
   - `bash scripts/web_smoke_from_text.sh` (BASE defaults to `http://localhost:3000`)
+
+## API Responses
+- Logical generation/repair failures now return `422 Unprocessable` with `{ success:false, error:{...} }`.
+- Upstream/non-JSON backend responses return `502 Bad Gateway`.
+- Backend non-2xx statuses are propagated.

@@ -20,8 +20,21 @@ export async function POST(req: Request) {
       fixes: body.fixes || ["add_description", "add_intro_step"]
     })
   });
-  const repair = await repairResp.json();
-  if (!repair.success) return Response.json(repair, { status: 200 });
+  let repair: any = null;
+  try {
+    repair = await repairResp.json();
+  } catch (e) {
+    // Backend returned non-JSON; treat as bad gateway
+    return new Response(`Repair failed: invalid response from backend`, { status: 502 });
+  }
+  if (!repairResp.ok) {
+    // Propagate backend HTTP status on non-2xx
+    return Response.json({ success: false, error: { code: 'backend_error', message: repair?.error?.message || 'Repair failed' } }, { status: repairResp.status });
+  }
+  if (!repair?.success) {
+    // Map logical failure to 422 Unprocessable
+    return Response.json(repair, { status: 422 });
+  }
 
   // 2) Import repaired lesson
   const token = await getToken();

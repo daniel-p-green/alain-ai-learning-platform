@@ -6,8 +6,13 @@ import { backendUrl } from "../../../lib/backend";
 export async function POST(req: Request) {
   const { userId, getToken } = await safeAuth();
   if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
-  const body = await req.json().catch(() => null);
-  if (!body?.textContent) return new Response("textContent required", { status: 400 });
+  let body: any = null;
+  try {
+    body = await req.json();
+  } catch (e) {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
+  if (!body?.textContent || typeof body.textContent !== 'string') return new Response("textContent required", { status: 400 });
 
   const teacherModel = body.teacherModel || "GPT-OSS-20B";
   const difficulty = body.difficulty || "beginner";
@@ -29,16 +34,26 @@ export async function POST(req: Request) {
         body: JSON.stringify({ textContent: body.textContent, difficulty, teacherModel, includeAssessment, provider, includeReasoning }),
         signal: genCtrl.signal,
       });
-      gen = await genResp.json();
+      try {
+        gen = await genResp.json();
+      } catch {
+        clearTimeout(genTimer);
+        return new Response("Upstream generation returned invalid JSON", { status: 502 });
+      }
       clearTimeout(genTimer);
-      if (!gen.success) return Response.json(gen, { status: 200 });
+      if (!gen.success) return Response.json(gen, { status: 422 });
     }
-  } catch {}
+  } catch (e) {
+    // Preserve fallback behavior; proceed to local generation below
+  }
   clearTimeout(genTimer);
 
   let lesson = gen?.lesson;
   if (!lesson) {
-    const title = (body.textContent as string).split(/\n|\./)[0]?.slice(0, 80) || 'Generated Lesson';
+    // Title: first non-empty line, strip URLs, trim to 80
+    const firstLine = (body.textContent as string).split(/\r?\n/).find((l:string)=>l.trim().length>0) || '';
+    const withoutUrls = firstLine.replace(/https?:\/\/\S+/g, '').replace(/\S+@\S+\.[\w]+/g, '').trim();
+    const title = (withoutUrls || 'Generated Lesson').slice(0, 80);
     lesson = {
       title,
       description: 'Generated from pasted text (local fallback).',
