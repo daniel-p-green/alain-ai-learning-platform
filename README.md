@@ -159,3 +159,9 @@ Quick Local Start
 
 ### Built With (tags)
 TypeScript · React · Next.js · Tailwind CSS · Monaco · ipywidgets · nbformat · Clerk · Encore.ts · Node.js · Vercel · GitHub Actions · Docker · GPT‑OSS‑20B · Poe API · OpenAI‑compatible API · Ollama · LM Studio · vLLM · PostgreSQL · SSE · JSON · Vitest
+
+---
+
+## License
+
+MIT License — see `LICENSE` for full text.
