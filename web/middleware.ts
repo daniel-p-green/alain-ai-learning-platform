@@ -1,10 +1,7 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-// Temporarily disable Clerk middleware to unblock deploys.
-// API routes still perform auth checks in their handlers using safeAuth().
-export default function middleware(_req: NextRequest) {
-  return NextResponse.next();
-}
+// Enable Clerk middleware for auth/session on all app and API routes
+export default clerkMiddleware();
 
 export const config = {
   matcher: [
