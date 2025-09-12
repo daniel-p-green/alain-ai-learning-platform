@@ -13,7 +13,8 @@
 
   <br/>
   <br/>
-  <p><strong>AI Manuals for AI Models.</strong><br>Turn developer docs into active learning, powered by OpenAI gpt‑oss 20B.</p>
+  <p><strong>AI Manuals for AI Models.</strong></p>
+  <p>Turn developer docs into active learning, powered by OpenAI gpt‑oss 20B.</p>
 
 </div>
 
