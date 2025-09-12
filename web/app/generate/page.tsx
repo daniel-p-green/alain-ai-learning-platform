@@ -31,6 +31,28 @@ export default function GenerateLessonPage() {
   const [envBanner, setEnvBanner] = useState<any>(null);
   const [forceFallback, setForceFallback] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
+  // Research mode: controls accuracy vs time tradeoff
+  const [researchMode, setResearchMode] = useState<'standard'|'thorough'|'fallback'>("standard");
+  const researchCopy = {
+    standard: {
+      label: 'Standard research',
+      note: 'Fetches model info from Hugging Face and generates a solid baseline (~2–6s).',
+      includeAssessment: true,
+      includeReasoning: false,
+    },
+    thorough: {
+      label: 'Thorough research',
+      note: 'Adds reasoning summary and deeper checks for higher accuracy (~5–12s).',
+      includeAssessment: true,
+      includeReasoning: true,
+    },
+    fallback: {
+      label: 'Web-only fallback',
+      note: 'No backend research; creates a minimal local lesson for demos/offline.',
+      includeAssessment: false,
+      includeReasoning: false,
+    },
+  } as const;
 
   // Prefill from query params for quick demo links
   useEffect(() => {
@@ -166,10 +188,20 @@ export default function GenerateLessonPage() {
           return;
         }
         setProgress("asking");
-        resp = await fetch(`/api/generate-from-text${forceFallback ? '?fallback=1' : ''}`, {
+        // In text mode, researchMode 'fallback' is most relevant; still pass flags for clarity
+        resp = await fetch(`/api/generate-from-text${forceFallback || researchMode==='fallback' ? '?fallback=1' : ''}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ textContent: rawTextInput, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
+          body: JSON.stringify({
+            textContent: rawTextInput,
+            difficulty,
+            includeAssessment: researchCopy[researchMode].includeAssessment,
+            showReasoning: researchCopy[researchMode].includeReasoning,
+            researchLevel: researchMode,
+            provider: teacherProvider,
+            targetProvider,
+            targetModel,
+          })
         });
       } else {
         const parsed = parseHfInput(hfUrl);
@@ -183,7 +215,16 @@ export default function GenerateLessonPage() {
         resp = await fetch("/api/generate-lesson", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hfUrl: parsed.url, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
+          body: JSON.stringify({
+            hfUrl: parsed.url,
+            difficulty,
+            includeAssessment: researchCopy[researchMode].includeAssessment,
+            showReasoning: researchCopy[researchMode].includeReasoning,
+            researchLevel: researchMode,
+            provider: teacherProvider,
+            targetProvider,
+            targetModel,
+          })
         });
       }
       let data: any = null;
@@ -292,12 +333,23 @@ export default function GenerateLessonPage() {
       </div>
       <form ref={formRef} onSubmit={onSubmit} className="space-y-3">
         {source === 'hf' ? (
-          <input
-            className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
-            placeholder="https://huggingface.co/owner/repo"
-            value={hfUrl}
-            onChange={(e) => setHfUrl(e.target.value)}
-          />
+          <div className="space-y-2">
+            <input
+              className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
+              placeholder="https://huggingface.co/owner/repo"
+              value={hfUrl}
+              onChange={(e) => setHfUrl(e.target.value)}
+            />
+            <div className="rounded-card border border-ink-100 bg-paper-50 p-3">
+              <div className="text-sm font-medium text-ink-900">Research mode</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button type="button" onClick={()=> setResearchMode('standard')} className={`px-3 py-1 rounded-card border ${researchMode==='standard'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Standard</button>
+                <button type="button" onClick={()=> setResearchMode('thorough')} className={`px-3 py-1 rounded-card border ${researchMode==='thorough'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Thorough</button>
+                <button type="button" onClick={()=> { setResearchMode('fallback'); setSource('text'); setForceFallback(true); }} className={`px-3 py-1 rounded-card border ${researchMode==='fallback'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Web-only</button>
+              </div>
+              <div className="mt-1 text-xs text-ink-700">{researchCopy[researchMode].note}</div>
+            </div>
+          </div>
         ) : source === 'text' ? (
           <div className="space-y-2">
             <label className="text-sm text-ink-700">Paste text</label>
@@ -307,6 +359,7 @@ export default function GenerateLessonPage() {
               value={rawTextInput}
               onChange={(e) => setRawTextInput(e.target.value)}
             />
+            <div className="text-xs text-ink-700">{researchCopy[researchMode].note}</div>
           </div>
         ) : (
           <div className="space-y-2">
