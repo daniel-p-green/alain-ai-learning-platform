@@ -1,12 +1,14 @@
 import NotebookViewer from "@/components/NotebookViewer";
 
+export const dynamic = "force-dynamic";
+
 async function fetchNotebook(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/notebooks/${id}`, { cache: "no-store" });
   if (!res.ok) return null;
   return res.json();
 }
 
-export default async function NotebookPage({ params }: { params: { id: string } }) {
+export default async function NotebookPage({ params, searchParams }: { params: { id: string }, searchParams?: { [k: string]: string | string[] | undefined } }) {
   const rec = await fetchNotebook(params.id);
   if (!rec) {
     return <div className="mx-auto max-w-3xl p-6">Notebook not found.</div>;
@@ -17,6 +19,9 @@ export default async function NotebookPage({ params }: { params: { id: string } 
         <div>
           <h1 className="text-2xl font-semibold">{rec.meta.title}</h1>
           <p className="text-sm text-ink-600">{rec.meta.sourceType}{rec.meta.sourceOrg ? ` • ${rec.meta.sourceOrg}` : ""}</p>
+          {searchParams?.commit && (
+            <p className="text-xs mt-1"><a className="text-alain-blue underline" href={String(searchParams.commit)} target="_blank">View commit</a></p>
+          )}
         </div>
         <div className="flex gap-2">
           <a href={`/notebooks/${rec.meta.id}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">Edit</a>
@@ -25,6 +30,12 @@ export default async function NotebookPage({ params }: { params: { id: string } 
           </form>
         </div>
       </div>
+      {rec.nb?.metadata && (
+        <div className="text-xs text-ink-600">
+          {rec.nb.metadata.license && <span>License: {rec.nb.metadata.license} · </span>}
+          {rec.nb.metadata.provenance_url && <a className="underline" href={rec.nb.metadata.provenance_url} target="_blank">Source</a>}
+        </div>
+      )}
       <NotebookViewer nb={rec.nb} />
     </div>
   );

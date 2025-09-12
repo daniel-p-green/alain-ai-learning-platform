@@ -18,6 +18,9 @@ export async function POST(req: Request) {
   const title = String(form.get("title") || "Untitled Notebook");
   const sourceType = String(form.get("sourceType") || "user") as "company" | "user";
   const sourceOrg = form.get("sourceOrg") ? String(form.get("sourceOrg")) : undefined;
+  const license = form.get("license") ? String(form.get("license")) : undefined;
+  const provenanceUrl = form.get("provenanceUrl") ? String(form.get("provenanceUrl")) : undefined;
+  const published = (String(form.get("published") || "false").toLowerCase() === "true");
   const tags = String(form.get("tags") || "").split(",").map(t => t.trim()).filter(Boolean);
 
   if (!file || typeof file === "string") {
@@ -39,15 +42,25 @@ export async function POST(req: Request) {
     tags,
     createdAt: new Date().toISOString(),
   };
-  // Persist to GitHub repo
+  // Persist to GitHub repo, embedding metadata in nb.metadata
   try {
+    nb.metadata = {
+      ...(nb.metadata || {}),
+      title,
+      sourceType,
+      sourceOrg,
+      tags,
+      license,
+      provenance_url: provenanceUrl,
+      published,
+    };
     const { owner, repo, branch, baseDir } = ghEnv();
     const path = `${baseDir}/${id}.ipynb`;
     const existingSha = await getFileSha(owner, repo, path, branch);
     const res = await putFile({ owner, repo, branch, path, content: JSON.stringify(nb, null, 2), message: `Add notebook ${id}: ${title}`, sha: existingSha });
     // Stash to memory for fast read
     putNotebook({ meta, nb });
-    return NextResponse.json({ ok: true, id, meta, path: res.content.path });
+    return NextResponse.json({ ok: true, id, meta, path: res.content.path, commitUrl: (res as any).content?.html_url });
   } catch (e: any) {
     return NextResponse.json({ error: `github: ${e.message}` }, { status: 500 });
   }
