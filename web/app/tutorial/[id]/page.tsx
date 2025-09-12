@@ -4,6 +4,7 @@ import { PromptCell } from "../../../components/PromptCell";
 import { Button } from "../../../components/Button";
 import { StreamingOutput } from "../../../components/StreamingOutput";
 import { StepNav } from "../../../components/StepNav";
+import { buildNotebookFromLesson } from "../../../lib/notebookExport";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { backendUrl } from "../../../lib/backend";
 import type { ProviderInfo, ProviderModel } from "../../../lib/types";
@@ -43,6 +44,10 @@ type ExecutionState = {
 };
 
 async function fetchTutorial(id: string): Promise<Tutorial> {
+  if (id.startsWith('local-')) {
+    const res = await fetch(`/api/tutorials/local/${id}`, { cache: 'no-store' });
+    return res.json();
+  }
   const res = await fetch(backendUrl(`/tutorials/${id}`), { cache: "no-store" });
   return res.json();
 }
@@ -114,6 +119,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function loadAssessments() {
       if (!tutorial) return;
+      if (String(tutorial.id).startsWith('local-')) { setAssessments([]); return; }
       const base = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
       const step = tutorial.steps[idx];
       const url = new URL(`${base}/assessments/${tutorial.id}`);
@@ -328,7 +334,33 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       </div>
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-3xl font-bold">{tutorial.title}</h1>
-        <span className="text-xs px-2 py-1 rounded-card border border-ink-100 bg-paper-0 text-ink-700">Runtime: {runtime}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs px-2 py-1 rounded-card border border-ink-100 bg-paper-0 text-ink-700">Runtime: {runtime}</span>
+          <button
+            className="text-xs px-2 py-1 rounded-card border border-ink-100 bg-paper-0 hover:bg-paper-50"
+            onClick={async () => {
+              try {
+                const id = String(tutorial.id);
+                let t: any = tutorial;
+                if (!id.startsWith('local-')) {
+                  const res = await fetch(backendUrl(`/tutorials/${id}`), { cache: 'no-store' });
+                  t = await res.json();
+                }
+                const nb = buildNotebookFromLesson(t);
+                const blob = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${(t.title || 'lesson').replace(/\s+/g,'_')}.ipynb`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+              } catch {}
+            }}
+            title="Render a simple .ipynb using web-only export builder"
+          >Render to Colab (web)</button>
+        </div>
       </div>
       <p className="text-ink-700">{tutorial.description}</p>
 

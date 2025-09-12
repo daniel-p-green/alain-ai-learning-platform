@@ -44,17 +44,14 @@ export function buildNotebook(
   }
   cells.push({ cell_type: "markdown", metadata: {}, source: intro });
 
-  // 1b) Reproducibility tips
-  const repro: string[] = [
-    "\n---\n\n",
-    "### Reproducibility Tips\n",
-    "- Avoid network access in core cells.\n",
-    "- Seed randomness where applicable (e.g., numpy, random).\n",
-    "- Pin package versions in your own environment if needed.\n",
-    "- Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` via env (or Colab userdata).\n",
-    "- Widgets optional: text-based MCQs are provided if widgets are unavailable.\n",
-  ];
-  cells.push({ cell_type: "markdown", metadata: {}, source: repro });
+  // Reproducibility tips (inline)
+  intro.push("\n---\n\n");
+  intro.push("### Reproducibility Tips\n");
+  intro.push("- Avoid network access in core cells.\n");
+  intro.push("- Seed randomness where applicable (e.g., numpy, random).\n");
+  intro.push("- Pin package versions in your own environment if needed.\n");
+  intro.push("- Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` via env (or Colab userdata).\n");
+  intro.push("- Widgets optional: text-based MCQs are provided if widgets are unavailable.\n");
 
   // 2) Setup: install deps
   cells.push({
@@ -201,10 +198,9 @@ export function buildNotebook(
     // Step execution scaffold (uses global client from smoke test)
     const prompt = (s.code_template || '').endsWith("\n") ? (s.code_template || '') : (s.code_template || '') + "\n";
     const t = s.model_params?.temperature ?? 0.7;
-    const promptJson = JSON.stringify(prompt);
     const stepSource = [
       "# Run the step prompt using the configured provider\n",
-      `PROMPT = ${promptJson}\n`,
+      `PROMPT = """\n${prompt}"""\n`,
       "from openai import OpenAI\n",
       "import os\n",
       "client = OpenAI(base_url=os.environ['OPENAI_BASE_URL'], api_key=os.environ['OPENAI_API_KEY'])\n",

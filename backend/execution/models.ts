@@ -16,7 +16,7 @@ type ModelInfoResponse = {
   notes?: string;
 };
 
-let cache: { ts: number; data: ModelsResponse } | null = null;
+let cache: { ts: number; key: string; data: ModelsResponse } | null = null;
 const CACHE_MS = 60_000; // 60s cache
 
 function classifyProvider(base: string): ModelsResponse['provider'] {
@@ -46,12 +46,13 @@ export const listProviderModels = api<{}, ModelsResponse>(
   { expose: true, method: 'GET', path: '/providers/models' },
   async () => {
     const now = Date.now();
-    if (cache && now - cache.ts < CACHE_MS) {
+    const envBase = (process.env.OPENAI_BASE_URL || '').trim();
+    const key = envBase;
+    if (envBase && cache && now - cache.ts < CACHE_MS && cache.key === key) {
       return { ...cache.data, cached: true };
     }
 
     const candidates: string[] = [];
-    const envBase = (process.env.OPENAI_BASE_URL || '').trim();
     if (envBase) candidates.push(envBase);
     if (!candidates.some(b => /11434/.test(b))) candidates.push('http://localhost:11434/v1');
     if (!candidates.some(b => /1234\b/.test(b))) candidates.push('http://localhost:1234/v1');
@@ -60,13 +61,13 @@ export const listProviderModels = api<{}, ModelsResponse>(
       const models = await fetchModels(base);
       if (models.length > 0) {
         const out: ModelsResponse = { provider: classifyProvider(base), baseUrl: base, models };
-        cache = { ts: now, data: out };
+        if (envBase) cache = { ts: now, key, data: out };
         return out;
       }
     }
 
     const out: ModelsResponse = { provider: 'unknown', baseUrl: envBase || null, models: [] };
-    cache = { ts: now, data: out };
+    if (envBase) cache = { ts: now, key, data: out };
     return out;
   }
 );

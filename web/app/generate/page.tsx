@@ -19,7 +19,7 @@ export default function GenerateLessonPage() {
   type ModelMaker = { name: string; org_type: string; homepage?: string|null; license?: string|null; repo?: string|null };
   type Preview = { title: string; description: string; learning_objectives: string[]; first_step?: { title: string; content: string } | null; model_maker?: ModelMaker | null };
   type ResultMeta = { repaired?: boolean; reasoning_summary?: string };
-  type GenerateResult = { tutorialId: number; meta?: ResultMeta; preview?: Preview };
+  type GenerateResult = { tutorialId: number | string; meta?: ResultMeta; preview?: Preview };
   const [result, setResult] = useState<null | GenerateResult>(null);
   const [repairing, setRepairing] = useState(false);
   const [providers, setProviders] = useState<ProviderInfo[]>([]);
@@ -29,6 +29,7 @@ export default function GenerateLessonPage() {
   const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [envBanner, setEnvBanner] = useState<any>(null);
+  const [forceFallback, setForceFallback] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
 
   // Prefill from query params for quick demo links
@@ -165,7 +166,7 @@ export default function GenerateLessonPage() {
           return;
         }
         setProgress("asking");
-        resp = await fetch("/api/generate-from-text", {
+        resp = await fetch(`/api/generate-from-text${forceFallback ? '?fallback=1' : ''}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ textContent: rawTextInput, difficulty, includeAssessment: true, provider: teacherProvider, targetProvider, targetModel })
@@ -267,6 +268,12 @@ export default function GenerateLessonPage() {
             setTimeout(() => formRef.current?.requestSubmit(), 0);
           }}
         >Use Example (Local)</Button>
+      </div>
+      <div className="mt-2 p-3 rounded-card border border-yellow-200 bg-yellow-50 text-xs text-ink-900">
+        <label className="inline-flex items-center gap-2">
+          <input type="checkbox" checked={forceFallback} onChange={(e)=>setForceFallback(e.target.checked)} />
+          Force fallback mode (no backend) for From Text. Helpful on Vercel. Only From Text is supported in fallback.
+        </label>
       </div>
       {source === 'local' && availableModels.length === 0 && (
         <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
@@ -459,8 +466,15 @@ export default function GenerateLessonPage() {
           preview={result.preview as any}
           repaired={!!result.meta?.repaired}
           onExport={async (suggestedName) => {
-            const res = await fetch(backendUrl(`/export/colab/${result.tutorialId}`));
-            const nb = await res.json();
+            const id = String(result.tutorialId);
+            let nb: any = null;
+            if (id.startsWith('local-')) {
+              const res = await fetch(`/api/export/colab/local/${id}`);
+              nb = await res.json();
+            } else {
+              const res = await fetch(backendUrl(`/export/colab/${id}`));
+              nb = await res.json();
+            }
             const blob = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');

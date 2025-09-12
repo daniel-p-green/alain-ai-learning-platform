@@ -6,7 +6,7 @@ type ModelMaker = { name: string; org_type: string; homepage?: string|null; lice
 type Preview = { title: string; description: string; learning_objectives: string[]; first_step?: { title: string; content: string } | null; model_maker?: ModelMaker | null };
 
 type Props = {
-  tutorialId: number;
+  tutorialId: number | string;
   preview?: Preview;
   repaired?: boolean;
   onExport: (suggestedName: string) => Promise<void> | void;
@@ -50,10 +50,7 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
         </div>
       )}
       <div className="flex gap-2">
-        <Button
-          variant="primary"
-          onClick={() => { window.location.href = `/tutorial/${tutorialId}`; }}
-        >Open Tutorial</Button>
+        <Button variant="primary" onClick={() => { window.location.href = `/tutorial/${tutorialId}`; }}>Open Tutorial</Button>
         <Button
           variant="secondary"
           onClick={async () => {
@@ -61,26 +58,28 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
             await onExport(suggested);
           }}
         >Export Notebook</Button>
-        <Button
-          variant="secondary"
-          onClick={async () => {
-            try {
-              const res = await fetch(backendUrl(`/tutorials/${tutorialId}`));
-              const lesson = await res.json();
-              const blob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `${(preview.title || 'lesson').replace(/\s+/g,'_')}.json`;
-              document.body.appendChild(a);
-              a.click();
-              a.remove();
-              URL.revokeObjectURL(url);
-            } catch {
-              // noop
+        <Button variant="secondary" onClick={async () => {
+          try {
+            const id = String(tutorialId);
+            let lesson: any = null;
+            if (id.startsWith('local-')) {
+              const res = await fetch(`/api/tutorials/local/${id}`);
+              lesson = await res.json();
+            } else {
+              const res = await fetch(backendUrl(`/tutorials/${id}`));
+              lesson = await res.json();
             }
-          }}
-        >Download JSON</Button>
+            const blob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${(preview.title || 'lesson').replace(/\s+/g,'_')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          } catch {}
+        }}>Download JSON</Button>
       </div>
     </div>
   );

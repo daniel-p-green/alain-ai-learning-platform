@@ -33,3 +33,13 @@
 ## Caching
 - Optional Upstash KV caches listing and notebook JSON to reduce GitHub reads on cold starts.
 - KV is lazy-loaded and fully optional: if REDIS_URL/REDIS_TOKEN are not set, caching no-ops and the app builds without @upstash/redis installed.
+
+## Fallback Mode (no backend)
+- From Text generation supports a web-only fallback that does not require the Encore backend.
+- Enable on the Generate page by ticking “Force fallback mode (no backend)” or by calling `/api/generate-from-text?fallback=1`.
+- Fallback creates an in-memory tutorial (`id` starts with `local-`). You can open it, run steps (client-side), and use “Render to Colab (web)” on the tutorial page to download a simple `.ipynb`.
+
+## Smoke script
+- A quick end-to-end smoke for the web fallback is available at `scripts/web_smoke_from_text.sh`.
+- Usage:
+  - `bash scripts/web_smoke_from_text.sh` (BASE defaults to `http://localhost:3000`)
