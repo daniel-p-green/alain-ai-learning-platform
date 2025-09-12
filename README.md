@@ -107,6 +107,22 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 
 ---
 
+## Testing Instructions
+- No login required for core flow.
+- Web‑only fallback:
+  - Open https://alain-ruddy.vercel.app/generate
+  - Enable “Force fallback mode (no backend)”
+  - Paste model: https://huggingface.co/openai/gpt-oss-20b
+  - Click Generate → open tutorial → run a step → Export to Colab
+- Local quick check:
+  - `cd web && npm install && npm run dev`
+  - Visit http://localhost:3000/generate, enable fallback, repeat steps above
+- Optional offline (Ollama):
+  - `ollama pull gpt-oss:20b`
+  - In app, choose Local/OpenAI‑compatible and set model `gpt-oss:20b`
+
+---
+
 ## Devpost Write‑Up
 See `hackathon-notes/DEVPOST-Submission.md` for the full story, judging guidance, and screenshots.
 
