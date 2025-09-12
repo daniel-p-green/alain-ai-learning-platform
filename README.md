@@ -27,6 +27,7 @@ Learn AI with AI: paste any model (Hugging Face, Ollama, LM Studio), get an inte
 - Editor: Monaco (code), rich Markdown, drag‑reorder, metadata editor (title, tags, org, license, source URL, publish).
 - Export to ALAIN: One‑click export to ALAIN JSON and open a GitHub PR.
 - Storage: Notebooks saved to GitHub; read‑through on cold start. Optional KV cache to reduce GitHub reads.
+- Examples: `examples/poe` contains standalone Poe integration scripts for quick testing.
 
 ## Quick Start (Web)
 
@@ -85,6 +86,12 @@ Admin role: in Clerk Dashboard → your user → publicMetadata, set `{ "role": 
 - Project → Settings → Git → Production Branch = `main`
 - `web/vercel.json` uses `ignoreCommand` to skip builds when `web/` unchanged
 - Configure env vars (Clerk, GitHub; optional KV)
+
+## Housekeeping (Cleanup)
+- Removed unused experimental landing routes (Concepts, Brand Demo variants) from `web/app/` and middleware.
+- Deleted `alain-landing/` static prototype.
+- Moved root-level Poe example scripts to `examples/poe/`.
+- Standardized package manager on npm; removed `bun.lock`.
 
 ## Tech Stack
 - Frontend: Next.js (App Router), React, Tailwind, Monaco, @uiw/react-md-editor
