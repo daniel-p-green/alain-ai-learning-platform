@@ -38,6 +38,9 @@ ALAIN turns a model reference into an interactive tutorial that teaches setup, s
 - In‑browser execution for Python (Pyodide) and JS/TS (Web Worker).
 - One‑click export to Jupyter/Colab for sharing and grading.
 
+### Inspiration
+Docs are passive, scattered, and often not runnable. New models drop weekly but “hello world” still takes hours. ALAIN makes models learnable in minutes by turning any reference (Hugging Face, local, hosted) into a step‑by‑step, graded lesson you can actually run.
+
 ---
 
 ## Try It In 2 Minutes
@@ -74,6 +77,12 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 - Teacher: GPT‑OSS‑20B synthesizes lessons under a strict JSON schema with auto‑repair.
 - Providers: Hosted (Poe) and OpenAI‑compatible (local: Ollama/LM Studio) share the same request shape.
 - Execution: Runs client‑side for quick feedback; server execution path stubbed for future sandboxing.
+
+### Why GPT‑OSS‑20B (Teacher)
+- Open weights and local‑first: runs on Ollama/LM Studio with the same API shape as hosted endpoints.
+- Strong instruction following: produces stepwise, teachable content with minimal prompt overhead.
+- Reliable JSON: high schema adherence with fewer repair passes.
+- Practical fit: fast enough for iterative generation and real‑time previews.
 
 ---
 
