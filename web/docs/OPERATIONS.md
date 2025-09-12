@@ -9,7 +9,7 @@
 - Optional KV cache (Upstash)
 
 ## Routes
-- Public: /, /generate, /brand-demo, /notebooks, /notebooks/[id], /api/notebooks
+- Public: /, /generate, /notebooks, /notebooks/[id], /api/notebooks
 - Auth: /notebooks/[id]/remix, /upload, /my/notebooks
 - Admin: /admin, /admin/moderation, /api/admin/**
 
