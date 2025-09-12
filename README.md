@@ -13,8 +13,8 @@
 
 </div>
 
-# ALAIN — Applied Learning AI Notebooks
-The open‑source “IKEA‑style” instruction layer for AI models.
+# ALAIN: Applied Learning AI Notebooks
+The open‑source “IKEA‑style” instructions and assembly layer for AI models.
 
 Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. Export to Jupyter/Colab. Run locally or hosted with identical UX.
 
@@ -122,9 +122,6 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
   - In app, choose Local/OpenAI‑compatible and set model `gpt-oss:20b`
 
 ---
-
-## Devpost Write‑Up
-See `hackathon-notes/DEVPOST-Submission.md` for the full story, judging guidance, and screenshots.
 
 ## License
 
