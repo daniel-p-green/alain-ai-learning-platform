@@ -6,6 +6,9 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/generate(.*)",
   "/brand-demo(.*)",
+  // Public read-only APIs (discovery, health)
+  "/api/health(.*)",
+  "/api/providers(.*)",
   // Static assets and _next are excluded by matcher below
 ]);
 
