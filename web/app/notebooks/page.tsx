@@ -34,17 +34,17 @@ export default function NotebooksGallery() {
 
   return (
     <div className="mx-auto max-w-5xl p-6 space-y-6">
-      <div className="flex flex-wrap items-end gap-3 justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3 justify-between">
         <h1 className="text-2xl font-semibold">Notebooks</h1>
-        <div className="flex flex-wrap items-center gap-2">
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title" className="rounded border px-3 py-2 w-56" />
-          <select value={type} onChange={(e) => setType(e.target.value)} className="rounded border px-3 py-2">
+        <div className="flex flex-col sm:flex-row flex-wrap sm:items-center gap-2">
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title" className="rounded border px-3 py-2 w-full sm:w-56" />
+          <select value={type} onChange={(e) => setType(e.target.value)} className="rounded border px-3 py-2 w-full sm:w-auto">
             <option value="all">All</option>
             <option value="company">Company</option>
             <option value="user">User</option>
           </select>
-          <input value={org} onChange={(e) => setOrg(e.target.value)} placeholder="Org" className="rounded border px-3 py-2 w-40" />
-          <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder="Tag" className="rounded border px-3 py-2 w-40" />
+          <input value={org} onChange={(e) => setOrg(e.target.value)} placeholder="Org" className="rounded border px-3 py-2 w-full sm:w-40" />
+          <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder="Tag" className="rounded border px-3 py-2 w-full sm:w-40" />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

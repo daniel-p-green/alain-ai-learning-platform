@@ -14,7 +14,7 @@ export default function BlueprintPage() {
         <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-3xl">
           Turns a model reference (Hugging Face, LM Studio, Ollama) into a guided, interactive tutorial with setup, runnable steps, and quick assessments. Export to Colab/Jupyter. Run hosted or fully local with the same request shape.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Generate a lesson</a>
           <a href="/tutorials" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Browse tutorials</a>
         </div>
@@ -58,12 +58,12 @@ export default function BlueprintPage() {
 
       {/* Closing CTA */}
       <section className="p-6 rounded-card bg-alain-card text-ink-900 border border-alain-stroke/15 shadow-alain-sm">
-        <div className="md:flex items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
           <div>
             <h3 className="font-display font-semibold text-[28px] leading-[34px] tracking-tight">Paste link. Get lesson. Run it.</h3>
             <p className="font-inter text-ink-700">Identical UX in the cloud or fully local. Export to Colab in one click.</p>
           </div>
-          <div className="mt-4 md:mt-0 flex gap-3">
+          <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
             <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Try ALAIN</a>
             <a href="/settings" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-alain-stroke/30 text-alain-blue">Configure providers</a>
           </div>
