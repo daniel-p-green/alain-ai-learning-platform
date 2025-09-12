@@ -318,7 +318,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           const ghUrl = repo ? `https://github.com/${repo}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}` : null;
           return (
             <a
-              className="text-xs text-gray-400 hover:underline"
+              className="text-xs text-ink-600 hover:underline"
               target="_blank"
               href={ghUrl || `https://github.com/new`}
               rel="noopener noreferrer"
@@ -328,18 +328,18 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       </div>
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-3xl font-bold">{tutorial.title}</h1>
-        <span className="text-xs px-2 py-1 rounded border border-gray-700 bg-gray-900 text-gray-300">Runtime: {runtime}</span>
+        <span className="text-xs px-2 py-1 rounded-card border border-ink-100 bg-paper-0 text-ink-700">Runtime: {runtime}</span>
       </div>
-      <p className="text-gray-400">{tutorial.description}</p>
+      <p className="text-ink-700">{tutorial.description}</p>
 
       {tutorial.model_maker && (
-        <div className="bg-gray-900 rounded-lg p-3 text-sm text-gray-300">
-          <div className="font-semibold text-white">Model Maker</div>
+        <div className="bg-alain-card rounded-card p-3 text-sm text-ink-700 border border-alain-stroke/15">
+          <div className="font-semibold text-alain-text">Model Maker</div>
           <div>{tutorial.model_maker.name} ({tutorial.model_maker.org_type})</div>
           <div className="flex gap-2 mt-1">
             {tutorial.model_maker.homepage && <a className="text-brand-blue hover:underline" href={tutorial.model_maker.homepage} target="_blank">Homepage</a>}
             {tutorial.model_maker.repo && <a className="text-brand-blue hover:underline" href={tutorial.model_maker.repo} target="_blank">Repo</a>}
-            {tutorial.model_maker.license && <span className="text-gray-400">License: {tutorial.model_maker.license}</span>}
+            {tutorial.model_maker.license && <span className="text-ink-600">License: {tutorial.model_maker.license}</span>}
           </div>
         </div>
       )}
@@ -354,19 +354,19 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
       {/* Error Banner */}
       {executionState.status === 'error' && executionState.error && (
-        <div className="bg-red-900/20 border border-red-700 rounded-lg p-4">
+        <div className="bg-white border border-red-300 rounded-card p-4">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 text-red-400">⚠️</div>
+            <div className="w-5 h-5 text-red-600">⚠️</div>
             <div>
-              <h3 className="font-semibold text-red-400">
+              <h3 className="font-semibold text-red-700">
                 {executionState.error.code === 'rate_limited' && 'Rate Limited'}
                 {executionState.error.code === 'authentication_failed' && 'Authentication Failed'}
                 {executionState.error.code === 'model_not_found' && 'Model Not Found'}
                 {executionState.error.code === 'execution_error' && 'Execution Error'}
               </h3>
-              <p className="text-sm text-red-300">{executionState.error.message}</p>
+              <p className="text-sm text-red-600">{executionState.error.message}</p>
               {executionState.error.code === 'rate_limited' && (
-                <p className="text-xs text-red-400 mt-1">Try again in a few moments</p>
+                <p className="text-xs text-red-600 mt-1">Try again in a few moments</p>
               )}
             </div>
           </div>
@@ -376,13 +376,13 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3">
           <h2 className="text-xl font-semibold">{step.title}</h2>
-          <div className="whitespace-pre-wrap text-gray-200">{step.content}</div>
+          <div className="whitespace-pre-wrap text-ink-900">{step.content}</div>
           {/* Provider/model picker for run-time */}
           <div className="flex items-center gap-2 text-sm">
-            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)} aria-label="Select AI provider">
+            <select className="px-2 py-1 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={runProvider} onChange={(e)=> setRunProvider(e.target.value)} aria-label="Select AI provider">
               {providers.map((p)=> (<option key={p.id} value={p.id}>{p.name}</option>))}
             </select>
-            <select className="px-2 py-1 rounded bg-gray-800 border border-gray-700" value={runModel} onChange={(e)=> setRunModel(e.target.value)} aria-label="Select AI model">
+            <select className="px-2 py-1 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={runModel} onChange={(e)=> setRunModel(e.target.value)} aria-label="Select AI model">
               <option value="">{tutorial?.model || 'Model'}</option>
               {(providers.find((p)=> p.id===runProvider)?.models || []).map((m)=> (
                 <option key={m.id} value={m.id}>{m.name || m.id}</option>
@@ -392,7 +392,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
           {/* Provider status banner */}
           {!providerAvailable && (
-            <div className="bg-red-900/20 border border-red-700 rounded-lg p-2 text-sm text-red-300">
+            <div className="bg-white border border-red-300 rounded-card p-2 text-sm text-red-600">
               Provider not configured. Set keys in Settings and pick a working provider/model.
             </div>
           )}
@@ -410,14 +410,14 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
           {/* Assessments */}
           {assessments.length > 0 && (
-            <div className="bg-gray-800 rounded-lg p-3 space-y-3">
+            <div className="bg-alain-card rounded-card p-3 space-y-3 border border-alain-stroke/15">
               <h3 className="font-semibold">Quick Check</h3>
               {assessments.map((a) => (
                 <div key={a.id} className="space-y-2">
-                  <div className="text-gray-200">{a.question}</div>
+                  <div className="text-alain-text">{a.question}</div>
                   <div className="space-y-1">
                     {a.options.map((opt, i) => (
-                      <label key={i} className="flex items-center gap-2 text-sm text-gray-300">
+                      <label key={i} className="flex items-center gap-2 text-sm text-ink-800">
                         <input
                           type="radio"
                           name={`a-${a.id}`}
@@ -449,7 +449,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
                     )}
                   </div>
                   {assessmentResult?.explanation && (
-                    <div className="text-xs text-gray-400">{assessmentResult.explanation}</div>
+                    <div className="text-xs text-ink-700">{assessmentResult.explanation}</div>
                   )}
                 </div>
               ))}
@@ -457,12 +457,12 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           )}
 
           {/* Experience Adaptation */}
-          <div className="bg-gray-800 rounded-lg p-3 space-y-2">
+          <div className="bg-alain-card rounded-card p-3 space-y-2 border border-alain-stroke/15">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">Adapt Experience</h3>
               <div className="flex items-center gap-2 text-sm">
-                <label className="text-gray-300">Target</label>
-                <select className="px-2 py-1 rounded bg-gray-900 border border-gray-700" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)} aria-label="Select target difficulty level">
+                <label className="text-ink-800">Target</label>
+                <select className="px-2 py-1 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)} aria-label="Select target difficulty level">
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
@@ -491,12 +491,12 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
               </div>
             </div>
             {adapted && (
-              <div className="mt-1 p-3 rounded border border-indigo-700 bg-indigo-900/10">
-                <div className="text-sm text-indigo-300 font-medium mb-1">Adapted for {targetDifficulty}</div>
-                <div className="whitespace-pre-wrap text-indigo-100">{adapted}</div>
+              <div className="mt-1 p-3 rounded-card border border-alain-stroke/20 bg-alain-card">
+                <div className="text-sm text-alain-text font-medium mb-1">Adapted for {targetDifficulty}</div>
+                <div className="whitespace-pre-wrap text-ink-700">{adapted}</div>
               </div>
             )}
-            <div className="text-xs text-gray-500">Uses teacher model; original content remains unchanged.</div>
+            <div className="text-xs text-ink-700">Uses teacher model; original content remains unchanged.</div>
           </div>
 
           {/* Progress */}
@@ -556,12 +556,12 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         </div>
 
         {showRequest && (
-          <div className="text-xs bg-gray-900 border border-gray-800 rounded p-3">
+          <div className="text-xs bg-paper-0 border border-ink-100 rounded-card p-3">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-gray-400">Last request payload</div>
+              <div className="text-ink-700">Last request payload</div>
               <Button className="px-2 py-0.5" variant="secondary" onClick={() => navigator.clipboard.writeText(JSON.stringify(lastRequest || {}, null, 2))}>Copy JSON</Button>
             </div>
-            <pre className="whitespace-pre-wrap text-gray-300">{JSON.stringify(lastRequest || {}, null, 2)}</pre>
+            <pre className="whitespace-pre-wrap text-ink-900">{JSON.stringify(lastRequest || {}, null, 2)}</pre>
           </div>
         )}
         <StreamingOutput
@@ -574,39 +574,39 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
         />
 
           {/* Copy helpers */}
-          <div className="bg-gray-900 border border-gray-800 rounded p-3 space-y-2">
+          <div className="bg-paper-0 border border-ink-100 rounded-card p-3 space-y-2">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-300">Copy as</div>
+              <div className="text-sm text-ink-700">Copy as</div>
               <div className="flex gap-2">
                 <Button className="px-2 py-1 text-xs" variant="secondary" onClick={() => navigator.clipboard.writeText(curl)}>curl</Button>
                 <Button className="px-2 py-1 text-xs" variant="secondary" onClick={() => navigator.clipboard.writeText(sdk)}>OpenAI SDK (JS)</Button>
               </div>
             </div>
-            <pre className="text-xs whitespace-pre-wrap text-gray-400">{curl}</pre>
+            <pre className="text-xs whitespace-pre-wrap text-ink-700">{curl}</pre>
           </div>
 
           {/* Budget Indicators */}
           {executionState.status === 'completed' && executionState.tokenCount && (
-            <div className="bg-gray-800 rounded-lg p-3 space-y-2">
-              <h4 className="font-medium text-gray-300">Execution Summary</h4>
+            <div className="bg-alain-card rounded-card p-3 space-y-2 border border-alain-stroke/15">
+              <h4 className="font-medium text-alain-text">Execution Summary</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-400">Duration:</span>
-                  <div className="text-white font-mono">{formatTime(getElapsedTime())}</div>
+                  <span className="text-ink-700">Duration:</span>
+                  <div className="text-ink-900 font-mono">{formatTime(getElapsedTime())}</div>
                 </div>
                 <div>
-                  <span className="text-gray-400">Est. Tokens
+                  <span className="text-ink-700">Est. Tokens
                     <span
-                      className="ml-1 text-xs text-gray-500 cursor-help"
+                      className="ml-1 text-xs text-ink-600 cursor-help"
                       title="Approximate only, derived from streamed characters (~4 chars per token). Provider-reported usage may differ."
                     >
                       ⓘ
                     </span>
                   </span>
-                  <div className="text-white font-mono">~{executionState.tokenCount}</div>
+                  <div className="text-ink-900 font-mono">~{executionState.tokenCount}</div>
                 </div>
                 <div className="col-span-2">
-                  <span className="text-gray-400">Est. Cost:</span>
+                  <span className="text-ink-700">Est. Cost:</span>
                   <CostHint provider={runProvider} model={runModel || tutorial.model} tokens={executionState.tokenCount || 0} />
                 </div>
               </div>
@@ -637,7 +637,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
       </div>
 
       {toast && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded bg-gray-900 border border-gray-700 text-white shadow">{toast}</div>
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 shadow-alain-sm">{toast}</div>
       )}
     </div>
   );
@@ -652,12 +652,12 @@ function CostHint({ provider, model, tokens }: { provider: string; model: string
   };
   const key = (model || '').toLowerCase();
   const c = COSTS[key];
-  if (!c) return <div className="text-white font-mono">N/A</div>;
+  if (!c) return <div className="text-ink-900 font-mono">N/A</div>;
   const cost = (tokens / 1000) * ((c.in || 0) + (c.out || 0));
   return (
-    <div className="text-white font-mono inline-flex items-center gap-2">
+    <div className="text-ink-900 font-mono inline-flex items-center gap-2">
       ~${cost.toFixed(4)}
-      <span className="text-xs text-gray-500" title="Rough estimate; varies by provider and direction.">ⓘ</span>
+      <span className="text-xs text-ink-600" title="Rough estimate; varies by provider and direction.">ⓘ</span>
     </div>
   );
 }
@@ -673,7 +673,7 @@ function ColabHint({ tutorial }: { tutorial: Tutorial }) {
     colabUrl = `https://colab.research.google.com/github/${repo}/blob/${encodeURIComponent(branch)}/${path}`;
   }
   return (
-    <div className="text-xs text-gray-500 mt-2">
+    <div className="text-xs text-ink-700 mt-2">
       Tip: To open in Google Colab, visit <a className="text-brand-blue hover:underline" href="https://colab.research.google.com" target="_blank" rel="noopener noreferrer">colab.research.google.com</a> and choose "Upload" to select the downloaded <code>.ipynb</code>.
       {colabUrl && (
         <>

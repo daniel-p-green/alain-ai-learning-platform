@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 
 type Props = {
   variant?: "blue" | "yellow";
@@ -17,6 +16,6 @@ export default function BrandLogo({ variant, width = 160, height = 40, className
     if (document.documentElement.classList.contains("theme-yellow")) v = "yellow";
   }
   const src = v === "yellow" ? "/brand/ALAIN_logo_primary_yellow-bg.svg" : "/brand/ALAIN_logo_primary_blue-bg.svg";
-  return <Image src={src} alt="ALAIN" width={width} height={height} priority className={className} />;
+  // Use native <img> to avoid any SVG optimization quirks and ensure reliable loading
+  return <img src={src} alt="ALAIN" width={width} height={height} className={className} />;
 }
-

@@ -74,6 +74,7 @@ export default function EnvStatusBadge() {
             </button>
             <Link className="h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 inline-flex items-center" href="/settings">Open Settings</Link>
             <button className="h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 text-left disabled:opacity-50" disabled={busy} onClick={runTests}>{busy ? 'Running tests…' : 'Run tests'}</button>
+            <Link className="h-8 px-3 rounded-[12px] border border-ink-100 bg-paper-0 inline-flex items-center" href="/health">Open Health</Link>
           </div>
           {msg && <div className="mt-2 text-xs text-ink-700">{msg}</div>}
         </div>

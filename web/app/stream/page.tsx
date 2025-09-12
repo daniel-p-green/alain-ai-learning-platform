@@ -68,10 +68,10 @@ export default function StreamDemo() {
     <div className="max-w-3xl mx-auto p-6 space-y-4">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">Streaming Demo</h1>
-        <p className="text-gray-500 text-sm">Runs a small prompt and streams the model output in real time.</p>
+        <p className="text-ink-700 text-sm">Runs a small prompt and streams the model output in real time.</p>
       </div>
       <SignedOut>
-        <div className="text-gray-300">
+        <div className="text-ink-700">
           Please sign in to run the demo. <SignInButton />
         </div>
       </SignedOut>

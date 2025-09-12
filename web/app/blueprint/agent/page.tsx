@@ -11,7 +11,7 @@ export default function AgentVariant() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(0,87,173,0.18),rgba(251,218,12,0.12)_40%,transparent_70%)]" />
       <main className="relative z-10 mx-auto max-w-6xl px-6 py-16">
         <section className="text-center space-y-6">
-          <p className="text-xs uppercase tracking-widest text-gray-500">Imagine</p>
+          <p className="text-xs uppercase tracking-widest text-ink-700">Imagine</p>
           <h1 className="text-5xl md:text-7xl font-black leading-tight">IKEA for AI.</h1>
           <p className="mx-auto max-w-3xl text-lg md:text-xl text-gray-700">
             ALAIN turns raw models into runnable lessons in one click. Paste a Hugging Face link → get working
@@ -55,7 +55,7 @@ function Primary({ href, children }: { href: string; children: React.ReactNode }
 
 function Secondary({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center justify-center rounded-brand border border-gray-800 px-5 py-2 text-ink hover:bg-gray-50">
+    <Link href={href} className="inline-flex items-center justify-center rounded-brand border border-ink-100 px-5 py-2 text-ink-900 hover:bg-paper-50">
       {children}
     </Link>
   );

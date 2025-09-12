@@ -293,7 +293,7 @@ export default function GenerateLessonPage() {
           />
         ) : source === 'text' ? (
           <div className="space-y-2">
-            <label className="text-sm text-gray-300">Paste text</label>
+            <label className="text-sm text-ink-700">Paste text</label>
             <textarea
               className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 min-h-[140px] focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
               placeholder="Paste any content here (docs, article, notes) to generate a lesson."
@@ -303,7 +303,7 @@ export default function GenerateLessonPage() {
           </div>
         ) : (
           <div className="space-y-2">
-            <label className="text-sm text-gray-300">Local model</label>
+            <label className="text-sm text-ink-700">Local model</label>
             {availableModels.length > 0 ? (
               <select
                 className="p-2 rounded-card bg-paper-0 border border-ink-100 w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
@@ -356,7 +356,7 @@ export default function GenerateLessonPage() {
         {providersLoading && <div className="text-xs text-ink-700">Loading providers…</div>}
         {providersError && <div className="text-xs text-ink-700">{providersError}</div>}
         <select
-          className="p-2 rounded bg-gray-900 border border-gray-800"
+          className="p-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
           title="Select difficulty level"
@@ -365,11 +365,11 @@ export default function GenerateLessonPage() {
           <option value="intermediate">Intermediate</option>
           <option value="advanced">Advanced</option>
         </select>
-        <div className="flex items-center gap-2 text-sm text-gray-300">
+        <div className="flex items-center gap-2 text-sm text-ink-900">
           <label htmlFor="teacher-provider" className="whitespace-nowrap">Teacher Provider</label>
           <select
             id="teacher-provider"
-            className="p-2 rounded bg-gray-900 border border-gray-800"
+            className="p-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
             value={teacherProvider}
             onChange={(e) => setTeacherProvider(e.target.value as any)}
             title="Choose Poe or a local OpenAI‑compatible endpoint (e.g., Ollama)"
@@ -377,7 +377,7 @@ export default function GenerateLessonPage() {
             <option value="poe">Poe (hosted)</option>
             <option value="openai-compatible">Local (OpenAI‑compatible)</option>
           </select>
-          <span className="text-xs text-gray-500">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
+          <span className="text-xs text-ink-700">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
         <div className="flex gap-2">
           <Button type="submit" variant="accent" disabled={loading || (source==='hf' ? !hfUrl.trim() : source==='text' ? !rawTextInput.trim() : !targetModel.trim())}>
@@ -416,10 +416,10 @@ export default function GenerateLessonPage() {
       )}
 
       {!result && error && errorDetails.length > 0 && (
-        <div className="mt-3 text-sm text-gray-300">
+        <div className="mt-3 text-sm text-ink-700">
           <div className="mb-1">Try automatic fixes:</div>
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3 text-xs text-gray-400">
+            <div className="flex items-center gap-3 text-xs text-ink-600">
               <label className="inline-flex items-center gap-1" title="Add 2–3 sentence description if missing"><input type="checkbox" defaultChecked readOnly /> add_description</label>
               <label className="inline-flex items-center gap-1" title="Create an intro step if steps are missing"><input type="checkbox" defaultChecked readOnly /> add_intro_step</label>
               <label className="inline-flex items-center gap-1" title="Limit to ~3 strong steps"><input type="checkbox" defaultChecked readOnly /> compact_steps</label>
@@ -520,6 +520,6 @@ function OllamaContextHint({ modelName }: { modelName: string }) {
   }, [modelName]);
   if (!ctx) return null;
   return (
-    <div className="text-xs text-gray-500">Context length: ~{ctx} tokens</div>
+    <div className="text-xs text-ink-700">Context length: ~{ctx} tokens</div>
   );
 }

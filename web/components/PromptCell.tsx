@@ -32,7 +32,7 @@ export function PromptCell({ codeTemplate, onChange, onExecute, disabled }: Prop
         editorRef.current = monaco.editor.create(monacoRef.current!, {
           value: codeTemplate || "",
           language: "markdown",
-          theme: "vs-dark",
+          theme: "vs",
           automaticLayout: true,
           minimap: { enabled: false },
         });
@@ -69,10 +69,10 @@ export function PromptCell({ codeTemplate, onChange, onExecute, disabled }: Prop
 
   return (
     <div className="space-y-2">
-      <div ref={monacoRef} className={`h-48 border border-gray-800 rounded ${ready ? "block" : "hidden"}`} />
+      <div ref={monacoRef} className={`h-48 border border-ink-100 rounded ${ready ? "block" : "hidden"}`} />
       {!ready && (
         <textarea
-          className="w-full min-h-32 p-3 bg-gray-900 rounded border border-gray-800 focus:border-blue-500 focus:outline-none"
+          className="w-full min-h-32 p-3 bg-paper-0 text-ink-900 rounded border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
           value={codeTemplate}
           onChange={(e) => { onChange?.(e.target.value); }}
           aria-label="Prompt editor"

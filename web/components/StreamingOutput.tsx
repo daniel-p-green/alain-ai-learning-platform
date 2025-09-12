@@ -19,37 +19,37 @@ export function StreamingOutput({ output, isStreaming, error, elapsedSeconds, to
   return (
     <div className="space-y-2" role="region" aria-live="polite">
       {error && (
-        <div className="bg-red-900/20 border border-red-700 rounded-lg p-3">
-          <div className="font-semibold text-red-400">{error.code}</div>
-          <div className="text-sm text-red-300">{error.message}</div>
+        <div className="bg-white border border-red-300 rounded-card p-3">
+          <div className="font-semibold text-red-700">{error.code}</div>
+          <div className="text-sm text-red-600">{error.message}</div>
         </div>
       )}
 
       {isStreaming && !error && (
-        <div className="bg-gray-900 rounded p-3 text-sm space-y-2">
+        <div className="bg-alain-card rounded-card p-3 text-sm space-y-2 border border-alain-stroke/15">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-300">Elapsed:</span>
-            <span className="text-brand-blue font-mono">{Math.max(0, elapsedSeconds || 0)}s</span>
+            <span className="text-ink-700">Elapsed:</span>
+            <span className="text-alain-blue font-mono">{Math.max(0, elapsedSeconds || 0)}s</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-300">Tokens:</span>
-            <span className="text-brand-blue font-mono">~{tokenCount || 0}</span>
+            <span className="text-ink-700">Tokens:</span>
+            <span className="text-alain-blue font-mono">~{tokenCount || 0}</span>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-2">
-            <div className="bg-brand-blue h-2 rounded-full animate-pulse w-3/5" />
+          <div className="w-full bg-ink-100 rounded-full h-2">
+            <div className="bg-alain-blue h-2 rounded-full animate-pulse w-3/5" />
           </div>
         </div>
       )}
 
       <pre
-        className={`whitespace-pre-wrap bg-gray-900 border rounded p-3 text-gray-100 text-sm min-h-24 ${
+        className={`whitespace-pre-wrap bg-paper-0 border rounded-card p-3 text-ink-900 text-sm min-h-24 ${
           status === 'error'
             ? 'border-red-600'
             : status === 'success'
             ? 'border-green-600'
             : status === 'info'
-            ? 'border-brand-blue'
-            : 'border-gray-800'
+            ? 'border-alain-blue'
+            : 'border-ink-100'
         }`}
         aria-live="polite"
       >

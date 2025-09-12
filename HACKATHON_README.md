@@ -2,28 +2,28 @@
 
 Leap Open Source Hackathon 2025 Submission
 
-Tagline: Learn models by doing.
+Tagline: The open source IKEA instruction layer for AI models. Learn AI with AI: pick any model in Hugging Face, Ollama, or LM Studio & get interactive how-to guides, run locally or in the cloud with gpt-oss.
 
 —
 
 ## Why ALAIN (Our Why)
 - Problem: Model releases outpace learning. Docs, blogs, and videos are passive; first-run friction (keys, setup, APIs) slows adoption.
 - Mission: Turn model launches into hands-on, classroom-ready labs—fast, safe, reproducible.
-- Outcome: ALAIN converts a model link into a guided, interactive notebook with objectives, assessments, and live executions.
+- Outcome: Alain converts a model link into a guided, interactive notebook with objectives, assessments, and live executions.
 
 —
 
 ## What We Built
-- Open-source learning platform that generates interactive lessons directly from model sources (e.g., Hugging Face) and runs them live.
-- ALAIN‑Kit methodology bakes instructional design into the workflow (research → design → develop → validate), ensuring quality beyond “just a demo.”
-- Pluggable execution providers (Poe, OpenAI‑compatible) plus a clean web UX for step-by-step learning.
+- Open-source learning platform that turns a model link (e.g., Hugging Face) into a guided, runnable lesson with clear objectives, assessments, and streaming runs.
+- ALAIN‑Kit methodology bakes instructional design into the workflow (Research → Design → Develop → Validate), ensuring quality beyond “just a demo.”
+- Pluggable execution providers: Hosted (Poe) and BYOK OpenAI‑compatible endpoints; offline/local supported (Ollama/LM Studio) with the same request shape.
 
 —
 
 ## Why gpt‑oss (20B/120B)
 - Philosophical: Open models teaching other open models. Transparency and local control align with our mission to democratize advanced model usage and education.
-- Practical: `gpt‑oss‑20b` hits a sweet spot — strong code/explanation quality while remaining runnable locally on a single workstation (Ollama/vLLM). `gpt‑oss‑120b` provides a higher‑ceiling path when available.
-- Local capability: Fully offline generation is possible with an OpenAI‑compatible endpoint. This reduces cost, preserves privacy, and improves reliability during demos.
+- Practical: `gpt‑oss‑20b` hits a sweet spot — strong code/explanation quality while remaining runnable locally on a single workstation (Ollama/LM Studio/vLLM). `gpt‑oss‑120b` provides a higher‑ceiling path when available.
+- Local capability: Offline/local generation is possible with OpenAI‑compatible endpoints. This reduces cost, preserves privacy, and improves reliability during demos.
 - Road to fine‑tuning: The open weights + OpenAI‑compatible semantics make targeted fine‑tuning on educational formats straightforward later.
 
 —
@@ -66,13 +66,13 @@ UI improvements (magical MVP)
 - Adapt Experience (beta): On tutorial pages, tailor content for Beginner/Intermediate/Advanced. Original content remains unchanged.
  - Local Setup Helper: Under the Local model picker, copy `ollama pull gpt‑oss:20b` and click “Test Connection” to verify local models.
 
-Quick start
+Quick start (cloud)
 1) Install: `npm install`
 2) Configure envs:
    - Web: `cp env.web.example web/.env.local` and fill in Clerk + backend base
    - Backend: set secrets via Encore (`encore secret set ...`) or `cp env.backend.example backend/.env.local` for local
-3) Run services: `npm run dev:backend` | `npm run dev:web`
-4) Open the web app and load a sample lesson or paste a model link.
+3) Run services: `npm run dev:hosted` (or `npm run dev:backend` + `npm run dev:web`)
+4) Open the web app, paste a model link, and generate a lesson.
 
 How to run details live in `alain-ai-learning-platform/README.md`.
 
@@ -148,13 +148,13 @@ Prereqs: Node 18+, Go (Encore), optional Python 3.8+.
    - Web (Next.js): `npm run dev:web`
 
 Providers
-- Poe (default): Requires `POE_API_KEY`; streams via `/execute`.
-- OpenAI‑compatible (BYOK): Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` (e.g., vendor, vLLM, Ollama).
+- Poe (hosted): Requires `POE_API_KEY`; streams via `/execute`.
+- OpenAI‑compatible (BYOK): Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` (e.g., vendor, vLLM, Ollama, LM Studio).
 
 —
 
-## Local/Offline Quick‑Start (Ollama)
-Prereqs: Ollama installed
+## Local/Offline Quick‑Start (Ollama or LM Studio)
+Prereqs: Ollama installed (or LM Studio with Local Server enabled)
 
 1) Pull the model
 ```
@@ -164,6 +164,9 @@ ollama pull gpt-oss:20b
 ```
 export OPENAI_BASE_URL=http://localhost:11434/v1
 export OPENAI_API_KEY=ollama
+# LM Studio alternative
+# export OPENAI_BASE_URL=http://localhost:1234/v1
+# export OPENAI_API_KEY=lmstudio
 ```
 3) Start ALAIN (separate shells)
 ```

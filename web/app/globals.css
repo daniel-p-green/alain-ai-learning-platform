@@ -2,61 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Web fonts are loaded via next/font in layout.tsx */
+/* Fonts are loaded via next/font in layout.tsx */
 
-/* Brand tokens: ALAIN */
+/* ALAIN Brand CSS variables (exact tokens) */
 :root {
-  /* Core brand */
   --alain-blue: #0058A3;
   --alain-yellow: #FFDA1A;
   --alain-stroke: #004580;
   --alain-navy: #1E3A8A;
-  --alain-navy-alt: #1E40AF;
-
-  /* Neutrals */
-  --ink-900: #111827;
-  --ink-700: #374151;
-  --ink-100: #F3F4F6;
-  --paper-0: #FFFFFF;
-  --paper-50: #FAFAF9;
-  --paper-100: #F5F5F4;
-
-  /* Effects */
-  --radius-card: 14px;
-  --shadow-card: 0 1px 2px rgba(15,23,42,0.05), 0 0 0 1px rgba(17,24,39,0.06);
-  --shadow-cardHover: 0 4px 10px rgba(15,23,42,0.08), 0 0 0 1px rgba(17,24,39,0.08);
+  --alain-card: #F7F7F6;
+  --alain-bg: #FFFFFF;
+  --alain-text: #111827;
+  --alain-dark-bg: #0B1220;
+  --alain-dark-low: #1E3A8A;
+  --alain-shadow-sm: 0 1px 2px rgba(15,23,42,0.06);
 }
 
-.theme-dark {
-  --ink-900: #F9FAFB;
-  --ink-700: #E5E7EB;
-  --ink-100: #1F2937;
-  --paper-0: #0B0F14;
-  --paper-50: #0F172A;
-  --paper-100: #111827;
+html, body {
+  height: 100%;
+  background: var(--alain-bg);
+  color: var(--alain-text);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Helpers */
-.surface {
-  background-color: var(--paper-50);
-  border: 1px solid var(--ink-100);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+/* Headings: Montserrat per brand */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), Montserrat, ui-sans-serif, system-ui, sans-serif;
 }
 
-.prose-app {
-  color: var(--ink-900);
+/* Accessibility: High contrast yellow badge helper */
+.badge-yellow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--alain-yellow);
+  color: var(--alain-blue);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  box-shadow: var(--alain-shadow-sm);
 }
-.prose-app h1 { @apply font-display font-bold text-[40px] leading-[44px] tracking-tight; }
-.prose-app h2 { @apply font-display font-semibold text-[32px] leading-[38px] tracking-tight; }
-.prose-app h3 { @apply font-display font-semibold text-[24px] leading-[30px] tracking-tight; }
-.prose-app p { @apply font-inter text-[18px] leading-[28px]; }
-
-/* Simple helpers using tokens */
-.brand-header {
-  background: var(--bg);
-  color: var(--text-strong);
-  border-bottom: 1px solid rgba(17, 24, 39, 0.12);
-}
-
-/* Deprecated: prefer Tailwind + Button component for CTAs */
