@@ -4,11 +4,14 @@ import BrandLogo from "./BrandLogo";
 import dynamic from "next/dynamic";
 import MobileNav from "./MobileNav";
 import EnvStatusBadge from "./EnvStatusBadge";
+import { useUser } from "@clerk/nextjs";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 export default function NavBar() {
   const OfflineBadge = dynamic(() => import("./OfflineBadge"), { ssr: false });
   const LocalRuntimeStatus = dynamic(() => import("./LocalRuntimeStatus"), { ssr: false });
+  const { user } = useUser();
+  const isAdmin = (user?.publicMetadata as any)?.role === 'admin';
   return (
     <nav className="bg-alain-blue text-white shadow-brand">
       <div className="mx-auto max-w-7xl px-6 md:px-8 h-16 flex items-center justify-between">
@@ -21,6 +24,9 @@ export default function NavBar() {
             <Link href="/tutorials" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Tutorials</Link>
             <Link href="/blueprint" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Why ALAIN</Link>
             <Link href="/settings" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Settings</Link>
+            <Link href="/upload" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Upload</Link>
+            <Link href="/my/notebooks" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">My Notebooks</Link>
+            {isAdmin && <Link href="/admin/moderation" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Moderation</Link>}
           </div>
         </div>
         <div className="hidden md:flex items-center gap-3">

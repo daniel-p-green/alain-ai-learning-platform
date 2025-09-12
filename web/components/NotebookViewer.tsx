@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { runPython } from "./PyRunner";
+import { runJS } from "./JSRunner";
 
 type Props = { nb: any };
 
@@ -17,10 +18,18 @@ function CodeCell({ source, lang }: { source: string | string[]; lang?: string }
   async function onRun() {
     setBusy(true); setErr(""); setOut("");
     try {
-      if ((lang || 'python') !== 'python') { setErr(`Execution for ${lang} not supported`); return; }
-      const res = await runPython(code);
-      setOut(res.stdout || "");
-      if (res.stderr) setErr(res.stderr);
+      const l = (lang || 'python').toLowerCase();
+      if (l === 'python') {
+        const res = await runPython(code);
+        setOut(res.stdout || "");
+        if (res.stderr) setErr(res.stderr);
+      } else if (l === 'javascript' || l === 'js' || l === 'typescript' || l === 'ts') {
+        const res = await runJS(code, l.startsWith('ts'));
+        setOut(res.stdout || "");
+        if (res.stderr) setErr(res.stderr);
+      } else {
+        setErr(`Execution for ${lang} not supported`);
+      }
     } finally {
       setBusy(false);
     }
