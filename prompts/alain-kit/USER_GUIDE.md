@@ -13,7 +13,7 @@ ALAIN‑Kit is a set of Harmony‑formatted prompts that implement a four‑phas
 
 1) Research → 2) Design → 3) Develop → 4) Validate (plus an Orchestrator)
 
-Files live in `prompts/alain-kit/` and end with `.harmony.txt`.
+Canonical prompts live in prompts/alain-kit/ and end with .harmony.txt. Provider-specific flattened templates for manual copy/paste live in prompts/alain-kit/flattened/.
 
 ---
 

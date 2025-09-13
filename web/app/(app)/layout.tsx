@@ -5,7 +5,7 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
         <div className="h-16 flex items-center px-4 font-display font-semibold text-ink-900">ALAIN</div>
         <nav className="px-2 py-3 space-y-1 text-sm">
           <a className="block px-3 py-2 rounded-[10px] hover:bg-paper-0" href="/generate">Generate</a>
-          <a className="block px-3 py-2 rounded-[10px] hover:bg-paper-0" href="/tutorials">Tutorials</a>
+          <a className="block px-3 py-2 rounded-[10px] hover:bg-paper-0" href="/notebooks">Notebooks</a>
           <a className="block px-3 py-2 rounded-[10px] hover:bg-paper-0" href="/my/notebooks">Notebooks</a>
           <a className="block px-3 py-2 rounded-[10px] hover:bg-paper-0" href="/settings">Settings</a>
         </nav>
@@ -20,4 +20,3 @@ export default function AppShellLayout({ children }: { children: React.ReactNode
     </div>
   );
 }
-

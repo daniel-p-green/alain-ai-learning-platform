@@ -14,7 +14,7 @@ export default function Hero() {
           </p>
           <div className="flex items-center gap-3">
             <Link href="/generate" className="inline-flex items-center h-11 px-5 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Get Started</Link>
-            <Link href="/tutorials" className="inline-flex items-center h-11 px-5 rounded-alain-lg border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Browse Tutorials</Link>
+            <Link href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-alain-lg border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Browse Notebooks</Link>
           </div>
         </div>
         <div className="justify-self-center">

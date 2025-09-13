@@ -8,7 +8,7 @@ export default function CardGrid() {
         <Card title="Generate Lessons" cta={<Link className="inline-flex items-center h-10 px-4 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900" href="/generate">Open</Link>}>
           Paste a model card link and produce a runnable notebook with steps, concepts, and checks.
         </Card>
-        <Card title="Browse Tutorials" cta={<Link className="inline-flex items-center h-10 px-4 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900" href="/tutorials">Explore</Link>}>
+        <Card title="Browse Notebooks" cta={<Link className="inline-flex items-center h-10 px-4 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900" href="/notebooks">Explore</Link>}>
           Explore curated tutorials across providers with consistent patterns and clear outcomes.
         </Card>
         <Card title="Configure Providers" cta={<Link className="inline-flex items-center h-10 px-4 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900" href="/settings">Configure</Link>}>
@@ -18,4 +18,3 @@ export default function CardGrid() {
     </section>
   );
 }
-

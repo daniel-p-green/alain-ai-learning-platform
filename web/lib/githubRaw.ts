@@ -40,7 +40,7 @@ export function buildRawUrl({ owner, repo, ref, path }: GhPointer): string {
   return `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`;
 }
 
-export async function fetchPublicNotebook(ptr: GhPointer, maxBytes = 5 * 1024 * 1024): Promise<{ nb: any; meta: { id: string; title: string } }>{
+export async function fetchPublicNotebook(ptr: GhPointer, maxBytes = Number(process.env.NOTEBOOK_RAW_MAX_BYTES || 5 * 1024 * 1024)): Promise<{ nb: any; meta: { id: string; title: string } }>{
   const url = buildRawUrl(ptr);
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error(`github_raw:${res.status}`);
@@ -52,4 +52,3 @@ export async function fetchPublicNotebook(ptr: GhPointer, maxBytes = 5 * 1024 * 
   const id = `gh:${ptr.owner}/${ptr.repo}@${ptr.ref}:${ptr.path}`;
   return { nb, meta: { id, title } };
 }
-
