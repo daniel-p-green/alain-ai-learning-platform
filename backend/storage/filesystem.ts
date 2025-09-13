@@ -214,6 +214,53 @@ class FileSystemStorage {
     return { filePath, metadata };
   }
 
+  async saveLesson(
+    modelId: string,
+    content: any,
+    provider?: string
+  ): Promise<{ filePath: string; metadata: StorageMetadata }> {
+    const sanitizedModelId = this.sanitizeModelId(modelId);
+    const timestamp = this.formatTimestamp();
+    const fileId = this.generateFileId();
+    const providerDir = this.sanitizeSegment(provider || this.deriveProvider(modelId));
+
+    const lessonDir = path.join(
+      STORAGE_ROOT,
+      'lessons',
+      providerDir,
+      sanitizedModelId,
+      timestamp
+    );
+
+    await this.ensureDirectory(lessonDir);
+
+    const filename = `lesson_${fileId}.json`;
+    const filePath = path.join(lessonDir, filename);
+    const contentStr = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+
+    const metadata: StorageMetadata = {
+      id: fileId,
+      model_id: modelId,
+      difficulty: 'beginner',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      file_type: 'lesson',
+      format: 'json',
+      checksum: this.calculateChecksum(contentStr),
+      size_bytes: Buffer.byteLength(contentStr, 'utf8'),
+      tags: [modelId, 'lesson', 'json', providerDir].filter(Boolean),
+      provider: providerDir,
+    };
+
+    await fs.writeFile(filePath, contentStr, 'utf8');
+    await fs.writeFile(
+      path.join(lessonDir, `${filename}.meta.json`),
+      JSON.stringify(metadata, null, 2),
+      'utf8'
+    );
+    return { filePath, metadata };
+  }
+
   async listFiles(
     modelId?: string,
     fileType?: "notebook" | "research" | "lesson",
