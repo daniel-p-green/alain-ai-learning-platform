@@ -4,7 +4,7 @@ This document summarizes the P0 implementation work, feature flags, and how to v
 
 ## What changed
 - New page: `/home` — simplified hero + clear CTAs.
-- New shell applied to default `/generate`, `/tutorials`, `/tutorials/[id]`, and `/settings` via a route group layout `(app)`; legacy Generate kept at `/v1/generate`.
+- New shell applied to default `/generate`, `/notebooks`, `/notebooks/[id]`, and `/settings` via a route group layout `(app)`; legacy Generate kept at `/v1/generate`.
 - NavBar links now point to `/generate` (new shell) directly. Optional `New Home` link is still flag‑gated.
 - Generate page:
   - Hides the "Force fallback mode" checkbox unless `NEXT_PUBLIC_ENABLE_FALLBACK_UI=1`.

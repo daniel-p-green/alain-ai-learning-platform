@@ -37,7 +37,7 @@ export default function AdminPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "upload failed");
       const q = json.commitUrl ? `?commit=${encodeURIComponent(json.commitUrl)}` : "";
-      router.push(`/tutorials/${json.id}${q}`);
+      router.push(`/notebooks/${json.id}${q}`);
     } catch (err: any) {
       setError(err.message || String(err));
     } finally {

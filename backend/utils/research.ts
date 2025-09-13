@@ -348,6 +348,27 @@ export async function researchModel(
   }
   
   console.log(`✅ Research completed and saved to: ${researchDir}`);
+  // Optional: index research directory in DB for discovery
+  try {
+    if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
+      const { upsertResearchIndex } = await import('../catalog/store');
+      const stats = {
+        hf_files: researchData.sources.huggingface?.files?.length || 0,
+        cookbook_examples: researchData.sources.openai_cookbook?.examples?.length || 0,
+        cookbook_notebooks: researchData.sources.openai_cookbook?.notebooks?.length || 0,
+        unsloth_notebooks: researchData.sources.unsloth?.notebooks?.length || 0,
+        unsloth_examples: researchData.sources.unsloth?.examples?.length || 0,
+        offline: researchData.offline_cache || null,
+      };
+      await upsertResearchIndex({
+        model,
+        provider,
+        research_dir: researchDir,
+        collected_at: researchData.collected_at,
+        stats,
+      });
+    }
+  } catch {}
   return researchDir;
 }
 

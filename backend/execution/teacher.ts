@@ -76,6 +76,12 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
       }
       
+      // Build tool schemas based on phase/task (research, lesson, etc.)
+      const tools = buildToolsForPhaseTask({
+        phase,
+        task: req.task,
+      });
+
       // Provider-specific execution
       const payload: any = {
         model: mapModelForProvider(provider, requestedModel),
@@ -86,43 +92,9 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         max_tokens: req.max_tokens ?? harmonyParams.max_tokens,
       };
 
-      // Tools scaffold: enable by default for lesson_generation unless explicitly disabled
-      const enableTools = req.task === 'lesson_generation' && process.env.TEACHER_ENABLE_TOOLS !== '0';
-      if (enableTools) {
-        payload.tools = [
-          {
-            type: 'function',
-            function: {
-              name: 'emit_lesson',
-              description: 'Return a structured lesson object',
-              parameters: {
-                type: 'object',
-                properties: {
-                  title: { type: 'string' },
-                  description: { type: 'string' },
-                  reasoning_summary: { type: 'string' },
-                  learning_objectives: { type: 'array', items: { type: 'string' } },
-                  steps: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        step_order: { type: 'integer' },
-                        title: { type: 'string' },
-                        content: { type: 'string' },
-                        code_template: { type: 'string' },
-                        expected_output: { type: 'string' },
-                        model_params: { type: 'object' },
-                      },
-                      required: ['step_order','title','content']
-                    }
-                  },
-                },
-                required: ['title','description','steps']
-              }
-            }
-          }
-        ];
+      // Enable tools if present and not explicitly disabled
+      if (tools.length > 0 && process.env.TEACHER_ENABLE_TOOLS !== '0') {
+        payload.tools = tools;
       }
 
       // Helper to extract content, honoring tool-calls when enabled
@@ -465,4 +437,126 @@ export function resolveTeacherProvider(
     );
   }
   return requested;
+}
+// Return tool schemas for the active phase/task.
+// Keeps schemas minimal (no over-specified JSON) to avoid bloat and ease maintenance.
+function buildToolsForPhaseTask(input: { phase?: string; task: string }) {
+  const phase = (input.phase || '').toLowerCase();
+  const task = (input.task || '').toLowerCase();
+
+  // Lesson generation tools
+  if (task === 'lesson_generation') {
+    return [
+      {
+        type: 'function',
+        function: {
+          name: 'emit_lesson',
+          description: 'Return a structured lesson object',
+          parameters: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              description: { type: 'string' },
+              reasoning_summary: { type: 'string' },
+              learning_objectives: { type: 'array', items: { type: 'string' } },
+              steps: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    step_order: { type: 'integer' },
+                    title: { type: 'string' },
+                    content: { type: 'string' },
+                    code_template: { type: 'string' },
+                    expected_output: { type: 'string' },
+                    model_params: { type: 'object' },
+                  },
+                  required: ['step_order','title','content']
+                }
+              },
+            },
+            required: ['title','description','steps']
+          }
+        }
+      }
+    ];
+  }
+
+  // Research-phase tools when research prompts are active
+  if (phase.includes('research.offline')) {
+    return [
+      {
+        type: 'function',
+        function: {
+          name: 'emit_offline_research',
+          description: 'Emit comprehensive offline model research results (from local cache only).',
+          parameters: { type: 'object', additionalProperties: true }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'report_cache_issues',
+          description: 'Report cache-related problems encountered with remediation steps.',
+          parameters: {
+            type: 'object',
+            properties: { issues: { type: 'array', items: { type: 'object', additionalProperties: true } } },
+            required: ['issues']
+          }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'validate_offline_completeness',
+          description: 'Assess whether cached data is sufficient for educational content generation.',
+          parameters: {
+            type: 'object',
+            properties: { model_id: { type: 'string' } },
+            required: ['model_id']
+          }
+        }
+      }
+    ];
+  }
+
+  if (phase.includes('research')) {
+    return [
+      {
+        type: 'function',
+        function: {
+          name: 'emit_research_findings',
+          description: 'Return structured, comprehensive research findings for a model.',
+          parameters: { type: 'object', additionalProperties: true }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'validate_research',
+          description: 'Validate research findings for completeness and accuracy.',
+          parameters: {
+            type: 'object',
+            properties: {
+              research_data: { type: 'object', additionalProperties: true },
+              validation_criteria: { type: 'array', items: { type: 'string' } },
+              quality_checks: {
+                type: 'object',
+                properties: {
+                  technical_accuracy: { type: 'boolean' },
+                  educational_alignment: { type: 'boolean' },
+                  source_verification: { type: 'boolean' },
+                  completeness_assessment: { type: 'boolean' },
+                },
+                additionalProperties: true
+              }
+            },
+            required: ['research_data']
+          }
+        }
+      }
+    ];
+  }
+
+  return [];
 }
