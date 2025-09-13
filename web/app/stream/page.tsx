@@ -1,10 +1,12 @@
 "use client";
 import { useRef, useState } from "react";
+import { useSettings } from "../../features/onboarding-settings/useSettings";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Button } from "../../components/Button";
 import { StreamingOutput } from "../../components/StreamingOutput";
 
 export default function StreamDemo() {
+  const { promptMode } = useSettings();
   const [out, setOut] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,11 +22,12 @@ export default function StreamDemo() {
       if (startTimeRef.current) setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
     }, 250);
     try {
+      const provider = (promptMode === 'poe') ? 'poe' : 'openai-compatible';
       const resp = await fetch("/api/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          provider: "openai-compatible",
+          provider,
           model: "gpt-4o-mini",
           messages: [{ role: "user", content: "Write a haiku about Next.js." }],
           stream: true,

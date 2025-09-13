@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { backendUrl } from "../../lib/backend";
+import { useSettings } from "../onboarding-settings/useSettings";
 import { Button } from "../../components/Button";
 import { PreviewPanel } from "../../components/PreviewPanel";
 import type { ProviderInfo, ProviderModel } from "../../lib/types";
@@ -8,11 +9,13 @@ import LocalSetupHelper from "../../components/LocalSetupHelper";
 import api, { APIClientError, parseHfRef } from "../../lib/api";
 
 export default function GenerateLessonPage() {
+  const { promptMode } = useSettings();
   const [hfUrl, setHfUrl] = useState("");
   const [source, setSource] = useState<'hf'|'local'|'text'>("hf");
   const [rawTextInput, setRawTextInput] = useState("");
   const [difficulty, setDifficulty] = useState("beginner");
-  const [teacherProvider, setTeacherProvider] = useState<"poe" | "openai-compatible">("poe");
+  const [teacherProvider, setTeacherProvider] = useState<"poe" | "openai-compatible">(() => (typeof window !== 'undefined' && (window.localStorage.getItem('alain.ui.promptMode') === 'poe')) ? 'poe' : 'openai-compatible');
+  const [teacherModel, setTeacherModel] = useState<'GPT-OSS-20B' | 'GPT-OSS-120B'>('GPT-OSS-20B');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorDetails, setErrorDetails] = useState<string[]>([]);
@@ -32,6 +35,7 @@ export default function GenerateLessonPage() {
   const [envBanner, setEnvBanner] = useState<any>(null);
   const [forceFallback, setForceFallback] = useState(false);
   const SHOW_FALLBACK_UI = process.env.NEXT_PUBLIC_ENABLE_FALLBACK_UI === '1';
+  const ALLOW_120B = process.env.NEXT_PUBLIC_TEACHER_ALLOW_120B === '1';
   const formRef = useRef<HTMLFormElement | null>(null);
   // Research mode: controls accuracy vs time tradeoff
   const [researchMode, setResearchMode] = useState<'standard'|'thorough'|'fallback'>("standard");
@@ -70,6 +74,12 @@ export default function GenerateLessonPage() {
       setTargetProvider(provider);
     }
   }, []);
+
+  // Keep teacher provider aligned with Settings promptMode
+  useEffect(() => {
+    const desired: "poe" | "openai-compatible" = (promptMode === 'poe') ? 'poe' : 'openai-compatible';
+    setTeacherProvider(prev => prev === desired ? prev : desired);
+  }, [promptMode]);
 
   // Provider capabilities
   const [providersLoading, setProvidersLoading] = useState(false);
@@ -168,7 +178,7 @@ export default function GenerateLessonPage() {
         resp = await fetch("/api/generate-local", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ modelId: targetModel.trim(), difficulty, includeAssessment: true, provider: 'openai-compatible', targetProvider, targetModel })
+          body: JSON.stringify({ modelId: targetModel.trim(), difficulty, includeAssessment: true, provider: 'openai-compatible', teacherModel, targetProvider, targetModel })
         });
       } else if (source === 'text') {
         if (!rawTextInput.trim()) {
@@ -189,6 +199,7 @@ export default function GenerateLessonPage() {
             showReasoning: researchCopy[researchMode].includeReasoning,
             researchLevel: researchMode,
             provider: teacherProvider,
+            teacherModel,
             targetProvider,
             targetModel,
           })
@@ -212,6 +223,7 @@ export default function GenerateLessonPage() {
             showReasoning: researchCopy[researchMode].includeReasoning,
             researchLevel: researchMode,
             provider: teacherProvider,
+            teacherModel,
             targetProvider,
             targetModel,
           })
@@ -219,7 +231,22 @@ export default function GenerateLessonPage() {
       }
       const data = await api.parseGenerateResponse(resp);
       setProgress("done");
-      setResult({ tutorialId: data.tutorialId, meta: data.meta, preview: data.preview });
+      setResult({
+        tutorialId: data.tutorialId,
+        meta: data.meta,
+        preview: data.preview
+          ? {
+              ...data.preview,
+              description: (data.preview as any).description || '',
+              first_step: data.preview.first_step
+                ? {
+                    title: (data.preview.first_step as any).title || '',
+                    content: (data.preview.first_step as any).content || '',
+                  }
+                : null,
+            }
+          : undefined,
+      });
       setSnackbar('Lesson ready! Open the tutorial or export to Colab.');
       setTimeout(() => setSnackbar(null), 2500);
     } catch (e: unknown) {
@@ -383,6 +410,15 @@ export default function GenerateLessonPage() {
           <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={teacherProvider} onChange={(e)=> setTeacherProvider(e.target.value as any)}>
             <option value="poe">Poe (hosted)</option>
             <option value="openai-compatible">OpenAI-compatible</option>
+          </select>
+          <label className="text-sm text-ink-700">Teacher model</label>
+          <select
+            className="p-2 rounded-card bg-paper-0 border border-ink-100"
+            value={teacherModel}
+            onChange={(e)=> setTeacherModel(e.target.value as any)}
+          >
+            <option value="GPT-OSS-20B">GPT-OSS-20B (default)</option>
+            {ALLOW_120B && <option value="GPT-OSS-120B">GPT-OSS-120B (not recommended)</option>}
           </select>
         </div>
         <div className="flex items-center gap-2">

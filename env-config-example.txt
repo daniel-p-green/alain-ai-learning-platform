@@ -4,6 +4,7 @@
 # === CLERK AUTHENTICATION (for web app) ===
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
 CLERK_SECRET_KEY=your_clerk_secret_key_here
+NEXT_PUBLIC_TEACHER_ALLOW_120B=0
 
 # === AI API CONFIGURATION ===
 # Poe API Key (get from https://poe.com/api_key)
@@ -13,6 +14,12 @@ POE_API_KEY=qZB4vYDsDMytPrL9t4N4SGi_M56X_b0vst0l1fuJu9s
 OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_API_KEY=your_openai_api_key_here
 TEACHER_PROVIDER=poe
+
+# Teacher model policy (defaults)
+# By default ALAIN uses GPT-OSS-20B as the teacher model.
+# GPT-OSS-120B is disabled unless explicitly enabled below.
+# Set to 1/true/yes/on to allow 120B; otherwise requests are downgraded to 20B.
+TEACHER_ALLOW_120B=0
 
 # === BACKEND SECRETS (for Encore.dev) ===
 # These are configured through Encore.dev dashboard

@@ -37,19 +37,30 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         throw APIError.invalidArgument("Only GPT-OSS-20B and GPT-OSS-120B are supported for teacher tasks");
       }
 
+      // Gate GPT-OSS-120B behind an opt-in flag; default to 20B
+      const allow120b = (() => {
+        const v = (process.env.TEACHER_ALLOW_120B || '').toLowerCase();
+        return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+      })();
+      let requestedModel: "GPT-OSS-20B" | "GPT-OSS-120B" = req.model;
+      if (requestedModel === 'GPT-OSS-120B' && !allow120b) {
+        console.warn('[teacher] GPT-OSS-120B requested but disabled; downgrading to GPT-OSS-20B. Set TEACHER_ALLOW_120B=1 to enable.');
+        requestedModel = 'GPT-OSS-20B';
+      }
+
       // Resolve provider (request overrides env default)
       const initialProvider: "poe" | "openai-compatible" =
         req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe');
-      const provider = resolveTeacherProvider(initialProvider, req.model, !!poeApiKey());
+      const provider = resolveTeacherProvider(initialProvider, requestedModel, !!poeApiKey());
 
       // Set harmony-compatible parameters based on task
       const harmonyParams = getHarmonyParams(req.task);
 
-      // Prepare messages: use standard OpenAI format for Poe, Harmony for local
+      // Prepare messages: for OpenAI-compatible keep system/developer; for Poe fold developer into system
       const supportsHarmonyRoles = provider === 'openai-compatible';
       const phase = (process.env.TEACHER_PROMPT_PHASE || '').trim() as any;
-      let harmonyMessages: Array<{ role: string; content: string }>; 
-      if (phase && supportsHarmonyRoles) {
+      let harmonyMessages: Array<{ role: string; content: string }>;
+      if (phase) {
         try {
           const { system, developer } = loadAlainKitPrompt(phase);
           harmonyMessages = composeMessagesWithFile(system, developer, req.messages, supportsHarmonyRoles);
@@ -63,7 +74,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
       
       // Provider-specific execution
       const payload: any = {
-        model: mapModelForProvider(provider, req.model),
+        model: mapModelForProvider(provider, requestedModel),
         messages: harmonyMessages,
         stream: false,
         temperature: req.temperature ?? harmonyParams.temperature,

@@ -23,7 +23,7 @@ export default function MyNotebooks() {
         {mine.map((i) => (
           <div key={i.id} className="rounded border p-3 flex items-center justify-between">
             <div>
-              <div className="font-medium"><Link href={`/notebooks/${i.id}`}>{i.title || i.id}</Link></div>
+              <div className="font-medium"><Link href={`/tutorials/${i.id}`}>{i.title || i.id}</Link></div>
               <div className="text-xs text-ink-600">{i.id} • {i.published ? 'published' : (i.moderation || 'pending')}</div>
             </div>
             {!i.published && (i.moderation || 'pending') !== 'pending' && (
@@ -38,4 +38,3 @@ export default function MyNotebooks() {
     </div>
   );
 }
-

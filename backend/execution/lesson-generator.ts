@@ -84,6 +84,7 @@ export const generateLesson = api(
       // Generate lesson content using teacher model
       const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
 
+      const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any;
       const teacherResponse = await teacherGenerateWithRetry({
         model: req.teacherModel,
         messages: [
@@ -93,7 +94,7 @@ export const generateLesson = api(
           }
         ],
         task: "lesson_generation",
-        provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
+        provider: selectedProvider,
       });
 
       if (!teacherResponse.success || !teacherResponse.content) {
@@ -119,7 +120,7 @@ export const generateLesson = api(
       let v1 = validateLesson(lesson);
       let usedRepair = false;
       if (!v1.valid) {
-        const repaired = await attemptRepairJSON(req.teacherModel, raw);
+        const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
         if (!repaired) {
           return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
         }
@@ -138,7 +139,7 @@ export const generateLesson = api(
         const modelId = modelInfo.name || 'unknown-model';
         
         // Save raw lesson JSON
-        await fileSystemStorage.saveNotebook(modelId, req.difficulty, lesson, 'json');
+        await fileSystemStorage.saveNotebook(modelId, req.difficulty, lesson, 'json', lesson.provider || 'openai-compatible');
         
         // Convert to proper Jupyter notebook format and save
         const notebookMeta = {
@@ -165,7 +166,7 @@ export const generateLesson = api(
         }));
         
         const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker);
-        await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb');
+        await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb', lesson.provider || 'openai-compatible');
         
         console.log(`Lesson auto-saved for model: ${modelId}, difficulty: ${req.difficulty} (JSON + .ipynb)`);
       } catch (saveError) {
@@ -219,11 +220,12 @@ export const generateLocalLesson = api<{
           family: inferred.family,
         } as any;
         const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
+        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any;
         const teacherResponse = await teacherGenerateWithRetry({
           model: req.teacherModel,
           messages: [ { role: "user", content: lessonPrompt } ],
           task: "lesson_generation",
-          provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
+          provider: selectedProvider,
         });
         if (!teacherResponse.success || !teacherResponse.content) {
           throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
@@ -243,7 +245,7 @@ export const generateLocalLesson = api<{
         let v1 = validateLesson(lesson);
         let usedRepair = false;
         if (!v1.valid) {
-          const repaired = await attemptRepairJSON(req.teacherModel, raw);
+          const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
           if (!repaired) {
             return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
           }
@@ -469,14 +471,18 @@ function sanitizeLesson(lessonData: any) {
  * Attempt a single "repair JSON" pass by asking the teacher to output valid JSON only.
  * Returns a JSON string or null if repair failed.
  */
-async function attemptRepairJSON(teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B", broken: string): Promise<string | null> {
+async function attemptRepairJSON(
+  teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B",
+  broken: string,
+  provider: 'poe' | 'openai-compatible'
+): Promise<string | null> {
   try {
     const prompt = `The following JSON is invalid or incomplete for a lesson package. Repair with valid JSON only. Include: title, description, steps[3-5] with { step_order, title, content, code_template?, expected_output?, model_params? }, optional learning_objectives[], optional assessments[]. Output ONLY JSON.\n\nJSON:\n${broken}`;
     const resp = await teacherGenerate({
       model: teacherModel,
       messages: [{ role: 'user', content: prompt }],
       task: 'lesson_generation',
-      provider: (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe') as any,
+      provider: provider as any,
       temperature: 0.0,
       max_tokens: 3000,
     });
@@ -559,11 +565,12 @@ export const generateFromText = api<{
     const task = (async (): Promise<LessonGenerationResponse> => {
       try {
         const lessonPrompt = buildLessonFromTextPrompt(text, req.difficulty, req.includeAssessment, req.includeReasoning);
+        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any;
         const teacherResponse = await teacherGenerateWithRetry({
           model: req.teacherModel,
           messages: [ { role: 'user', content: lessonPrompt } ],
           task: 'lesson_generation',
-          provider: (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any,
+          provider: selectedProvider,
         });
         if (!teacherResponse.success || !teacherResponse.content) {
           throw new Error(teacherResponse.error?.message || 'Teacher model failed to generate lesson');
@@ -584,7 +591,7 @@ export const generateFromText = api<{
         let v1 = validateLesson(lesson);
         let usedRepair = false;
         if (!v1.valid) {
-          const repaired = await attemptRepairJSON(req.teacherModel, raw);
+          const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
           if (!repaired) {
             return { success: false, error: { code: 'validation_error', message: 'Generated lesson failed validation', details: v1.errors } } as any;
           }
