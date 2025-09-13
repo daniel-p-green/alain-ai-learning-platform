@@ -20,17 +20,14 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies (root workspaces)
-        working-directory: alain-ai-learning-platform
         run: npm ci
 
       - name: Backend tests (pure)
-        working-directory: alain-ai-learning-platform
         run: npm run test:pure
 
       - name: Build web
-        working-directory: alain-ai-learning-platform/web
+        working-directory: web
         env:
           NEXT_TELEMETRY_DISABLED: '1'
         run: |
           npm run build
-
