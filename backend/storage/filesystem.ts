@@ -3,9 +3,14 @@ import { secret } from "encore.dev/config";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { createHash } from "crypto";
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
+import { join } from "path";
+import { buildResearchMarkdowns } from "./research-format";
 
 // Storage configuration
-const STORAGE_ROOT = process.env.ALAIN_STORAGE_ROOT || path.join(process.cwd(), "../data");
+// Default to repo-level `content/` directory to keep generated artifacts in-tree.
+// Override with ALAIN_STORAGE_ROOT to customize.
+const STORAGE_ROOT = process.env.ALAIN_STORAGE_ROOT || path.join(process.cwd(), "../content");
 
 interface StorageMetadata {
   id: string;
@@ -18,6 +23,7 @@ interface StorageMetadata {
   checksum: string;
   size_bytes: number;
   tags: string[];
+  provider?: string;
 }
 
 interface DirectoryStructure {
@@ -43,6 +49,21 @@ interface DirectoryStructure {
 }
 
 class FileSystemStorage {
+  private deriveProvider(modelId: string): string {
+    const s = (modelId || "").toLowerCase();
+    if (s.includes("openai") || s.includes("gpt")) return "openai";
+    if (s.includes("anthropic") || s.includes("claude")) return "anthropic";
+    if (s.includes("llama") || s.includes("meta")) return "meta";
+    if (s.includes("gemini") || s.includes("palm") || s.includes("bard") || s.includes("google")) return "google";
+    if (s.includes("mistral") || s.includes("mixtral")) return "mistral";
+    if (s.includes("phi") || s.includes("orca") || s.includes("microsoft")) return "microsoft";
+    if (s.includes("huggingface") || s.includes("transformers")) return "huggingface";
+    return "other";
+  }
+
+  private sanitizeSegment(s: string): string {
+    return (s || "").toLowerCase().replace(/[^a-z0-9\-_.]/g, "-");
+  }
   private async ensureDirectory(dirPath: string): Promise<void> {
     try {
       await fs.access(dirPath);
@@ -71,16 +92,19 @@ class FileSystemStorage {
     modelId: string,
     difficulty: "beginner" | "intermediate" | "advanced",
     content: any,
-    format: "json" | "ipynb" = "json"
+    format: "json" | "ipynb" = "json",
+    provider?: string
   ): Promise<{ filePath: string; metadata: StorageMetadata }> {
     const sanitizedModelId = this.sanitizeModelId(modelId);
     const timestamp = this.formatTimestamp();
     const fileId = this.generateFileId();
+    const providerDir = this.sanitizeSegment(provider || this.deriveProvider(modelId));
     
-    // Create directory structure: data/notebooks/{model_id}/{difficulty}/{date}/
+    // Create directory structure: content/notebooks/{provider}/{model_id}/{difficulty}/{date}/
     const notebookDir = path.join(
       STORAGE_ROOT,
       "notebooks",
+      providerDir,
       sanitizedModelId,
       difficulty,
       timestamp
@@ -106,7 +130,8 @@ class FileSystemStorage {
       format,
       checksum: this.calculateChecksum(contentStr),
       size_bytes: Buffer.byteLength(contentStr, 'utf8'),
-      tags: [modelId, difficulty, format]
+      tags: [modelId, difficulty, format, providerDir].filter(Boolean),
+      provider: providerDir,
     };
     
     // Save files
@@ -123,16 +148,19 @@ class FileSystemStorage {
   async saveResearch(
     modelId: string,
     researchData: any,
-    type: "cache" | "analysis" | "metadata" = "analysis"
+    type: "cache" | "analysis" | "metadata" = "analysis",
+    provider?: string
   ): Promise<{ filePath: string; metadata: StorageMetadata }> {
     const sanitizedModelId = this.sanitizeModelId(modelId);
     const timestamp = this.formatTimestamp();
     const fileId = this.generateFileId();
+    const providerDir = this.sanitizeSegment(provider || this.deriveProvider(modelId));
     
-    // Create directory structure: data/research/{model_id}/{type}/
+    // Create directory structure: content/research/{provider}/{model_id}/{type}/
     const researchDir = path.join(
       STORAGE_ROOT,
       "research",
+      providerDir,
       sanitizedModelId,
       type
     );
@@ -157,7 +185,8 @@ class FileSystemStorage {
       format: "json",
       checksum: this.calculateChecksum(contentStr),
       size_bytes: Buffer.byteLength(contentStr, 'utf8'),
-      tags: [modelId, type, "research"]
+      tags: [modelId, type, "research", providerDir].filter(Boolean),
+      provider: providerDir,
     };
     
     // Save files
@@ -167,7 +196,68 @@ class FileSystemStorage {
       JSON.stringify(metadata, null, 2),
       'utf8'
     );
+
+    // Best-effort Markdown exports for human-readable research summaries when provider is known
+    try {
+      const researchRoot = path.join(STORAGE_ROOT, 'research', providerDir, sanitizedModelId);
+      await this.ensureDirectory(researchRoot);
+      const mdFiles = buildResearchMarkdowns(researchData);
+      // Always include a top-level research-data.json snapshot for convenience
+      await fs.writeFile(path.join(researchRoot, 'research-data.json'), JSON.stringify(researchData, null, 2), 'utf8');
+      for (const [name, body] of Object.entries(mdFiles)) {
+        await fs.writeFile(path.join(researchRoot, name), body, 'utf8');
+      }
+    } catch (e) {
+      // Don't fail on formatting errors; JSON remains the source of truth
+    }
     
+    return { filePath, metadata };
+  }
+
+  async saveLesson(
+    modelId: string,
+    content: any,
+    provider?: string
+  ): Promise<{ filePath: string; metadata: StorageMetadata }> {
+    const sanitizedModelId = this.sanitizeModelId(modelId);
+    const timestamp = this.formatTimestamp();
+    const fileId = this.generateFileId();
+    const providerDir = this.sanitizeSegment(provider || this.deriveProvider(modelId));
+
+    const lessonDir = path.join(
+      STORAGE_ROOT,
+      'lessons',
+      providerDir,
+      sanitizedModelId,
+      timestamp
+    );
+
+    await this.ensureDirectory(lessonDir);
+
+    const filename = `lesson_${fileId}.json`;
+    const filePath = path.join(lessonDir, filename);
+    const contentStr = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+
+    const metadata: StorageMetadata = {
+      id: fileId,
+      model_id: modelId,
+      difficulty: 'beginner',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      file_type: 'lesson',
+      format: 'json',
+      checksum: this.calculateChecksum(contentStr),
+      size_bytes: Buffer.byteLength(contentStr, 'utf8'),
+      tags: [modelId, 'lesson', 'json', providerDir].filter(Boolean),
+      provider: providerDir,
+    };
+
+    await fs.writeFile(filePath, contentStr, 'utf8');
+    await fs.writeFile(
+      path.join(lessonDir, `${filename}.meta.json`),
+      JSON.stringify(metadata, null, 2),
+      'utf8'
+    );
     return { filePath, metadata };
   }
 
@@ -293,13 +383,15 @@ export const saveNotebookFile = api(
     difficulty: "beginner" | "intermediate" | "advanced";
     content: any;
     format?: "json" | "ipynb";
+    provider?: string;
   }): Promise<{ success: boolean; filePath?: string; metadata?: StorageMetadata; error?: string }> => {
     try {
       const result = await fileSystemStorage.saveNotebook(
         req.modelId,
         req.difficulty,
         req.content,
-        req.format
+        req.format,
+        req.provider
       );
       
       return {
@@ -323,12 +415,14 @@ export const saveResearchFile = api(
     modelId: string;
     researchData: any;
     type?: "cache" | "analysis" | "metadata";
+    provider?: string;
   }): Promise<{ success: boolean; filePath?: string; metadata?: StorageMetadata; error?: string }> => {
     try {
       const result = await fileSystemStorage.saveResearch(
         req.modelId,
         req.researchData,
-        req.type
+        req.type,
+        req.provider
       );
       
       return {

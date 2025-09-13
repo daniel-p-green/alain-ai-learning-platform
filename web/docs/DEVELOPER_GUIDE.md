@@ -7,8 +7,8 @@
 
 ## Key Files
 - web/middleware.ts: route protection (public/admin)
-- web/app/notebooks/[id]/page.tsx: viewer with Export/Publish actions
-- web/app/notebooks/[id]/edit/page.tsx: editor (Monaco/MD) + metadata
+- web/app/(app)/tutorials/[id]/page.tsx: viewer with Export/Publish actions
+- web/app/(app)/tutorials/[id]/edit/page.tsx: editor (Monaco/MD) + metadata
 - web/app/api/notebooks/**: listing, read-through, upload, remix, export, publish-request
 - web/app/api/admin/**: moderation endpoints
 
@@ -33,4 +33,4 @@
 
 ## Vercel
 - Root Directory: web
-- vercel.json in web/: ignoreCommand for monorepo
+- Builds rely on default settings; `vercel.json` kept minimal

@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 // Public routes (no auth required)
 // Keep home and generate open; protect selected pages like /stream and /tutorial/*
@@ -13,6 +14,16 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware((auth, req) => {
+  // Legacy path redirects: /notebooks -> /tutorials
+  const url = new URL(req.url);
+  if (url.pathname === '/notebooks') {
+    url.pathname = '/tutorials';
+    return NextResponse.redirect(url, 308);
+  }
+  if (url.pathname.startsWith('/notebooks/')) {
+    url.pathname = url.pathname.replace(/^\/notebooks\b/, '/tutorials');
+    return NextResponse.redirect(url, 308);
+  }
   // Admin-only routes
   const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
   if (isAdminRoute(req)) {

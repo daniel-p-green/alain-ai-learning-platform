@@ -68,9 +68,18 @@ export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
       const teacherReq = { ...req, provider: "poe" as const };
 
       // Validate and set teacher model - only allow GPT-OSS-20B and GPT-OSS-120B
-      if (!req.model || !req.model.toLowerCase().includes('gpt-oss')) {
+      const allow120b = (() => {
+        const v = (process.env.TEACHER_ALLOW_120B || '').toLowerCase();
+        return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+      })();
+      const normalize = (m?: string) => (m || '').trim();
+      const incoming = normalize(req.model);
+      if (!incoming || !incoming.toLowerCase().includes('gpt-oss')) {
         teacherReq.model = 'GPT-OSS-20B'; // Default teacher model
-      } else if (req.model !== 'GPT-OSS-20B' && req.model !== 'GPT-OSS-120B') {
+      } else if (incoming === 'GPT-OSS-120B' && !allow120b) {
+        console.warn('[teacherExecute] GPT-OSS-120B requested but disabled; using GPT-OSS-20B. Set TEACHER_ALLOW_120B=1 to enable.');
+        teacherReq.model = 'GPT-OSS-20B';
+      } else if (incoming !== 'GPT-OSS-20B' && incoming !== 'GPT-OSS-120B') {
         teacherReq.model = 'GPT-OSS-20B'; // Force to valid teacher model
       }
 
