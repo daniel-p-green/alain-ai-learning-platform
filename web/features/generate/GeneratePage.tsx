@@ -5,7 +5,7 @@ import { Button } from "../../components/Button";
 import { PreviewPanel } from "../../components/PreviewPanel";
 import type { ProviderInfo, ProviderModel } from "../../lib/types";
 import LocalSetupHelper from "../../components/LocalSetupHelper";
-import api, { APIClientError } from "../../lib/api";
+import api, { APIClientError, parseHfRef } from "../../lib/api";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
@@ -75,13 +75,10 @@ export default function GenerateLessonPage() {
   const [providersLoading, setProvidersLoading] = useState(false);
   const [providersError, setProvidersError] = useState<string | null>(null);
 
-  function parseHfInput(input: string): { ok: boolean; url: string } {
-    const t = input.trim();
-    if (!t) return { ok: false, url: "" };
-    // Accept full HF URL or org/model
-    if (/^https?:\/\/huggingface\.co\//i.test(t)) return { ok: true, url: t };
-    if (/^[^\s\/]+\/[A-Za-z0-9._\-]+$/.test(t)) return { ok: true, url: `https://huggingface.co/${t}` };
-    return { ok: false, url: t };
+  function parseHfInput(input: string): { ok: boolean; url: string; repo?: string } {
+    const r = parseHfRef(input);
+    if (!r.ok) return { ok: false, url: input };
+    return { ok: true, url: `https://huggingface.co/${r.repo}`, repo: r.repo };
   }
 
   // Load providers once
@@ -316,6 +313,7 @@ export default function GenerateLessonPage() {
               value={hfUrl}
               onChange={(e) => setHfUrl(e.target.value)}
             />
+            {(() => { const r = parseHfRef(hfUrl); return r.ok ? <HFInfoInline repo={r.repo!} /> : null; })()}
             <div className="rounded-card border border-ink-100 bg-paper-50 p-3">
               <div className="text-sm font-medium text-ink-900">Research mode</div>
               <div className="mt-2 flex flex-wrap gap-2">
@@ -523,3 +521,31 @@ function OllamaContextHint({ modelName }: { modelName: string }) {
   );
 }
 
+function HFInfoInline({ repo }: { repo: string }) {
+  const [info, setInfo] = useState<{ license: string | null; tags: string[]; downloads: number | null } | null>(null);
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const data = await api.hfModelInfo(repo);
+        if (!alive) return;
+        setInfo({ license: (data.license as any) ?? null, tags: (data as any).tags?.slice?.(0, 6) || [], downloads: (data.downloads as any) ?? null });
+      } catch {}
+    })();
+    return () => { alive = false; };
+  }, [repo]);
+  if (!info) return null;
+  return (
+    <div className="mt-2 text-xs text-ink-700 border border-ink-100 rounded-card bg-paper-0 p-2 flex flex-wrap items-center gap-2">
+      {info.license && <span className="px-2 py-0.5 rounded-card border border-ink-100 bg-paper-0">License: {info.license}</span>}
+      {typeof info.downloads === 'number' && <span className="px-2 py-0.5 rounded-card border border-ink-100 bg-paper-0">Downloads: {info.downloads}</span>}
+      {info.tags && info.tags.length > 0 && (
+        <span className="flex items-center gap-1 flex-wrap">
+          {info.tags.map((t) => (
+            <span key={t} className="px-2 py-0.5 rounded-card border border-ink-100 bg-paper-0">{t}</span>
+          ))}
+        </span>
+      )}
+    </div>
+  );
+}

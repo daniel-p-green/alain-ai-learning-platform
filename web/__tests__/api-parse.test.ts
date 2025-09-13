@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { api, APIClientError } from '../lib/api';
+import { api, APIClientError, parseHfRef } from '../lib/api';
 
 function makeResponse(body: any, init?: { status?: number; json?: boolean }) {
   const status = init?.status ?? 200;
@@ -24,5 +24,17 @@ describe('api.parseGenerateResponse', () => {
   it('throws on unexpected format', async () => {
     const resp = makeResponse('not-json', { json: false, status: 500 });
     await expect(api.parseGenerateResponse(resp)).rejects.toBeInstanceOf(APIClientError);
+  });
+});
+
+describe('parseHfRef', () => {
+  it('parses owner/repo', () => {
+    expect(parseHfRef('meta-llama/Meta-Llama-3.1-8B-Instruct')).toEqual({ ok: true, repo: 'meta-llama/Meta-Llama-3.1-8B-Instruct' });
+  });
+  it('parses HF URL', () => {
+    expect(parseHfRef('https://huggingface.co/google/gemma-2-9b-it')).toEqual({ ok: true, repo: 'google/gemma-2-9b-it' });
+  });
+  it('rejects invalid', () => {
+    expect(parseHfRef('not a link')).toEqual({ ok: false });
   });
 });
