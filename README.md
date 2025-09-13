@@ -22,7 +22,8 @@
 
 The open‑source “IKEA‑style” instructions and assembly layer for AI models.
 
-Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. Export to Jupyter/Colab. Run locally or hosted with identical UX.
+Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. Export to Jupyter/Colab. 
+Run locally or hosted with identical UX.
 
 ---
 
