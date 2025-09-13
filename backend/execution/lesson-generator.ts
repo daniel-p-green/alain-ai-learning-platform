@@ -138,8 +138,8 @@ export const generateLesson = api(
       try {
         const modelId = modelInfo.name || 'unknown-model';
         
-        // Save raw lesson JSON
-        await fileSystemStorage.saveNotebook(modelId, req.difficulty, lesson, 'json', lesson.provider || 'openai-compatible');
+        // Save raw lesson JSON (content/lessons/<provider>/<model>/<date>/lesson_<id>.json)
+        await fileSystemStorage.saveLesson(modelId, lesson, lesson.provider || 'openai-compatible');
         
         // Convert to proper Jupyter notebook format and save
         const notebookMeta = {
