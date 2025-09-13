@@ -5,6 +5,7 @@ import { Button } from "../../components/Button";
 import { PreviewPanel } from "../../components/PreviewPanel";
 import type { ProviderInfo, ProviderModel } from "../../lib/types";
 import LocalSetupHelper from "../../components/LocalSetupHelper";
+import api, { APIClientError } from "../../lib/api";
 
 export default function GenerateLessonPage() {
   const [hfUrl, setHfUrl] = useState("");
@@ -30,6 +31,7 @@ export default function GenerateLessonPage() {
   const [snackbar, setSnackbar] = useState<string | null>(null);
   const [envBanner, setEnvBanner] = useState<any>(null);
   const [forceFallback, setForceFallback] = useState(false);
+  const SHOW_FALLBACK_UI = process.env.NEXT_PUBLIC_ENABLE_FALLBACK_UI === '1';
   const formRef = useRef<HTMLFormElement | null>(null);
   // Research mode: controls accuracy vs time tradeoff
   const [researchMode, setResearchMode] = useState<'standard'|'thorough'|'fallback'>("standard");
@@ -109,27 +111,18 @@ export default function GenerateLessonPage() {
         if (resp.ok) {
           const data = await resp.json();
           if (!alive) return;
-          if (Array.isArray(data?.models)) setAvailableModels(data.models);
-          // Enrich labels from Ollama when local provider looks like Ollama
-          try {
-            const tags = await fetch('/api/providers/ollama/tags', { cache: 'no-store' });
-            if (tags.ok) {
-              const tj = await tags.json();
-              if (Array.isArray(tj?.models)) {
-                const map: Record<string,string> = {};
-                for (const m of tj.models) {
-                  const size = m?.size ? humanSize(m.size) : '';
-                  map[m.name] = size ? `${m.name} (${size})` : m.name;
-                }
-                setLabelsByName(map);
-              }
-            }
-          } catch {}
+          const arr: string[] = Array.isArray(data?.models) ? data.models : [];
+          setAvailableModels(arr);
+          const labels: Record<string,string> = {};
+          (data?.labelsByName && typeof data.labelsByName === 'object') && Object.assign(labels, data.labelsByName);
+          setLabelsByName(labels);
           return;
         }
       } catch {}
+      // Fallback to generic setup probe
       try {
         const resp2 = await fetch('/api/setup', { cache: 'no-store' });
+        if (!resp2.ok) return;
         const data2 = await resp2.json();
         if (!alive) return;
         if (Array.isArray(data2?.availableModels)) setAvailableModels(data2.availableModels);
@@ -227,39 +220,20 @@ export default function GenerateLessonPage() {
           })
         });
       }
-      let data: any = null;
-      const ct = resp.headers.get('content-type') || '';
-      if (!resp.ok) {
-        // Friendly error for unauthorized or plain-text responses
-        if (ct.includes('application/json')) {
-          const j = await resp.json().catch(()=>({}));
-          const msg = j?.error?.message || `HTTP ${resp.status}`;
-          setError(msg);
-          setErrorDetails(Array.isArray(j?.error?.details) ? j.error.details : []);
-        } else {
-          const t = await resp.text().catch(()=>`HTTP ${resp.status}`);
-          const hint = resp.status === 401 ? 'Unauthorized — sign in or enable demo bypass (WEB_DEMO_ALLOW_UNAUTH=1), and configure providers in Settings.' : '';
-          setError(`${t}${hint ? ` (${hint})` : ''}`);
-          setErrorDetails([]);
-        }
-        setProgress('idle');
-        return;
-      }
-      data = ct.includes('application/json') ? await resp.json() : { success:false, error:{ message:'Unexpected non‑JSON response' } };
-      if (!data?.success) {
-        setError(data?.error?.code === 'validation_error' ? 'Lesson validation failed' : (data?.error?.message || 'Failed to generate'));
-        setErrorDetails(Array.isArray(data?.error?.details) ? data.error.details : []);
-        setProgress('idle');
-        return;
-      }
+      const data = await api.parseGenerateResponse(resp);
       setProgress("done");
       setResult({ tutorialId: data.tutorialId, meta: data.meta, preview: data.preview });
       setSnackbar('Lesson ready! Open the tutorial or export to Colab.');
       setTimeout(() => setSnackbar(null), 2500);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      setError(msg);
-      setErrorDetails([]);
+      if (e instanceof APIClientError) {
+        setError(e.message);
+        setErrorDetails(e.details || []);
+      } else {
+        const msg = e instanceof Error ? e.message : String(e);
+        setError(msg);
+        setErrorDetails([]);
+      }
       setProgress("idle");
     } finally {
       setLoading(false);
@@ -310,12 +284,14 @@ export default function GenerateLessonPage() {
           }}
         >Use Example (Local)</Button>
       </div>
-      <div className="mt-2 p-3 rounded-card border border-yellow-200 bg-yellow-50 text-xs text-ink-900">
-        <label className="inline-flex items-center gap-2">
-          <input type="checkbox" checked={forceFallback} onChange={(e)=>setForceFallback(e.target.checked)} />
-          Force fallback mode (no backend) for From Text. Helpful on Vercel. Only From Text is supported in fallback.
-        </label>
-      </div>
+      {SHOW_FALLBACK_UI && (
+        <div className="mt-2 p-3 rounded-card border border-yellow-200 bg-yellow-50 text-xs text-ink-900">
+          <label className="inline-flex items-center gap-2">
+            <input type="checkbox" checked={forceFallback} onChange={(e)=>setForceFallback(e.target.checked)} />
+            Force fallback mode (no backend) for From Text. Helpful on Vercel. Only From Text is supported in fallback.
+          </label>
+        </div>
+      )}
       {source === 'local' && availableModels.length === 0 && (
         <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">No local models detected</div>
@@ -345,7 +321,9 @@ export default function GenerateLessonPage() {
               <div className="mt-2 flex flex-wrap gap-2">
                 <button type="button" onClick={()=> setResearchMode('standard')} className={`px-3 py-1 rounded-card border ${researchMode==='standard'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Standard</button>
                 <button type="button" onClick={()=> setResearchMode('thorough')} className={`px-3 py-1 rounded-card border ${researchMode==='thorough'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Thorough</button>
-                <button type="button" onClick={()=> { setResearchMode('fallback'); setSource('text'); setForceFallback(true); }} className={`px-3 py-1 rounded-card border ${researchMode==='fallback'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Web-only</button>
+                {SHOW_FALLBACK_UI && (
+                  <button type="button" onClick={()=> { setResearchMode('fallback'); setSource('text'); setForceFallback(true); }} className={`px-3 py-1 rounded-card border ${researchMode==='fallback'?'border-alain-blue text-alain-blue':'border-ink-100 text-ink-800'} bg-white`}>Web-only</button>
+                )}
               </div>
               <div className="mt-1 text-xs text-ink-700">{researchCopy[researchMode].note}</div>
             </div>
@@ -378,95 +356,49 @@ export default function GenerateLessonPage() {
             ) : (
               <input
                 className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
-                placeholder="e.g., llama-3-8b-instruct or gpt-oss:20b"
+                placeholder="gpt-oss:20b"
                 value={targetModel}
                 onChange={(e)=> setTargetModel(e.target.value)}
               />
             )}
-            {targetModel ? <OllamaContextHint modelName={targetModel} /> : null}
-            <div className="text-xs text-ink-700">Detected models are shown when LM Studio or Ollama is running locally.</div>
-            <LocalSetupHelper visible={source==='local'} />
+            <div className="rounded-card border border-ink-100 bg-paper-50 p-3">
+              <div className="text-sm font-medium text-ink-900">Target provider/model</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={targetProvider} onChange={(e)=> setTargetProvider(e.target.value)}>
+                  {providers.map(p => (
+                    <option key={p.name} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+                <input className="p-2 rounded-card bg-paper-0 border border-ink-100" placeholder="Optional override" value={targetModel} onChange={(e)=> setTargetModel(e.target.value)} />
+              </div>
+              {providersError && <div className="text-xs text-red-700 mt-1">{providersError}</div>}
+            </div>
           </div>
         )}
-        {/* Provider/Model picker for runtime */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <select
-            className="p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke"
-            value={targetProvider}
-            onChange={(e) => setTargetProvider(e.target.value)}
-            title="Choose provider for running steps"
-          >
-            {providers.map((p: any) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="text-sm text-ink-700">Difficulty</label>
+          <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={difficulty} onChange={(e)=> setDifficulty(e.target.value)}>
+            {['beginner','intermediate','advanced'].map((d)=> <option key={d} value={d}>{d}</option>)}
           </select>
-          <select
-            className="p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-stroke"
-            value={targetModel}
-            onChange={(e) => setTargetModel(e.target.value)}
-            title="Default model for steps"
-          >
-            <option value="">Auto (from HF model)</option>
-            {(providers.find((p:any)=>p.id===targetProvider)?.models || []).map((m:any)=> (
-              <option key={m.id} value={m.id}>{m.name || m.id}</option>
-            ))}
-          </select>
-        </div>
-        {/* Reasoning disabled for demo: keeping backend support but hiding UI */}
-        {providersLoading && <div className="text-xs text-ink-700">Loading providers…</div>}
-        {providersError && <div className="text-xs text-ink-700">{providersError}</div>}
-        <select
-          className="p-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
-          value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
-          title="Select difficulty level"
-        >
-          <option value="beginner">Beginner</option>
-          <option value="intermediate">Intermediate</option>
-          <option value="advanced">Advanced</option>
-        </select>
-        <div className="flex items-center gap-2 text-sm text-ink-900">
-          <label htmlFor="teacher-provider" className="whitespace-nowrap">Teacher Provider</label>
-          <select
-            id="teacher-provider"
-            className="p-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
-            value={teacherProvider}
-            onChange={(e) => setTeacherProvider(e.target.value as any)}
-            title="Choose Poe or a local OpenAI‑compatible endpoint (e.g., Ollama)"
-          >
+          <label className="text-sm text-ink-700">Teacher</label>
+          <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={teacherProvider} onChange={(e)=> setTeacherProvider(e.target.value as any)}>
             <option value="poe">Poe (hosted)</option>
-            <option value="openai-compatible">Local (OpenAI‑compatible)</option>
+            <option value="openai-compatible">OpenAI-compatible</option>
           </select>
-          <span className="text-xs text-ink-700">Hint: For Local, install Ollama and run <code>ollama pull gpt-oss:20b</code>. See README.</span>
         </div>
-        <div className="flex gap-2">
-          <Button type="submit" variant="accent" disabled={loading || (source==='hf' ? !hfUrl.trim() : source==='text' ? !rawTextInput.trim() : !targetModel.trim())}>
-            {loading ? "Generating..." : "Generate Lesson"}
+        <div className="flex items-center gap-2">
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Generating…' : 'Generate'}
           </Button>
-          {source==='hf' ? (
-            <Button type="button" variant="secondary" onClick={() => setHfUrl("meta-llama/Meta-Llama-3.1-8B-Instruct")}>Use Example HF Model</Button>
-          ) : source==='text' ? (
-            <>
-              <Button type="button" variant="secondary" onClick={() => setRawTextInput('Harmony-style prompting is a technique for guiding large language models to produce more structured, reliable, and high-quality output. It involves providing a detailed, role-based prompt that specifies the desired format, constraints, and persona for the model. This method is particularly effective for tasks that require JSON output or complex, multi-step reasoning.')}>Use Example Text</Button>
-              <Button type="button" variant="secondary" onClick={() => { setSource('text'); setRawTextInput('Harmony-style prompting is a technique for guiding large language models to produce more structured, reliable, and high-quality output. It involves providing a detailed, role-based prompt that specifies the desired format, constraints, and persona for the model. This method is particularly effective for tasks that require JSON output or complex, multi-step reasoning.'); setTeacherProvider('poe'); setDifficulty('intermediate'); }}>Harmony Prompting Preset</Button>
-            </>
-          ) : (
-            <Button type="button" variant="secondary" onClick={() => setTargetModel("llama-3-8b-instruct")}>Use Example Local Model</Button>
-          )}
+          {progress !== 'idle' && <span className="text-sm text-ink-700">{progress}</span>}
         </div>
       </form>
-      {loading && (
-        <div className="text-sm text-ink-700">
-          {progress === "parsing" && "Parsing model card…"}
-          {progress === "asking" && "Asking teacher model… (and repairing if needed)"}
-          {progress === "importing" && "Importing lesson…"}
-        </div>
-      )}
+
       {error && (
-        <div className="text-red-700 space-y-2">
-          <div>{error}</div>
+        <div className="mt-3 p-3 rounded-card border border-red-200 bg-red-50 text-red-800">
+          <div className="font-medium">{error}</div>
           {errorDetails.length > 0 && (
-            <ul className="list-disc pl-5 text-red-700 text-sm">
+            <ul className="mt-1 list-disc pl-4 text-sm">
               {errorDetails.map((d, i) => (
                 <li key={i}>{d}</li>
               ))}
@@ -590,3 +522,4 @@ function OllamaContextHint({ modelName }: { modelName: string }) {
     <div className="text-xs text-ink-700">Context length: ~{ctx} tokens</div>
   );
 }
+
