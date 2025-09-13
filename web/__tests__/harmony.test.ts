@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { parseHarmonyPrompt, buildMessagesForProvider } from '../lib/harmony';
+import fs from 'fs';
+import path from 'path';
 
 const SAMPLE = `<|start|>system<|message|>You are ChatGPT.<|end|><|start|>developer<|message|>Follow ALAIN rules.<|end|>`;
 
@@ -24,5 +26,21 @@ describe('harmony helpers', () => {
     expect(msgs[0].role).toBe('system');
     expect(msgs[0].content).toMatch(/Follow ALAIN rules/);
     expect(msgs[1].role).toBe('user');
+  });
+
+  it('parses real research.harmony.txt with non-empty sections', () => {
+    const file = path.join(process.cwd(), '../prompts/alain-kit/research.harmony.txt');
+    const raw = fs.readFileSync(file, 'utf8');
+    const { system, developer } = parseHarmonyPrompt(raw);
+    expect(system.length).toBeGreaterThan(0);
+    expect(developer.length).toBeGreaterThan(0);
+  });
+
+  it('parses real research.offline.harmony.txt with non-empty sections', () => {
+    const file = path.join(process.cwd(), '../prompts/alain-kit/research.offline.harmony.txt');
+    const raw = fs.readFileSync(file, 'utf8');
+    const { system, developer } = parseHarmonyPrompt(raw);
+    expect(system.length).toBeGreaterThan(0);
+    expect(developer.length).toBeGreaterThan(0);
   });
 });

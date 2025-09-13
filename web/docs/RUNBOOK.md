@@ -43,3 +43,9 @@ This runbook verifies a complete demo path with streaming.
 - No streaming: confirm Encore endpoint `/execute/stream` is up; switch `NEXT_PUBLIC_STREAM_VIA` to `web` as a fallback.
 - Rate limited: lower `NEXT_PUBLIC_EXECUTE_RPM` or wait for window to reset.
 
+## Migration: Notebooks → Tutorials
+- UI routes moved from `/notebooks` to `/tutorials`.
+- Temporary redirects are in `web/middleware.ts` to keep old links working.
+- Update any external links you control to point to `/tutorials`.
+- When analytics shows no `/notebooks` hits, remove the redirects (search for the TODO in `web/middleware.ts`).
+
