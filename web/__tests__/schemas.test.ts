@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GenerateSuccessSchema, ProvidersResponseSchema, ExportNotebookSchema } from '../lib/schemas';
+import { GenerateSuccessSchema, ProvidersResponseSchema, ExportNotebookSchema, HFModelInfoSchema } from '../lib/schemas';
 
 describe('schemas', () => {
   it('validates Generate success envelope', () => {
@@ -25,5 +25,10 @@ describe('schemas', () => {
     const r = ExportNotebookSchema.safeParse(sample);
     expect(r.success).toBe(true);
   });
-});
 
+  it('validates HF model info', () => {
+    const sample = { license: 'apache-2.0', tags: ['text-generation'], downloads: 12345 };
+    const r = HFModelInfoSchema.safeParse(sample);
+    expect(r.success).toBe(true);
+  });
+});

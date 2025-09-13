@@ -74,6 +74,33 @@ export const api = {
     }
     throw new APIClientError(`Unexpected response (HTTP ${r.status})`);
   },
+
+  async hfModelInfo(repo: string): Promise<import('./schemas').HFModelInfo> {
+    const u = new URL('/api/hf/model', window.location.origin);
+    u.searchParams.set('repo', repo);
+    const r = await fetch(u.toString(), { cache: 'no-store' });
+    if (!r.ok) throw new APIClientError(`HTTP ${r.status}`);
+    return parseJson(r, (await import('./schemas')).HFModelInfoSchema);
+  },
 };
 
 export default api;
+
+// Utilities
+export function parseHfRef(input: string): { ok: boolean; repo?: string } {
+  const t = input.trim();
+  if (!t) return { ok: false };
+  // URL form
+  try {
+    const u = new URL(t);
+    if (/huggingface\.co$/.test(u.hostname)) {
+      const parts = u.pathname.replace(/^\//, '').split('/');
+      if (parts.length >= 2 && parts[0] && parts[1]) {
+        return { ok: true, repo: `${parts[0]}/${parts[1]}` };
+      }
+    }
+  } catch {}
+  // owner/repo form
+  if (/^[^\s\/]+\/[A-Za-z0-9._\-]+$/.test(t)) return { ok: true, repo: t };
+  return { ok: false };
+}
