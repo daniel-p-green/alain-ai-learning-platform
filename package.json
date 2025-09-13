@@ -19,6 +19,7 @@
     "web"
   ],
   "dependencies": {
+    "motion": "^12.23.12",
     "openai": "^5.20.1"
   }
 }
