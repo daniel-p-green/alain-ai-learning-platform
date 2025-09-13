@@ -18,7 +18,7 @@ function TabLink({ id, current, set }: { id: string; current: string; set: (id: 
 }
 
 export default function SettingsPage() {
-  const { providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll } = useSettings();
+  const { providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, promptMode, setPromptMode, clearAll } = useSettings();
   const onboarding = useOnboarding();
   const [tab, setTab] = useState<string>(() => new URLSearchParams(typeof window !== "undefined" ? window.location.search : "").get("tab") || "Account");
   useEffect(() => { if (typeof window !== "undefined") {
@@ -243,6 +243,23 @@ export default function SettingsPage() {
               <div className="mt-4 p-3 rounded-alain-lg border border-alain-stroke/15 bg-alain-card">
                 <div className="font-display font-bold text-[24px]">Typography Preview</div>
                 <p className="font-inter text-alain-text/80">Body text meets contrast guidelines. Focus rings are visible on keyboard navigation.</p>
+              </div>
+            </div>
+          )}
+          {tab === "Advanced" && (
+            <div className="p-4 rounded-alain-lg border border-alain-stroke/15 bg-alain-card shadow-alain-sm">
+              <div className="font-medium">Advanced</div>
+              <div className="mt-3">
+                <label className="block text-sm text-alain-text/80">Teacher prompt mode</label>
+                <div className="mt-1 flex gap-3 text-sm">
+                  {(['openai','poe'] as const).map(m => (
+                    <label key={m} className="flex items-center gap-2">
+                      <input type="radio" name="promptMode" checked={promptMode===m} onChange={()=> setPromptMode(m)} />
+                      <span className="uppercase">{m}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-alain-text/70 mt-1">OpenAI-compatible uses role messages; Poe folds developer content into System.</p>
               </div>
             </div>
           )}
