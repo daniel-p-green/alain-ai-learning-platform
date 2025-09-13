@@ -13,12 +13,16 @@ type Item = {
 };
 
 async function fetchItems(searchParams: Record<string, string | undefined>): Promise<Item[]> {
-  const params = new URLSearchParams();
-  Object.entries(searchParams).forEach(([k, v]) => { if (v) params.set(k, v); });
-  const res = await fetch(`/api/catalog/notebooks/public?${params.toString()}`, { cache: 'no-store' });
-  if (!res.ok) return [] as any;
-  const data = await res.json();
-  return data.items || [];
+  try {
+    const params = new URLSearchParams();
+    Object.entries(searchParams).forEach(([k, v]) => { if (v) params.set(k, v); });
+    const res = await fetch(`/api/catalog/notebooks/public?${params.toString()}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return data.items || [];
+  } catch {
+    return [] as any;
+  }
 }
 
 export default async function PublicNotebooks({ searchParams }: { searchParams: Record<string, string | undefined> }) {
@@ -45,6 +49,16 @@ export default async function PublicNotebooks({ searchParams }: { searchParams: 
             {i.tags && i.tags.length > 0 && (
               <div className="mt-2 text-xs text-ink-700">Tags: {i.tags.join(', ')}</div>
             )}
+            <div className="mt-3 flex items-center gap-3">
+              <a href={`/api/files/download?path=${encodeURIComponent(i.file_path)}`} className="inline-flex items-center px-3 py-1.5 rounded bg-ink-900 text-white text-xs">Download .ipynb</a>
+              {process.env.NEXT_PUBLIC_GITHUB_REPO && process.env.NEXT_PUBLIC_GITHUB_BRANCH && (
+                <a
+                  href={`https://colab.research.google.com/github/${process.env.NEXT_PUBLIC_GITHUB_REPO}/blob/${process.env.NEXT_PUBLIC_GITHUB_BRANCH}/${i.file_path}`}
+                  target="_blank"
+                  className="inline-flex items-center px-3 py-1.5 rounded bg-alain-yellow text-alain-blue text-xs"
+                >Open in Colab</a>
+              )}
+            </div>
           </li>
         ))}
       </ul>
@@ -79,4 +93,3 @@ function PublishForm() {
     </form>
   );
 }
-

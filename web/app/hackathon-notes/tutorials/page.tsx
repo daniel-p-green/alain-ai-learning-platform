@@ -5,7 +5,7 @@ import Link from "next/link";
 
 type Item = { id: string; path: string; title?: string; sourceType?: string; sourceOrg?: string; tags?: string[]; published?: boolean; moderation?: string; excerpt?: string; thumb?: string };
 
-export default function TutorialsGallery() {
+export default function LegacyTutorialsGallery() {
   const [items, setItems] = useState<Item[]>([]);
   const [q, setQ] = useState("");
   const [type, setType] = useState<string>("all");
@@ -36,7 +36,7 @@ export default function TutorialsGallery() {
   return (
     <div className="mx-auto max-w-5xl p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end gap-3 justify-between">
-        <h1 className="text-2xl font-semibold">Notebooks</h1>
+        <h1 className="text-2xl font-semibold">Legacy Notebooks</h1>
         <div className="flex flex-col sm:flex-row flex-wrap sm:items-center gap-2">
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title" className="rounded border px-3 py-2 w-full sm:w-56" />
           <select value={type} onChange={(e) => setType(e.target.value)} className="rounded border px-3 py-2 w-full sm:w-auto">
@@ -88,3 +88,4 @@ export default function TutorialsGallery() {
     </div>
   );
 }
+

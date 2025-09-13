@@ -7,7 +7,7 @@ import { execFile } from "node:child_process";
 
 function mapPhaseToPrompt(phase: string): string | null {
   const p = phase.toLowerCase();
-  if (p === 'research' || p === 'design' || p === 'develop' || p === 'validate') return `${p}.harmony.txt`;
+  if (["research", "design", "develop", "validate", "orchestrator"].includes(p)) return p + ".harmony.txt";
   return null;
 }
 
