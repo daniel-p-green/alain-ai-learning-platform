@@ -50,6 +50,14 @@ export default function NavBar() {
           <SignedIn>
             <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} afterSignOutUrl="/" />
           </SignedIn>
+          <a
+            href="https://www.linkedin.com/in/danielpgreen"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-white/10 hover:bg-white/20 text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+          >
+            Partner with us
+          </a>
           <Link href="/generate" className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">Get Started</Link>
         </div>
         <div className="md:hidden">
