@@ -20,6 +20,8 @@ interface TeacherRequest {
 interface TeacherResponse {
   success: boolean;
   content?: string;
+  usedModel?: "GPT-OSS-20B" | "GPT-OSS-120B";
+  provider?: "poe" | "openai-compatible";
   error?: {
     code: string;
     message: string;
@@ -187,7 +189,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
           content = extractContent(retry);
         }
-        return { success: true, content };
+        return { success: true, content, usedModel: requestedModel, provider };
       } else {
         // Use Encore secrets for OpenAI-compatible provider
         const baseUrl = openaiBaseUrl();
@@ -230,7 +232,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
           content = extractContent(retry);
         }
-        return { success: true, content };
+        return { success: true, content, usedModel: requestedModel, provider };
       }
     } catch (error) {
       const errorData = mapTeacherError(error);

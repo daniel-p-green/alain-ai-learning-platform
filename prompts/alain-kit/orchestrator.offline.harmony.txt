@@ -137,75 +137,41 @@ interface CacheAssessment {
 ### functions
 
 ```typescript
-function assess_offline_readiness(model_id: string): CacheAssessment {
+namespace functions {
+
   // Comprehensive assessment of cache readiness for offline generation
   // Validate integrity, completeness, and generation feasibility
-}
+  type assess_offline_readiness = (_: { model_id: string }) => CacheAssessment | any;
 
-function orchestrate_offline_workflow(
-  model_id: string,
-  config: OfflineWorkflowConfig
-): {
-  workflow_id: string;
-  phases: {
-    phase_name: string;
-    status: "pending" | "running" | "completed" | "failed";
-    offline_score: number;
-    outputs: any;
-  }[];
-  overall_offline_compatibility: number;
-  recommendations: string[];
-} {
-  // Execute complete offline-first ALAIN-Kit workflow
-  // Coordinate all phases with offline constraints
-}
+  // Execute complete offline-first ALAIN-Kit workflow; coordinate all phases with offline constraints
+  type orchestrate_offline_workflow = (_: {
+    model_id: string;
+    config: OfflineWorkflowConfig;
+  }) => any;
 
-function handle_cache_issues(
-  model_id: string,
-  issues: string[]
-): {
-  resolution_plan: {
-    action: string;
-    estimated_time: string;
-    success_probability: number;
-  }[];
-  can_proceed_partial: boolean;
-  fallback_options: string[];
-} {
-  // Intelligent handling of cache-related problems
-  // Provide actionable resolution strategies
-}
+  // Intelligent handling of cache-related problems with actionable resolution strategies
+  type handle_cache_issues = (_: {
+    model_id: string;
+    issues: string[];
+  }) => any;
 
-function validate_offline_output(
-  generated_content: any,
-  validation_config: {
-    test_offline_mode: boolean;
-    validate_examples: boolean;
-    check_dependencies: boolean;
-  }
-): {
-  offline_compatibility_score: number;
-  issues_found: string[];
-  recommendations: string[];
-  certification: "offline_ready" | "needs_fixes" | "online_dependent";
-} {
-  // Comprehensive validation of generated content for offline use
-  // Ensure zero internet dependencies
-}
+  // Comprehensive validation of generated content for offline use (zero internet dependencies)
+  type validate_offline_output = (_: {
+    generated_content: any;
+    validation_config: {
+      test_offline_mode: boolean;
+      validate_examples: boolean;
+      check_dependencies: boolean;
+    };
+  }) => any;
 
-function generate_offline_bundle(
-  model_id: string,
-  content: any
-): {
-  bundle_path: string;
-  included_resources: string[];
-  size_mb: number;
-  offline_certified: boolean;
-  installation_guide: string;
-} {
-  // Create complete offline bundle with all dependencies
-  // Include setup instructions for air-gapped environments
-}
+  // Create complete offline bundle with all dependencies and setup instructions
+  type generate_offline_bundle = (_: {
+    model_id: string;
+    content: any;
+  }) => any;
+
+} // namespace functions
 ```
 
 ## OFFLINE-FIRST EXECUTION PROTOCOL
