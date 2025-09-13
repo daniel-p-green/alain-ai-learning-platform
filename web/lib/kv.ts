@@ -16,7 +16,8 @@ export async function kvGet<T = any>(key: string): Promise<T | null> {
   if (!kvEnabled()) return null;
   try {
     const c = await kv();
-    return await c.get<T>(key);
+    const val = await c.get(key);
+    return val as T | null;
   } catch {
     return null;
   }

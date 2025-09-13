@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-type Item = { id: string; path: string; title?: string; sourceType?: string; sourceOrg?: string; tags?: string[]; published?: boolean; moderation?: string; excerpt?: string };
+type Item = { id: string; path: string; title?: string; sourceType?: string; sourceOrg?: string; tags?: string[]; published?: boolean; moderation?: string; excerpt?: string; thumb?: string };
 
 export default function NotebooksGallery() {
   const [items, setItems] = useState<Item[]>([]);

@@ -6,6 +6,16 @@ export default function Footer() {
           <div>
             <div className="font-display font-semibold text-ink-900">ALAIN</div>
             <p className="mt-2 text-sm">Open AI learning with clear blueprints and accessible UI.</p>
+            <div className="mt-3">
+              <a
+                href="https://www.linkedin.com/in/danielpgreen"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center h-10 px-4 rounded-[12px] border border-ink-200 text-alain-blue hover:bg-paper-50"
+              >
+                Partner with us
+              </a>
+            </div>
           </div>
           <div>
             <div className="font-display font-semibold text-ink-900">Product</div>
@@ -27,6 +37,7 @@ export default function Footer() {
             <ul className="mt-2 space-y-1 text-sm">
               <li><a className="hover:underline" href="#">GitHub</a></li>
               <li><a className="hover:underline" href="#">X</a></li>
+              <li><a className="hover:underline" href="https://www.linkedin.com/in/danielpgreen" target="_blank" rel="noopener noreferrer">Partner with us</a></li>
             </ul>
           </div>
         </div>
@@ -41,4 +52,3 @@ export default function Footer() {
     </footer>
   );
 }
-
