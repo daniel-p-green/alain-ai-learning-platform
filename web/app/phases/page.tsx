@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useSettings } from "../../features/onboarding-settings/useSettings";
 
 type Phase = "Research" | "Design" | "Develop" | "Validate";
 
 export default function PhasesPage() {
+  const { promptMode } = useSettings();
   const [logs, setLogs] = useState<string[]>([]);
   const [result, setResult] = useState<any | null>(null);
   const [busy, setBusy] = useState<Phase | null>(null);
@@ -15,10 +17,11 @@ export default function PhasesPage() {
       ...l,
     ]);
     try {
+      const provider = (promptMode === 'poe') ? 'poe' : 'openai-compatible';
       const resp = await fetch("/api/phases", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phase, provider: 'poe', model: 'GPT-OSS-20B', input: { note: 'demo input' }, autoRender: phase === 'Develop' || phase === 'Validate' }),
+        body: JSON.stringify({ phase, provider, model: 'GPT-OSS-20B', input: { note: 'demo input' }, autoRender: phase === 'Develop' || phase === 'Validate' }),
       });
       const data = await resp.json();
       setResult(data);

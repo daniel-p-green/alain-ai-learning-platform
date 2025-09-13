@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { poeProvider, openAIProvider } from "@/lib/providers";
+import { parseHarmonyPrompt, buildMessagesForProvider } from "@/lib/harmony";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { execFile } from "node:child_process";
@@ -40,16 +41,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: `Prompt not found: ${fileName}` }, { status: 500 });
     }
 
-    // Compose a simple user instruction that includes the Harmony prompt and user input
+    // Build provider-appropriate messages from Harmony prompt + user input
     const context = typeof input === 'string' ? input : JSON.stringify(input, null, 2);
-    const userMessage = `Follow the developer instructions below and produce the phase output.\n\n--- HARMONY PROMPT ---\n${promptText}\n\n--- INPUT ---\n${context}\n`;
+    const sections = parseHarmonyPrompt(promptText);
+    const userMessages = [{ role: 'user' as const, content: `Input:\n${context}\n\nProduce the ${phase} phase output.` }];
+    const messages = buildMessagesForProvider(providerName as any, sections, userMessages);
 
     // Execute a non-stream completion via the selected provider
     const provider = selectProvider(providerName);
     const content = await provider.execute({
       provider: providerName as any,
       model,
-      messages: [{ role: 'user', content: userMessage }],
+      messages,
       stream: false,
       temperature: 0.2,
       max_tokens: 1800,
@@ -67,9 +70,10 @@ export async function POST(req: Request) {
         const safeModelPath = (model || '').replace(/[^a-zA-Z0-9_.\-\/]/g, '_');
         const modelSegs = safeModelPath.split('/').filter(Boolean);
         const baseDir = path.join(process.cwd(), '..', '..');
-        const lessonsDir = path.join(baseDir, 'lessons', providerName, ...modelSegs);
-        const notebooksDir = path.join(baseDir, 'notebooks', providerName, ...modelSegs);
-        const reportsDir = path.join(baseDir, 'reports', providerName, ...modelSegs);
+        const contentDir = path.join(baseDir, 'content');
+        const lessonsDir = path.join(contentDir, 'lessons', providerName, ...modelSegs);
+        const notebooksDir = path.join(contentDir, 'notebooks', providerName, ...modelSegs);
+        const reportsDir = path.join(contentDir, 'reports', providerName, ...modelSegs);
         await fs.mkdir(lessonsDir, { recursive: true });
         await fs.mkdir(notebooksDir, { recursive: true });
         await fs.mkdir(reportsDir, { recursive: true });

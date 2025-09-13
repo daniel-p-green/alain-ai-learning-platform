@@ -71,6 +71,9 @@ Tip: On Vercel or web‑only use, enable “Force fallback mode (no backend)” 
   - Create `web/.env.local` with Clerk + GitHub vars (see `env-config-example.txt`)
   - Open <http://localhost:3000> and head to `/generate`
 
+Optional flags:
+- `NEXT_PUBLIC_TEACHER_ALLOW_120B=1` to show the 120B teacher option in the UI (not recommended). Backend must also set `TEACHER_ALLOW_120B=1` to actually use 120B; otherwise requests are downgraded to 20B.
+
 Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 
 ---
@@ -92,12 +95,26 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 - Providers: Hosted (Poe) and OpenAI‑compatible (local: Ollama/LM Studio) share the same request shape.
 - Execution: Runs client‑side for quick feedback; server execution path stubbed for future sandboxing.
 
+### Streaming Paths
+- Web SSE (default): `web/app/api/execute/route.ts` streams tokens directly from providers to the browser. Set `NEXT_PUBLIC_STREAM_VIA=web`.
+- Backend proxy SSE: proxy through Encore at `POST /execute/stream` if enabled. Set `NEXT_PUBLIC_STREAM_VIA=backend` and `NEXT_PUBLIC_BACKEND_BASE`.
+- Note: Encore TS streaming is currently disabled in `backend/execution/stream.ts`. If backend SSE is unavailable, keep `NEXT_PUBLIC_STREAM_VIA=web`.
+
+### Content Layout
+- Auto‑saves and exports live under `content/` (see `content/README.md`).
+- Research writes both structured JSON (`research-data.json`) and human‑readable Markdown summaries (`model-card.md`, `huggingface-info.md`, etc.).
+
 ### Why GPT‑OSS‑20B (Teacher)
 
 - Open weights and local‑first: runs on Ollama/LM Studio with the same API shape as hosted endpoints.
 - Strong instruction following: produces stepwise, teachable content with minimal prompt overhead.
 - Reliable JSON: high schema adherence with fewer repair passes.
 - Practical fit: fast enough for iterative generation and real‑time previews.
+
+#### Teacher Model Defaults
+- Default: GPT‑OSS‑20B for all teacher tasks.
+- Optional (not recommended for most setups): enable GPT‑OSS‑120B by setting `TEACHER_ALLOW_120B=1` in the backend environment. When disabled (default), any request for 120B is automatically downgraded to 20B.
+- Note: `GPT‑OSS‑120B` is not supported via local OpenAI‑compatible endpoints; use hosted provider (Poe) if you explicitly enable it.
 
 ---
 
