@@ -32,7 +32,13 @@ This document summarizes the P0 implementation work, feature flags, and how to v
    - `NEXT_PUBLIC_NEW_SHELL=1`
 3. Visit `/home`, then click Generate (should go to `/new/generate`).
 4. Go to `/generate` (legacy) to confirm no regressions.
-5. Run tests: `npm run test` (all green).
+5. Run unit tests: `npm run test` (all green).
+6. Run e2e smokes: `npm run test:e2e` (home and generate load with expected CTAs).
+
+## Aggregator (seed)
+- JSON API: `GET /api/aggregator/index` returns curated items.
+- Seed sources tracked in `hackathon-notes/notebooks-index.yml` and `web/data/notebooks-index.json`.
+- See `docs/NOTEBOOKS_AGGREGATOR.md` for details. No UI claims added; viewer remains read‑only.
 
 ## Cleanup & scope discipline
 - No global CSS or token changes; all work is additive and behind flags.

@@ -5,6 +5,8 @@ import { Button } from "../../../components/Button";
 import { StreamingOutput } from "../../../components/StreamingOutput";
 import { StepNav } from "../../../components/StepNav";
 import { buildNotebookFromLesson } from "../../../lib/notebookExport";
+import SectionHeader from "../../../components/SectionHeader";
+import InlineAlert from "../../../components/InlineAlert";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { backendUrl } from "../../../lib/backend";
 import type { ProviderInfo, ProviderModel } from "../../../lib/types";
@@ -386,28 +388,23 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
       {/* Error Banner */}
       {executionState.status === 'error' && executionState.error && (
-        <div className="bg-white border border-red-300 rounded-card p-4">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 text-red-600">⚠️</div>
-            <div>
-              <h3 className="font-semibold text-red-700">
-                {executionState.error.code === 'rate_limited' && 'Rate Limited'}
-                {executionState.error.code === 'authentication_failed' && 'Authentication Failed'}
-                {executionState.error.code === 'model_not_found' && 'Model Not Found'}
-                {executionState.error.code === 'execution_error' && 'Execution Error'}
-              </h3>
-              <p className="text-sm text-red-600">{executionState.error.message}</p>
-              {executionState.error.code === 'rate_limited' && (
-                <p className="text-xs text-red-600 mt-1">Try again in a few moments</p>
-              )}
-            </div>
+        <InlineAlert type="error">
+          <div className="font-semibold">
+            {executionState.error.code === 'rate_limited' && 'Rate Limited'}
+            {executionState.error.code === 'authentication_failed' && 'Authentication Failed'}
+            {executionState.error.code === 'model_not_found' && 'Model Not Found'}
+            {executionState.error.code === 'execution_error' && 'Execution Error'}
           </div>
-        </div>
+          <div className="text-sm">{executionState.error.message}</div>
+          {executionState.error.code === 'rate_limited' && (
+            <div className="text-xs mt-1">Try again in a few moments.</div>
+          )}
+        </InlineAlert>
       )}
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3">
-          <h2 className="text-xl font-semibold">{step.title}</h2>
+          <SectionHeader title={step.title} />
           <div className="whitespace-pre-wrap text-ink-900">{step.content}</div>
           {/* Provider/model picker for run-time */}
           <div className="flex items-center gap-2 text-sm">
@@ -442,8 +439,8 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
 
           {/* Assessments */}
           {assessments.length > 0 && (
-            <div className="bg-alain-card rounded-card p-3 space-y-3 border border-alain-stroke/15">
-              <h3 className="font-semibold">Quick Check</h3>
+          <div className="bg-alain-card rounded-card p-3 space-y-3 border border-alain-stroke/15">
+            <SectionHeader title="Quick Check" />
               {assessments.map((a) => (
                 <div key={a.id} className="space-y-2">
                   <div className="text-alain-text">{a.question}</div>
@@ -491,7 +488,7 @@ export default function TutorialPage({ params }: { params: { id: string } }) {
           {/* Experience Adaptation */}
           <div className="bg-alain-card rounded-card p-3 space-y-2 border border-alain-stroke/15">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Adapt Experience</h3>
+              <SectionHeader title="Adapt Experience" />
               <div className="flex items-center gap-2 text-sm">
                 <label className="text-ink-800">Target</label>
                 <select className="px-2 py-1 rounded-card bg-paper-0 border border-ink-100 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={targetDifficulty} onChange={(e)=> setTargetDifficulty(e.target.value as any)} aria-label="Select target difficulty level">

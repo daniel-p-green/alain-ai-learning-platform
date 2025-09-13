@@ -136,6 +136,11 @@ interface CacheAssessment {
 
 ### functions
 
+// Output discipline (Harmony best practices):
+// - Emit orchestration results via a single tool call only: functions.orchestrate_offline_workflow
+// - Do NOT produce any assistant 'final' messages
+// - Tool call arguments MUST be JSON and use <|constrain|> json
+
 ```typescript
 function assess_offline_readiness(model_id: string): CacheAssessment {
   // Comprehensive assessment of cache readiness for offline generation

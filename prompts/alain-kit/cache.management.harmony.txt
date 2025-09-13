@@ -196,7 +196,23 @@ interface CleanupPolicy {
 
 ### functions
 
+// Output discipline (Harmony best practices):
+// - Emit only a tool call for the requested operation; do NOT produce assistant 'final' messages
+// - Tool call arguments MUST be JSON and use <|constrain|> json
+// - Preferred pattern: use a single dispatcher tool when possible
+
 ```typescript
+// Dispatcher (preferred)
+function manage_cache(operation: {
+  type: "initialize" | "validate" | "refresh" | "cleanup" | "status" | "repair";
+  payload?: any;
+}): {
+  result: any;
+  validation_report?: ValidationReport;
+} {
+  // Route to the appropriate operation and return structured results
+}
+
 function initialize_model_cache(request: CacheInitRequest): {
   success: boolean;
   cache_path: string;

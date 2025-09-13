@@ -220,6 +220,11 @@ interface OfflineError {
 
 ### functions
 
+// Output discipline (Harmony best practices):
+// - Emit results via a single tool call only: functions.emit_offline_research
+// - Do NOT produce any assistant 'final' messages
+// - Tool call arguments MUST be JSON and use <|constrain|> json
+
 ```typescript
 function emit_offline_research(research: OfflineModelResearch): void {
   // Emit comprehensive offline model research results
@@ -254,7 +259,7 @@ function validate_offline_completeness(model_id: string): {
 **CRITICAL**: If cache is incomplete or corrupted, use report_cache_issues to document specific problems and provide actionable remediation steps.
 
 **SUCCESS CRITERIA**: 
-- 95+ quality score across all dimensions
+- 90+ quality score across all dimensions
 - 100% offline compatibility verified
 - Comprehensive educational framework established
 - All technical specifications validated and cross-referenced

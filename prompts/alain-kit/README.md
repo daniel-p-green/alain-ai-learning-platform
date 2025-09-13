@@ -93,6 +93,20 @@ Each phase defines specific functions for structured output:
 - `emit_validation_report()` - Validation phase output
 - `emit_workflow_report()` - Orchestrator final output
 
+### Harmony Renderer Usage
+
+To ensure robust formatting and decoding with `gpt-oss`, use the official Harmony renderer:
+
+- GitHub: https://github.com/openai/harmony
+- Cookbook guide: see `leap-hack-2025/openai-harmony (1).md`
+
+Best-practice reminders:
+
+- Always send tool-call arguments with `<|constrain|> json` to strictly enforce JSON encoding.
+- Ensure tool calls are emitted on the `commentary` channel targeting `functions.*`.
+- Prefer a single canonical "emit_*" tool per phase; avoid producing assistant `final` content when expecting a tool call.
+- When storing history, normalize trailing `<|return|>` to `<|end|>` per the Harmony spec.
+
 ## Integration with ALAIN Platform
 
 ### Backend Integration

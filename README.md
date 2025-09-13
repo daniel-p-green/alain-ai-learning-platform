@@ -13,16 +13,16 @@
 
   <br/>
   <br/>
-  <p><strong>AI Manuals for AI Models.</strong></p>
-  <p>Turn developer docs into active learning, powered by OpenAI gpt‑oss 20B.</p>
+  <p><strong>AI manuals for AI models.</strong></p>
+  <p>Paste any model reference → get a runnable, graded lab.</p>
 
 </div>
 
-# ALAIN: Applied Learning AI Notebooks
+# ALAIN — Applied Learning AI Notebooks
 
-The open‑source “IKEA‑style” instructions and assembly layer for AI models.
+Make every model teach itself.
 
-Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. Export to Jupyter/Colab. Run locally or hosted with identical UX.
+ALAIN turns a model card or reference into a guided, runnable lesson with clear steps, quick checks, and an export to Colab/Jupyter. Use hosted providers or run fully local with the same request shape.
 
 ---
 
@@ -38,18 +38,24 @@ Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by�
 
 ## What Is ALAIN?
 
-ALAIN turns a model reference into an interactive tutorial that teaches setup, safe usage, and best practices. It generates a lesson you can run in‑browser and export to a notebook — no heavy backend required.
+ALAIN turns a model reference into an interactive tutorial that teaches setup, safe usage, and best practices. It generates a lesson you can run in‑browser and export to a notebook — no heavy backend or opaque server execution.
 
 ### Why ALAIN
 
 - Paste a model link → get a guided, runnable lesson.
-- Works online or fully local via OpenAI‑compatible endpoints (e.g., Ollama, LM Studio).
-- In‑browser execution for Python (Pyodide) and JS/TS (Web Worker).
-- One‑click export to Jupyter/Colab for sharing and grading.
+- Works hosted or fully local via OpenAI‑compatible endpoints (e.g., Ollama, LM Studio).
+- Parameterized execution only; no server‑side arbitrary code.
+- One‑click export to Colab/Jupyter; consistent, vendor‑neutral examples.
 
 ### Inspiration
 
 Docs are passive, scattered, and often not runnable. New models drop weekly but “hello world” still takes hours. ALAIN makes models learnable in minutes by turning any reference (Hugging Face, local, hosted) into a step‑by‑step, graded lesson you can actually run.
+
+### Why Now
+
+- Models ship daily; documentation lags. ALAIN turns model cards into runnable lessons.
+- OpenAI‑compatible APIs unify Poe, vLLM, Ollama, and LM Studio. ALAIN runs hosted and local with one instruction layer.
+- Consumer GPUs and mature runtimes make local learning practical. ALAIN keeps the UX identical offline.
 
 ---
 
@@ -77,12 +83,12 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 
 ## Features
 
-- Gallery with search, filters, thumbnails
-- Upload drafts, Request Publish, and admin moderation
-- Notebook viewer + editor (Monaco + Markdown), drag‑reorder, metadata
-- Client‑side runners: Python (Pyodide), JS/TS (Worker)
-- Export to ALAIN JSON and open a GitHub PR
-- Optional caching with Upstash to reduce GitHub reads
+- Generate lessons from HF links or pasted text
+- Active learning: steps with quick checks and assessments
+- Export to Colab/Jupyter; copy cURL and inspect requests
+- Works hosted and local (OpenAI‑compatible, e.g., Ollama/LM Studio)
+- Client‑side runners for Python (Pyodide) and JS/TS (Worker)
+- Tutorials gallery and read‑only notebook viewer
 
 ---
 
