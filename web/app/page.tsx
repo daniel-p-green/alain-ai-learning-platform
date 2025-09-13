@@ -1,2 +1,2 @@
-export { metadata } from "./blueprint/page";
-export { default } from "./blueprint/page";
+export { metadata } from "./home/page";
+export { default } from "./home/page";

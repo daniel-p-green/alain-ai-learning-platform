@@ -11,8 +11,9 @@ type Props = {
 // - If documentElement has class "theme-yellow", forces yellow variant
 // - Otherwise uses prop or defaults to blue variant
 export default function BrandLogo({ variant, width = 160, height = 40, className = "" }: Props) {
-  let v: "blue" | "yellow" = variant || "blue";
-  if (typeof document !== "undefined") {
+  // If an explicit variant prop is provided, prefer it over the theme toggle.
+  let v: "blue" | "yellow" = variant ?? "blue";
+  if (!variant && typeof document !== "undefined") {
     if (document.documentElement.classList.contains("theme-yellow")) v = "yellow";
   }
   const src = v === "yellow" ? "/brand/ALAIN_logo_primary_yellow-bg.svg" : "/brand/ALAIN_logo_primary_blue-bg.svg";
