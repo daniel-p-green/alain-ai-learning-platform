@@ -13,18 +13,16 @@
 
   <br/>
   <br/>
-  <p><strong>AI Manuals for AI Models</strong></p>
-  <p>Turn developer docs into active learning, powered by OpenAI gpt‑oss 20B.</p>
+  <p><strong>AI manuals for AI models.</strong></p>
+  <p>Paste any model reference → get a runnable, graded lab.</p>
 
 </div>
 
-# ALAIN: Applied Learning AI Notebooks
+# ALAIN — Applied Learning AI Notebooks
 
-The open‑source “IKEA‑style” instructions and assembly layer for AI models.
+Make every model teach itself.
 
-Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. 
-
-Export to Jupyter/Colab. 
+ALAIN turns a model card or reference into a guided, runnable lesson with clear steps, quick checks, and an export to Colab/Jupyter. Use hosted providers or run fully local with the same request shape.
 
 ---
 
