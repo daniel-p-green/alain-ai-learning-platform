@@ -21,6 +21,7 @@ export function buildNotebook(
   assessments: Array<{ step_order: number; question: string; options: string[]; correct_index: number; explanation: string | null }>,
   maker?: { name: string; org_type: string; homepage?: string | null; license?: string | null; repo?: string | null } | null,
   teacherModelUsed?: 'GPT-OSS-20B' | 'GPT-OSS-120B',
+  teacherDowngraded?: boolean,
 ): Notebook {
   const cells: NBCell[] = [];
 
@@ -273,6 +274,7 @@ export function buildNotebook(
       kernelspec: { name: "python3", language: "python", display_name: "Python 3" },
       language_info: { name: "python" },
       teacher_model_used: teacherModelUsed || 'GPT-OSS-20B',
+      teacher_downgraded: !!teacherDowngraded,
       title: meta.title,
       provider: meta.provider,
       model: meta.model,
