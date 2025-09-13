@@ -5,6 +5,13 @@ import { kvEnabled, kvGet, kvSet } from "@/lib/kv";
 export const runtime = "edge";
 
 export async function GET(req: Request) {
+  if (process.env.NEXT_PUBLIC_ENABLE_LEGACY_STORE !== '1') {
+    const url = new URL(req.url);
+    // Redirect to new catalog endpoint
+    const qs = url.searchParams.toString();
+    const target = `/api/catalog/notebooks/public${qs ? '?' + qs : ''}`;
+    return NextResponse.redirect(new URL(target, url.origin), 302);
+  }
   const url = new URL(req.url);
   const withDetails = url.searchParams.get("details") === "1";
   const limit = Math.max(1, Math.min(50, Number(url.searchParams.get("limit") || 12)));

@@ -71,6 +71,9 @@ export default async function PublicLessons({ searchParams }: { searchParams: Re
               {i.tags && i.tags.length > 0 && (
                 <div className="mt-2 text-xs text-ink-700">Tags: {i.tags.join(', ')}</div>
               )}
+              <div className="mt-3 flex items-center gap-3">
+                <a href={`/api/files/download?path=${encodeURIComponent(i.file_path)}`} className="inline-flex items-center px-3 py-1.5 rounded bg-ink-900 text-white text-xs">Download JSON</a>
+              </div>
             </li>
           ))}
         </ul>

@@ -43,4 +43,20 @@ describe('harmony helpers', () => {
     expect(system.length).toBeGreaterThan(0);
     expect(developer.length).toBeGreaterThan(0);
   });
+  
+  it('parses real design.harmony.txt with non-empty sections', () => {
+    const file = path.join(process.cwd(), '../prompts/alain-kit/design.harmony.txt');
+    const raw = fs.readFileSync(file, 'utf8');
+    const { system, developer } = parseHarmonyPrompt(raw);
+    expect(system.length).toBeGreaterThan(0);
+    expect(developer.length).toBeGreaterThan(0);
+  });
+
+  it('parses real validate.harmony.txt with non-empty sections', () => {
+    const file = path.join(process.cwd(), '../prompts/alain-kit/validate.harmony.txt');
+    const raw = fs.readFileSync(file, 'utf8');
+    const { system, developer } = parseHarmonyPrompt(raw);
+    expect(system.length).toBeGreaterThan(0);
+    expect(developer.length).toBeGreaterThan(0);
+  });
 });
