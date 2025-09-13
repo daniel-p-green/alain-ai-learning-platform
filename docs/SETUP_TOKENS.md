@@ -43,6 +43,26 @@ ALAIN requires the following API tokens to function:
 - **Ollama**: `http://localhost:11434/v1`
 - **Custom endpoint**: Your self-hosted URL
 
+### 4. Kaggle API (optional: `KAGGLE_USERNAME`, `KAGGLE_KEY`)
+Purpose: Enrich the Research phase with Kaggle datasets, notebooks, and competitions.
+
+How to get it:
+- In Kaggle, create API credentials and download `kaggle.json`, or copy username/key from your account page.
+
+Setup (Encore secrets or env):
+```bash
+cd backend
+encore secret set KAGGLE_USERNAME
+encore secret set KAGGLE_KEY
+# or in backend/.env for local only
+echo "KAGGLE_USERNAME=your_username" >> backend/.env
+echo "KAGGLE_KEY=your_key" >> backend/.env
+```
+
+Notes:
+- Without credentials, Kaggle is skipped automatically.
+- Outputs are saved under `content/research/<provider>/<model>/kaggle-content.md`.
+
 ## Setting Up Secrets
 
 ### For Development (Local)
@@ -65,6 +85,10 @@ ALAIN requires the following API tokens to function:
 
    # Set OpenAI base URL
    encore secret set OPENAI_BASE_URL
+   
+   # (Optional) Set Kaggle credentials
+   encore secret set KAGGLE_USERNAME
+   encore secret set KAGGLE_KEY
    ```
 
 3. **Verify secrets are set**:
@@ -95,6 +119,8 @@ For local development, you can also use environment variables:
 echo "POE_API_KEY=your_poe_key_here" >> backend/.env
 echo "OPENAI_API_KEY=your_openai_key_here" >> backend/.env
 echo "OPENAI_BASE_URL=https://api.openai.com/v1" >> backend/.env
+echo "KAGGLE_USERNAME=your_username" >> backend/.env   # optional
+echo "KAGGLE_KEY=your_key" >> backend/.env            # optional
 ```
 
 **Note**: Environment variables are only for local development. Production should use Encore secrets.
@@ -136,6 +162,24 @@ echo "OPENAI_BASE_URL=https://api.openai.com/v1" >> backend/.env
 
 **Issue**: `Database connection failed`
 - **Solution**: Ensure PostgreSQL is running (Encore handles this automatically)
+
+**Issue**: Kaggle 401/403
+- **Solution**: Ensure both `KAGGLE_USERNAME` and `KAGGLE_KEY` are set and valid.
+
+---
+
+## Provider Selection & UI Toggle
+
+Backend (teacher runtime):
+- `TEACHER_PROVIDER=poe|openai-compatible` controls which provider the teacher uses by default.
+- Per-request `provider` overrides are respected. When unset, defaults to `poe`.
+
+Frontend (UI default):
+- `NEXT_PUBLIC_PROMPT_MODE=poe|openai` sets the UI’s default for generation/phases; users can change it in Settings.
+
+Notes:
+- Poe requires `POE_API_KEY`.
+- OpenAI‑compatible requires `OPENAI_BASE_URL` and `OPENAI_API_KEY` (the key can be omitted for local runtimes like LM Studio/Ollama).
 
 ## Security Best Practices
 

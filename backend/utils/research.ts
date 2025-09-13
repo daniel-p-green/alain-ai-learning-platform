@@ -457,35 +457,37 @@ function formatKaggleContent(kaggleData: any): string {
   
   let md = `# Kaggle Resources\n\n`;
   
-  if (kaggleData.datasets && kaggleData.datasets.length > 0) {
-    md += `## Dataset Search URLs\n\n`;
-    kaggleData.datasets.forEach((search: any) => {
-      md += `- [Search: "${search.query}"](${search.search_url})\n`;
+  if (Array.isArray(kaggleData.datasets) && kaggleData.datasets.length > 0) {
+    md += `## Datasets\n\n`;
+    kaggleData.datasets.slice(0, 20).forEach((d: any) => {
+      const title = d?.title || d?.ref || d?.datasetSlug || 'Dataset';
+      const owner = d?.ownerName || d?.ownerRef || '';
+      const url = d?.url || (owner && d?.datasetSlug ? `https://www.kaggle.com/datasets/${owner}/${d.datasetSlug}` : '');
+      md += `- [${title}](${url || '#'})\n`;
     });
     md += `\n`;
   }
-  
-  if (kaggleData.notebooks && kaggleData.notebooks.length > 0) {
-    md += `## Notebook Search URLs\n\n`;
-    kaggleData.notebooks.forEach((search: any) => {
-      md += `- [Search: "${search.query}"](${search.search_url})\n`;
+  if (Array.isArray(kaggleData.notebooks) && kaggleData.notebooks.length > 0) {
+    md += `## Notebooks\n\n`;
+    kaggleData.notebooks.slice(0, 20).forEach((k: any) => {
+      const title = k?.title || k?.scriptTitle || 'Notebook';
+      const author = k?.authorName || k?.authorRef || '';
+      const slug = k?.slug || k?.scriptSlug || '';
+      const url = author && slug ? `https://www.kaggle.com/code/${author}/${slug}` : '';
+      md += `- [${title}](${url || '#'})\n`;
     });
     md += `\n`;
   }
-  
-  if (kaggleData.competitions && kaggleData.competitions.length > 0) {
-    md += `## Competition Search URLs\n\n`;
-    kaggleData.competitions.forEach((search: any) => {
-      md += `- [Search: "${search.query}"](${search.search_url})\n`;
+  if (Array.isArray(kaggleData.competitions) && kaggleData.competitions.length > 0) {
+    md += `## Competitions\n\n`;
+    kaggleData.competitions.slice(0, 20).forEach((c: any) => {
+      const title = c?.title || c?.competitionTitle || 'Competition';
+      const ref = c?.competitionId || c?.ref || c?.slug || '';
+      const url = ref ? `https://www.kaggle.com/competitions/${ref}` : '';
+      md += `- [${title}](${url || '#'})\n`;
     });
     md += `\n`;
   }
-  
-  md += `## Manual Search Tips\n\n`;
-  md += `Visit the search URLs above to find relevant Kaggle resources. Look for:\n`;
-  md += `- Datasets that use or benchmark this model\n`;
-  md += `- Notebooks demonstrating model usage\n`;
-  md += `- Competitions where this model might be applicable\n\n`;
   
   return md;
 }
@@ -526,9 +528,9 @@ export function generateResearchSummary(researchDir: string): string {
   
   if (data.sources.kaggle) {
     summary += `## Kaggle\n`;
-    summary += `- Dataset searches: ${data.sources.kaggle.datasets?.length || 0} queries prepared\n`;
-    summary += `- Notebook searches: ${data.sources.kaggle.notebooks?.length || 0} queries prepared\n`;
-    summary += `- Competition searches: ${data.sources.kaggle.competitions?.length || 0} queries prepared\n\n`;
+    summary += `- Datasets: ${data.sources.kaggle.datasets?.length || 0}\n`;
+    summary += `- Notebooks: ${data.sources.kaggle.notebooks?.length || 0}\n`;
+    summary += `- Competitions: ${data.sources.kaggle.competitions?.length || 0}\n\n`;
   }
   
   return summary;

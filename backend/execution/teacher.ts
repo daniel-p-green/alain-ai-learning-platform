@@ -22,6 +22,7 @@ interface TeacherResponse {
   content?: string;
   usedModel?: "GPT-OSS-20B" | "GPT-OSS-120B";
   provider?: "poe" | "openai-compatible";
+  downgraded?: boolean;
   error?: {
     code: string;
     message: string;
@@ -45,7 +46,8 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         return v === '1' || v === 'true' || v === 'yes' || v === 'on';
       })();
       let requestedModel: "GPT-OSS-20B" | "GPT-OSS-120B" = req.model;
-      if (requestedModel === 'GPT-OSS-120B' && !allow120b) {
+      const downgraded = (requestedModel === 'GPT-OSS-120B' && !allow120b);
+      if (downgraded) {
         console.warn('[teacher] GPT-OSS-120B requested but disabled; downgrading to GPT-OSS-20B. Set TEACHER_ALLOW_120B=1 to enable.');
         requestedModel = 'GPT-OSS-20B';
       }
@@ -189,7 +191,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
           content = extractContent(retry);
         }
-        return { success: true, content, usedModel: requestedModel, provider };
+        return { success: true, content, usedModel: requestedModel, provider, downgraded };
       } else {
         // Use Encore secrets for OpenAI-compatible provider
         const baseUrl = openaiBaseUrl();
@@ -232,7 +234,7 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
           content = extractContent(retry);
         }
-        return { success: true, content, usedModel: requestedModel, provider };
+        return { success: true, content, usedModel: requestedModel, provider, downgraded };
       }
     } catch (error) {
       const errorData = mapTeacherError(error);
