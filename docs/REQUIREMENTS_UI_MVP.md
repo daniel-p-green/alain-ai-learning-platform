@@ -14,7 +14,7 @@ Scope: Web app P0 only. Objective: ship a polished demo path without regressions
 ## Acceptance Criteria
 
 ### New Shell & Navigation
-- A new app shell exists under `web/app/(app)/layout.tsx` with Sidebar (Generate, Tutorials, Notebooks, Settings) and TopBar.
+- A new app shell exists under `web/app/(app)/layout.tsx` with Sidebar (Generate, Tutorials, Settings) and TopBar.
 - Feature flag `NEXT_PUBLIC_NEW_HOME=1` reveals a link to `/home`; otherwise hidden.
 - Feature flag `NEXT_PUBLIC_NEW_SHELL=1` routes `/generate` to the new shell; turning it off restores current route.
 
@@ -53,4 +53,3 @@ Scope: Web app P0 only. Objective: ship a polished demo path without regressions
 
 ## Rollout
 - Land behind feature flags. No change to existing pages until P0 complete.
-
