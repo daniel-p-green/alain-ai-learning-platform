@@ -13,7 +13,7 @@
 
   <br/>
   <br/>
-  <p><strong>AI Manuals for AI Models.</strong></p>
+  <p><strong>AI Manuals for AI Models</strong></p>
   <p>Turn developer docs into active learning, powered by OpenAI gpt‑oss 20B.</p>
 
 </div>
@@ -22,8 +22,9 @@
 
 The open‑source “IKEA‑style” instructions and assembly layer for AI models.
 
-Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. Export to Jupyter/Colab. 
-Run locally or hosted with identical UX.
+Paste any model (Hugging Face, Ollama, LM Studio) → get a runnable, step‑by‑step lesson. 
+
+Export to Jupyter/Colab. 
 
 ---
 
