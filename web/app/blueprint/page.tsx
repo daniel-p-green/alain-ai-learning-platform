@@ -17,14 +17,6 @@ export default function BlueprintPage() {
         <div className="flex flex-wrap gap-3">
           <a href="/generate" className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Generate a lab</a>
           <a href="/tutorials" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-paper-0 text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue">Browse examples</a>
-          <a
-            href="https://www.linkedin.com/in/danielpgreen"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center h-11 px-5 rounded-[12px] border border-alain-stroke/30 text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
-          >
-            Partner with us
-          </a>
         </div>
       </section>
 
