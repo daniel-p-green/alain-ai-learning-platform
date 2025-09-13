@@ -1,0 +1,67 @@
+[
+  {
+    "id": "anthropic-claude-cookbook",
+    "org": "Anthropic",
+    "title": "Claude Cookbook",
+    "repo": "anthropics/anthropic-cookbook",
+    "url": "https://github.com/anthropics/anthropic-cookbook",
+    "license": "Apache-2.0",
+    "tags": ["chat", "prompting", "cookbook"],
+    "topics": ["LLM", "Claude"],
+    "provider": "poe",
+    "models": ["claude-3"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "openai-cookbook",
+    "org": "OpenAI",
+    "title": "OpenAI Cookbook",
+    "repo": "openai/openai-cookbook",
+    "url": "https://github.com/openai/openai-cookbook",
+    "license": "MIT",
+    "tags": ["chat", "vision", "function-calling"],
+    "topics": ["LLM"],
+    "provider": "openai-compatible",
+    "models": ["gpt-4o", "gpt-4o-mini"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "unsloth-notebooks",
+    "org": "Unsloth",
+    "title": "Fast Finetuning Notebooks",
+    "repo": "unslothai/unsloth",
+    "url": "https://github.com/unslothai/unsloth",
+    "license": "Apache-2.0",
+    "tags": ["finetune", "qlora", "lora"],
+    "topics": ["Training"],
+    "provider": "openai-compatible",
+    "models": ["llama", "mistral"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "oxen-ai",
+    "org": "Oxen.ai",
+    "title": "Oxen AI Notebooks",
+    "repo": "oxen-ai/notebooks",
+    "url": "https://github.com/oxen-ai/notebooks",
+    "license": "Apache-2.0",
+    "tags": ["datasets", "evaluation"],
+    "topics": ["Data"],
+    "provider": "openai-compatible",
+    "models": ["various"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "hf-transformers-examples",
+    "org": "Hugging Face",
+    "title": "Transformers Examples",
+    "repo": "huggingface/notebooks",
+    "url": "https://github.com/huggingface/notebooks",
+    "license": "Apache-2.0",
+    "tags": ["transformers", "tokenizers"],
+    "topics": ["LLM", "NLP"],
+    "provider": "openai-compatible",
+    "models": ["llama", "gemma", "mistral"],
+    "difficulty": "intermediate"
+  }
+]
