@@ -45,6 +45,15 @@ export const ExportNotebookSchema = z.object({
   metadata: z.record(z.any()).optional(),
 });
 
+// Hugging Face Model Info (as returned by our web API proxy)
+export const HFModelInfoSchema = z.object({
+  license: z.string().nullable().optional(),
+  tags: z.array(z.string()).default([]),
+  downloads: z.number().nullable().optional(),
+});
+
+export type HFModelInfo = z.infer<typeof HFModelInfoSchema>;
+
 export type ProviderInfo = z.infer<typeof ProviderInfoSchema>;
 export type ProvidersResponse = z.infer<typeof ProvidersResponseSchema>;
 export type GenerateSuccess = z.infer<typeof GenerateSuccessSchema>;
@@ -56,4 +65,3 @@ export function isSuccessEnvelope(x: unknown): x is GenerateSuccess {
   const r = GenerateSuccessSchema.safeParse(x);
   return r.success;
 }
-
