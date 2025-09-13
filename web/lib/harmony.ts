@@ -31,7 +31,15 @@ export function buildMessagesForProvider(
   prompt: HarmonySections,
   userMessages: Array<Pick<WebMessage, "role" | "content">>
 ): WebMessage[] {
-  const supportsHarmonyRoles = provider === "openai-compatible";
+  const foldDevForOpenAICompat = (() => {
+    try {
+      const v = (process.env.OPENAI_COMPAT_FOLD_DEVELOPER || "").toLowerCase();
+      return v === "1" || v === "true" || v === "yes" || v === "on";
+    } catch {
+      return false;
+    }
+  })();
+  const supportsHarmonyRoles = provider === "openai-compatible" && !foldDevForOpenAICompat;
   if (supportsHarmonyRoles) {
     const sys: WebMessage = { role: "system", content: prompt.system };
     const dev: WebMessage = { role: "developer", content: prompt.developer } as any;
@@ -43,4 +51,3 @@ export function buildMessagesForProvider(
   } as any;
   return [downgradedSystem, ...userMessages];
 }
-
