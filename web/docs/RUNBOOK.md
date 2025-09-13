@@ -17,7 +17,7 @@ This runbook verifies a complete demo path with streaming.
 
 ## Steps
 1) Sign in via the web app.
-2) Open Tutorials: `/tutorials`
+2) Open Notebooks: `/notebooks`
    - Verify catalog loads and filters operate.
    - Open a tutorial and confirm layout uses ALAIN tokens and surfaces.
 3) Open Stream demo: `/stream` (or any page that streams via `/api/execute`).
@@ -43,9 +43,6 @@ This runbook verifies a complete demo path with streaming.
 - No streaming: confirm Encore endpoint `/execute/stream` is up; switch `NEXT_PUBLIC_STREAM_VIA` to `web` as a fallback.
 - Rate limited: lower `NEXT_PUBLIC_EXECUTE_RPM` or wait for window to reset.
 
-## Migration: Notebooks → Tutorials
-- UI routes moved from `/notebooks` to `/tutorials`.
-- Temporary redirects are in `web/middleware.ts` to keep old links working.
-- Update any external links you control to point to `/tutorials`.
-- When analytics shows no `/notebooks` hits, remove the redirects (search for the TODO in `web/middleware.ts`).
-
+## Note
+- UI routes are served under `/notebooks`.
+- Legacy `/tutorials` pages re-export to notebooks; you can update external links at your convenience.

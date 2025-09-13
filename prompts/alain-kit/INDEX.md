@@ -5,9 +5,14 @@ ALAIN-Kit Prompt Index (v2025.09.13)
 03 - Harmony Cache Management - cache.management.harmony.txt
 
 Flattened variants:
-04 - Poe Develop - poe/develop.v2025.09.13.txt
-05 - API Develop - api/develop.v2025.09.13.txt
+04 - Poe Develop (flattened) - flattened/poe/develop.v2025-09-13.txt
+05 - API Develop (flattened) - flattened/openai-compatible/develop.v2025-09-13.txt
 
 Usage notes:
-- Poe: paste SYSTEM into System, USER with model ref or text.
-- API (OpenAI): provide system content and user content as two messages.
+- Canonical prompts: use the Harmony .harmony.txt files at the top level; loaders read system + developer blocks.
+- Flattened (manual): for Poe/OpenAI-compatible copy/paste, use files under flattened/.
+  - Poe: paste SYSTEM into System, USER with model ref or text.
+ - OpenAI-compatible: send two messages (system, user) with those bodies.
+
+Deprecated:
+- Legacy develop variants (develop.harmony.original.txt, develop.harmony.fixed.txt, develop.harmony.backup.txt, develop.harmony.simple.txt, develop.harmony.poe.txt) are retained for reference only. Use develop.harmony.txt or the flattened templates above.

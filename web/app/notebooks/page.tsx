@@ -10,6 +10,11 @@ export default function NotebooksGallery() {
   const [type, setType] = useState<string>("all");
   const [org, setOrg] = useState("");
   const [tag, setTag] = useState("");
+  const [showGh, setShowGh] = useState(false);
+  const [owner, setOwner] = useState("");
+  const [repo, setRepo] = useState("");
+  const [ref, setRef] = useState("main");
+  const [ghPath, setGhPath] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -45,6 +50,7 @@ export default function NotebooksGallery() {
           </select>
           <input value={org} onChange={(e) => setOrg(e.target.value)} placeholder="Org" className="rounded border px-3 py-2 w-full sm:w-40" />
           <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder="Tag" className="rounded border px-3 py-2 w-full sm:w-40" />
+          <button onClick={()=> setShowGh(true)} className="rounded border px-3 py-2 w-full sm:w-auto">Open from GitHub</button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,7 +90,24 @@ export default function NotebooksGallery() {
           <div className="text-ink-600">No notebooks found.</div>
         )}
       </div>
+      {showGh && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-4 space-y-3">
+            <div className="text-lg font-semibold">Open from GitHub</div>
+            <div className="grid grid-cols-2 gap-2">
+              <input value={owner} onChange={(e)=> setOwner(e.target.value)} placeholder="owner" className="rounded border px-3 py-2" />
+              <input value={repo} onChange={(e)=> setRepo(e.target.value)} placeholder="repo" className="rounded border px-3 py-2" />
+              <input value={ref} onChange={(e)=> setRef(e.target.value)} placeholder="ref (default: main)" className="rounded border px-3 py-2 col-span-2" />
+              <input value={ghPath} onChange={(e)=> setGhPath(e.target.value)} placeholder="path/to/notebook.ipynb" className="rounded border px-3 py-2 col-span-2" />
+            </div>
+            <div className="text-xs text-ink-600">No private repos. File size capped by server config.</div>
+            <div className="flex gap-2 justify-end">
+              <button onClick={()=> setShowGh(false)} className="rounded border px-3 py-2">Cancel</button>
+              <a href={`/notebooks/gh:${owner}/${repo}@${ref || 'main'}:${ghPath}`} className="inline-flex items-center rounded bg-alain-blue text-white px-3 py-2" onClick={(e)=> { if (!owner || !repo || !ghPath) e.preventDefault(); }}>Open</a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-

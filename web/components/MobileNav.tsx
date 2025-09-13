@@ -102,7 +102,7 @@ export default function MobileNav() {
               <nav className="px-2 py-3">
                 <div className="px-2 py-2 text-xs uppercase tracking-wide text-ink-500">Navigate</div>
                 <Link href="/blueprint" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Why ALAIN</Link>
-                <Link href="/tutorials" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Tutorials</Link>
+                <Link href="/notebooks" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Notebooks</Link>
                 <Link href="/generate" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Generate</Link>
               </nav>
             </div>

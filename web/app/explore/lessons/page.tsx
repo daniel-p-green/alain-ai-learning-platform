@@ -84,7 +84,7 @@ export default async function PublicLessons({ searchParams }: { searchParams: Re
             <li key={t.id} className="border rounded p-4 bg-white/70">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium"><a href={`/tutorials/${t.id}`} className="hover:underline">{t.title}</a></div>
+                  <div className="font-medium"><a href={`/notebooks/${t.id}`} className="hover:underline">{t.title}</a></div>
                   <div className="text-xs text-ink-600">{t.model} · {t.provider} · <span className="uppercase">{t.difficulty}</span> · {new Date(t.created_at).toLocaleString()}</div>
                   <div className="text-xs text-ink-700 mt-1 line-clamp-2">{t.description}</div>
                   {t.share_slug && <div className="text-xs text-ink-700">Share code: {t.share_slug}</div>}

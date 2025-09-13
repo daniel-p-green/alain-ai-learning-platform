@@ -20,7 +20,7 @@ export default function Footer() {
           <div>
             <div className="font-display font-semibold text-ink-900">Product</div>
             <ul className="mt-2 space-y-1 text-sm">
-              <li><a className="hover:underline" href="/tutorials">Tutorials</a></li>
+              <li><a className="hover:underline" href="/notebooks">Notebooks</a></li>
               <li><a className="hover:underline" href="/generate">Generate</a></li>
               <li><a className="hover:underline" href="/settings">Settings</a></li>
             </ul>
