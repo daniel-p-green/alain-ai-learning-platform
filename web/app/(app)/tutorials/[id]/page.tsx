@@ -1,0 +1,39 @@
+import NotebookViewer from "@/components/NotebookViewer";
+import NotebookActions from "@/components/NotebookActions";
+
+export const dynamic = "force-dynamic";
+
+async function fetchNotebook(id: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/notebooks/${id}`, { cache: "no-store" });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export default async function TutorialPage({ params, searchParams }: { params: { id: string }, searchParams?: { [k: string]: string | string[] | undefined } }) {
+  const rec = await fetchNotebook(params.id);
+  if (!rec) {
+    return <div className="mx-auto max-w-3xl p-6">Tutorial not found.</div>;
+  }
+  return (
+    <div className="mx-auto max-w-3xl p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold">{rec.meta.title}</h1>
+          <p className="text-sm text-ink-600">{rec.meta.sourceType}{rec.meta.sourceOrg ? ` • ${rec.meta.sourceOrg}` : ""}</p>
+          {searchParams?.commit && (
+            <p className="text-xs mt-1"><a className="text-alain-blue underline" href={String(searchParams.commit)} target="_blank">View commit</a></p>
+          )}
+        </div>
+        <NotebookActions id={rec.meta.id} />
+      </div>
+      {rec.nb?.metadata && (
+        <div className="text-xs text-ink-600">
+          {rec.nb.metadata.license && <span>License: {rec.nb.metadata.license} · </span>}
+          {rec.nb.metadata.provenance_url && <a className="underline" href={rec.nb.metadata.provenance_url} target="_blank">Source</a>}
+        </div>
+      )}
+      <NotebookViewer nb={rec.nb} />
+    </div>
+  );
+}
+

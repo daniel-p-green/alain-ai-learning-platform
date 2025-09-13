@@ -1,6 +1,7 @@
-export const metadata = {
-  title: 'ALAIN — Settings',
-};
+"use client";
+import SettingsPage from "../../../features/onboarding-settings/SettingsPage";
 
-export { default } from '../../../settings/page';
+export default function Page() {
+  return <SettingsPage />;
+}
 
