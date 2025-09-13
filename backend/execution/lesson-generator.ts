@@ -165,7 +165,9 @@ export const generateLesson = api(
           explanation: assessment.explanation || null
         }));
         
-        const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker);
+        const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
+        const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
+        const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker, teacherUsed as any, teacherDowngraded);
         await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb', lesson.provider || 'openai-compatible');
         
         console.log(`Lesson auto-saved for model: ${modelId}, difficulty: ${req.difficulty} (JSON + .ipynb)`);

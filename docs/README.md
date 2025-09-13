@@ -19,10 +19,10 @@ ALAIN Docs Index
 - Examples: `alain-ai-learning-platform/docs/examples/README.md`
 - Screenshots: `alain-ai-learning-platform/docs/screenshots/README.md`
 - CI Migration Notes: `alain-ai-learning-platform/docs/ci-migration-notes.md`
+ - AI Model Info Distribution: `alain-ai-learning-platform/docs/AI_MODEL_INFO_DISTRIBUTION_GUIDE.md`
 
 Docs Conventions
 - Title case for H2/H3; one idea per section.
 - Prefer en dashes for ranges/contrasts; use ASCII hyphens in code.
 - Keep code cells short; avoid long unformatted outputs.
 - Follow the Jupyter style: `alain-ai-learning-platform/docs/notebooks/jupyter-style-guide.md`.
-

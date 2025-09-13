@@ -103,6 +103,7 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 ### Content Layout
 - Auto‑saves and exports live under `content/` (see `content/README.md`).
 - Research writes both structured JSON (`research-data.json`) and human‑readable Markdown summaries (`model-card.md`, `huggingface-info.md`, etc.).
+ - Index: `GET /api/content/index` lists provider/model artifacts (add `?flat=1` for a flat array).
 
 ### Why GPT‑OSS‑20B (Teacher)
 

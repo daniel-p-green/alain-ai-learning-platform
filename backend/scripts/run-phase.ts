@@ -41,7 +41,7 @@ function parseArgs(argv: string[]): { cmd?: string; args: ArgMap } {
 }
 
 function printHelp() {
-  console.log(`ALAIN‑Kit Phase Runner\n\nUsage:\n  bun scripts/run-phase.ts <phase> [options]\n\nPhases:\n  research   Gather and cache model info for offline use\n  design     Generate learning experience design from research\n  develop    Generate implementation guidance / code from design\n  validate   Generate validation and QA checks\n\nOptions (research):\n  --model <name>           Model id (e.g., gpt-oss-20b)\n  --provider <org>         Hugging Face org for model path (default: openai)\n  --offline-cache          Download small files for offline use (HF, Unsloth, Cookbook)\n  --github-token <token>   GitHub token to avoid rate limits\n  --max-bytes <n>          Per-file byte cap for downloads (default: 5242880)\n\nOptions (design/develop/validate):\n  --teacher-model <name>   Teacher model (default: GPT-OSS-20B)\n  --provider <id>          Provider: openai-compatible | poe (default: openai-compatible)\n  --openai-base <url>      Override OPENAI_BASE_URL\n  --openai-key <key>       Override OPENAI_API_KEY\n  --poe-key <key>          Override POE_API_KEY\n  --research-dir <path>    Path to research dir to include summary\n  --input <text>           Additional user context/instructions\n  --input-file <path>      Load additional user context from file\n  --out-dir <path>         Output directory (default: content/phases/<model>/<phase>)\n`);
+  console.log(`ALAIN‑Kit Phase Runner\n\nUsage:\n  bun scripts/run-phase.ts <phase> [options]\n\nPhases:\n  research   Gather and cache model info for offline use\n  design     Generate learning experience design from research\n  develop    Generate implementation guidance / code from design\n  validate   Generate validation and QA checks\n\nOptions (research):\n  --model <name>           Model id (e.g., gpt-oss-20b)\n  --provider <org>         Hugging Face org for model path (default: openai)\n  --offline-cache          Download small files for offline use (HF, Unsloth, Cookbook)\n  --github-token <token>   GitHub token to avoid rate limits\n  --max-bytes <n>          Per-file byte cap for downloads (default: 5242880)\n  --query <text>           Extra keywords to improve GitHub searches\n\nOptions (design/develop/validate):\n  --teacher-model <name>   Teacher model (default: GPT-OSS-20B)\n  --provider <id>          Provider: openai-compatible | poe (default: openai-compatible)\n  --openai-base <url>      Override OPENAI_BASE_URL\n  --openai-key <key>       Override OPENAI_API_KEY\n  --poe-key <key>          Override POE_API_KEY\n  --research-dir <path>    Path to research dir to include summary\n  --input <text>           Additional user context/instructions\n  --input-file <path>      Load additional user context from file\n  --out-dir <path>         Output directory (default: content/phases/<model>/<phase>)\n`);
 }
 
 async function run() {
@@ -55,12 +55,13 @@ async function run() {
     const offline = !!args['offline-cache'];
     const token = (String(args['github-token'] || process.env.GITHUB_TOKEN || '')).trim() || undefined;
     const maxBytes = args['max-bytes'] ? Number(args['max-bytes']) : undefined;
+    const query = String(args['query'] || '').trim() || undefined;
     if (!model) {
       console.error('Missing --model <name>. Example: --model gpt-oss-20b');
       process.exit(2);
     }
     console.log(`\n🚀 Running research phase for ${provider}/${model} (offline-cache=${offline ? 'on' : 'off'})`);
-    const dir = await researchModel(model, provider, rootDir, { offlineCache: offline, githubToken: token, maxBytes });
+    const dir = await researchModel(model, provider, rootDir, { offlineCache: offline, githubToken: token, maxBytes, query });
     console.log('\n📊 Summary:');
     const summary = generateResearchSummary(dir);
     console.log('\n' + summary);

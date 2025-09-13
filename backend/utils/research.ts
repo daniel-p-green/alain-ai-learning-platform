@@ -18,6 +18,11 @@ export interface ResearchData {
       notebooks?: any[];
       examples?: string[];
     };
+    kaggle?: {
+      datasets?: any[];
+      notebooks?: any[];
+      competitions?: any[];
+    };
   };
   collected_at: string;
   offline_cache?: {
@@ -69,7 +74,7 @@ async function fetchHuggingFaceInfo(modelPath: string): Promise<any> {
 /**
  * Search OpenAI cookbook for relevant examples
  */
-async function fetchOpenAICookbookExamples(modelName: string, githubToken?: string): Promise<any> {
+async function fetchOpenAICookbookExamples(modelName: string, githubToken?: string, extraQuery?: string): Promise<any> {
   try {
     console.log(`📚 Searching OpenAI cookbook for: ${modelName}`);
     
@@ -84,7 +89,12 @@ async function fetchOpenAICookbookExamples(modelName: string, githubToken?: stri
     const cookbookInfo = cookbookResponse.ok ? await cookbookResponse.json() : null;
     
     // Search code in cookbook for model mentions (paths only)
-    const codeSearchUrl = `https://api.github.com/search/code?q=repo:openai/openai-cookbook+${encodeURIComponent(modelName)}`;
+    const cookedQ = [
+      `repo:openai/openai-cookbook ${modelName}`,
+      `repo:openai/openai-cookbook gpt-oss`,
+      extraQuery ? `repo:openai/openai-cookbook ${extraQuery}` : ''
+    ].filter(Boolean).join(' OR ');
+    const codeSearchUrl = `https://api.github.com/search/code?q=${encodeURIComponent(cookedQ)}`;
     const codeSearchResponse = await fetch(codeSearchUrl, { headers: githubHeaders(githubToken) });
     const codeResults = codeSearchResponse.ok ? await codeSearchResponse.json() : { items: [] };
     const notebooks = (codeResults.items || [])
@@ -103,9 +113,39 @@ async function fetchOpenAICookbookExamples(modelName: string, githubToken?: stri
 }
 
 /**
+ * Search Kaggle for datasets, notebooks, and competitions
+ */
+async function fetchKaggleContent(modelName: string, creds?: { username?: string; key?: string }, extraQuery?: string): Promise<any> {
+  try {
+    const username = (creds?.username || process.env.KAGGLE_USERNAME || '').trim();
+    const key = (creds?.key || process.env.KAGGLE_KEY || '').trim();
+    if (!username || !key) return null;
+    const auth = 'Basic ' + Buffer.from(`${username}:${key}`).toString('base64');
+    const headers = { 'Authorization': auth, 'User-Agent': 'ALAIN-Research/1.0' } as Record<string, string>;
+    const base = 'https://www.kaggle.com/api/v1';
+    const q = [modelName, extraQuery].filter(Boolean).join(' ');
+
+    const toJson = async (url: string) => {
+      const r = await fetch(url, { headers });
+      if (!r.ok) return [];
+      try { return await r.json(); } catch { return []; }
+    };
+
+    console.log(`🏆 Querying Kaggle API for: ${q}`);
+    const datasets = await toJson(`${base}/datasets/list?search=${encodeURIComponent(q)}&page=1&pageSize=20`);
+    const notebooks = await toJson(`${base}/kernels/list?search=${encodeURIComponent(q)}&page=1&pageSize=20`);
+    const competitions = await toJson(`${base}/competitions/list?search=${encodeURIComponent(q)}&page=1&pageSize=20`);
+    return { datasets, notebooks, competitions };
+  } catch (error) {
+    console.error('Error fetching Kaggle content:', error);
+    return null;
+  }
+}
+
+/**
  * Search for Unsloth notebooks and examples
  */
-async function fetchUnslothContent(modelName: string, githubToken?: string): Promise<any> {
+async function fetchUnslothContent(modelName: string, githubToken?: string, extraQuery?: string): Promise<any> {
   try {
     console.log(`🦥 Searching Unsloth content for: ${modelName}`);
     
@@ -120,8 +160,10 @@ async function fetchUnslothContent(modelName: string, githubToken?: string): Pro
     const unslothInfo = unslothResponse.ok ? await unslothResponse.json() : null;
     
     // Organization-wide code search for notebooks referencing the model
-    const q = `org:unslothai+${encodeURIComponent(modelName)}+extension:ipynb`;
-    const codeSearchUrl = `https://api.github.com/search/code?q=${q}`;
+    const orgQ = `org:unslothai ${modelName} extension:ipynb`;
+    const broaderQ = `unsloth ${modelName} extension:ipynb`;
+    const extraQ = extraQuery ? `${extraQuery} extension:ipynb` : '';
+    const codeSearchUrl = `https://api.github.com/search/code?q=${encodeURIComponent([orgQ, broaderQ, extraQ].filter(Boolean).join(' OR '))}`;
     const codeSearchResp = await fetch(codeSearchUrl, { headers: githubHeaders(githubToken) });
     const codeSearch = codeSearchResp.ok ? await codeSearchResp.json() : { items: [] };
     
@@ -183,7 +225,7 @@ export async function researchModel(
   model: string,
   provider: string = 'openai',
   rootDir: string = process.cwd(),
-  options?: { offlineCache?: boolean; githubToken?: string; maxBytes?: number }
+  options?: { offlineCache?: boolean; githubToken?: string; maxBytes?: number; query?: string; kaggle?: { username?: string; key?: string } }
 ): Promise<string> {
   console.log(`🔬 Starting comprehensive research for: ${model}`);
   
@@ -209,10 +251,16 @@ export async function researchModel(
   researchData.sources.huggingface = await fetchHuggingFaceInfo(hfModelPath);
   
   // Fetch OpenAI cookbook examples
-  researchData.sources.openai_cookbook = await fetchOpenAICookbookExamples(model, options?.githubToken);
+  researchData.sources.openai_cookbook = await fetchOpenAICookbookExamples(model, options?.githubToken, options?.query);
   
   // Fetch Unsloth content
-  researchData.sources.unsloth = await fetchUnslothContent(model, options?.githubToken);
+  researchData.sources.unsloth = await fetchUnslothContent(model, options?.githubToken, options?.query);
+  
+  // Fetch Kaggle content (if credentials are provided)
+  try {
+    const kaggle = await fetchKaggleContent(model, options?.kaggle, options?.query);
+    if (kaggle) researchData.sources.kaggle = kaggle;
+  } catch {}
   
   // Optional offline caching of relevant files for later offline use
   if (options?.offlineCache) {
@@ -293,6 +341,10 @@ export async function researchModel(
   if (researchData.sources.unsloth) {
     const unslothFile = join(researchDir, 'unsloth-content.md');
     writeFileSync(unslothFile, formatUnslothContent(researchData.sources.unsloth));
+  }
+  if (researchData.sources.kaggle) {
+    const kaggleFile = join(researchDir, 'kaggle-content.md');
+    writeFileSync(kaggleFile, formatKaggleContent(researchData.sources.kaggle));
   }
   
   console.log(`✅ Research completed and saved to: ${researchDir}`);
@@ -398,6 +450,49 @@ function formatUnslothContent(unslothData: any): string {
 }
 
 /**
+ * Format Kaggle content as readable Markdown
+ */
+function formatKaggleContent(kaggleData: any): string {
+  if (!kaggleData) return '# Kaggle Resources\n\nNo data available.\n';
+  
+  let md = `# Kaggle Resources\n\n`;
+  
+  if (Array.isArray(kaggleData.datasets) && kaggleData.datasets.length > 0) {
+    md += `## Datasets\n\n`;
+    kaggleData.datasets.slice(0, 20).forEach((d: any) => {
+      const title = d?.title || d?.ref || d?.datasetSlug || 'Dataset';
+      const owner = d?.ownerName || d?.ownerRef || '';
+      const url = d?.url || (owner && d?.datasetSlug ? `https://www.kaggle.com/datasets/${owner}/${d.datasetSlug}` : '');
+      md += `- [${title}](${url || '#'})\n`;
+    });
+    md += `\n`;
+  }
+  if (Array.isArray(kaggleData.notebooks) && kaggleData.notebooks.length > 0) {
+    md += `## Notebooks\n\n`;
+    kaggleData.notebooks.slice(0, 20).forEach((k: any) => {
+      const title = k?.title || k?.scriptTitle || 'Notebook';
+      const author = k?.authorName || k?.authorRef || '';
+      const slug = k?.slug || k?.scriptSlug || '';
+      const url = author && slug ? `https://www.kaggle.com/code/${author}/${slug}` : '';
+      md += `- [${title}](${url || '#'})\n`;
+    });
+    md += `\n`;
+  }
+  if (Array.isArray(kaggleData.competitions) && kaggleData.competitions.length > 0) {
+    md += `## Competitions\n\n`;
+    kaggleData.competitions.slice(0, 20).forEach((c: any) => {
+      const title = c?.title || c?.competitionTitle || 'Competition';
+      const ref = c?.competitionId || c?.ref || c?.slug || '';
+      const url = ref ? `https://www.kaggle.com/competitions/${ref}` : '';
+      md += `- [${title}](${url || '#'})\n`;
+    });
+    md += `\n`;
+  }
+  
+  return md;
+}
+
+/**
  * Generate research summary
  */
 export function generateResearchSummary(researchDir: string): string {
@@ -429,6 +524,13 @@ export function generateResearchSummary(researchDir: string): string {
     summary += `## Unsloth\n`;
     summary += `- Notebooks: ${data.sources.unsloth.notebooks?.length || 0} repositories found\n`;
     summary += `- Examples: ${data.sources.unsloth.examples?.length || 0} files found\n\n`;
+  }
+  
+  if (data.sources.kaggle) {
+    summary += `## Kaggle\n`;
+    summary += `- Datasets: ${data.sources.kaggle.datasets?.length || 0}\n`;
+    summary += `- Notebooks: ${data.sources.kaggle.notebooks?.length || 0}\n`;
+    summary += `- Competitions: ${data.sources.kaggle.competitions?.length || 0}\n\n`;
   }
   
   return summary;

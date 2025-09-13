@@ -668,54 +668,66 @@
         "network_count": 3689,
         "subscribers_count": 262
       }
+    },
+    "kaggle": {
+      "datasets": [
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b&type=datasets",
+          "query": "gpt-oss-20b",
+          "type": "datasets"
+        },
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20notebook&type=datasets",
+          "query": "gpt-oss-20b notebook",
+          "type": "datasets"
+        },
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20dataset&type=datasets",
+          "query": "gpt-oss-20b dataset",
+          "type": "datasets"
+        }
+      ],
+      "notebooks": [
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b&type=notebooks",
+          "query": "gpt-oss-20b",
+          "type": "notebooks"
+        },
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20notebook&type=notebooks",
+          "query": "gpt-oss-20b notebook",
+          "type": "notebooks"
+        },
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20dataset&type=notebooks",
+          "query": "gpt-oss-20b dataset",
+          "type": "notebooks"
+        }
+      ],
+      "competitions": [
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b&type=competitions",
+          "query": "gpt-oss-20b",
+          "type": "competitions"
+        },
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20notebook&type=competitions",
+          "query": "gpt-oss-20b notebook",
+          "type": "competitions"
+        },
+        {
+          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20dataset&type=competitions",
+          "query": "gpt-oss-20b dataset",
+          "type": "competitions"
+        }
+      ]
     }
   },
-  "collected_at": "2025-09-13T19:28:34.185Z",
+  "collected_at": "2025-09-13T19:45:43.587Z",
   "offline_cache": {
-    "enabled": true,
-    "files_downloaded": 8,
-    "bytes_downloaded": 63189,
-    "items": [
-      {
-        "source": "huggingface",
-        "path": "hf-files/README.md",
-        "bytes": 7095
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/config.json",
-        "bytes": 1806
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/generation_config.json",
-        "bytes": 177
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/model.safetensors.index.json",
-        "bytes": 36355
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/original/config.json",
-        "bytes": 376
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/original/dtypes.json",
-        "bytes": 13082
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/special_tokens_map.json",
-        "bytes": 98
-      },
-      {
-        "source": "huggingface",
-        "path": "hf-files/tokenizer_config.json",
-        "bytes": 4200
-      }
-    ]
+    "enabled": false,
+    "files_downloaded": 0,
+    "bytes_downloaded": 0,
+    "items": []
   }
 }
