@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'ALAIN · Home',
-  description: 'Turn any model reference into a runnable lesson you can trust.',
+  description: 'AI Manuals for AI Models — generate step-by-step, runnable guides you can trust.',
 };
 
 export default function NewHomePage() {
@@ -11,13 +11,13 @@ export default function NewHomePage() {
       <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-center">
         <div className="space-y-5">
           <p className="uppercase tracking-wide text-xs text-ink-700">Applied Learning for AI</p>
-          <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">Learn faster with runnable notebooks</h1>
+          <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">AI Manuals for AI Models</h1>
           <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-prose">
-            Paste a Hugging Face link or pick a local model. Generate a guided lesson with clear steps, quick checks, and an export to Colab or Jupyter.
+            Paste a Hugging Face link or pick a local model. Generate a step‑by‑step manual with runnable code, checks, and clean exports.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Get started</a>
-            <a href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">Browse notebooks</a>
+            <a href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Generate Manual</a>
+            <a href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">Browse Library</a>
           </div>
         </div>
         <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card">
