@@ -14,8 +14,7 @@ export default function NavBar() {
       <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="h-10 flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded" aria-label="ALAIN Home">
-            {/* Yellow variant on blue bar for optimal contrast */}
-            <BrandLogo variant="yellow" className="h-8 w-auto" />
+            <BrandLogo variant="blue" className="h-8 w-auto" />
           </Link>
           <div className="hidden md:flex items-center gap-5">
             {newHome && (
