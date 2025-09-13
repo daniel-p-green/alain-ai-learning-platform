@@ -30,6 +30,7 @@ export type UISettings = {
   theme: "light" | "dark" | "system";
   density?: "comfortable" | "compact";
   brandLogo?: "blue" | "yellow"; // switches header logo variant
+  promptMode?: 'openai' | 'poe';
 };
 
 export type Settings = {
@@ -52,7 +53,7 @@ export const DEFAULT_PROVIDERS: ProviderConfig[] = [
 export const DEFAULT_SETTINGS: Settings = {
   providers: DEFAULT_PROVIDERS,
   models: { defaultModel: undefined, recent: [] },
-  ui: { theme: "light", density: "comfortable", brandLogo: "blue" },
+  ui: { theme: "light", density: "comfortable", brandLogo: "blue", promptMode: (process.env.NEXT_PUBLIC_PROMPT_MODE as any) === 'poe' ? 'poe' : 'openai' },
   demo: { loadDemoData: false },
 };
 
@@ -64,4 +65,5 @@ export const LS = {
   models: "alain.models",
   uiTheme: "alain.ui.theme",
   uiLogo: "alain.ui.logo",
+  uiPromptMode: "alain.ui.promptMode",
 } as const;

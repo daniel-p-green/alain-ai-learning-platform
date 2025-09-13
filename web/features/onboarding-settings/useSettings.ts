@@ -42,6 +42,7 @@ export function useSettings() {
   const [models, setModels] = useState(DEFAULT_SETTINGS.models);
   const [theme, setTheme] = useState<"light" | "dark" | "system">(() => (typeof window !== "undefined" ? ((window.localStorage.getItem(LS.uiTheme) as any) || DEFAULT_SETTINGS.ui.theme) : DEFAULT_SETTINGS.ui.theme));
   const [brandLogo, setBrandLogo] = useState<"blue" | "yellow">(() => (typeof window !== "undefined" ? ((window.localStorage.getItem(LS.uiLogo) as any) || DEFAULT_SETTINGS.ui.brandLogo || 'blue') : 'blue'));
+  const [promptMode, setPromptMode] = useState<'openai'|'poe'>(() => (typeof window !== 'undefined' ? ((window.localStorage.getItem(LS.uiPromptMode) as any) || DEFAULT_SETTINGS.ui.promptMode || 'openai') : (DEFAULT_SETTINGS.ui.promptMode || 'openai')));
   const testTimers = useRef<Record<string, any>>({});
 
   // Persist on change (debounced for providers)
@@ -55,6 +56,7 @@ export function useSettings() {
       if (brandLogo === 'yellow') document.documentElement.classList.add(cls); else document.documentElement.classList.remove(cls);
     }
   }, [brandLogo]);
+  useEffect(() => { if (typeof window !== 'undefined') window.localStorage.setItem(LS.uiPromptMode, promptMode); }, [promptMode]);
   useEffect(() => { const t = setTimeout(() => writeJSON(LS.providers, providers), 150); return () => clearTimeout(t); }, [providers]);
 
   const setProviderField = useCallback((id: ProviderId, patch: Partial<ProviderConfig>) => {
@@ -129,7 +131,7 @@ export function useSettings() {
   }, []);
 
   return useMemo(
-    () => ({ providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, clearAll, exportSettings, importSettings }),
-    [providers, models, theme, brandLogo, setProviderField, testProvider, clearAll]
+    () => ({ providers, setProviders, setProviderField, testProvider, models, setModels, theme, setTheme, brandLogo, setBrandLogo, promptMode, setPromptMode, clearAll, exportSettings, importSettings }),
+    [providers, models, theme, brandLogo, promptMode, setProviderField, testProvider, clearAll]
   );
 }
