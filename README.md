@@ -105,6 +105,13 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 - Research writes both structured JSON (`research-data.json`) and human‑readable Markdown summaries (`model-card.md`, `huggingface-info.md`, etc.).
  - Index: `GET /api/content/index` lists provider/model artifacts (add `?flat=1` for a flat array).
 
+### Backfill Teacher Metadata
+- Adds `metadata.teacher_model_used` and `metadata.teacher_downgraded` to existing notebooks.
+- Run locally:
+  - Default (content/notebooks): `node backend/scripts/backfill-teacher-metadata.mjs`
+  - Custom root: `node backend/scripts/backfill-teacher-metadata.mjs --root path/to/notebooks`
+  - Dry run: append `--dry` to see which files would be updated
+
 ### Why GPT‑OSS‑20B (Teacher)
 
 - Open weights and local‑first: runs on Ollama/LM Studio with the same API shape as hosted endpoints.

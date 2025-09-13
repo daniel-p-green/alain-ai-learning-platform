@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getNotebook, putNotebook, type NotebookMeta } from "@/lib/notebookStore";
+import { parseGhId, fetchPublicNotebook } from "@/lib/githubRaw";
 import { ghEnv, getFileContent } from "@/lib/github";
 import { kvEnabled, kvGet, kvSet } from "@/lib/kv";
 
@@ -8,6 +9,20 @@ export const runtime = "edge";
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const rec = getNotebook(params.id);
   if (rec) return NextResponse.json(rec);
+  // Support GitHub-backed IDs without server persistence
+  const gh = parseGhId(params.id);
+  if (gh) {
+    try {
+      const { nb, meta } = await fetchPublicNotebook(gh);
+      const stash = { meta: { ...meta, sourceType: 'github', tags: [], createdAt: new Date().toISOString() }, nb } as any;
+      // Do not persist by default; viewer can opt-in to save
+      return NextResponse.json(stash);
+    } catch (e: any) {
+      const msg = e?.message || 'github_error';
+      const status = msg.startsWith('github_raw:') ? Number(msg.split(':')[1] || 502) : (msg === 'file_too_large' ? 413 : (msg === 'invalid_notebook' ? 422 : 502));
+      return NextResponse.json({ error: msg }, { status });
+    }
+  }
   const kvKey = `notebook:${params.id}`;
   const cached = await kvGet<any>(kvKey);
   if (cached) return NextResponse.json(cached);

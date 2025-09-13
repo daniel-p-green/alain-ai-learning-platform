@@ -141,6 +141,23 @@ class FileSystemStorage {
       JSON.stringify(metadata, null, 2),
       'utf8'
     );
+    // Optional: index notebook in catalog for discovery (controlled by env flag)
+    try {
+      if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
+        const { indexGeneratedNotebook } = await import('../catalog/store');
+        await indexGeneratedNotebook({
+          file_path: filePath,
+          model: modelId,
+          provider: providerDir,
+          difficulty,
+          created_by: undefined,
+          visibility: 'private',
+          tags: metadata.tags,
+          size_bytes: metadata.size_bytes,
+          checksum: metadata.checksum,
+        });
+      }
+    } catch {}
     
     return { filePath, metadata };
   }
@@ -258,6 +275,23 @@ class FileSystemStorage {
       JSON.stringify(metadata, null, 2),
       'utf8'
     );
+    // Optional: index lesson in catalog (env-gated)
+    try {
+      if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
+        const { indexGeneratedLesson } = await import('../catalog/store');
+        await indexGeneratedLesson({
+          file_path: filePath,
+          model: modelId,
+          provider: providerDir,
+          difficulty: metadata.difficulty as any,
+          created_by: undefined,
+          visibility: 'private',
+          tags: metadata.tags,
+          size_bytes: metadata.size_bytes,
+          checksum: metadata.checksum,
+        });
+      }
+    } catch {}
     return { filePath, metadata };
   }
 
