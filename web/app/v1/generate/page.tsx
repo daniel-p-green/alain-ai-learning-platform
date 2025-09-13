@@ -1,6 +1,11 @@
+import { redirect } from 'next/navigation';
+
 export const metadata = {
-  title: 'ALAIN — Generate (v1)',
+  title: 'ALAIN · Generate Manual',
+  description: 'Generate a step-by-step, runnable manual.',
 };
 
-export { default } from '../../../features/generate/GeneratePage';
+export default function LegacyGenerate() {
+  redirect('/generate');
+}
 
