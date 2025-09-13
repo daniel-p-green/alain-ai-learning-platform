@@ -6,6 +6,8 @@ import { allowRate } from "../utils/ratelimit";
 import { validateBackendEnv } from "../config/env";
 import { validateLesson, applyDefaults } from "./spec/lessonSchema";
 import { parseHfUrl } from "../utils/hf";
+import { fileSystemStorage } from "../storage/filesystem";
+import { buildNotebook } from "../export/notebook";
 
 interface LessonGenerationRequest {
   hfUrl: string;
@@ -61,9 +63,9 @@ interface LessonGenerationResponse {
 }
 
 // Generate structured lessons from HF URLs using GPT-OSS teacher models
-export const generateLesson = api<LessonGenerationRequest, LessonGenerationResponse>(
+export const generateLesson = api(
   { expose: true, method: "POST", path: "/lessons/generate" },
-  async (req, ctx) => {
+  async (req: LessonGenerationRequest, ctx: any): Promise<LessonGenerationResponse> => {
     validateBackendEnv();
     const userId = await requireUserId(ctx);
     const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
@@ -129,6 +131,46 @@ export const generateLesson = api<LessonGenerationRequest, LessonGenerationRespo
         if (!v2.valid) {
           return { success: false, error: { code: "validation_error", message: "Lesson invalid after repair", details: v2.errors } } as any;
         }
+      }
+
+      // Auto-save the generated lesson in both JSON and .ipynb formats
+      try {
+        const modelId = modelInfo.name || 'unknown-model';
+        
+        // Save raw lesson JSON
+        await fileSystemStorage.saveNotebook(modelId, req.difficulty, lesson, 'json');
+        
+        // Convert to proper Jupyter notebook format and save
+        const notebookMeta = {
+          title: lesson.title || 'Generated Lesson',
+          description: lesson.description || '',
+          provider: lesson.provider || 'openai-compatible',
+          model: lesson.model || modelId
+        };
+        
+        const steps = (lesson.steps || []).map(step => ({
+          step_order: step.step_order || 1,
+          title: step.title || '',
+          content: step.content || '',
+          code_template: step.code_template || null,
+          model_params: step.model_params || { temperature: 0.7 }
+        }));
+        
+        const assessments = (lesson.assessments || []).map((assessment, index) => ({
+          step_order: index + 1,
+          question: assessment.question || '',
+          options: assessment.options || [],
+          correct_index: assessment.correct_index || 0,
+          explanation: assessment.explanation || null
+        }));
+        
+        const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker);
+        await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb');
+        
+        console.log(`Lesson auto-saved for model: ${modelId}, difficulty: ${req.difficulty} (JSON + .ipynb)`);
+      } catch (saveError) {
+        console.warn('Failed to auto-save lesson:', saveError);
+        // Don't fail the request if save fails
       }
 
       return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;

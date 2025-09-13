@@ -275,11 +275,12 @@ export default function GenerateLessonPage() {
           onClick={() => {
             setSource('local');
             setTargetProvider('openai-compatible');
-            setTargetModel('gpt-oss:20b');
+            // LM Studio commonly exposes this as `gpt-oss-20b`; adjust if your local id differs
+            setTargetModel('gpt-oss-20b');
             setSnackbar('Generating…');
             setTimeout(() => formRef.current?.requestSubmit(), 0);
           }}
-        >Use Example (Local)</Button>
+        >Use Example (Local: gpt-oss-20b)</Button>
       </div>
       {SHOW_FALLBACK_UI && (
         <div className="mt-2 p-3 rounded-card border border-yellow-200 bg-yellow-50 text-xs text-ink-900">
