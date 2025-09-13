@@ -15,6 +15,7 @@ const isPublicRoute = createRouteMatcher([
 
 export default clerkMiddleware((auth, req) => {
   // Legacy path redirects: /notebooks -> /tutorials
+  // TODO: Remove these redirects once external links are migrated (tracked in docs).
   const url = new URL(req.url);
   if (url.pathname === '/notebooks') {
     url.pathname = '/tutorials';
