@@ -242,6 +242,11 @@ const analytics = {
 - `util/json_repair.harmony.txt` — strict schema-guided repair for lesson JSON.
 - `util/hf_extract.harmony.txt` — robust, schema’d extraction from model cards.
 
+## References
+
+- Guide: AI Model Information Distribution — `../../docs/AI_MODEL_INFO_DISTRIBUTION_GUIDE.md`
+- Notes copy (mirror) — `../../hackathon-notes/AI_MODEL_INFO_DISTRIBUTION_GUIDE.md`
+
 ## Troubleshooting
 
 ### Common Issues

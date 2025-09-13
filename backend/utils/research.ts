@@ -18,6 +18,11 @@ export interface ResearchData {
       notebooks?: any[];
       examples?: string[];
     };
+    kaggle?: {
+      datasets?: any[];
+      notebooks?: any[];
+      competitions?: any[];
+    };
   };
   collected_at: string;
   offline_cache?: {
@@ -108,6 +113,36 @@ async function fetchOpenAICookbookExamples(modelName: string, githubToken?: stri
 }
 
 /**
+ * Search Kaggle for datasets, notebooks, and competitions
+ */
+async function fetchKaggleContent(modelName: string, creds?: { username?: string; key?: string }, extraQuery?: string): Promise<any> {
+  try {
+    const username = (creds?.username || process.env.KAGGLE_USERNAME || '').trim();
+    const key = (creds?.key || process.env.KAGGLE_KEY || '').trim();
+    if (!username || !key) return null;
+    const auth = 'Basic ' + Buffer.from(`${username}:${key}`).toString('base64');
+    const headers = { 'Authorization': auth, 'User-Agent': 'ALAIN-Research/1.0' } as Record<string, string>;
+    const base = 'https://www.kaggle.com/api/v1';
+    const q = [modelName, extraQuery].filter(Boolean).join(' ');
+
+    const toJson = async (url: string) => {
+      const r = await fetch(url, { headers });
+      if (!r.ok) return [];
+      try { return await r.json(); } catch { return []; }
+    };
+
+    console.log(`🏆 Querying Kaggle API for: ${q}`);
+    const datasets = await toJson(`${base}/datasets/list?search=${encodeURIComponent(q)}&page=1&pageSize=20`);
+    const notebooks = await toJson(`${base}/kernels/list?search=${encodeURIComponent(q)}&page=1&pageSize=20`);
+    const competitions = await toJson(`${base}/competitions/list?search=${encodeURIComponent(q)}&page=1&pageSize=20`);
+    return { datasets, notebooks, competitions };
+  } catch (error) {
+    console.error('Error fetching Kaggle content:', error);
+    return null;
+  }
+}
+
+/**
  * Search for Unsloth notebooks and examples
  */
 async function fetchUnslothContent(modelName: string, githubToken?: string, extraQuery?: string): Promise<any> {
@@ -190,7 +225,7 @@ export async function researchModel(
   model: string,
   provider: string = 'openai',
   rootDir: string = process.cwd(),
-  options?: { offlineCache?: boolean; githubToken?: string; maxBytes?: number; query?: string }
+  options?: { offlineCache?: boolean; githubToken?: string; maxBytes?: number; query?: string; kaggle?: { username?: string; key?: string } }
 ): Promise<string> {
   console.log(`🔬 Starting comprehensive research for: ${model}`);
   
@@ -220,6 +255,12 @@ export async function researchModel(
   
   // Fetch Unsloth content
   researchData.sources.unsloth = await fetchUnslothContent(model, options?.githubToken, options?.query);
+  
+  // Fetch Kaggle content (if credentials are provided)
+  try {
+    const kaggle = await fetchKaggleContent(model, options?.kaggle, options?.query);
+    if (kaggle) researchData.sources.kaggle = kaggle;
+  } catch {}
   
   // Optional offline caching of relevant files for later offline use
   if (options?.offlineCache) {
@@ -300,6 +341,10 @@ export async function researchModel(
   if (researchData.sources.unsloth) {
     const unslothFile = join(researchDir, 'unsloth-content.md');
     writeFileSync(unslothFile, formatUnslothContent(researchData.sources.unsloth));
+  }
+  if (researchData.sources.kaggle) {
+    const kaggleFile = join(researchDir, 'kaggle-content.md');
+    writeFileSync(kaggleFile, formatKaggleContent(researchData.sources.kaggle));
   }
   
   console.log(`✅ Research completed and saved to: ${researchDir}`);
@@ -405,6 +450,47 @@ function formatUnslothContent(unslothData: any): string {
 }
 
 /**
+ * Format Kaggle content as readable Markdown
+ */
+function formatKaggleContent(kaggleData: any): string {
+  if (!kaggleData) return '# Kaggle Resources\n\nNo data available.\n';
+  
+  let md = `# Kaggle Resources\n\n`;
+  
+  if (kaggleData.datasets && kaggleData.datasets.length > 0) {
+    md += `## Dataset Search URLs\n\n`;
+    kaggleData.datasets.forEach((search: any) => {
+      md += `- [Search: "${search.query}"](${search.search_url})\n`;
+    });
+    md += `\n`;
+  }
+  
+  if (kaggleData.notebooks && kaggleData.notebooks.length > 0) {
+    md += `## Notebook Search URLs\n\n`;
+    kaggleData.notebooks.forEach((search: any) => {
+      md += `- [Search: "${search.query}"](${search.search_url})\n`;
+    });
+    md += `\n`;
+  }
+  
+  if (kaggleData.competitions && kaggleData.competitions.length > 0) {
+    md += `## Competition Search URLs\n\n`;
+    kaggleData.competitions.forEach((search: any) => {
+      md += `- [Search: "${search.query}"](${search.search_url})\n`;
+    });
+    md += `\n`;
+  }
+  
+  md += `## Manual Search Tips\n\n`;
+  md += `Visit the search URLs above to find relevant Kaggle resources. Look for:\n`;
+  md += `- Datasets that use or benchmark this model\n`;
+  md += `- Notebooks demonstrating model usage\n`;
+  md += `- Competitions where this model might be applicable\n\n`;
+  
+  return md;
+}
+
+/**
  * Generate research summary
  */
 export function generateResearchSummary(researchDir: string): string {
@@ -436,6 +522,13 @@ export function generateResearchSummary(researchDir: string): string {
     summary += `## Unsloth\n`;
     summary += `- Notebooks: ${data.sources.unsloth.notebooks?.length || 0} repositories found\n`;
     summary += `- Examples: ${data.sources.unsloth.examples?.length || 0} files found\n\n`;
+  }
+  
+  if (data.sources.kaggle) {
+    summary += `## Kaggle\n`;
+    summary += `- Dataset searches: ${data.sources.kaggle.datasets?.length || 0} queries prepared\n`;
+    summary += `- Notebook searches: ${data.sources.kaggle.notebooks?.length || 0} queries prepared\n`;
+    summary += `- Competition searches: ${data.sources.kaggle.competitions?.length || 0} queries prepared\n\n`;
   }
   
   return summary;
