@@ -9,8 +9,8 @@
 - Optional KV cache (Upstash)
 
 ## Routes
-- Public: /, /generate, /tutorials, /tutorials/[id], /api/notebooks
-- Auth: /tutorials/[id]/remix, /upload, /my/notebooks
+- Public: /, /generate, /notebooks, /notebooks/[id], /api/notebooks
+- Auth: /notebooks/[id]/remix, /upload, /my/notebooks
 - Admin: /admin, /admin/moderation, /api/admin/**
 
 ## Env Vars (Web)

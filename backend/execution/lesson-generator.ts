@@ -168,9 +168,37 @@ export const generateLesson = api(
         const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
         const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
         const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker, teacherUsed as any, teacherDowngraded);
-        await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb', lesson.provider || 'openai-compatible');
+        const nbMeta = await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb', lesson.provider || 'openai-compatible');
         
         console.log(`Lesson auto-saved for model: ${modelId}, difficulty: ${req.difficulty} (JSON + .ipynb)`);
+        // Optional: index notebook to catalog with author
+        try {
+          if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
+            const { indexGeneratedNotebook } = await import('../catalog/store');
+            await indexGeneratedNotebook({
+              file_path: nbMeta.filePath,
+              model: modelId,
+              provider: (lesson.provider || 'openai-compatible'),
+              difficulty: req.difficulty,
+              created_by: userId,
+              visibility: 'private',
+              tags: [],
+              size_bytes: nbMeta.metadata.size_bytes,
+              checksum: nbMeta.metadata.checksum,
+            });
+          }
+        } catch {}
+        // Optional: ingest into Tutorials DB
+        try {
+          if ((process.env.TUTORIALS_INGEST || '').toLowerCase() === '1') {
+            const { ingestTutorialFromLesson } = await import('../tutorials/ingest');
+            const prov = (selectedProvider as any) || 'poe';
+            const tid = await ingestTutorialFromLesson(lesson as any, req.difficulty, modelId, prov);
+            console.log(`[ingest] Tutorial created with id=${tid}`);
+          }
+        } catch (e) {
+          console.warn('Ingest to tutorials failed:', e);
+        }
       } catch (saveError) {
         console.warn('Failed to auto-save lesson:', saveError);
         // Don't fail the request if save fails

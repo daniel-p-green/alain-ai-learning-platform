@@ -9,10 +9,10 @@ async function fetchNotebook(id: string) {
   return res.json();
 }
 
-export default async function TutorialPage({ params, searchParams }: { params: { id: string }, searchParams?: { [k: string]: string | string[] | undefined } }) {
+export default async function NotebookPage({ params, searchParams }: { params: { id: string }, searchParams?: { [k: string]: string | string[] | undefined } }) {
   const rec = await fetchNotebook(params.id);
   if (!rec) {
-    return <div className="mx-auto max-w-3xl p-6">Tutorial not found.</div>;
+    return <div className="mx-auto max-w-3xl p-6">Notebook not found.</div>;
   }
   return (
     <div className="mx-auto max-w-3xl p-6 space-y-6">
@@ -47,3 +47,4 @@ export default async function TutorialPage({ params, searchParams }: { params: {
     </div>
   );
 }
+

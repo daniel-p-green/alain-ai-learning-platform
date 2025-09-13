@@ -36,7 +36,7 @@ export default function TutorialsGallery() {
   return (
     <div className="mx-auto max-w-5xl p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end gap-3 justify-between">
-        <h1 className="text-2xl font-semibold">Tutorials</h1>
+        <h1 className="text-2xl font-semibold">Notebooks</h1>
         <div className="flex flex-col sm:flex-row flex-wrap sm:items-center gap-2">
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title" className="rounded border px-3 py-2 w-full sm:w-56" />
           <select value={type} onChange={(e) => setType(e.target.value)} className="rounded border px-3 py-2 w-full sm:w-auto">
@@ -50,7 +50,7 @@ export default function TutorialsGallery() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((i) => (
-          <Link key={i.id} href={`/tutorials/${i.id}`} className="rounded border hover:border-alain-blue overflow-hidden group">
+          <Link key={i.id} href={`/notebooks/${i.id}`} className="rounded border hover:border-alain-blue overflow-hidden group">
             {i.thumb ? (
               <img src={i.thumb} alt="thumbnail" className="h-24 w-full object-cover" />
             ) : (
@@ -82,7 +82,7 @@ export default function TutorialsGallery() {
           </Link>
         ))}
         {filtered.length === 0 && (
-          <div className="text-ink-600">No tutorials found.</div>
+          <div className="text-ink-600">No notebooks found.</div>
         )}
       </div>
     </div>

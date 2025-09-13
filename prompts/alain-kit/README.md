@@ -4,13 +4,15 @@ This directory contains the complete set of **properly formatted OpenAI Harmony 
 
 ## ✅ Harmony Format Compliance
 
-All prompts in this directory follow the official OpenAI Harmony format specification:
+All canonical prompts in this directory follow the official OpenAI Harmony format specification:
 
 - **Special Tokens**: Uses proper Harmony tokens (`<|start|>`, `<|message|>`, `<|end|>`, `<|channel|>`, `<|constrain|>`, `<|call|>`, `<|return|>`)
 - **Channel Structure**: Implements all three channels (`analysis`, `commentary`, `final`)
 - **Function Calling**: Tool calls properly constrained with `<|constrain|> json` and directed to `commentary` channel
 - **Message Hierarchy**: Follows proper role hierarchy (`system > developer > user > assistant > tool`)
 - **TypeScript-like Functions**: Function signatures use proper TypeScript-like syntax for tool definitions
+
+Note: provider-specific flattened templates (non‑Harmony, for manual copy/paste) live under prompts/alain-kit/flattened/. Programmatic flows load the .harmony.txt files.
 
 ## Overview
 
@@ -65,6 +67,15 @@ For end-to-end automation, use `orchestrator.harmony.txt`:
 ```
 
 ## Harmony Format Structure
+
+### Flattened Variants (Manual Use)
+
+For simple copy/paste tests (no Harmony roles), use the flattened templates:
+
+- Poe: prompts/alain-kit/flattened/poe/develop.v2025-09-13.txt
+- OpenAI-compatible: prompts/alain-kit/flattened/openai-compatible/develop.v2025-09-13.txt
+
+These mirror the constraints of the Harmony prompts (JSON-only outputs, no secrets, parameterized examples). Use Harmony files for programmatic workflows.
 
 Each prompt follows the OpenAI Harmony response format:
 

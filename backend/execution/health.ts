@@ -48,7 +48,7 @@ export const health = api<{}, HealthStatus>(
       uptime: process.uptime(),
       offlineMode: offline,
       teacherProvider,
-      openaiBaseUrl: process.env.OPENAI_BASE_URL || null,
+      openaiBaseUrl: getOpenAIBaseUrl(),
       services
     };
   }
@@ -59,7 +59,8 @@ async function checkPoeHealth(): Promise<ServiceHealth> {
   const startTime = Date.now();
 
   try {
-    const apiKey = process.env.POE_API_KEY;
+    const poeApiKey = secret("POE_API_KEY");
+    const apiKey = poeApiKey();
     if (!apiKey) {
       return {
         status: 'unhealthy',
@@ -121,8 +122,10 @@ async function checkOpenAIHealth(): Promise<ServiceHealth> {
   const startTime = Date.now();
 
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
-    const baseUrl = process.env.OPENAI_BASE_URL;
+    const openaiApiKey = secret("OPENAI_API_KEY");
+    const openaiBaseUrl = secret("OPENAI_BASE_URL");
+    const apiKey = openaiApiKey();
+    const baseUrl = openaiBaseUrl();
 
     if (!apiKey || !baseUrl) {
       return {
@@ -196,6 +199,16 @@ async function checkDatabaseHealth(): Promise<ServiceHealth> {
       responseTime: Date.now() - startTime
     };
   }
+}
+
+// Helper: surface OpenAI base url (non-secret) if configured via Encore secrets or env
+function getOpenAIBaseUrl(): string | null {
+  try {
+    const openaiBaseUrl = secret("OPENAI_BASE_URL");
+    const v = openaiBaseUrl();
+    if (v) return v;
+  } catch {}
+  return process.env.OPENAI_BASE_URL || null;
 }
 
 // Determine overall system health

@@ -17,7 +17,7 @@ export default function NewHomePage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <a href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Get started</a>
-            <a href="/tutorials" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">Browse tutorials</a>
+            <a href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">Browse notebooks</a>
           </div>
         </div>
         <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card">
