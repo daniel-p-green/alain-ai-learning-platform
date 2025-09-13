@@ -69,7 +69,7 @@ async function fetchHuggingFaceInfo(modelPath: string): Promise<any> {
 /**
  * Search OpenAI cookbook for relevant examples
  */
-async function fetchOpenAICookbookExamples(modelName: string, githubToken?: string): Promise<any> {
+async function fetchOpenAICookbookExamples(modelName: string, githubToken?: string, extraQuery?: string): Promise<any> {
   try {
     console.log(`📚 Searching OpenAI cookbook for: ${modelName}`);
     
@@ -84,7 +84,12 @@ async function fetchOpenAICookbookExamples(modelName: string, githubToken?: stri
     const cookbookInfo = cookbookResponse.ok ? await cookbookResponse.json() : null;
     
     // Search code in cookbook for model mentions (paths only)
-    const codeSearchUrl = `https://api.github.com/search/code?q=repo:openai/openai-cookbook+${encodeURIComponent(modelName)}`;
+    const cookedQ = [
+      `repo:openai/openai-cookbook ${modelName}`,
+      `repo:openai/openai-cookbook gpt-oss`,
+      extraQuery ? `repo:openai/openai-cookbook ${extraQuery}` : ''
+    ].filter(Boolean).join(' OR ');
+    const codeSearchUrl = `https://api.github.com/search/code?q=${encodeURIComponent(cookedQ)}`;
     const codeSearchResponse = await fetch(codeSearchUrl, { headers: githubHeaders(githubToken) });
     const codeResults = codeSearchResponse.ok ? await codeSearchResponse.json() : { items: [] };
     const notebooks = (codeResults.items || [])
@@ -105,7 +110,7 @@ async function fetchOpenAICookbookExamples(modelName: string, githubToken?: stri
 /**
  * Search for Unsloth notebooks and examples
  */
-async function fetchUnslothContent(modelName: string, githubToken?: string): Promise<any> {
+async function fetchUnslothContent(modelName: string, githubToken?: string, extraQuery?: string): Promise<any> {
   try {
     console.log(`🦥 Searching Unsloth content for: ${modelName}`);
     
@@ -120,8 +125,10 @@ async function fetchUnslothContent(modelName: string, githubToken?: string): Pro
     const unslothInfo = unslothResponse.ok ? await unslothResponse.json() : null;
     
     // Organization-wide code search for notebooks referencing the model
-    const q = `org:unslothai+${encodeURIComponent(modelName)}+extension:ipynb`;
-    const codeSearchUrl = `https://api.github.com/search/code?q=${q}`;
+    const orgQ = `org:unslothai ${modelName} extension:ipynb`;
+    const broaderQ = `unsloth ${modelName} extension:ipynb`;
+    const extraQ = extraQuery ? `${extraQuery} extension:ipynb` : '';
+    const codeSearchUrl = `https://api.github.com/search/code?q=${encodeURIComponent([orgQ, broaderQ, extraQ].filter(Boolean).join(' OR '))}`;
     const codeSearchResp = await fetch(codeSearchUrl, { headers: githubHeaders(githubToken) });
     const codeSearch = codeSearchResp.ok ? await codeSearchResp.json() : { items: [] };
     
@@ -183,7 +190,7 @@ export async function researchModel(
   model: string,
   provider: string = 'openai',
   rootDir: string = process.cwd(),
-  options?: { offlineCache?: boolean; githubToken?: string; maxBytes?: number }
+  options?: { offlineCache?: boolean; githubToken?: string; maxBytes?: number; query?: string }
 ): Promise<string> {
   console.log(`🔬 Starting comprehensive research for: ${model}`);
   
@@ -209,10 +216,10 @@ export async function researchModel(
   researchData.sources.huggingface = await fetchHuggingFaceInfo(hfModelPath);
   
   // Fetch OpenAI cookbook examples
-  researchData.sources.openai_cookbook = await fetchOpenAICookbookExamples(model, options?.githubToken);
+  researchData.sources.openai_cookbook = await fetchOpenAICookbookExamples(model, options?.githubToken, options?.query);
   
   // Fetch Unsloth content
-  researchData.sources.unsloth = await fetchUnslothContent(model, options?.githubToken);
+  researchData.sources.unsloth = await fetchUnslothContent(model, options?.githubToken, options?.query);
   
   // Optional offline caching of relevant files for later offline use
   if (options?.offlineCache) {

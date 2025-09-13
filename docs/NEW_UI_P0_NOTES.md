@@ -4,7 +4,7 @@ This document summarizes the P0 implementation work, feature flags, and how to v
 
 ## What changed
 - New page: `/home` — simplified hero + clear CTAs.
-- New shell applied to default `/generate`, `/tutorials`, `/tutorial/[id]`, and `/settings` via a route group layout `(app)`; legacy Generate kept at `/v1/generate`.
+- New shell applied to default `/generate`, `/tutorials`, `/tutorials/[id]`, and `/settings` via a route group layout `(app)`; legacy Generate kept at `/v1/generate`.
 - NavBar links now point to `/generate` (new shell) directly. Optional `New Home` link is still flag‑gated.
 - Generate page:
   - Hides the "Force fallback mode" checkbox unless `NEXT_PUBLIC_ENABLE_FALLBACK_UI=1`.
@@ -20,7 +20,7 @@ This document summarizes the P0 implementation work, feature flags, and how to v
 ## Files
 - Pages: `web/app/home/page.tsx`, `web/app/(app)/layout.tsx`, `web/app/(app)/generate/page.tsx`, `web/app/v1/generate/page.tsx`
 - Nav: `web/components/NavBar.tsx` (flagged links)
-- Generate tweaks: `web/app/generate/page.tsx`
+- Generate tweaks: `web/app/(app)/generate/page.tsx`
 - Typed API: `web/lib/schemas.ts`, `web/lib/api.ts`
 - Tests: `web/__tests__/schemas.test.ts`, `web/__tests__/api-parse.test.ts`, `web/vitest.config.ts`
 - Requirements: `docs/REQUIREMENTS_UI_MVP.md`
