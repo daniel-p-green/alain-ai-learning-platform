@@ -1,6 +1,6 @@
 # ALAIN‑Kit SDK
 
-Public SDK for outline‑first notebook generation, validation, and Colab compatibility. This provides a stable import surface that re‑exports the production modules in `alain-kit-clean`.
+Public SDK for outline‑first notebook generation, validation, and Colab compatibility. This provides a stable import surface that re‑exports the production modules in `alain-kit`.
 
 ## Install
 

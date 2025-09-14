@@ -14,7 +14,9 @@
     "smoke:hosted": "bash scripts/smoke/hosted.sh",
     "smoke:offline": "bash scripts/smoke/offline.sh",
     "alain:example": "npm --workspace alain-kit-sdk run example",
-    "alain:cli": "npm --workspace alain-kit-sdk run cli"
+    "alain:cli": "npm --workspace alain-kit-sdk run cli",
+    "alain:bench:run": "npm --workspace alain-kit-sdk run bench:run",
+    "alain:bench:analyze": "npm --workspace alain-kit-sdk run bench:analyze"
   },
   "workspaces": [
     "backend",
