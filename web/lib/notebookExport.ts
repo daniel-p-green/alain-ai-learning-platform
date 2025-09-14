@@ -14,7 +14,7 @@ export function buildNotebookFromLesson(lesson: any) {
     `Teacher Model: OpenAI GPT-OSS-20B\n`,
     `Provider: ${meta.provider || 'openai-compatible'}\n`,
     `Target Model: ${meta.model || 'unknown'}\n`,
-    `Learn more: https://github.com/your-org/alain-ai-learning-platform\n`,
+    `Learn more: https://github.com/daniel-p-green/alain-ai-learning-platform/\n`,
     `-->\n`
   ];
   cells.push({ cell_type: 'markdown', metadata: {}, source: attributionComment });
