@@ -55,8 +55,8 @@ export async function ingestTutorialFromLesson(
 
   // Create tutorial row
   const tut = await tutorialsDB.queryRow<{ id: number }>`
-    INSERT INTO tutorials (title, description, model, provider, difficulty, tags, model_maker_id, updated_at)
-    VALUES (${lesson.title}, ${lesson.description}, ${model}, ${provider}, ${difficulty}, ${lesson.tags || []}, ${makerId}, NOW())
+    INSERT INTO tutorials (title, description, model, provider, difficulty, tags, model_maker_id, author_id, updated_at)
+    VALUES (${lesson.title}, ${lesson.description}, ${model}, ${provider}, ${difficulty}, ${lesson.tags || []}, ${makerId}, ${authorId || null}, NOW())
     RETURNING id`;
   const tutorialId = tut!.id;
 
@@ -81,4 +81,3 @@ export async function ingestTutorialFromLesson(
 
   return tutorialId;
 }
-
