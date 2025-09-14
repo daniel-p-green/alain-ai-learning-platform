@@ -70,13 +70,52 @@ export function buildNotebook(
   intro.push("- Set `OPENAI_BASE_URL` and `OPENAI_API_KEY` via env (or Colab userdata).\n");
   intro.push("- Widgets optional: text-based MCQs are provided if widgets are unavailable.\n");
 
-  // 2) Setup: install deps
+  // Provider base URL setup
+  const providerBase = meta.provider === 'poe' ? 'https://api.poe.com/v1' : 'http://localhost:1234/v1';
+
+  // 2) Requirements.txt cell
   cells.push({
     cell_type: "code",
     metadata: {},
     source: [
-      "# Install client SDKs (if missing)\n",
-      "!pip -q install openai>=1.34.0\n",
+      "# Create requirements.txt for reproducible environment\n",
+      "%%writefile requirements.txt\n",
+      "openai>=1.34.0\n",
+      "ipywidgets>=8.0.0\n",
+      "requests>=2.31.0\n",
+      "python-dotenv>=1.0.0\n",
+      "numpy>=1.24.0\n",
+      "pandas>=2.0.0\n",
+    ],
+    outputs: [],
+    execution_count: null,
+  });
+
+  // 2b) .env.example file
+  cells.push({
+    cell_type: "code",
+    metadata: {},
+    source: [
+      "# Create .env.example template\n",
+      "%%writefile .env.example\n",
+      "# Copy this file to .env and fill in your actual values\n",
+      "OPENAI_API_KEY=your_api_key_here\n",
+      `OPENAI_BASE_URL=${providerBase}\n`,
+      "POE_API_KEY=your_poe_key_here\n",
+      "# For local models (LM Studio/Ollama), any non-empty string works for API_KEY\n",
+    ],
+    outputs: [],
+    execution_count: null,
+  });
+
+  // 2c) Install dependencies
+  cells.push({
+    cell_type: "code",
+    metadata: {},
+    source: [
+      "# Install dependencies from requirements.txt\n",
+      "!pip install -q -r requirements.txt\n",
+      "print('✅ Dependencies installed successfully')\n",
     ],
     outputs: [],
     execution_count: null,
@@ -85,11 +124,13 @@ export function buildNotebook(
   // 3) Provider env/config
   // Provide a sensible default for local OpenAI-compatible runtimes.
   // LM Studio commonly runs on :1234; Ollama on :11434.
-  const providerBase = meta.provider === 'poe' ? 'https://api.poe.com/v1' : 'http://localhost:1234/v1';
   const envSource = [
     "# Configure OpenAI-compatible client\n",
     "import os\n",
+    "from dotenv import load_dotenv\n",
     "from getpass import getpass\n",
+    "# Load environment variables from .env file if it exists\n",
+    "load_dotenv()\n",
     "# Try to read secrets from Colab userdata if available\n",
     "try:\n",
     "  from google.colab import userdata  # type: ignore\n",
