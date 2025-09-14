@@ -170,3 +170,36 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 ## License
 
 MIT License — see `LICENSE` for full text.
+
+---
+
+## Explore & Tutorials (New)
+
+- Explore public content
+  - Notebooks: `/explore/notebooks` — lists public/unlisted generated notebooks.
+  - Lessons: `/explore/lessons` — lists public/unlisted generated lessons and tutorials.
+  - Filter by `model`, `provider`, and `difficulty` via query params.
+
+- Tutorial detail
+  - Page: `/tutorials/:id` — renders steps and Model Maker info.
+  - Includes a minimal “Try a prompt” panel that calls the backend `/execute`.
+  - Tracks step progress per user (requires Clerk auth).
+
+- Download endpoint
+  - `GET /api/files/download?path=content/...` — serves files under the repo `content/` directory only.
+  - Use to download `.ipynb` and lesson JSON directly from Explore pages.
+
+## Catalog & Publishing
+
+- Flags (backend)
+  - `CATALOG_INDEX=1` — index notebooks/lessons on save into catalog tables.
+  - `TUTORIALS_INGEST=1` — ingest generated lessons into the tutorials DB (steps + assessments).
+
+- Flags (web)
+  - `NEXT_PUBLIC_BACKEND_URL` — base URL for backend API.
+  - `NEXT_PUBLIC_GITHUB_REPO` / `NEXT_PUBLIC_GITHUB_BRANCH` — enables “Open in Colab” links.
+  - `NEXT_PUBLIC_ENABLE_LEGACY_STORE=1` — opt‑in legacy `/api/notebooks` (otherwise redirects to catalog).
+
+- Backfill script
+  - `bun backend/scripts/backfill-catalog.ts` — indexes existing artifacts in `content/` into the catalog.
+  - Safe to re‑run. Explore pages will populate after backfill.
