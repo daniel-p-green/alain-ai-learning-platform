@@ -64,7 +64,7 @@ Purpose: Turn any Hugging Face model link into a top‑scoring, highly engaging,
 
 Colab badge example (replace with your GitHub URL)
 ```
-[Open in Colab](https://colab.research.google.com/github/your-org/your-repo/***REMOVED***/main/path/to/notebook.ipynb)
+[Open in Colab](https://colab.research.google.com/github/daniel-p-green/alain-ai-learning-platform/***REMOVED***/main/path/to/notebook.ipynb)
 ```
 
 Colab form parameters
