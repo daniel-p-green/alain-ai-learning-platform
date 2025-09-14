@@ -1,0 +1,32 @@
+{
+  "model": "openai/gpt-3.5-turbo",
+  "provider": "poe",
+  "topic": "test directory structure",
+  "research_depth": "basic",
+  "sources": {
+    "huggingface": {
+      "model_card_analysis": "No model card available for analysis.",
+      "repo_info": null,
+      "key_insights": []
+    },
+    "github": {
+      "repositories": []
+    }
+  },
+  "synthesis": {
+    "key_concepts": [],
+    "technical_details": [],
+    "use_cases": [],
+    "limitations": [],
+    "best_practices": [],
+    "learning_path": [
+      "Start with model documentation and architecture overview",
+      "Review academic papers for theoretical foundation",
+      "Explore practical implementations and examples",
+      "Practice with hands-on tutorials and notebooks",
+      "Apply to real-world use cases and projects"
+    ]
+  },
+  "collected_at": "2025-09-14T00:38:51.419Z",
+  "processing_time_ms": 197
+}

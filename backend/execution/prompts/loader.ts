@@ -43,20 +43,66 @@ export function loadHarmonyPrompt(relOrAbsPath: string): Sections {
 }
 
 // Convenience loader for ALAIN-Kit phase prompts.
-export function loadAlainKitPrompt(phase: "research" | "design" | "develop" | "validate" | "orchestrator"): Sections {
-  const customRoot = (process.env.PROMPT_ROOT || "").trim();
-  const candidates = [
-    customRoot ? path.join(customRoot, `${phase}.harmony.txt`) : "",
-    path.resolve(__dirname, "../../../prompts/alain-kit", `${phase}.harmony.txt`),
-    path.resolve(process.cwd(), "prompts/alain-kit", `${phase}.harmony.txt`),
-  ].filter(Boolean) as string[];
+// Accepts flexible phase identifiers such as:
+//  - research | design | develop | validate | orchestrator
+//  - research.offline | orchestrator.offline | cache.management
+//  - with suffixes: .harmony | .harmony.txt | .txt
+//  - or a direct path to a .txt file
+export function loadAlainKitPrompt(phase: string): Sections {
+  const requested = (phase || "").trim();
+  if (!requested) throw new Error("loadAlainKitPrompt: phase is empty");
 
-  for (const p of candidates) {
-    try {
-      if (fs.existsSync(p)) return loadHarmonyPrompt(p);
-    } catch {}
+  // If explicit path provided ending with .txt, load directly
+  const looksLikePath = requested.includes("/") || requested.includes("\\");
+  if (looksLikePath && requested.endsWith(".txt")) {
+    if (!fs.existsSync(requested)) {
+      throw new Error(`Prompt file not found: ${requested}`);
+    }
+    return loadHarmonyPrompt(requested);
   }
-  // Last resort: attempt CWD relative and throw if missing
-  const fallback = path.resolve(process.cwd(), "prompts/alain-kit", `${phase}.harmony.txt`);
-  return loadHarmonyPrompt(fallback);
+
+  // Normalize base name variants
+  const withoutTxt = requested.replace(/\.txt$/i, "");
+  const withoutHarmony = withoutTxt.replace(/\.harmony$/i, "");
+  const withoutOfflineHarmony = withoutTxt.replace(/\.offline\.harmony$/i, "");
+  const baseCandidates = Array.from(new Set([requested, withoutTxt, withoutHarmony, withoutOfflineHarmony].filter(Boolean)));
+
+  // Generate filename candidates in priority order
+  const fileNameCandidates: string[] = [];
+  for (const base of baseCandidates) {
+    // Explicit offline.harmony if signaled with ".offline"
+    if (/\.offline$/i.test(base)) {
+      const b = base.replace(/\.offline$/i, "");
+      fileNameCandidates.push(`${b}.offline.harmony.txt`);
+    }
+    if (/\.harmony$/i.test(base)) {
+      // If already contains .harmony, ensure the .txt suffix
+      fileNameCandidates.push(`${base}.txt`);
+    }
+    // Canonical harmony filename
+    fileNameCandidates.push(`${base}.harmony.txt`);
+    // Plain .txt fallback
+    fileNameCandidates.push(`${base}.txt`);
+  }
+
+  const customRoot = (process.env.PROMPT_ROOT || "").trim();
+  const searchRoots = Array.from(new Set([
+    customRoot || undefined,
+    path.resolve(__dirname, "../../../prompts/alain-kit"),
+    path.resolve(process.cwd(), "prompts/alain-kit"),
+  ].filter(Boolean) as string[]));
+
+  const tried: string[] = [];
+  for (const root of searchRoots) {
+    for (const name of fileNameCandidates) {
+      const p = path.join(root, name);
+      tried.push(p);
+      try {
+        if (fs.existsSync(p)) return loadHarmonyPrompt(p);
+      } catch {}
+    }
+  }
+
+  const msg = `loadAlainKitPrompt: could not find prompt for phase '${requested}'. Tried:\n` + tried.join("\n");
+  throw new Error(msg);
 }

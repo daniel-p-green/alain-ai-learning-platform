@@ -1,0 +1,65 @@
+{
+  "timestamp": "2025-09-14T01:25:21.011Z",
+  "test_summary": {
+    "total_models": 7,
+    "supported_models": 0,
+    "unsupported_models": 7,
+    "success_rate": "0%"
+  },
+  "results": [
+    {
+      "model": "GPT-OSS-20B",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 496
+    },
+    {
+      "model": "GPT-OSS-120B",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 55
+    },
+    {
+      "model": "gpt-4-turbo",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 300
+    },
+    {
+      "model": "gpt-4o",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 319
+    },
+    {
+      "model": "Claude-3.5-Sonnet",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 383
+    },
+    {
+      "model": "Claude-3-Opus",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 136
+    },
+    {
+      "model": "Gemini-Pro",
+      "supportsFunction": false,
+      "error": "HTTP 404: 404: Not Found",
+      "responseTime": 95
+    }
+  ],
+  "recommendations": {
+    "best_for_alain_kit": [],
+    "fallback_models": [
+      "GPT-OSS-20B",
+      "GPT-OSS-120B",
+      "gpt-4-turbo",
+      "gpt-4o",
+      "Claude-3.5-Sonnet",
+      "Claude-3-Opus",
+      "Gemini-Pro"
+    ]
+  }
+}

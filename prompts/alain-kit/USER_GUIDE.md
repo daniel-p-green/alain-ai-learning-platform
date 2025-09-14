@@ -39,7 +39,8 @@ Each file contains:
 The backend can load only the instruction portions (system + developer) and ignore inline examples. This ensures compatibility with provider‑side Harmony rendering.
 
 - Controlled via env var: `TEACHER_PROMPT_PHASE`
-  - Accepted values: `research`, `design`, `develop`, `validate`, `orchestrator`
+  - Accepted values: `research`, `design`, `develop`, `validate`, `orchestrator`, and extended variants like `research.offline`, `orchestrator.offline`, or utility prompts (e.g., `cache.management`).
+  - Suffixes are optional: you can specify `research`, `research.harmony`, or `research.harmony.txt` — the loader normalizes to find the corresponding `.harmony.txt` file.
   - When set, the teacher service will:
     - Read `system` and `developer` from the corresponding `.harmony.txt`
     - Combine them with the runtime `user` message(s)
@@ -48,7 +49,8 @@ The backend can load only the instruction portions (system + developer) and igno
 Implementation:
 - Loader: `backend/execution/prompts/loader.ts`
 - Teacher integration: `backend/execution/teacher.ts`
-- Override root: set `PROMPT_ROOT=/absolute/path/to/prompts/alain-kit` (optional; otherwise module‑relative paths are used)
+- Search order: `PROMPT_ROOT` (if set) → module‑relative `prompts/alain-kit/` → CWD `prompts/alain-kit/`
+- You may also pass an absolute or relative path to a specific `.txt` file as `TEACHER_PROMPT_PHASE`.
 
 Note: Provider‑side Harmony rendering (Poe, LM Studio, Transformers Serve) handles message formatting. We do not inject raw `<|start|>…` tokens into message content.
 

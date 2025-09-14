@@ -1,0 +1,22 @@
+{
+  "title": "Intro to Harmony Prompting",
+  "description": "Learn structured prompting basics.",
+  "steps": [
+    {
+      "title": "What is it?",
+      "content": "Harmony-style prompting overview.",
+      "step_order": 1,
+      "model_params": {
+        "temperature": 0.7
+      },
+      "code_template": "You are a helpful assistant. For the lesson step \"What is it?\", provide a concise response based on this context: Harmony-style prompting overview."
+    }
+  ],
+  "model": "Custom Content",
+  "provider": "poe",
+  "difficulty": "beginner",
+  "tags": [
+    "user",
+    "beginner"
+  ]
+}
