@@ -75,7 +75,8 @@ def build_notebook(lesson: Dict[str, Any]) -> nbf.NotebookNode:
 """.strip() + "\n"))
 
     # Provider/env config
-    provider_base = "https://api.poe.com/v1" if provider == "poe" else "YOUR_OPENAI_BASE_URL"
+    # Sensible default for local openai-compatible runtimes (LM Studio)
+    provider_base = "https://api.poe.com/v1" if provider == "poe" else "http://localhost:1234/v1"
     cells.append(code(f"""
 # Configure OpenAI-compatible client
 import os
@@ -236,4 +237,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
