@@ -1,0 +1,65 @@
+{
+  "title": "GPT-OSS Getting Started Guide",
+  "level": "beginner",
+  "objectives": [
+    "Understand GPT-OSS fundamentals",
+    "Set up development environment",
+    "Create first working example"
+  ],
+  "prereqs": {
+    "packages": [
+      "openai",
+      "python-dotenv"
+    ],
+    "keys": [
+      "POE_API_KEY"
+    ]
+  },
+  "setup_steps": [
+    "pip install openai python-dotenv"
+  ],
+  "steps": [
+    {
+      "h2": "Introduction",
+      "brief": "Overview of GPT-OSS",
+      "estimated_tokens": 800
+    },
+    {
+      "h2": "Setup",
+      "brief": "Environment configuration",
+      "estimated_tokens": 900
+    },
+    {
+      "h2": "First Example",
+      "brief": "Basic usage",
+      "estimated_tokens": 1000
+    },
+    {
+      "h2": "Best Practices",
+      "brief": "Tips and tricks",
+      "estimated_tokens": 850
+    },
+    {
+      "h2": "Common Issues",
+      "brief": "Troubleshooting",
+      "estimated_tokens": 750
+    },
+    {
+      "h2": "Next Steps",
+      "brief": "Advanced topics",
+      "estimated_tokens": 700
+    }
+  ],
+  "data_sources": [
+    "https://huggingface.co/gpt-oss"
+  ],
+  "references": [
+    "GPT-OSS Documentation",
+    "OpenAI API Reference"
+  ],
+  "metadata": {
+    "target_tokens": 5000,
+    "target_markdown_ratio": 0.6,
+    "estimated_read_time": "20 minutes"
+  }
+}
