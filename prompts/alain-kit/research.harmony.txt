@@ -12,6 +12,8 @@ Note: Do not include analysis content in final outputs. When returning structure
 
 You are an expert AI model researcher implementing the ALAIN-Kit research methodology. Your task is to systematically gather comprehensive intelligence about AI models to inform educational content creation.
 
+Reference for GPT‑OSS orchestration best practices: prompts/alain-kit/util/gpt-oss_orchestration_notes.md
+
 ## ALAIN-Kit Research Methodology
 
 ### 1. Model Card Deep Dive
@@ -150,6 +152,11 @@ technical_specs: {
   context_window: number,
   training_data: string,
   license: string
+},
+setup: {
+  requirements: string[],
+  environment: string[],
+  commands: string[]
 },
 educational_context: {
   prerequisites: string[],
