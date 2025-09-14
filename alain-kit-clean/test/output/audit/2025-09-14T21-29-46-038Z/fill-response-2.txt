@@ -1,0 +1,200 @@
+Thinking...
+>We need to produce JSON array of StepFillJSON objects for sections 3-3. We have previous sections 2 completed. We need to fill sections 3-3. So presumably step 3-3 is a sub-section within section 3? The title: "Getting Started with GPT-Oss-20B: A Beginner’s Hands‑On Guide". Section 3-3 likely refers to a step within section 3. But we are asked to fill sections 3-3. So we need to produce JSON array of StepFillJSON objects for that section. The JSON objects include fields: step_id, h2, md_intro, code_cells, exercise. We need to produce Markdown intro and short code cells (<40 lines each). Include exercises where appropriate. Add seeds/random_state for reproducibility. Target 800-1500 tokens per section. Maintain 0.56 markdown ratio. That's a lot of tokens. But we only need to produce JSON array of StepFillJSON objects. The tokens count refers to the content of the section? We need to produce 800-1500 tokens per section. That is a lot. But we only have to produce JSON objects. Each object may contain md_intro text. The md_intro can be long. We need to ensure markdown ratio 0.56. So about 56% of tokens should be markdown. We need to produce a long md_intro. Also code cells short.
+>
+>We need to produce maybe 3-4 steps within section 3-3? But the instruction: "Return JSON array of StepFillJSON objects with: - step_id, h2, md_intro (markdown explanation) - code_cells: [{lang, lines, max_lines}] - exercise: {title, instructions} where appropriate". So each step is a StepFillJSON object. We need to fill sections 3-3. That might be a single step? But maybe 3-3 has multiple sub-steps. The naming convention: step_id like "3-3-1"? The h2 is the subheading. We need to produce a series of steps that cover the content of section 3-3. The content is "Getting Started with GPT-Oss-20B: A Beginner’s Hands‑On Guide". So section 3-3 might be about "Fine-tuning GPT-Oss-20B on custom data" or "Using GPT-Oss-20B for inference". But we don't know. We need to guess. The previous sections 2 completed. Section 3 likely covers "Installation and Setup". Section 3-3 might be "Running inference with GPT-Oss-20B". But we need to fill sections 3-3. Let's assume section 3-3 is about "Inference and evaluation". We need to produce steps: 3-3-1: Load the model, 3-3-2: Prepare input, 3-3-3: Generate text, 3-3-4: Evaluate output. Provide code cells and exercises.
+>
+>We need to maintain 0.56 markdown ratio. So about 56% of tokens should be markdown. We need to produce 800-1500 tokens per section. That is a lot. But we can produce a long md_intro with explanation, usage, tips, etc. Then code cells with maybe 10-20 lines each. Exercises maybe one per step.
+>
+>We need to produce JSON array; each object will have step_id, h2, md_intro, code_cells, exercise.
+>
+>We need to ensure code cells have 'lang', 'lines', 'max_lines'. The lines is a list of strings. max_lines is an integer.
+>
+>We need to add seeds/random_state for reproducibility. For inference, we can set random seed for generation.
+>
+>We need to maintain 0.56 markdown ratio. That means if we have 1000 tokens, 560 should be markdown. Our md_intro will be long. Code cells are not markdown. So we need to make sure md_intro is about 56% of total tokens. We can approximate.
+>
+>Let's produce 4 steps. Each step's md_intro maybe 200-300 tokens. Combined 800-1200 tokens. Code cells maybe 10 lines each. That should be fine.
+>
+>We need to ensure JSON is valid. The code_cells lines should be strings. max_lines maybe 20.
+>
+>Let's craft the content.
+>
+>Step 3-3-1: "Loading GPT-Oss-20B"
+>
+>md_intro: Explanation of loading the model, using transformers, GPU, memory, etc. Provide tips.
+>
+>Code cell: import torch, from transformers import AutoModelForCausalLM, AutoTokenizer. Set device. Load model. Provide seed.
+>
+>Exercise: "Verify the model is loaded on GPU".
+>
+>Step 3-3-2: "Preparing Input Prompts"
+>
+>md_intro: Discuss tokenization, prompt design, special tokens, etc.
+>
+>Code cell: tokenizer.encode, etc.
+>
+>Exercise: "Create a prompt for a short story".
+>
+>Step 3-3-3: "Generating Text"
+>
+>md_intro: Use model.generate, set parameters like max_length, temperature, top_p, seed. Provide example.
+>
+>Code cell: generation code.
+>
+>Exercise: "Generate a 5-sentence paragraph with temperature 0.7".
+>
+>Step 3-3-4: "Evaluating Output"
+>
+>md_intro: Evaluate coherence, use metrics like BLEU, ROUGE, or manual evaluation. Provide example.
+>
+>Code cell: compute ROUGE using datasets library.
+>
+>Exercise: "Compute ROUGE for generated paragraph vs reference".
+>
+>Now produce JSON array.
+>
+>We need to ensure each code cell lines <= max_lines. Provide lines as list of strings.
+>
+>Add random_state for reproducibility: torch.manual_seed(42) etc.
+>
+>Now produce final JSON array.
+
+```json
+[
+  {
+    "step_id": "3-3-1",
+    "h2": "Loading GPT‑Oss‑20B",
+    "md_intro": "In this first step we will load the GPT‑Oss‑20B model and tokenizer from the Hugging Face Hub. The model is a 20‑billion‑parameter causal language model, which means it predicts the next token in a sequence. We will use the 🤗 `transformers` library, which provides a convenient API for downloading and caching the model weights. \n\n**Why GPU matters**: GPT‑Oss‑20B is too large to run efficiently on a CPU; you’ll need a GPU with at least 16 GB of VRAM. If you are on a cloud instance, make sure the `CUDA_VISIBLE_DEVICES` environment variable is set correctly. \n\n**Reproducibility**: We set a global random seed for both PyTorch and the tokenizer to ensure that our examples produce the same results every time. \n\n**Memory considerations**: The model will be loaded in 16‑bit precision (`torch.float16`) by default to reduce memory usage. If you have a GPU with 24 GB or more, you can switch to 32‑bit precision for slightly better numerical stability. \n\n**What we’ll do**:\n1. Import the necessary libraries.\n2. Set the random seed.\n3. Load the tokenizer and model.\n4. Move the model to the GPU.\n5. Verify that the model is on the correct device.\n\nFeel free to adapt the device selection logic if you are using multiple GPUs or a TPU.",
+    "code_cells": [
+      {
+        "lang": "python",
+        "max_lines": 20,
+        "lines": [
+          "# Import libraries",
+          "import torch",
+          "from transformers import AutoTokenizer, AutoModelForCausalLM",
+          "",
+          "# Set a deterministic seed for reproducibility",
+          "torch.manual_seed(42)",
+          "",
+          "# Define the model name (replace with your fork if needed)",
+          "MODEL_NAME = \"EleutherAI/gpt-oss-20b\"",
+          "",
+          "# Load the tokenizer",
+          "tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=True)",
+          "",
+          "# Load the model in 16‑bit precision for memory efficiency",
+          "model = AutoModelForCausalLM.from_pretrained(MODEL_NAME, torch_dtype=torch.float16)",
+          "",
+          "# Move the model to GPU if available",
+          "device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")",
+          "model.to(device)",
+          "",
+          "# Quick sanity check: print device info",
+          "print(f\"Model is on: {next(model.parameters()).device}\")"
+        ]
+      }
+    ],
+    "exercise": {
+      "title": "Verify GPU Allocation",
+      "instructions": "Run the code cell above. Confirm that the printed device is a CUDA device. If you see `cpu` instead, double‑check that your GPU is visible to PyTorch (`torch.cuda.is_available()` returns `True`). If you are using a cloud instance, ensure that the GPU driver and CUDA toolkit are correctly installed."
+    }
+  },
+  {
+    "step_id": "3-3-2",
+    "h2": "Preparing Input Prompts",
+    "md_intro": "Before we can generate text, we need to convert our natural‑language prompt into token IDs that the model understands. The tokenizer handles this conversion and also adds special tokens such as the beginning‑of‑sentence marker if required. \n\n**Prompt design tips**:\n- Keep the prompt concise; longer prompts consume more memory and can slow down generation.\n- Use clear, unambiguous language to guide the model.\n- If you want the model to adopt a particular style, prepend a short instruction (e.g., \"Write a formal email:\").\n\n**Tokenization process**:\n1. Encode the prompt into a tensor of token IDs.\n2. Move the tensor to the same device as the model.\n3. Optionally, add a `torch.no_grad()` context to avoid building a computational graph for inference.\n\n**Example**: We will create a prompt that asks the model to write a short story about a robot learning to dance.\n\n**Reproducibility**: The tokenizer is deterministic, so the same prompt will always produce the same token IDs.",
+    "code_cells": [
+      {
+        "lang": "python",
+        "max_lines": 15,
+        "lines": [
+          "# Define a prompt for a creative task",
+          "prompt = \"Write a short story about a robot learning to dance.\"",
+          "",
+          "# Tokenize the prompt",
+          "input_ids = tokenizer(prompt, return_tensors=\"pt\")['input_ids'].to(device)",
+          "",
+          "# Inspect token IDs",
+          "print(\"Token IDs:\", input_ids)",
+          "",
+          "# Decode back to text to verify correctness",
+          "print(\"Decoded prompt:\", tokenizer.decode(input_ids[0], skip_special_tokens=True))"
+        ]
+      }
+    ],
+    "exercise": {
+      "title": "Create Your Own Prompt",
+      "instructions": "Write a new prompt that asks GPT‑Oss‑20B to generate a recipe for a vegan dessert. Tokenize it using the same code pattern and print the resulting token IDs. Then decode the IDs back to text to confirm that the prompt was tokenized correctly."
+    }
+  },
+  {
+    "step_id": "3-3-3",
+    "h2": "Generating Text",
+    "md_intro": "Now that we have a tokenized prompt, we can ask the model to generate a continuation. The `generate` method in `transformers` offers many knobs to control the output:\n\n- `max_new_tokens`: how many tokens to generate beyond the prompt.\n- `temperature`: controls randomness (lower = more deterministic).\n- `top_p` (nucleus sampling): limits the cumulative probability of token choices.\n- `do_sample`: whether to sample or use greedy decoding.\n- `eos_token_id`: token that signals the end of generation.\n\n**Reproducibility**: We set the `torch.manual_seed` again before generation to ensure that the sampling process is deterministic.\n\n**Example**: Generate a 5‑sentence paragraph with a temperature of 0.7 and nucleus sampling (`top_p=0.9`).",
+    "code_cells": [
+      {
+        "lang": "python",
+        "max_lines": 20,
+        "lines": [
+          "# Ensure deterministic generation",
+          "torch.manual_seed(42)",
+          "",
+          "# Generation parameters",
+          "gen_kwargs = {",
+          "    \"max_new_tokens\": 100,",
+          "    \"temperature\": 0.7,",
+          "    \"top_p\": 0.9,",
+          "    \"do_sample\": True,",
+          "    \"eos_token_id\": tokenizer.eos_token_id",
+          "}"
+          "",
+          "# Generate output",
+          "with torch.no_grad():",
+          "    output_ids = model.generate(input_ids, **gen_kwargs)",
+          "",
+          "# Decode and display the generated text",
+          "generated_text = tokenizer.decode(output_ids[0], skip_special_tokens=True)",
+          "print(\"Generated Text:\\n\", generated_text)"
+        ]
+      }
+    ],
+    "exercise": {
+      "title": "Experiment with Temperature",
+      "instructions": "Run the generation code twice: once with `temperature=0.3` and once with `temperature=1.0`. Keep all other parameters the same. Observe how the style and coherence of the output differ between the low‑temperature (more deterministic) and high‑temperature (more creative) runs."
+    }
+  },
+  {
+    "step_id": "3-3-4",
+    "h2": "Evaluating Output",
+    "md_intro": "After generating text, it’s useful to evaluate its quality. While automated metrics like BLEU or ROUGE are common in machine translation and summarization, for open‑ended generation we often rely on a mix of:\n\n- **ROUGE‑L**: measures longest common subsequence; good for assessing overlap with a reference.\n- **Perplexity**: lower perplexity indicates the model found the text easier to predict.\n- **Human evaluation**: a quick check for coherence, relevance, and style.\n\n**Reproducibility**: The evaluation metrics are deterministic given the same input and reference.\n\n**Example**: We will compute ROUGE‑L between the generated paragraph and a hand‑written reference. We’ll use the `datasets` library’s `load_metric` function.\n\n**Tip**: If you don’t have a reference, you can still compute perplexity by feeding the generated text back into the model.\n\n**What we’ll do**:\n1. Load the ROUGE metric.\n2. Compute ROUGE‑L for the generated text.\n3. Print the scores.\n\nFeel free to experiment with other metrics such as BLEU or METEOR if you have a suitable reference set.",
+    "code_cells": [
+      {
+        "lang": "python",
+        "max_lines": 25,
+        "lines": [
+          "# Install datasets if not already available",
+          "# !pip install datasets -q",
+          "",
+          "# Load ROUGE metric",
+          "from datasets import load_metric",
+          "rouge = load_metric(\"rouge\")",
+          "",
+          "# Reference text (hand‑written or curated)",
+          "reference = \"A robot named R2-D2 discovered the joy of dancing when it was taught by a street performer. The robot's movements were precise yet expressive, and soon it became the star of the local dance club.\"",
+          "",
+          "# Compute ROUGE",
+          "rouge_output = rouge.compute(predictions=[generated_text], references=[reference])",
+          "",
+          "# Print ROUGE‑L score",
+          "print(\"ROUGE‑L F1 score:\", rouge_output['rougeL_fmeasure'])"
+        ]
+      }
+    ],
+    "exercise": {
+      "title": "Compute Perplexity",
+      "instructions": "Using the same `input_ids` and `output_ids` from the generation step, compute the perplexity of the generated text. You can do this by calculating the cross‑entropy loss over the generated tokens and exponentiating it. Compare the perplexity to the baseline perplexity of the model on a held‑out validation set (if available)."
+    }
+  }
+]
+```
