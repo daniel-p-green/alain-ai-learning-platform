@@ -42,7 +42,7 @@ ALAIN-Kit is a four-phase methodology that transforms AI model information into 
    # Output: Complete learning experience design via emit_learning_design function
    ```
 
-3. **Development Phase**: Build interactive notebook implementation
+3. **Development Phase**: Build interactive notebook implementation (Outline-First + Section Fill)
    ```bash
    # Use develop.harmony.txt with design specifications
    # Input: Learning design and technical requirements
@@ -55,6 +55,30 @@ ALAIN-Kit is a four-phase methodology that transforms AI model information into 
    # Input: Complete notebook and validation criteria
    # Output: Comprehensive validation report via emit_validation_report function
    ```
+
+### Outline-First, Multi-Output Generation
+
+For larger lessons, use the outline-first flow to stay within token limits while matching best practices observed across 575 top notebooks:
+
+- Generate an outline: prompts/alain-kit/flattened/poe/outline.online.v2025-09-14.txt
+- Fill sections iteratively: prompts/alain-kit/flattened/poe/section.online.v2025-09-14.txt
+  - OpenAI-compatible variants also available under flattened/openai-compatible/ (outline/section)
+
+Harmony users: develop.harmony.txt now defines functions to emit outlines and per-section content; orchestrator.harmony.txt documents the sequence.
+
+### Assembling to .ipynb
+
+Use the assembler to merge an outline and section JSON files into a runnable Jupyter notebook:
+
+```bash
+python scripts/assemble_notebook.py \
+  --outline path/to/outline.json \
+  --sections-dir path/to/sections \
+  --out-dir notebook_output
+```
+
+Outputs:
+- A .ipynb file, an assembly metadata JSON, and a lint report with best-practice checks (markdown ratio 40–70%, headings≥8, required sections present, steps match).
 
 ### Using the Master Orchestrator
 

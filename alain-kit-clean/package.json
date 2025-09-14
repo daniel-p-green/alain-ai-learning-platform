@@ -1,0 +1,18 @@
+{
+  "name": "alain-kit-clean",
+  "version": "1.0.0",
+  "description": "Production-ready notebook generation system with quality validation and Colab compatibility",
+  "main": "validation/integration.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "example": "tsx examples/usage-example.ts"
+  },
+  "dependencies": {
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0"
+  },
+  "keywords": ["jupyter", "notebooks", "ai", "education", "colab"],
+  "author": "ALAIN Team",
+  "license": "MIT"
+}

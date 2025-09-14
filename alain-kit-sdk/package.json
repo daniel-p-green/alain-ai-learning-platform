@@ -1,0 +1,31 @@
+{
+  "name": "alain-kit-sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ALAIN-Kit SDK: outline-first notebook generation with quality validation and Colab compatibility.",
+  "main": "index.ts",
+  "exports": {
+    ".": {
+      "import": "./index.ts",
+      "types": "./index.ts"
+    },
+    "./index": {
+      "import": "./index.ts",
+      "types": "./index.ts"
+    },
+    "./bin/alain-kit": {
+      "import": "./bin/alain-kit.ts"
+    }
+  },
+  "bin": {
+    "alain-kit": "bin/alain-kit.ts"
+  },
+  "scripts": {
+    "example": "tsx examples/usage-example.ts",
+    "cli": "tsx bin/alain-kit.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

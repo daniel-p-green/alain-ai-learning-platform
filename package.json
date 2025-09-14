@@ -12,11 +12,14 @@
     "dev:offline": "bash scripts/dev_offline.sh",
     "dev:hosted": "bash scripts/dev_hosted.sh",
     "smoke:hosted": "bash scripts/smoke/hosted.sh",
-    "smoke:offline": "bash scripts/smoke/offline.sh"
+    "smoke:offline": "bash scripts/smoke/offline.sh",
+    "alain:example": "npm --workspace alain-kit-sdk run example",
+    "alain:cli": "npm --workspace alain-kit-sdk run cli"
   },
   "workspaces": [
     "backend",
-    "web"
+    "web",
+    "alain-kit-sdk"
   ],
   "dependencies": {
     "motion": "^12.23.12",

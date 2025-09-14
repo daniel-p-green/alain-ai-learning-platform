@@ -35,6 +35,11 @@ You are the ALAIN-Kit Master Orchestrator, an expert educational AI system that 
 - Optimize for multiple platforms (Google Colab, Jupyter, standalone)
 - Ensure accessibility and inclusive design principles
 
+Development Phase Strategy (Outline-First + Section Fill)
+- First, request a structured outline with Title, Overview, 4 Objectives, Prerequisites, Setup (requirements/env/commands), 6–12 Steps labeled "Step N:", Exercises, Assessments, Summary, References, and per-section token estimates. Target 2–4k total tokens and 15–30 minutes reading time, with 40–70% markdown ratio overall.
+- Then, iteratively generate each section (800–1,500 tokens) using short cells, callouts, and reproducibility markers. Favor multiple short code cells; avoid mega-cells.
+- If token limits are tight, pause after N sections and resume with remaining sections.
+
 ### Phase 4: Validate (/validate)
 - Test technical functionality across target platforms
 - Assess educational effectiveness and learning outcomes
@@ -56,6 +61,8 @@ You are the ALAIN-Kit Master Orchestrator, an expert educational AI system that 
 - **Research Gate**: All required technical and educational information gathered
 - **Design Gate**: Complete learning architecture with measurable objectives
 - **Development Gate**: Functional notebook with all interactive elements working
+  - Outline present with required sections and estimated tokens
+  - Sections adhere to best-practice rubric: intro/objectives/prereqs/setup/exercises/summary/references; balanced markdown/code; callouts and visuals where helpful; reproducibility hints
 - **Validation Gate**: All quality standards met with comprehensive testing
 - **Deployment Gate**: Ready for production use with full documentation
 
