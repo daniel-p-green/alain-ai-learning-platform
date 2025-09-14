@@ -98,6 +98,7 @@ export const generateLesson = api(
       });
 
       if (!teacherResponse.success || !teacherResponse.content) {
+        console.warn('[generateLesson] teacher failure', { code: teacherResponse.error?.code, message: teacherResponse.error?.message });
         throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
       }
 
@@ -122,6 +123,7 @@ export const generateLesson = api(
       if (!v1.valid) {
         const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
         if (!repaired) {
+          console.warn('[generateLesson] validation_error', { errors: v1.errors?.slice?.(0, 3) });
           return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
         }
         lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
@@ -130,6 +132,7 @@ export const generateLesson = api(
         if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
         const v2 = validateLesson(lesson);
         if (!v2.valid) {
+          console.warn('[generateLesson] validation_error_after_repair', { errors: v2.errors?.slice?.(0, 3) });
           return { success: false, error: { code: "validation_error", message: "Lesson invalid after repair", details: v2.errors } } as any;
         }
       }
@@ -139,7 +142,24 @@ export const generateLesson = api(
         const modelId = modelInfo.name || 'unknown-model';
         
         // Save raw lesson JSON (content/lessons/<provider>/<model>/<date>/lesson_<id>.json)
-        await fileSystemStorage.saveLesson(modelId, lesson, lesson.provider || 'openai-compatible');
+        const lessonSave = await fileSystemStorage.saveLesson(modelId, lesson, lesson.provider || 'openai-compatible');
+        // Index with author if enabled
+        try {
+          if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
+            const { indexGeneratedLesson } = await import('../catalog/store');
+            await indexGeneratedLesson({
+              file_path: lessonSave.filePath,
+              model: modelId,
+              provider: (lesson.provider || 'openai-compatible'),
+              difficulty: req.difficulty,
+              created_by: userId,
+              visibility: 'private',
+              tags: [],
+              size_bytes: lessonSave.metadata.size_bytes,
+              checksum: lessonSave.metadata.checksum,
+            });
+          }
+        } catch {}
         
         // Convert to proper Jupyter notebook format and save
         const notebookMeta = {
@@ -170,7 +190,7 @@ export const generateLesson = api(
         const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker, teacherUsed as any, teacherDowngraded);
         const nbMeta = await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb', lesson.provider || 'openai-compatible');
         
-        console.log(`Lesson auto-saved for model: ${modelId}, difficulty: ${req.difficulty} (JSON + .ipynb)`);
+        console.log(`[generateLesson] success`, { model: modelId, difficulty: req.difficulty, repaired: usedRepair });
         // Optional: index notebook to catalog with author
         try {
           if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
@@ -193,7 +213,7 @@ export const generateLesson = api(
           if ((process.env.TUTORIALS_INGEST || '').toLowerCase() === '1') {
             const { ingestTutorialFromLesson } = await import('../tutorials/ingest');
             const prov = (selectedProvider as any) || 'poe';
-            const tid = await ingestTutorialFromLesson(lesson as any, req.difficulty, modelId, prov);
+            const tid = await ingestTutorialFromLesson(lesson as any, req.difficulty, modelId, prov, userId);
             console.log(`[ingest] Tutorial created with id=${tid}`);
           }
         } catch (e) {
@@ -283,9 +303,42 @@ export const generateLocalLesson = api<{
           usedRepair = true;
           if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
           const v2 = validateLesson(lesson);
-          if (!v2.valid) {
-            return { success: false, error: { code: "validation_error", message: "Repaired lesson failed validation", details: v2.errors } } as any;
-          }
+        if (!v2.valid) {
+          return { success: false, error: { code: "validation_error", message: "Repaired lesson failed validation", details: v2.errors } } as any;
+        }
+      }
+        // Auto-save JSON and .ipynb for local generation, mirroring generateLesson
+        try {
+          const modelId = req.modelId || 'local-model';
+          const prov = (selectedProvider as any) || 'openai-compatible';
+          // Save raw lesson JSON
+          await fileSystemStorage.saveLesson(modelId, lesson, prov);
+          // Convert to notebook and save
+          const notebookMeta = {
+            title: lesson.title || 'Generated Lesson',
+            description: lesson.description || '',
+            provider: lesson.provider || prov,
+            model: lesson.model || modelId,
+          };
+          const steps = (lesson.steps || []).map((step, idx) => ({
+            step_order: step.step_order || (idx + 1),
+            title: step.title || '',
+            content: step.content || '',
+            code_template: step.code_template || null,
+            model_params: step.model_params || { temperature: 0.7 },
+          }));
+          const assessments = (lesson.assessments || []).map((a, index) => ({
+            step_order: (a as any).step_order || (index + 1),
+            question: a.question || '',
+            options: a.options || [],
+            correct_index: a.correct_index || 0,
+            explanation: a.explanation || null,
+          }));
+          const teacherUsed = req.teacherModel || 'GPT-OSS-20B';
+          const nb = buildNotebook(notebookMeta, steps as any, assessments as any, lesson.model_maker, teacherUsed as any, false);
+          await fileSystemStorage.saveNotebook(modelId, req.difficulty, nb, 'ipynb', prov);
+        } catch (saveErr) {
+          console.warn('[generateLocalLesson] save_error', saveErr);
         }
         return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
       } catch (error: any) {
@@ -632,6 +685,37 @@ export const generateFromText = api<{
           if (!v2.valid) {
             return { success: false, error: { code: 'validation_error', message: 'Lesson invalid after repair', details: v2.errors } } as any;
           }
+        }
+        // Auto-save JSON and .ipynb for text-based generation
+        try {
+          const modelId = 'custom-content';
+          const prov = (selectedProvider as any) || 'poe';
+          await fileSystemStorage.saveLesson(modelId, lesson, prov);
+          const notebookMeta = {
+            title: lesson.title || 'Generated Lesson',
+            description: lesson.description || '',
+            provider: lesson.provider || prov,
+            model: lesson.model || modelId,
+          };
+          const steps = (lesson.steps || []).map((step, idx) => ({
+            step_order: step.step_order || (idx + 1),
+            title: step.title || '',
+            content: step.content || '',
+            code_template: step.code_template || null,
+            model_params: step.model_params || { temperature: 0.7 },
+          }));
+          const assessments = (lesson.assessments || []).map((a, index) => ({
+            step_order: (a as any).step_order || (index + 1),
+            question: a.question || '',
+            options: a.options || [],
+            correct_index: a.correct_index || 0,
+            explanation: a.explanation || null,
+          }));
+          const teacherUsed = req.teacherModel || 'GPT-OSS-20B';
+          const nb = buildNotebook(notebookMeta, steps as any, assessments as any, undefined, teacherUsed as any, false);
+          await fileSystemStorage.saveNotebook(modelId, req.difficulty, nb, 'ipynb', prov);
+        } catch (saveErr) {
+          console.warn('[generateFromText] save_error', saveErr);
         }
         return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
       } catch (error: any) {

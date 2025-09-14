@@ -1,4 +1,6 @@
 import React from 'react';
+import CopyButton from '@/components/CopyButton';
+import { headers } from 'next/headers';
 
 type Item = {
   id: number;
@@ -14,9 +16,13 @@ type Item = {
 
 async function fetchItems(searchParams: Record<string, string | undefined>): Promise<Item[]> {
   try {
+    const h = headers();
+    const host = h.get('x-forwarded-host') || h.get('host');
+    const proto = h.get('x-forwarded-proto') || 'http';
+    const base = `${proto}://${host}`;
     const params = new URLSearchParams();
     Object.entries(searchParams).forEach(([k, v]) => { if (v) params.set(k, v); });
-    const res = await fetch(`/api/catalog/notebooks/public?${params.toString()}`, { cache: 'no-store' });
+    const res = await fetch(new URL(`/api/catalog/notebooks/public?${params.toString()}`, base), { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     return data.items || [];
@@ -31,6 +37,26 @@ export default async function PublicNotebooks({ searchParams }: { searchParams: 
     <div className="max-w-5xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-semibold mb-4">Public & Unlisted Notebooks</h1>
       <p className="text-sm text-ink-600 mb-6">Configure NEXT_PUBLIC_BACKEND_URL for backend access.</p>
+      <form className="mb-4 flex flex-wrap items-end gap-2" method="GET">
+        <div>
+          <label className="block text-xs text-ink-600">Model</label>
+          <input name="model" defaultValue={searchParams.model} className="border rounded px-2 py-1 text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs text-ink-600">Provider</label>
+          <input name="provider" defaultValue={searchParams.provider} className="border rounded px-2 py-1 text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs text-ink-600">Difficulty</label>
+          <select name="difficulty" defaultValue={searchParams.difficulty} className="border rounded px-2 py-1 text-sm">
+            <option value="">Any</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <button className="inline-flex items-center h-8 px-3 rounded bg-ink-900 text-white text-sm" type="submit">Filter</button>
+      </form>
       {items.length === 0 && (
         <div className="text-ink-600">No public notebooks yet.</div>
       )}
@@ -42,7 +68,15 @@ export default async function PublicNotebooks({ searchParams }: { searchParams: 
                 <div className="font-medium">{i.model} · {i.provider} · <span className="uppercase">{i.difficulty}</span></div>
                 <div className="text-xs text-ink-600">{new Date(i.created_at).toLocaleString()}</div>
                 <div className="text-xs text-ink-700 mt-1 break-all">{i.file_path}</div>
-                {i.share_slug && <div className="text-xs text-ink-700">Share code: {i.share_slug}</div>}
+                <div className="mt-1 flex items-center gap-2">
+                  <CopyButton text={i.file_path} label="Copy path" />
+                </div>
+                {i.share_slug && (
+                  <div className="text-xs text-ink-700 mt-1 flex items-center gap-2">
+                    <span>Share code: {i.share_slug}</span>
+                    <CopyButton text={i.share_slug} label="Copy code" />
+                  </div>
+                )}
               </div>
               <span className="text-xs px-2 py-1 rounded bg-ink-100 text-ink-700">{i.visibility}</span>
             </div>
