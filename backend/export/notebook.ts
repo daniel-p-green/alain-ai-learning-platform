@@ -83,7 +83,9 @@ export function buildNotebook(
   });
 
   // 3) Provider env/config
-  const providerBase = meta.provider === 'poe' ? 'https://api.poe.com/v1' : 'YOUR_OPENAI_BASE_URL';
+  // Provide a sensible default for local OpenAI-compatible runtimes.
+  // LM Studio commonly runs on :1234; Ollama on :11434.
+  const providerBase = meta.provider === 'poe' ? 'https://api.poe.com/v1' : 'http://localhost:1234/v1';
   const envSource = [
     "# Configure OpenAI-compatible client\n",
     "import os\n",
@@ -97,8 +99,16 @@ export function buildNotebook(
     "  _poe = None; _openai = None\n",
     `PROVIDER = "${meta.provider}"  # "poe" or "openai-compatible"\n`,
     `os.environ.setdefault("OPENAI_BASE_URL", "${providerBase}")\n`,
-    `# Set your API key. For Poe, set POE_API_KEY in the Colab environment or paste below.\n`,
+    `# Set your API key. For Poe, set POE_API_KEY; for local (LM Studio/Ollama) any non-empty string works.\n`,
     `os.environ.setdefault("OPENAI_API_KEY", _poe or _openai or os.getenv("POE_API_KEY") or os.getenv("OPENAI_API_KEY") or "")\n`,
+    "# Local-friendly defaults to avoid prompting beginners\n",
+    "if (PROVIDER == 'openai-compatible') and not os.environ.get('OPENAI_API_KEY'):\n",
+    "  base = os.environ.get('OPENAI_BASE_URL','')\n",
+    "  if 'localhost:1234' in base or '127.0.0.1:1234' in base:\n",
+    "    os.environ['OPENAI_API_KEY'] = 'lm-studio'\n",
+    "  elif 'localhost:11434' in base or '127.0.0.1:11434' in base:\n",
+    "    os.environ['OPENAI_API_KEY'] = 'ollama'\n",
+    "# Fallback interactive prompt if still missing\n",
     "if not os.environ.get('OPENAI_API_KEY'):\n",
     "  os.environ['OPENAI_API_KEY'] = getpass('Enter API key (input hidden): ')\n",
     "# OPENAI_BASE_URL and OPENAI_API_KEY environment variables are set above\n",
