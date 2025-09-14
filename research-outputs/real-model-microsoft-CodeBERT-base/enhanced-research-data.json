@@ -1,0 +1,174 @@
+{
+  "model": "microsoft/CodeBERT-base",
+  "provider": "poe",
+  "topic": "code understanding and generation",
+  "research_depth": "intermediate",
+  "sources": {
+    "huggingface": {
+      "model_card": "## CodeBERT-base\nPretrained weights for [CodeBERT: A Pre-Trained Model for Programming and Natural Languages](https://arxiv.org/abs/2002.08155).\n\n### Training Data\nThe model is trained on bi-modal data (documents & code) of [CodeSearchNet](https://github.com/github/CodeSearchNet)\n\n### Training Objective\nThis model is initialized with Roberta-base and trained with MLM+RTD objective (cf. the paper).\n\n### Usage\nPlease see [the official repository](https://github.com/microsoft/CodeBERT) for scripts that support \"code search\" and \"code-to-document generation\".\n\n### Reference\n1. [CodeBERT trained with Masked LM objective](https://huggingface.co/microsoft/codebert-base-mlm) (suitable for code completion)\n2. 🤗 [Hugging Face's CodeBERTa](https://huggingface.co/huggingface/CodeBERTa-small-v1) (small size, 6 layers)\n\n### Citation\n```bibtex\n@misc{feng2020codebert,\n    title={CodeBERT: A Pre-Trained Model for Programming and Natural Languages},\n    author={Zhangyin Feng and Daya Guo and Duyu Tang and Nan Duan and Xiaocheng Feng and Ming Gong and Linjun Shou and Bing Qin and Ting Liu and Daxin Jiang and Ming Zhou},\n    year={2020},\n    eprint={2002.08155},\n    archivePrefix={arXiv},\n    primaryClass={cs.CL}\n}\n```\n",
+      "model_card_analysis": "Capabilities: coding",
+      "repo_info": {
+        "_id": "621ffdc136468d709f17dedb",
+        "id": "microsoft/codebert-base",
+        "private": false,
+        "pipeline_tag": "feature-extraction",
+        "library_name": "transformers",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "tf",
+          "jax",
+          "rust",
+          "roberta",
+          "feature-extraction",
+          "arxiv:2002.08155",
+          "endpoints_compatible",
+          "region:us"
+        ],
+        "downloads": 845114,
+        "likes": 269,
+        "modelId": "microsoft/codebert-base",
+        "author": "microsoft",
+        "sha": "3b0952feddeffad0063f274080e3c23d75e7eb39",
+        "lastModified": "2022-02-11T19:59:44.000Z",
+        "gated": false,
+        "disabled": false,
+        "mask_token": "<mask>",
+        "config": {
+          "architectures": [
+            "RobertaModel"
+          ],
+          "model_type": "roberta",
+          "tokenizer_config": {}
+        },
+        "transformersInfo": {
+          "auto_model": "AutoModel",
+          "pipeline_tag": "feature-extraction",
+          "processor": "AutoTokenizer"
+        },
+        "siblings": [
+          {
+            "rfilename": ".gitattributes"
+          },
+          {
+            "rfilename": "README.md"
+          },
+          {
+            "rfilename": "config.json"
+          },
+          {
+            "rfilename": "flax_model.msgpack"
+          },
+          {
+            "rfilename": "merges.txt"
+          },
+          {
+            "rfilename": "pytorch_model.bin"
+          },
+          {
+            "rfilename": "rust_model.ot"
+          },
+          {
+            "rfilename": "special_tokens_map.json"
+          },
+          {
+            "rfilename": "tf_model.h5"
+          },
+          {
+            "rfilename": "tokenizer_config.json"
+          },
+          {
+            "rfilename": "vocab.json"
+          }
+        ],
+        "spaces": [
+          "Not-Grim-Refer/Code-to-Detailed-English-Description",
+          "alexpaul/microsoft-codebert-base",
+          "tmnam20/code-summarization",
+          "awacke1/Feature-Extraction-microsoft-codebert-base",
+          "ka1kuk/litellm",
+          "Vishal3152/microsoft-codebert-base",
+          "long1104/chatbot",
+          "intigration/microsoft-codebert-base",
+          "whackthejacker/DataHubHub",
+          "akanksha2611/bug-fixer",
+          "nonhuman/nnnn",
+          "ivylin0805/microsoft-codebert-base",
+          "kenken999/litellm",
+          "kenken999/litellmlope",
+          "Oxygen230/microsoft-codebert-base",
+          "Ddavid2002/LLm_for_BufferOverflow",
+          "mpara/CodeIQ",
+          "ashwinkumarbv/vulnerability_detection_using_codeBERT",
+          "nsv2042/testeappb",
+          "bjmoon/DocuGen",
+          "mzishan/code_reviewer",
+          "luciany/microsoft-codebert",
+          "Sampathl/QAi",
+          "Aranganathanmk/Findtext",
+          "ElPremOoO/Code_Mate",
+          "chencyr/feature-extraction",
+          "Gsainath/core-api",
+          "osama131221/detector",
+          "Harshnisiva/Harshni",
+          "agrimrai/code_checker_py",
+          "Amrabdellatief/python-code-to-uml",
+          "Amrabdellatief/test2",
+          "Vishisht16/code-summarizer",
+          "rahideer/CCD",
+          "rahideer/cc",
+          "rahideer/ccccccccc",
+          "Mi1hanZahid/CodePy_AI",
+          "albmor/llm-hill-climber",
+          "JimmyNewton/app-generator-ai",
+          "FastestAI/CodeBert_Redundant_Detection_Task",
+          "martynattakit/CodeSentinel-CWE_Classification",
+          "samrh012/microsoft-codebert-base",
+          "mrradix/mona",
+          "Kareem94/CodeMateVulnerabilityEvalutor",
+          "Kareem94/CodeMateReadability",
+          "HabibaElbehairy/code-similarity-classifier",
+          "Ashika05/plag",
+          "sayedM/rag_codebase",
+          "neerajkalyank/AIcodemetadata",
+          "YaminiVJ/AI_Resume-Reviewer",
+          "saif12165/codelap-semantic-analysis",
+          "sam12555/codemaster-model"
+        ],
+        "createdAt": "2022-03-02T23:29:05.000Z",
+        "inference": "warm",
+        "usedStorage": 3118489680
+      },
+      "key_insights": [
+        "Training: ### Training Data",
+        "Training: ### Training Objective"
+      ]
+    },
+    "arxiv": {
+      "papers": []
+    },
+    "github": {
+      "repositories": []
+    }
+  },
+  "synthesis": {
+    "key_concepts": [
+      "Model uses training-based approach"
+    ],
+    "technical_details": [],
+    "use_cases": [
+      "completion"
+    ],
+    "limitations": [],
+    "best_practices": [],
+    "learning_path": [
+      "Start with model documentation and architecture overview",
+      "Review academic papers for theoretical foundation",
+      "Explore practical implementations and examples",
+      "Practice with hands-on tutorials and notebooks",
+      "Apply to real-world use cases and projects"
+    ]
+  },
+  "collected_at": "2025-09-14T00:27:14.846Z",
+  "processing_time_ms": 474
+}

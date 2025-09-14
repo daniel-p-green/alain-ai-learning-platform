@@ -68,7 +68,8 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         try {
           const { system, developer } = loadAlainKitPrompt(phase);
           harmonyMessages = composeMessagesWithFile(system, developer, req.messages, supportsHarmonyRoles);
-        } catch {
+        } catch (e: any) {
+          console.warn(`[teacher] Failed to load Harmony prompt for phase="${phase}": ${e?.message || e}`);
           // Fallback to default formatter if loading fails
           harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
         }

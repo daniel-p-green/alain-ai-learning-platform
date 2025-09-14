@@ -1,0 +1,91 @@
+{
+  "testTimestamp": "2025-09-14T00:47:30.022Z",
+  "topic": "create a simple local ChatGPT like chat experience (with web search enable option), the notebook should have multiple choice knowledge checkpoints, and encourage exploration of concepts and comparing different options like context window and temperature with follow up questions about the observed differences",
+  "methodology": "ALAIN-Kit (current form)",
+  "provider": "poe",
+  "depth": "advanced",
+  "results": [
+    {
+      "model": "gpt-oss-20b",
+      "processingTime": 322,
+      "totalTime": 327,
+      "qualityScore": {
+        "score": 42,
+        "sources": 0,
+        "educational": true,
+        "relevance": true
+      },
+      "synthesis": {
+        "key_concepts": [],
+        "technical_details": [],
+        "use_cases": [],
+        "limitations": [],
+        "best_practices": [
+          "Implement conversation history management for context continuity",
+          "Use system prompts to define AI assistant behavior and personality",
+          "Add safety filters and content moderation for production use",
+          "Implement rate limiting and usage monitoring"
+        ],
+        "learning_path": [
+          "Understand conversational AI fundamentals and dialogue systems",
+          "Study the model architecture and training methodology",
+          "Learn prompt engineering techniques for chat applications",
+          "Implement basic chat interface with context management",
+          "Explore advanced features: web search integration, memory, tools",
+          "Practice parameter tuning: temperature, top-p, context window",
+          "Build multiple choice knowledge checkpoints for learning validation",
+          "Deploy and test in real conversational scenarios"
+        ]
+      },
+      "sources": {
+        "huggingface": false,
+        "arxiv": 0,
+        "github": 0
+      }
+    },
+    {
+      "model": "gpt-oss-120b",
+      "processingTime": 228,
+      "totalTime": 229,
+      "qualityScore": {
+        "score": 42,
+        "sources": 0,
+        "educational": true,
+        "relevance": true
+      },
+      "synthesis": {
+        "key_concepts": [],
+        "technical_details": [],
+        "use_cases": [],
+        "limitations": [],
+        "best_practices": [
+          "Implement conversation history management for context continuity",
+          "Use system prompts to define AI assistant behavior and personality",
+          "Add safety filters and content moderation for production use",
+          "Implement rate limiting and usage monitoring"
+        ],
+        "learning_path": [
+          "Understand conversational AI fundamentals and dialogue systems",
+          "Study the model architecture and training methodology",
+          "Learn prompt engineering techniques for chat applications",
+          "Implement basic chat interface with context management",
+          "Explore advanced features: web search integration, memory, tools",
+          "Practice parameter tuning: temperature, top-p, context window",
+          "Build multiple choice knowledge checkpoints for learning validation",
+          "Deploy and test in real conversational scenarios"
+        ]
+      },
+      "sources": {
+        "huggingface": false,
+        "arxiv": 0,
+        "github": 0
+      }
+    }
+  ],
+  "summary": {
+    "totalModels": 2,
+    "successfulTests": 2,
+    "averageProcessingTime": 275,
+    "overallQuality": 42
+  }
+}

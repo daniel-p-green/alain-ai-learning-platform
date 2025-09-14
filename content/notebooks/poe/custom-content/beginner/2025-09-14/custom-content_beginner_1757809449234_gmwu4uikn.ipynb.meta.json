@@ -1,0 +1,18 @@
+{
+  "id": "1757809449234_gmwu4uikn",
+  "model_id": "custom-content",
+  "difficulty": "beginner",
+  "created_at": "2025-09-14T00:24:09.234Z",
+  "updated_at": "2025-09-14T00:24:09.234Z",
+  "file_type": "notebook",
+  "format": "ipynb",
+  "checksum": "4759e5abe6b0d580f129dffbdf2b4fcd965535aaff996e03d319d0776cb132fe",
+  "size_bytes": 6115,
+  "tags": [
+    "custom-content",
+    "beginner",
+    "ipynb",
+    "poe"
+  ],
+  "provider": "poe"
+}

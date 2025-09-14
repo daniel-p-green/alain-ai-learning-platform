@@ -1,0 +1,18 @@
+{
+  "id": "1757806682153_ie9wr234d",
+  "model_id": "gpt-oss-20b",
+  "difficulty": "beginner",
+  "created_at": "2025-09-13T23:38:02.153Z",
+  "updated_at": "2025-09-13T23:38:02.153Z",
+  "file_type": "notebook",
+  "format": "ipynb",
+  "checksum": "1e383c1bf4c8d84cd2608fcc7447ea7b0d5bce0129bde55d7c5ebc5b914cefaa",
+  "size_bytes": 6028,
+  "tags": [
+    "gpt-oss-20b",
+    "beginner",
+    "ipynb",
+    "poe"
+  ],
+  "provider": "poe"
+}
