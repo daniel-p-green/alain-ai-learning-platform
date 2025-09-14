@@ -55,6 +55,21 @@ export class NotebookBuilder {
       cells.push(this.createSetupCell(outline.setup));
     }
 
+    // Ensure ipywidgets is available for interactive MCQs
+    cells.push({
+      cell_type: "code" as const,
+      metadata: {},
+      source: [
+        "# Ensure ipywidgets is installed for interactive MCQs\n",
+        "try:\n",
+        "    import ipywidgets  # type: ignore\n",
+        "    print('ipywidgets available')\n",
+        "except Exception:\n",
+        "    import sys, subprocess\n",
+        "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'ipywidgets>=8.0.0'])\n"
+      ]
+    });
+
     // Generated sections
     sections.forEach(section => {
       section.content.forEach(cell => {
@@ -66,9 +81,10 @@ export class NotebookBuilder {
       });
     });
 
-    // Assessments
+    // Assessments (interactive)
     if (outline.assessments?.length > 0) {
-      cells.push(this.createAssessmentsCell(outline.assessments));
+      const asses = this.createAssessmentsCells(outline.assessments);
+      asses.forEach(c => cells.push(c));
     }
 
     // Troubleshooting guide
@@ -172,24 +188,47 @@ export class NotebookBuilder {
     return cells[0]; // Return first cell, additional setup handled in sections
   }
 
-  private createAssessmentsCell(assessments: any[]) {
-    const content = ["## Knowledge Check\n\nTest your understanding with these questions:\n\n"];
-    
-    assessments.forEach((mcq, i) => {
-      content.push(`### Question ${i + 1}\n\n`);
-      content.push(`${mcq.question}\n\n`);
-      mcq.options.forEach((opt: string, j: number) => {
-        content.push(`${String.fromCharCode(65 + j)}. ${opt}\n`);
-      });
-      content.push(`\n**Answer:** ${String.fromCharCode(65 + mcq.correct_index)}\n\n`);
-      content.push(`**Explanation:** ${mcq.explanation}\n\n`);
-    });
-
-    return {
-      cell_type: "markdown" as const,
+  private createAssessmentsCells(assessments: any[]) {
+    const cells: any[] = [];
+    cells.push({
+      cell_type: 'markdown' as const,
       metadata: {},
-      source: content
-    };
+      source: [
+        '## Knowledge Check (Interactive)\n\n',
+        'Use the widgets below to select an answer and click Grade to see feedback.\n'
+      ]
+    });
+    cells.push({
+      cell_type: 'code' as const,
+      metadata: {},
+      source: [
+        '# MCQ helper (ipywidgets)\n',
+        'import ipywidgets as widgets\n',
+        'from IPython.display import display, Markdown\n\n',
+        'def render_mcq(question, options, correct_index, explanation):\n',
+        "    rb = widgets.RadioButtons(options=[f'{chr(65+i)}. '+opt for i,opt in enumerate(options)], description='')\n",
+        "    grade_btn = widgets.Button(description='Grade', button_style='primary')\n",
+        "    feedback = widgets.HTML(value='')\n",
+        '    def on_grade(_):\n',
+        '        sel = rb.index\n',
+        "        if sel is None:\n            feedback.value = '<p>⚠️ Please select an option.</p>'\n            return\n",
+        '        if sel == correct_index:\n',
+        "            feedback.value = '<p>✅ Correct!</p>'\n",
+        '        else:\n',
+        "            feedback.value = f'<p>❌ Incorrect. Correct answer is {chr(65+correct_index)}.</p>'\n",
+        "        feedback.value += f'<div><em>Explanation:</em> {explanation}</div>'\n",
+        '    grade_btn.on_click(on_grade)\n',
+        "    display(Markdown('### '+question))\n",
+        '    display(rb)\n',
+        '    display(grade_btn)\n',
+        '    display(feedback)\n'
+      ]
+    });
+    assessments.forEach((mcq, i) => {
+      const call = `render_mcq(${JSON.stringify(mcq.question)}, ${JSON.stringify(mcq.options)}, ${mcq.correct_index}, ${JSON.stringify(mcq.explanation)})\n`;
+      cells.push({ cell_type: 'code', metadata: {}, source: [call] });
+    });
+    return cells;
   }
 
   private createTroubleshootingCell() {

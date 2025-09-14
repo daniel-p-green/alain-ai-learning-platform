@@ -1,3 +1,5 @@
+import { extractJsonLoose } from './json-utils';
+
 /**
  * ALAIN-Kit Outline Generator
  * 
@@ -79,7 +81,7 @@ export class OutlineGenerator {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-oss-20b',
+        model: model,
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.1,
         max_tokens: 2000
@@ -88,12 +90,22 @@ export class OutlineGenerator {
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || '';
-    
-    return this.parseOutlineResponse(content);
+
+    let outline = this.parseOutlineResponse(content);
+    const validation = this.validateOutline(outline);
+    if (!validation.isValid) {
+      try {
+        outline = await this.repairOutline(outline, validation.issues, { model, apiKey: apiKey || '', difficulty });
+      } catch {
+        // ignore and return best-effort
+      }
+    }
+    return outline;
   }
 
   private buildOutlinePrompt(modelReference: string, difficulty: string): string {
-    return `You are ALAIN-Teacher creating educational notebook outlines. Generate ONLY a structured outline in JSON format.
+    return `You are ALAIN-Teacher creating educational notebook outlines.
+You MUST respond with ONLY valid JSON. No markdown, no extra text. The response must begin with { and end with }.
 
 Based on analysis of 575 high-quality notebooks, follow these proven patterns:
 
@@ -102,7 +114,7 @@ STRUCTURE REQUIREMENTS:
 • Overview: 2-3 sentence description
 • Objectives: Exactly 4 specific learning objectives
 • Prerequisites: Required knowledge/tools
-• Setup: Installation and environment requirements
+• Setup: Installation and environment requirements (must include ipywidgets>=8.0.0)
 • Steps: ${this.OPTIMAL_STEP_RANGE[0]}-${this.OPTIMAL_STEP_RANGE[1]} well-labeled sections
 • Exercises: 2-3 hands-on challenges
 • Summary: Key takeaways and next steps
@@ -122,7 +134,7 @@ RESPOND WITH ONLY THIS JSON STRUCTURE:
   "objectives": ["objective 1", "objective 2", "objective 3", "objective 4"],
   "prerequisites": ["prereq 1", "prereq 2"],
   "setup": {
-    "requirements": ["package==version"],
+    "requirements": ["ipywidgets>=8.0.0"],
     "environment": [".env variable"],
     "commands": ["install command"]
   },
@@ -161,24 +173,10 @@ Generate outline for: ${modelReference}`;
   }
 
   private parseOutlineResponse(content: string): NotebookOutline {
-    // Try direct JSON parse first
-    try {
-      return JSON.parse(content);
-    } catch (e) {
-      // Extract JSON boundaries if wrapped in other text
-      const jsonStart = content.indexOf('{');
-      const jsonEnd = content.lastIndexOf('}');
-      
-      if (jsonStart !== -1 && jsonEnd !== -1) {
-        try {
-          return JSON.parse(content.substring(jsonStart, jsonEnd + 1));
-        } catch (e2) {
-          throw new Error('Failed to parse outline JSON response');
-        }
-      }
-      
-      throw new Error('No valid JSON found in outline response');
-    }
+    try { return JSON.parse(content); } catch {}
+    const loose = extractJsonLoose(content);
+    if (loose) return loose as NotebookOutline;
+    throw new Error('No valid JSON found in outline response');
   }
 
   /**
@@ -211,5 +209,33 @@ Generate outline for: ${modelReference}`;
       isValid: issues.length === 0,
       issues
     };
+  }
+
+  private async repairOutline(outline: NotebookOutline, issues: string[], ctx: { model: string; apiKey: string; difficulty: 'beginner'|'intermediate'|'advanced'; }): Promise<NotebookOutline> {
+    const endpoint = this.baseUrl || 'https://api.poe.com';
+    const repairPrompt = `You previously generated a JSON outline for a tutorial. It needs repair to meet constraints.\n`+
+      `Return ONLY valid JSON (start with { and end with }). Fix the following issues: ${issues.join('; ')}.\n`+
+      `Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives.\n`+
+      `Here is the current outline JSON to repair:\n${JSON.stringify(outline, null, 2)}`;
+
+    const resp = await fetch(`${endpoint}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${ctx.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-oss-20b',
+        messages: [{ role: 'user', content: repairPrompt }],
+        temperature: 0.0,
+        top_p: 1.0,
+        max_tokens: 900,
+        response_format: { type: 'json_object' }
+      })
+    });
+    const data = await resp.json();
+    const content = data.choices?.[0]?.message?.content || '';
+    const repaired = this.parseOutlineResponse(content);
+    return repaired;
   }
 }
