@@ -103,6 +103,7 @@ export default function MobileNav() {
                 <div className="px-2 py-2 text-xs uppercase tracking-wide text-ink-500">Navigate</div>
                 <Link href="/notebooks" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Library</Link>
                 <Link href="/generate" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Generate Manual</Link>
+                <Link href="/research" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Research</Link>
               </nav>
             </div>
 
@@ -110,6 +111,9 @@ export default function MobileNav() {
             <div className="p-3 border-t border-ink-100 bg-paper-0">
               <Link href="/generate" className="inline-flex w-full items-center justify-center h-11 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold" onClick={closeWithAnim}>
                 Generate Manual
+              </Link>
+              <Link href="/research" className="inline-flex w-full items-center justify-center h-11 px-4 rounded-[12px] mt-2 border border-ink-200 bg-paper-0 text-ink-900" onClick={closeWithAnim}>
+                Research
               </Link>
             </div>
           </div>
