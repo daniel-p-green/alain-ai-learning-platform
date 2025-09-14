@@ -1,5 +1,6 @@
 import React from 'react';
 import TryPrompt from '@/components/TryPrompt';
+import MarkCompleteButton from '@/components/MarkCompleteButton';
 
 type Step = { id: number; step_order: number; title: string; content: string; code_template?: string | null; expected_output?: string | null };
 type Maker = { name?: string; org_type?: string; homepage?: string | null; license?: string | null; repo?: string | null };
@@ -67,19 +68,7 @@ export default async function TutorialPage({ params }: { params: { id: string } 
             {s.expected_output && (
               <div className="text-xs text-ink-700 mt-2">Expected: {s.expected_output}</div>
             )}
-            {/* Basic progress action */}
-            <form action={async (formData: FormData) => {
-              'use server';
-              const step = Number(formData.get('step_order') || 0);
-              if (!step) return;
-              await fetch(`/api/tutorials/${encodeURIComponent(String(t.id))}/progress`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ step_order: step })
-              });
-            }}>
-              <input type="hidden" name="step_order" value={s.step_order} />
-              <button className="mt-3 inline-flex items-center px-3 py-1.5 rounded bg-alain-blue text-white text-xs" type="submit">Mark Complete</button>
-            </form>
+            <MarkCompleteButton tutorialId={t.id} stepOrder={s.step_order} />
           </li>
         ))}
       </ol>

@@ -1,6 +1,11 @@
 import { api } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 
+// Secrets must be declared at module scope in Encore
+const poeApiKey = secret("POE_API_KEY");
+const openaiBaseUrl = secret("OPENAI_BASE_URL");
+const openaiApiKey = secret("OPENAI_API_KEY");
+
 interface HealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy';
   timestamp: string;
@@ -59,7 +64,6 @@ async function checkPoeHealth(): Promise<ServiceHealth> {
   const startTime = Date.now();
 
   try {
-    const poeApiKey = secret("POE_API_KEY");
     const apiKey = poeApiKey();
     if (!apiKey) {
       return {
@@ -122,8 +126,6 @@ async function checkOpenAIHealth(): Promise<ServiceHealth> {
   const startTime = Date.now();
 
   try {
-    const openaiApiKey = secret("OPENAI_API_KEY");
-    const openaiBaseUrl = secret("OPENAI_BASE_URL");
     const apiKey = openaiApiKey();
     const baseUrl = openaiBaseUrl();
 
@@ -204,7 +206,6 @@ async function checkDatabaseHealth(): Promise<ServiceHealth> {
 // Helper: surface OpenAI base url (non-secret) if configured via Encore secrets or env
 function getOpenAIBaseUrl(): string | null {
   try {
-    const openaiBaseUrl = secret("OPENAI_BASE_URL");
     const v = openaiBaseUrl();
     if (v) return v;
   } catch {}

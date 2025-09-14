@@ -31,6 +31,55 @@ export interface ResearchData {
     bytes_downloaded: number;
     items?: Array<{ source: string; path: string; bytes: number }>;
   };
+  // Optional richer, normalized summary for lesson design/develop phases
+  summary_v2?: ResearchSummaryV2;
+}
+
+// Normalized research summary for lesson creation and offline readiness
+export interface ResearchSummaryV2 {
+  model_metadata: {
+    id: string;
+    org: string;
+    license?: string;
+    tags: string[];
+    pipeline_tag?: string;
+    card_last_modified?: string;
+  };
+  architecture: {
+    parameters?: number; // absolute number (e.g., 20000000000)
+    parameter_scale?: string; // e.g., "20B"
+    layers?: number;
+    hidden_size?: number;
+    vocab_size?: number;
+    context_length?: number;
+    tokenizer?: {
+      type?: string;
+      model_max_length?: number;
+      bos_token?: string;
+      eos_token?: string;
+    };
+  };
+  quantization: string[]; // hints from files/tags (e.g., int4, gguf, q8_0)
+  capabilities: {
+    tasks: string[]; // e.g., ["text-generation", "fill-mask"]
+    reasoning?: boolean;
+    coding?: boolean;
+    multilingual?: boolean;
+    fine_tuning?: boolean;
+  };
+  benchmarks?: Array<{ dataset: string; metric: string; value: number }>;
+  usage_examples: {
+    hf_snippet?: string;
+    openai_compatible_snippet?: string;
+  };
+  compute: {
+    vram_estimate_gb?: number;
+    recommended_gpu?: string;
+  };
+  recommendations: {
+    temperature?: number;
+    top_p?: number;
+  };
 }
 
 /**
@@ -69,6 +118,187 @@ async function fetchHuggingFaceInfo(modelPath: string): Promise<any> {
     console.error('Error fetching Hugging Face info:', error);
     return null;
   }
+}
+
+// Try reading an HF JSON artifact, using local offline cache when available.
+async function readHfJsonArtifact(
+  hfModelPath: string,
+  researchDir: string,
+  filename: string,
+  offlineOnly = false
+): Promise<any | null> {
+  // 1) Prefer local cache if exists
+  try {
+    const localPath = join(researchDir, 'hf-files', filename);
+    if (existsSync(localPath)) {
+      const txt = readFileSync(localPath, 'utf-8');
+      try { return JSON.parse(txt); } catch { /* fallthrough */ }
+    }
+  } catch {}
+  // 2) If offlineOnly, stop here
+  if (offlineOnly) return null;
+  // 3) Fetch from HF
+  try {
+    const url = `https://huggingface.co/${hfModelPath}/raw/main/${filename}`;
+    const resp = await fetch(url);
+    if (!resp.ok) return null;
+    const txt = await resp.text();
+    try { return JSON.parse(txt); } catch { return null; }
+  } catch { return null; }
+}
+
+function toScale(n?: number): string | undefined {
+  if (!n || !isFinite(n)) return undefined;
+  const abs = Math.abs(n);
+  if (abs >= 1e9) return `${(n/1e9).toFixed(0)}B`;
+  if (abs >= 1e6) return `${(n/1e6).toFixed(0)}M`;
+  return String(n);
+}
+
+function deriveQuantization(tags: string[], fileList: string[]): string[] {
+  const out = new Set<string>();
+  const t = (tags || []).map(s => s.toLowerCase());
+  const f = (fileList || []).map(s => s.toLowerCase());
+  if (t.some(x => x.includes('int4') || x.includes('4bit'))) out.add('int4');
+  if (t.some(x => x.includes('int8') || x.includes('8bit'))) out.add('int8');
+  if (f.some(x => x.endsWith('.gguf') || x.includes('gguf'))) out.add('gguf');
+  if (f.some(x => x.includes('q4_') || x.includes('q8_'))) {
+    if (f.some(x => x.includes('q4_'))) out.add('q4');
+    if (f.some(x => x.includes('q8_'))) out.add('q8');
+  }
+  return Array.from(out);
+}
+
+function estimateVramGB(paramCount?: number, precisionBytes = 2): number | undefined {
+  if (!paramCount || !isFinite(paramCount)) return undefined;
+  const bytes = paramCount * precisionBytes;
+  const gb = bytes / (1024**3);
+  return Math.ceil(gb * 10) / 10; // 1 decimal place
+}
+
+function extractFirstCodeBlock(md?: string): string | undefined {
+  if (!md) return undefined;
+  const m = md.match(/```[a-zA-Z0-9]*\n([\s\S]*?)\n```/);
+  return m?.[1]?.trim();
+}
+
+function buildOpenAICompatSnippet(modelId: string): string {
+  return [
+    "from openai import OpenAI",
+    "import os",
+    "client = OpenAI(base_url=os.getenv('OPENAI_BASE_URL'), api_key=os.getenv('OPENAI_API_KEY'))",
+    `resp = client.chat.completions.create(model=${JSON.stringify(modelId)}, messages=[{"role":"user","content":"Hello"}], max_tokens=64)`,
+    "print(resp.choices[0].message.content)",
+  ].join('\n');
+}
+
+async function buildResearchSummaryV2(
+  researchDir: string,
+  provider: string,
+  model: string,
+  hf: { model_card?: string; repo_info?: any; files?: string[] } | null
+): Promise<ResearchSummaryV2> {
+  const hfPath = `${provider}/${model}`;
+  const offlineOnly = ((process.env.OFFLINE_MODE || '').toLowerCase() === '1' || (process.env.OFFLINE_MODE || '').toLowerCase() === 'true');
+
+  const repo = hf?.repo_info || {};
+  const tags: string[] = Array.isArray(repo?.tags) ? repo.tags : [];
+  const pipelineTag: string | undefined = typeof repo?.pipeline_tag === 'string' ? repo.pipeline_tag : undefined;
+  const siblings: any[] = Array.isArray(repo?.siblings) ? repo.siblings : [];
+  const fileList: string[] = siblings.map((s: any) => s?.rfilename || s?.path || '').filter(Boolean);
+
+  const cfg = await readHfJsonArtifact(hfPath, researchDir, 'config.json', offlineOnly);
+  const genCfg = await readHfJsonArtifact(hfPath, researchDir, 'generation_config.json', offlineOnly);
+  const tokCfg = await readHfJsonArtifact(hfPath, researchDir, 'tokenizer_config.json', offlineOnly);
+  const tokMap = await readHfJsonArtifact(hfPath, researchDir, 'special_tokens_map.json', offlineOnly);
+
+  const parameters = ((): number | undefined => {
+    if (typeof repo?.downloads === 'number' && false) return undefined; // ignore
+    const tagParam = (tags.find(t => /\d+\s*[mb]/i.test(t)) || '').toLowerCase();
+    const m = tagParam.match(/(\d+(?:\.\d+)?)\s*([mb])/);
+    if (m) {
+      const num = parseFloat(m[1]);
+      const scale = m[2] === 'b' ? 1e9 : 1e6;
+      return Math.round(num * scale);
+    }
+    const cfgParams = cfg?.num_parameters || cfg?.num_params || cfg?.transformer?.params;
+    if (typeof cfgParams === 'number') return cfgParams;
+    return undefined;
+  })();
+
+  const parameter_scale = toScale(parameters);
+  const layers = cfg?.num_hidden_layers || cfg?.n_layer || cfg?.num_layers;
+  const hidden_size = cfg?.hidden_size || cfg?.n_embd || cfg?.d_model;
+  const vocab_size = cfg?.vocab_size;
+  const context_length = cfg?.max_position_embeddings || cfg?.seq_length || genCfg?.max_length || tokCfg?.model_max_length;
+
+  const quant = deriveQuantization(tags, fileList);
+
+  const tasks = [pipelineTag, ...(tags || []).filter(Boolean)].filter(Boolean) as string[];
+  const lcCard = (hf?.model_card || '').toLowerCase();
+  const capabilities = {
+    tasks: Array.from(new Set(tasks)),
+    reasoning: /reasoning|math|gsm8k|mmlu/.test(lcCard),
+    coding: /code|programming|coding|python/.test(lcCard),
+    multilingual: /multilingual|translation|languages?/.test(lcCard),
+    fine_tuning: /fine[- ]?tuning|qlora|lora/.test(lcCard),
+  };
+
+  // Benchmarks: try to parse lightweight hints from README text
+  const benchmarks: Array<{ dataset: string; metric: string; value: number }> = [];
+  try {
+    const re = /(mmlu|gsm8k|hellaswag|arc|truthfulqa)\s*[:=]\s*(\d+(?:\.\d+)?)\s*%/ig;
+    let m: RegExpExecArray | null;
+    const src = hf?.model_card || '';
+    while ((m = re.exec(src)) !== null) {
+      const ds = (m[1] || '').toUpperCase();
+      const val = parseFloat(m[2]);
+      if (isFinite(val)) benchmarks.push({ dataset: ds, metric: 'accuracy', value: val });
+    }
+  } catch {}
+
+  // Usage examples
+  const hf_snippet = extractFirstCodeBlock(hf?.model_card || undefined);
+  const openai_compatible_snippet = buildOpenAICompatSnippet(model.toLowerCase());
+
+  const vram_estimate_gb = estimateVramGB(parameters, 2);
+  const recommended_gpu = vram_estimate_gb ? (vram_estimate_gb > 24 ? 'A100/MI300 (80GB)' : vram_estimate_gb > 16 ? 'A6000/4090 (24GB)' : 'Consumer 8–16GB') : undefined;
+
+  const recs = {
+    temperature: typeof genCfg?.temperature === 'number' ? genCfg.temperature : 0.3,
+    top_p: typeof genCfg?.top_p === 'number' ? genCfg.top_p : 0.9,
+  };
+
+  return {
+    model_metadata: {
+      id: model,
+      org: provider,
+      license: repo?.license ?? (repo?.cardData?.license || undefined),
+      tags: tags,
+      pipeline_tag: pipelineTag,
+      card_last_modified: repo?.lastModified || undefined,
+    },
+    architecture: {
+      parameters,
+      parameter_scale: parameter_scale,
+      layers: typeof layers === 'number' ? layers : undefined,
+      hidden_size: typeof hidden_size === 'number' ? hidden_size : undefined,
+      vocab_size: typeof vocab_size === 'number' ? vocab_size : undefined,
+      context_length: typeof context_length === 'number' ? context_length : undefined,
+      tokenizer: {
+        type: tokCfg?.tokenizer_class || tokCfg?._name_or_path,
+        model_max_length: tokCfg?.model_max_length,
+        bos_token: tokMap?.bos_token || undefined,
+        eos_token: tokMap?.eos_token || undefined,
+      },
+    },
+    quantization: quant,
+    capabilities,
+    benchmarks: benchmarks.length ? benchmarks : undefined,
+    usage_examples: { hf_snippet, openai_compatible_snippet },
+    compute: { vram_estimate_gb, recommended_gpu },
+    recommendations: recs,
+  };
 }
 
 /**
@@ -323,6 +553,44 @@ export async function researchModel(
   // Save research data
   const researchFile = join(researchDir, 'research-data.json');
   writeFileSync(researchFile, JSON.stringify(researchData, null, 2));
+
+  // Build Research Summary V2 (normalized) and write sidecar files
+  try {
+    const v2 = await buildResearchSummaryV2(researchDir, provider, model, researchData.sources.huggingface || null);
+    researchData.summary_v2 = v2;
+    const v2File = join(researchDir, 'research-summary.v2.json');
+    writeFileSync(v2File, JSON.stringify(v2, null, 2));
+    // Additional markdowns for quick human read
+    const cfgMd = [
+      '# Model Configuration',
+      '',
+      v2.architecture.parameter_scale ? `- Parameters: ${v2.architecture.parameter_scale}` : '',
+      typeof v2.architecture.layers === 'number' ? `- Layers: ${v2.architecture.layers}` : '',
+      typeof v2.architecture.hidden_size === 'number' ? `- Hidden size: ${v2.architecture.hidden_size}` : '',
+      typeof v2.architecture.vocab_size === 'number' ? `- Vocab size: ${v2.architecture.vocab_size}` : '',
+      typeof v2.architecture.context_length === 'number' ? `- Context length: ${v2.architecture.context_length}` : '',
+      v2.quantization.length ? `- Quantization: ${v2.quantization.join(', ')}` : '',
+    ].filter(Boolean).join('\n');
+    writeFileSync(join(researchDir, 'configs.md'), cfgMd + '\n');
+    if (v2.benchmarks && v2.benchmarks.length) {
+      const b = ['# Benchmarks', '', ...v2.benchmarks.map(x => `- ${x.dataset}: ${x.metric} = ${x.value}`)].join('\n');
+      writeFileSync(join(researchDir, 'benchmarks.md'), b + '\n');
+    }
+    const usageLines = ['# Usage Examples', ''];
+    if (v2.usage_examples.hf_snippet) {
+      usageLines.push('## Transformers');
+      usageLines.push('```python');
+      usageLines.push(v2.usage_examples.hf_snippet);
+      usageLines.push('```');
+    }
+    usageLines.push('## OpenAI-compatible');
+    usageLines.push('```python');
+    usageLines.push(v2.usage_examples.openai_compatible_snippet || buildOpenAICompatSnippet(model));
+    usageLines.push('```');
+    writeFileSync(join(researchDir, 'usage-examples.md'), usageLines.join('\n') + '\n');
+  } catch (e) {
+    // Non-fatal
+  }
   
   // Save individual files in appropriate formats
   if (researchData.sources.huggingface?.model_card) {
@@ -553,6 +821,20 @@ export function generateResearchSummary(researchDir: string): string {
     summary += `- Notebooks: ${data.sources.kaggle.notebooks?.length || 0}\n`;
     summary += `- Competitions: ${data.sources.kaggle.competitions?.length || 0}\n\n`;
   }
+  // If V2 is present, append compact architecture/capabilities digest
+  try {
+    const v2File = join(researchDir, 'research-summary.v2.json');
+    if (existsSync(v2File)) {
+      const v2 = JSON.parse(readFileSync(v2File, 'utf-8')) as ResearchSummaryV2;
+      summary += `## Core Specs\n`;
+      if (v2.architecture.parameter_scale) summary += `- Parameters: ${v2.architecture.parameter_scale}\n`;
+      if (typeof v2.architecture.context_length === 'number') summary += `- Context length: ${v2.architecture.context_length}\n`;
+      if (v2.quantization?.length) summary += `- Quantization: ${v2.quantization.join(', ')}\n`;
+      if (v2.capabilities?.tasks?.length) summary += `- Tasks: ${v2.capabilities.tasks.slice(0, 6).join(', ')}\n`;
+      if (v2.benchmarks?.length) summary += `- Benchmarks: ${v2.benchmarks.slice(0,3).map(b => `${b.dataset} ${b.value}`).join('; ')}\n`;
+      summary += `\n`;
+    }
+  } catch {}
   
   return summary;
 }
