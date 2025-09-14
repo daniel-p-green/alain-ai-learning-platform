@@ -269,10 +269,11 @@ async function runPromptOptimizationTest() {
   console.log('='.repeat(50));
   
   const successful = results.filter(r => r.success);
+  let sortedByPerformance: PromptTestResult[] = [];
   
   if (successful.length > 0) {
     // Sort by performance score (quality/time ratio)
-    const sortedByPerformance = successful.sort((a, b) => {
+    sortedByPerformance = successful.sort((a, b) => {
       const scoreA = (a.outputQuality / 100) * (10000 / a.responseTime);
       const scoreB = (b.outputQuality / 100) * (10000 / b.responseTime);
       return scoreB - scoreA;
@@ -305,6 +306,8 @@ async function runPromptOptimizationTest() {
         }
       });
     }
+  } else {
+    console.log('❌ No successful tests to analyze');
   }
   
   // Save results

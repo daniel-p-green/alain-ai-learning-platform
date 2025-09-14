@@ -33,7 +33,7 @@ export function buildNotebook(
     `Teacher Model: ${teacherModelUsed || 'GPT-OSS-20B'}\n`,
     `Provider: ${meta.provider}\n`,
     `Target Model: ${meta.model}\n`,
-    `Learn more: https://github.com/your-org/alain-ai-learning-platform\n`,
+    `Learn more: https://github.com/daniel-p-green/alain-ai-learning-platform/\n`,
     `-->\n`
   ];
   cells.push({ cell_type: "markdown", metadata: {}, source: attributionComment });
