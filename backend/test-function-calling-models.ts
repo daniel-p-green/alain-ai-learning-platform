@@ -17,7 +17,13 @@ interface FunctionCallTest {
 }
 
 const MODELS_TO_TEST = [
-  'gpt-4-turbo'  // Start with known working model
+  // OpenAI-family on Poe
+  'gpt-4-turbo',
+  'GPT-4o',
+  // GPT-OSS family (critical to ALAIN)
+  'GPT-OSS-20B',
+  'gpt-oss-20b', // test both casings
+  'GPT-OSS-120B',
 ];
 
 const SIMPLE_FUNCTION_SCHEMA = {
@@ -89,7 +95,7 @@ async function testModelFunctionCalling(model: string): Promise<FunctionCallTest
     
     // Check if the response contains function calls
     const message = data.choices?.[0]?.message;
-    const hasFunctionCall = message?.tool_calls && message.tool_calls.length > 0;
+    const hasFunctionCall = Array.isArray(message?.tool_calls) && message.tool_calls.length > 0;
     
     if (hasFunctionCall) {
       const functionCall = message.tool_calls[0];
