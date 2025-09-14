@@ -19,6 +19,9 @@ export default function ResearchPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [summary, setSummary] = React.useState<any | null>(null);
   const [dir, setDir] = React.useState<string | null>(null);
+  const [files, setFiles] = React.useState<string[]>([]);
+  const [activeFile, setActiveFile] = React.useState<string | null>(null);
+  const [fileContent, setFileContent] = React.useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,6 +49,18 @@ export default function ResearchPage() {
       }
       setSummary(data.summaryV2 || null);
       setDir(data.dir || null);
+      // Load available artifacts list
+      try {
+        const u = new URL('/api/content/research', window.location.origin);
+        const pr = parseRef(ref);
+        if (pr.owner && pr.repo) {
+          u.searchParams.set('provider', pr.owner);
+          u.searchParams.set('model', pr.repo);
+          const listResp = await fetch(u.toString(), { cache: 'no-store' });
+          const listData = await listResp.json().catch(() => null);
+          if (listResp.ok && listData?.files) setFiles(listData.files);
+        }
+      } catch {}
     } catch (e: any) {
       setError(e?.message || 'Request failed');
     } finally {
@@ -102,9 +117,49 @@ export default function ResearchPage() {
             <p className="text-sm"><strong>Suggested:</strong> T={summary?.recommendations?.temperature ?? 0.3}, top_p={summary?.recommendations?.top_p ?? 0.9}</p>
             {dir && <p className="text-xs text-ink-600">Saved under: {dir}</p>}
           </div>
+          <div className="mt-3">
+            <a className="inline-flex items-center h-9 px-3 rounded-[10px] border border-ink-200 bg-paper-0 text-ink-900 mr-2" href={`/generate?hf=${encodeURIComponent((parseRef(ref).owner||'') + '/' + (parseRef(ref).repo||''))}`}>Generate from this model</a>
+            {(() => {
+              const pr = parseRef(ref);
+              const href = `/api/content/research?provider=${encodeURIComponent(pr.owner||'')}&model=${encodeURIComponent(pr.repo||'')}&file=research-summary.v2.json`;
+              return <a className="inline-flex items-center h-9 px-3 rounded-[10px] border border-ink-200 bg-paper-0 text-ink-900" href={href} download>Download summary JSON</a>;
+            })()}
+          </div>
+        </div>
+      )}
+
+      {files.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-2">Artifacts</h2>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {files.map((f) => {
+              const pr = parseRef(ref);
+              const href = `/api/content/research?provider=${encodeURIComponent(pr.owner||'')}&model=${encodeURIComponent(pr.repo||'')}&file=${encodeURIComponent(f)}`;
+              return (
+                <div key={f} className="inline-flex items-center gap-2">
+                  <button className={`h-9 px-3 rounded-[10px] border ${activeFile===f?'border-alain-blue text-alain-blue':'border-ink-200 text-ink-900'} bg-paper-0`} onClick={async () => {
+                    setActiveFile(f);
+                    setFileContent('Loading...');
+                    try {
+                      const r = await fetch(href, { cache: 'no-store' });
+                      const text = await r.text();
+                      setFileContent(text);
+                    } catch {
+                      setFileContent('Failed to load.');
+                    }
+                  }}>{f}</button>
+                  <a className="text-sm text-ink-700 underline" href={href} download>download</a>
+                </div>
+              );
+            })}
+          </div>
+          {activeFile && (
+            <div className="rounded-[12px] border border-ink-100 bg-paper-0 p-4 whitespace-pre-wrap text-sm">
+              {fileContent}
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
-
