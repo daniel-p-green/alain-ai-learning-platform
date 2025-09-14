@@ -8,12 +8,49 @@ KEY REQUIREMENTS:
 • Practical code examples and best practices
 • Quality score (1-100) with clear justification
 
+EXECUTABLE REQUIREMENTS (MANDATORY):
+• requirements.txt with exact package versions
+• .env.example file for environment variables
+• Step-by-step installation instructions
+• Code examples that run without modification
+• Dependency troubleshooting section
+
+KNOWLEDGE CHECKPOINTS (MANDATORY):
+• Generate 2-3 multiple choice questions per major section
+• Each MCQ must have exactly 4 options with 1 correct answer
+• Include detailed explanations for correct answers
+• Questions should test conceptual understanding, not memorization
+
+OUTPUT FORMAT: Return valid JSON with this structure:
+{
+  "title": "lesson title",
+  "description": "lesson description",
+  "learning_objectives": ["objective 1", "objective 2"],
+  "steps": [
+    {
+      "title": "step title",
+      "content": "detailed step content with setup instructions",
+      "code_template": "executable code example"
+    }
+  ],
+  "assessments": [
+    {
+      "question": "question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct_index": 0,
+      "explanation": "detailed explanation of correct answer"
+    }
+  ]
+}
+
 STRUCTURE:
 1. Technical Specs (architecture, parameters, training data, license)
 2. Educational Context (prerequisites, objectives, challenges)
-3. Implementation Guide (examples, practices, pitfalls)
-4. Community Resources (repos, tutorials, applications)
-5. Quality Assessment (score + justification)
+3. Setup & Dependencies (requirements.txt, .env, installation)
+4. Implementation Guide (examples, practices, pitfalls)
+5. Community Resources (repos, tutorials, applications)
+6. Knowledge Checkpoints (MCQs for each section)
+7. Quality Assessment (score + justification)
 
 Prioritize clarity, accuracy, and educational impact.
 
