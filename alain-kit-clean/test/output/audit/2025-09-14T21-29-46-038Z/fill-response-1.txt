@@ -1,0 +1,181 @@
+Thinking...
+>We need to produce JSON array of StepFillJSON objects for sections 2-2 of a guide. The previous sections: 1 completed. So we need to fill sections 2-2. That likely means sub-section 2-2 within section 2. But we need to produce steps for section 2-2. The instructions: "Return JSON array of StepFillJSON objects with: step_id, h2, md_intro (markdown explanation) code_cells: [{lang, lines, max_lines}] exercise: {title, instructions} where appropriate Markdown intro + short code cells (<40 lines each) Include exercises where appropriate Add seeds/random_state for reproducibility Target 800-1500 tokens per section Maintain 0.56 markdown ratio Return valid JSON array of StepFillJSON objects. IMPORTANT: Return ONLY the JSON object, nothing else."
+>
+>We need to produce JSON array. Each object corresponds to a step. For section 2-2. We need to decide what content. The guide: "Getting Started with GPT-Oss-20B: A Beginner’s Hands‑On Guide". Section 2 likely about environment setup, installation, maybe inference. 2-2 could be about "Running Inference on GPT-Oss-20B". So we need to provide steps: maybe 3-4 steps. Each step has step_id maybe "2-2-1", "2-2-2", etc. Provide h2 headings. Provide md_intro. Provide code_cells with lines array. Provide exercise if appropriate.
+>
+>Need to maintain 0.56 markdown ratio: meaning about 56% of the content should be markdown. The rest code. We target 800-1500 tokens per section. Since we have multiple steps, each step maybe 200-400 tokens. Let's aim for 4 steps each ~250 tokens, total ~1000 tokens. Good.
+>
+>We need to keep code cells short (<40 lines). Provide seeds for reproducibility: e.g., set random.seed(42) or use torch.manual_seed(42). Provide code for generating text with GPT-Oss-20B.
+>
+>We need to use "GPT-Oss-20B" presumably a huggingface model. Provide code using transformers pipeline or torch. Provide environment installation commands.
+>
+>We need to produce JSON array. Each object: step_id, h2, md_intro, code_cells, maybe exercise.
+>
+>Let's craft steps:
+>
+>Step 2-2-1: Install and Load GPT-Oss-20B
+>
+>Step 2-2-2: Basic Text Generation
+>
+>Step 2-2-3: Customizing Generation Parameters
+>
+>Step 2-2-4: Handling Long Contexts with Sliding Window
+>
+>Include an exercise in step 2-2-3: "Generate a short story with specific temperature".
+>
+>Add seeds: set random seed before generation.
+>
+>Let's craft md_intro for each step, about 200 tokens each.
+>
+>We need to maintain markdown ratio 0.56. That means about 56% of tokens should be markdown. We can approximate by including more markdown text.
+>
+>Code cells: 1 per step maybe.
+>
+>Let's produce JSON array with 4 objects.
+>
+>Now produce JSON.
+>
+>We must ensure valid JSON. Use double quotes.
+>
+>Let's craft.
+>
+>
+
+[
+  {
+    "step_id": "2-2-1",
+    "h2": "Installing and Loading GPT‑Oss‑20B",
+    "md_intro": "Before you can generate text, you need to install the necessary libraries and load the GPT‑Oss‑20B model. In this step we’ll use **pip** to install the `transformers` and `torch` packages, then pull the model from Hugging Face.\n\n*Why do we need `torch`?*  The GPT‑Oss‑20B model is a PyTorch model, so the underlying tensor operations rely on PyTorch.  The `transformers` library provides a high‑level interface to load the model and tokenizer.\n\nWe’ll also set a random seed to ensure reproducibility of any stochastic generation steps that follow.  Setting `torch.manual_seed(42)` guarantees that the same random numbers are produced each time you run the notebook.\n\n**Key commands:**\n\n1. Install the libraries.\n2. Load the tokenizer and model.\n3. Verify that the model is ready to use.\n\nLet’s dive in.",
+    "code_cells": [
+      {
+        "lang": "bash",
+        "lines": [
+          "# Install the required libraries",
+          "pip install --quiet transformers torch"
+        ],
+        "max_lines": 5
+      },
+      {
+        "lang": "python",
+        "lines": [
+          "# Set a reproducible seed",
+          "import torch",
+          "torch.manual_seed(42)",
+          "",
+          "# Load the tokenizer and model",
+          "from transformers import AutoTokenizer, AutoModelForCausalLM",
+          "",
+          "tokenizer = AutoTokenizer.from_pretrained(\"gpt-oss-20b\")",
+          "model = AutoModelForCausalLM.from_pretrained(\"gpt-oss-20b\", device_map=\"auto\")",
+          "",
+          "# Quick sanity check",
+          "print(f\"Tokenizer vocab size: {len(tokenizer)}\")",
+          "print(f\"Model loaded on: {model.device}\")"
+        ],
+        "max_lines": 20
+      }
+    ],
+    "exercise": null
+  },
+  {
+    "step_id": "2-2-2",
+    "h2": "Generating Basic Text with GPT‑Oss‑20B",
+    "md_intro": "Now that the model is loaded, let’s generate a simple paragraph.  We’ll use the `generate` method from the `transformers` library, which gives us fine‑grained control over the generation process.\n\nIn this example we’ll:\n\n* Tokenize a short prompt.\n* Generate 50 tokens of continuation.\n* Decode the output back into human‑readable text.\n\nWe’ll also keep the random seed set earlier, so the same prompt will produce the same output each time you run the cell.\n\nFeel free to experiment with different prompts or generation lengths once you’re comfortable with the workflow.",
+    "code_cells": [
+      {
+        "lang": "python",
+        "lines": [
+          "# Define a prompt",
+          "prompt = \"Once upon a time in a quiet village\"",
+          "",
+          "# Tokenize the prompt",
+          "input_ids = tokenizer(prompt, return_tensors=\"pt\").input_ids.to(model.device)",
+          "",
+          "# Generate 50 tokens",
+          "generated_ids = model.generate(input_ids, max_new_tokens=50, do_sample=False)",
+          "",
+          "# Decode the output",
+          "generated_text = tokenizer.decode(generated_ids[0], skip_special_tokens=True)",
+          "",
+          "print(generated_text)"
+        ],
+        "max_lines": 15
+      }
+    ],
+    "exercise": null
+  },
+  {
+    "step_id": "2-2-3",
+    "h2": "Tuning Generation Parameters",
+    "md_intro": "The quality and style of GPT‑Oss‑20B’s output can be heavily influenced by a handful of generation parameters.  In this step we’ll explore three key knobs:\n\n1. **Temperature** – controls randomness.  Lower values make the model more deterministic, while higher values increase creativity.\n2. **Top‑k** – limits sampling to the top‑k most probable tokens.\n3. **Top‑p (nucleus sampling)** – limits sampling to the smallest set of tokens whose cumulative probability exceeds `top_p`.\n\nWe’ll also provide an exercise where you generate a short story using a temperature of 0.7 and a top‑p of 0.9.  Use the seed we set earlier to keep the results reproducible.\n\n**Exercise:** Generate a 100‑token story about a robot learning to paint, using the specified parameters.  Print the story to the console.",
+    "code_cells": [
+      {
+        "lang": "python",
+        "lines": [
+          "# Define the prompt",
+          "prompt = \"A curious robot decided to learn how to paint\"",
+          "",
+          "# Tokenize",
+          "input_ids = tokenizer(prompt, return_tensors=\"pt\").input_ids.to(model.device)",
+          "",
+          "# Generate with tuned parameters",
+          "generated_ids = model.generate(\n    input_ids,\n    max_new_tokens=100,\n    temperature=0.7,\n    top_p=0.9,\n    do_sample=True,\n    num_return_sequences=1\n)",
+          "",
+          "# Decode and print",
+          "story = tokenizer.decode(generated_ids[0], skip_special_tokens=True)",
+          "print(story)"
+        ],
+        "max_lines": 20
+      }
+    ],
+    "exercise": {
+      "title": "Generate a Short Story with Tuned Parameters",
+      "instructions": "Using the prompt \"A curious robot decided to learn how to paint\", generate a 100‑token story with a temperature of 0.7 and top‑p of 0.9.  Make sure to set `do_sample=True` and use the random seed from the previous step."
+    }
+  },
+  {
+    "step_id": "2-2-4",
+    "h2": "Handling Long Contexts with Sliding Window",
+    "md_intro": "GPT‑Oss‑20B has a maximum context window of 2048 tokens.  When you need to generate text that references a longer document, you must feed the model a sliding window of the most recent tokens.\n\nIn this step we’ll:\n\n1. Load a longer passage (e.g., a short article).\n2. Tokenize it and split into overlapping chunks.\n3. Feed each chunk sequentially to the model, preserving context.\n4. Concatenate the outputs to form a coherent continuation.\n\nWe’ll use a window size of 1024 tokens with a 256‑token overlap for demonstration.  This technique keeps the model’s memory usage manageable while still providing enough context for meaningful generation.",
+    "code_cells": [
+      {
+        "lang": "python",
+        "lines": [
+          "# Sample long text (placeholder for a real article)",
+          "long_text = \"\"\"The rapid advancement of artificial intelligence has transformed industries worldwide. From healthcare diagnostics to autonomous vehicles, AI systems are now integral to daily operations. Researchers are constantly pushing the boundaries of what machines can learn and achieve. In the realm of natural language processing, large language models like GPT‑Oss‑20B demonstrate remarkable capabilities in understanding and generating human‑like text. These models are trained on diverse datasets, enabling them to capture nuanced language patterns. However, with great power comes the responsibility to use these tools ethically and responsibly. Developers must consider bias mitigation, privacy concerns, and the potential societal impact of deploying AI at scale. As the technology evolves, interdisciplinary collaboration will be key to harnessing AI for the greater good.\"\"\"",
+          "",
+          "# Tokenize the entire passage",
+          "input_ids = tokenizer(long_text, return_tensors=\"pt\").input_ids[0]",
+          "",
+          "# Define sliding window parameters",
+          "window_size = 1024",
+          "overlap = 256",
+          "",
+          "# Prepare chunks",
+          "chunks = []",
+          "for start in range(0, len(input_ids), window_size - overlap):",
+          "    end = start + window_size",
+          "    chunk = input_ids[start:end]",
+          "    chunks.append(chunk)",
+          "",
+          "# Generate continuation for each chunk",
+          "generated_chunks = []",
+          "for chunk in chunks:",
+          "    chunk = chunk.unsqueeze(0).to(model.device)",
+          "    gen_ids = model.generate(chunk, max_new_tokens=50, do_sample=False)",
+          "    generated_chunks.append(gen_ids[0])",
+          "",
+          "# Concatenate generated tokens",
+          "full_gen_ids = torch.cat(generated_chunks, dim=0)",
+          "",
+          "# Decode the concatenated output",
+          "generated_text = tokenizer.decode(full_gen_ids, skip_special_tokens=True)",
+          "",
+          "print(generated_text[:500])  # Print first 500 characters"
+        ],
+        "max_lines": 35
+      }
+    ],
+    "exercise": null
+  }
+]

@@ -1,0 +1,29 @@
+Thinking...
+>We need to produce JSON matching OutlineJSON schema. The schema not provided but we can infer fields: title, level, objectives, prereqs, setup_steps, steps, data_sources, references, metadata. Steps: each with heading, description, token_estimate. Provide 8-10 sections. Provide token estimates. Provide target_tokens 4500-7500. target_markdown_ratio 0.56. estimated_read_time maybe minutes.
+>
+>We need to ensure JSON is valid. Provide only JSON object. No other text. Let's craft.
+>
+>Title: "Getting Started with GPT-Oss-20B: A Beginner’s Hands-On Guide"
+>
+>Objectives: 5.
+>
+>Prereqs: list of packages: python, pip, torch, transformers, accelerate, huggingface_hub, etc. API keys: Hugging Face token.
+>
+>Setup steps: commands.
+>
+>Steps: 8-10 sections. Provide heading, description, token_estimate.
+>
+>Data_sources: URLs: huggingface docs, gpt-oss-20b repo, etc.
+>
+>References: books, blogs.
+>
+>Metadata: target_tokens 6000 maybe, target_markdown_ratio 0.56, estimated_read_time maybe 45 minutes.
+>
+>Let's create JSON.
+>
+>Check token_estimate: maybe 400-600 tokens each. 8 sections => 3200-4800 tokens. Add some overhead. target 6000 tokens. So each section maybe 600 tokens. Provide token_estimate.
+>
+>Let's produce.
+>
+>
+
