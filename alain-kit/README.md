@@ -9,7 +9,7 @@ Public SDK alias: use `alain-ai-learning-platform/alain-kit-sdk` for imports; it
 ## Architecture
 
 ```
-alain-kit-clean/
+alain-kit/
 ├── core/                    # Core generation logic
 │   ├── outline-generator.ts # Step 1: Generate structured outlines
 │   ├── section-generator.ts # Step 2: Fill sections with content

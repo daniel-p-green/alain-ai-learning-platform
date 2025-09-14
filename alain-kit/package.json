@@ -1,5 +1,5 @@
 {
-  "name": "alain-kit-clean",
+  "name": "alain-kit",
   "version": "1.0.0",
   "description": "Production-ready notebook generation system with quality validation and Colab compatibility",
   "main": "validation/integration.js",
