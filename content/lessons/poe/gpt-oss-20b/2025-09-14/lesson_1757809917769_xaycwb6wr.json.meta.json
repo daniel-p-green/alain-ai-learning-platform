@@ -1,0 +1,18 @@
+{
+  "id": "1757809917769_xaycwb6wr",
+  "model_id": "gpt-oss-20b",
+  "difficulty": "beginner",
+  "created_at": "2025-09-14T00:31:57.770Z",
+  "updated_at": "2025-09-14T00:31:57.770Z",
+  "file_type": "lesson",
+  "format": "json",
+  "checksum": "e4141be912321c41bdd3dd3328ec1e393f8b04b76152fd5f72b25acffced389d",
+  "size_bytes": 574,
+  "tags": [
+    "gpt-oss-20b",
+    "lesson",
+    "json",
+    "poe"
+  ],
+  "provider": "poe"
+}

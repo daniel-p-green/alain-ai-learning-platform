@@ -6,6 +6,8 @@ const ALIASES: Record<ProviderId, Record<string, string>> = {
   poe: {
     'gpt-oss-20b': 'GPT-OSS-20B',
     'gpt-oss-120b': 'GPT-OSS-120B',
+    // Common OpenAI model aliases used on Poe
+    'gpt-4-turbo': 'gpt-4-turbo',
     'gpt-4o': 'GPT-4o',
     'gpt-4o-mini': 'GPT-4o-mini',
     'claude-3.5-sonnet': 'Claude-Sonnet-4',
@@ -31,4 +33,3 @@ export function mapModelForProvider(provider: ProviderId, model: string): string
   const exact = ALIASES[provider][key];
   return exact || model;
 }
-

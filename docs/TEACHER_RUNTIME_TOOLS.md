@@ -7,6 +7,7 @@ This document explains how the teacher service selects and exposes tool/function
 - `TEACHER_PROMPT_PHASE`: Controls which Harmony prompt file is loaded.
   - Examples: `research`, `research.offline`, `design`, `develop`, `validate`, `orchestrator`, `orchestrator.offline`.
   - The service attempts to load `prompts/alain-kit/<phase>.harmony.txt` (or from `PROMPT_ROOT` if set).
+  - Suffix flexibility: `research`, `research.harmony`, and `research.harmony.txt` all resolve to the same file.
 - `TEACHER_ENABLE_TOOLS` (default: enabled): Set to `0` to disable tool exposure regardless of phase/task.
 - `TEACHER_PROVIDER`: `poe` (default) or `openai-compatible`.
 - `TEACHER_ALLOW_120B`: `1` to permit `GPT-OSS-120B`, otherwise auto-downgrades to `GPT-OSS-20B`.

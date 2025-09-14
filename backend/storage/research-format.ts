@@ -29,6 +29,39 @@ export function buildResearchMarkdowns(data: any): Record<string, string> {
     if (Object.keys(files).length === 0) {
       files['overview.md'] = `# Research Summary\n\nNo markdown-specific sections detected. See research-data.json for full structure.`;
     }
+
+    // Also render V2 summary if present
+    const v2 = get(data, ['summary_v2']);
+    if (v2 && typeof v2 === 'object') {
+      const lines: string[] = ['# Model Configuration'];
+      const param = v2?.architecture?.parameter_scale;
+      if (param) lines.push(`- Parameters: ${param}`);
+      const ctx = v2?.architecture?.context_length;
+      if (typeof ctx === 'number') lines.push(`- Context length: ${ctx}`);
+      const quant = Array.isArray(v2?.quantization) ? v2.quantization : [];
+      if (quant.length) lines.push(`- Quantization: ${quant.join(', ')}`);
+      files['configs.md'] = (files['configs.md'] || '') + (lines.join('\n') + '\n');
+
+      if (Array.isArray(v2?.benchmarks) && v2.benchmarks.length) {
+        const b = ['# Benchmarks', '', ...v2.benchmarks.map((x: any) => `- ${x.dataset}: ${x.metric} = ${x.value}`)].join('\n');
+        files['benchmarks.md'] = (files['benchmarks.md'] || '') + b + '\n';
+      }
+
+      const usage: string[] = ['# Usage Examples'];
+      if (v2?.usage_examples?.hf_snippet) {
+        usage.push('## Transformers');
+        usage.push('```python');
+        usage.push(String(v2.usage_examples.hf_snippet));
+        usage.push('```');
+      }
+      if (v2?.usage_examples?.openai_compatible_snippet) {
+        usage.push('## OpenAI-compatible');
+        usage.push('```python');
+        usage.push(String(v2.usage_examples.openai_compatible_snippet));
+        usage.push('```');
+      }
+      files['usage-examples.md'] = usage.join('\n') + '\n';
+    }
   } catch {
     // Safe fallback
   }
@@ -64,4 +97,3 @@ function formatResourceList(items: any[], title: string): string {
 function escapeMd(s: string): string {
   return String(s || '').replace(/\|/g, '\\|');
 }
-

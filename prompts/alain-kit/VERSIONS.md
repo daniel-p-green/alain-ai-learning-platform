@@ -19,25 +19,25 @@ Offline Harmony coverage additions
 - 06 — Harmony Validate (offline)
   - File: validate.offline.harmony.txt
 
-Flattened variants (system-first, single-pass)
-- 07 — Poe Research (flattened)
-  - File: flattened/poe/research.v2025-09-13.txt
+Flattened variants (system-first, single-pass, online)
+- 07 — Poe Research (flattened, online)
+  - File: flattened/poe/research.online.v2025-09-13.txt
   - Usage: Put full file content in System; put model ref/text in User. Avoid developer/tool roles.
-- 08 — API Research (OpenAI-compatible, flattened)
-  - File: flattened/openai-compatible/research.v2025-09-13.txt
+- 08 — API Research (OpenAI-compatible, flattened, online)
+  - File: flattened/openai-compatible/research.online.v2025-09-13.txt
   - Usage: messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: USER }].
-- 09 — Poe Design (flattened)
-  - File: flattened/poe/design.v2025-09-13.txt
-- 10 — API Design (OpenAI-compatible, flattened)
-  - File: flattened/openai-compatible/design.v2025-09-13.txt
-- 11 — Poe Develop (flattened)
+- 09 — Poe Design (flattened, online)
+  - File: flattened/poe/design.online.v2025-09-13.txt
+- 10 — API Design (OpenAI-compatible, flattened, online)
+  - File: flattened/openai-compatible/design.online.v2025-09-13.txt
+- 11 — Poe Develop (flattened, online)
   - File: flattened/poe/develop.v2025-09-13.txt
-- 12 — API Develop (OpenAI-compatible, flattened)
+- 12 — API Develop (OpenAI-compatible, flattened, online)
   - File: flattened/openai-compatible/develop.v2025-09-13.txt
-- 13 — Poe Validate (flattened)
-  - File: flattened/poe/validate.v2025-09-13.txt
-- 14 — API Validate (OpenAI-compatible, flattened)
-  - File: flattened/openai-compatible/validate.v2025-09-13.txt
+- 13 — Poe Validate (flattened, online)
+  - File: flattened/poe/validate.online.v2025-09-13.txt
+- 14 — API Validate (OpenAI-compatible, flattened, online)
+  - File: flattened/openai-compatible/validate.online.v2025-09-13.txt
   - Usage: messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: USER }].
 
 All variants enforce the same contract:

@@ -1,0 +1,18 @@
+{
+  "id": "1757809917552_8g8c2ywsb",
+  "model_id": "custom-content",
+  "difficulty": "beginner",
+  "created_at": "2025-09-14T00:31:57.552Z",
+  "updated_at": "2025-09-14T00:31:57.552Z",
+  "file_type": "lesson",
+  "format": "json",
+  "checksum": "547c2f2c1671d6d2a39cf3efe85651f407c798b03545f532cc95b470a493f263",
+  "size_bytes": 592,
+  "tags": [
+    "custom-content",
+    "lesson",
+    "json",
+    "poe"
+  ],
+  "provider": "poe"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-8d46626eb83e746b9ac1dc89",
+  "object": "chat.completion",
+  "created": 1757807891,
+  "model": "gpt-oss-120b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Thinking...\n>The user gave system prompt: \"You are ChatGPT...\" and developer says nothing. So we just respond normally. No special instructions. The user hasn't asked a question yet. There's no user query. The last message is from developer (empty). So we need to respond? Probably we should wait for user input. But we must produce something. Maybe a greeting. Since no question, we can say hello and ask how can I help.\n\nHello! How can I assist you today?"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 110,
+    "completion_tokens": 102,
+    "total_tokens": 212
+  }
+}

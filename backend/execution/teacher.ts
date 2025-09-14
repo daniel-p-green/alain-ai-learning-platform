@@ -68,7 +68,8 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         try {
           const { system, developer } = loadAlainKitPrompt(phase);
           harmonyMessages = composeMessagesWithFile(system, developer, req.messages, supportsHarmonyRoles);
-        } catch {
+        } catch (e: any) {
+          console.warn(`[teacher] Failed to load Harmony prompt for phase="${phase}": ${e?.message || e}`);
           // Fallback to default formatter if loading fails
           harmonyMessages = formatHarmonyMessages(req.messages, req.task, supportsHarmonyRoles);
         }
@@ -159,7 +160,14 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
           return runOnce(signal);
         });
         let content = extractContent(data);
-        if (req.task === 'lesson_generation' && process.env.TEACHER_JSON_RETRY === '1' && !looksLikeJsonObject(content)) {
+        if (
+          (
+            req.task === 'lesson_generation' ||
+            (phase && typeof phase === 'string' && phase.toLowerCase().includes('research'))
+          ) &&
+          process.env.TEACHER_JSON_RETRY === '1' &&
+          !looksLikeJsonObject(content)
+        ) {
           const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
           content = extractContent(retry);
         }
@@ -202,7 +210,14 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         };
         const data = await withRetries(async (signal) => runOnce(signal));
         let content = extractContent(data);
-        if (req.task === 'lesson_generation' && process.env.TEACHER_JSON_RETRY === '1' && !looksLikeJsonObject(content)) {
+        if (
+          (
+            req.task === 'lesson_generation' ||
+            (phase && typeof phase === 'string' && phase.toLowerCase().includes('research'))
+          ) &&
+          process.env.TEACHER_JSON_RETRY === '1' &&
+          !looksLikeJsonObject(content)
+        ) {
           const retry = await withRetries(async (signal) => runOnce(signal, 'Output only a strict JSON object per the schema. No prose or markdown fences.'));
           content = extractContent(retry);
         }
@@ -262,8 +277,8 @@ Current date: ${new Date().toISOString().split('T')[0]}
 
 Reasoning: high
 
-# Valid channels: analysis, commentary, final. Channel must be included for every message.
-Calls to these tools must go to the commentary channel: 'functions'.`
+Do not expose chain-of-thought. Provide direct, concise answers.
+When asked for structured output, return a single strict JSON object with no extra prose or markdown fences.`
   };
   if (supportsHarmonyRoles) {
     const developerMessage = { role: "developer", content: getDeveloperInstructions(task) } as any;

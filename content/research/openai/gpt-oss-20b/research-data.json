@@ -26,7 +26,7 @@
           "region:us"
         ],
         "downloads": 8458222,
-        "likes": 3489,
+        "likes": 3490,
         "modelId": "openai/gpt-oss-20b",
         "author": "openai",
         "sha": "6cee5e81ee83917806bbde320786a8fb61efebee",
@@ -442,7 +442,7 @@
         "releases_url": "https://api.github.com/repos/openai/openai-cookbook/releases{/id}",
         "deployments_url": "https://api.github.com/repos/openai/openai-cookbook/deployments",
         "created_at": "2022-03-11T02:08:53Z",
-        "updated_at": "2025-09-13T18:20:28Z",
+        "updated_at": "2025-09-13T23:27:45Z",
         "pushed_at": "2025-09-13T11:48:32Z",
         "git_url": "git://github.com/openai/openai-cookbook.git",
         "ssh_url": "org-14957082@github.com:openai/openai-cookbook.git",
@@ -450,8 +450,8 @@
         "svn_url": "https://github.com/openai/openai-cookbook",
         "homepage": "https://cookbook.openai.com",
         "size": 591456,
-        "stargazers_count": 67851,
-        "watchers_count": 67851,
+        "stargazers_count": 67853,
+        "watchers_count": 67853,
         "language": "Jupyter Notebook",
         "has_issues": true,
         "has_projects": false,
@@ -459,7 +459,7 @@
         "has_wiki": false,
         "has_pages": false,
         "has_discussions": false,
-        "forks_count": 11284,
+        "forks_count": 11286,
         "mirror_url": null,
         "archived": false,
         "disabled": false,
@@ -481,9 +481,9 @@
           "openai-api"
         ],
         "visibility": "public",
-        "forks": 11284,
+        "forks": 11286,
         "open_issues": 95,
-        "watchers": 67851,
+        "watchers": 67853,
         "default_branch": "main",
         "temp_clone_token": null,
         "custom_properties": {},
@@ -508,7 +508,7 @@
           "user_view_type": "public",
           "site_admin": false
         },
-        "network_count": 11284,
+        "network_count": 11286,
         "subscribers_count": 969
       }
     },
@@ -583,7 +583,7 @@
         "releases_url": "https://api.github.com/repos/unslothai/unsloth/releases{/id}",
         "deployments_url": "https://api.github.com/repos/unslothai/unsloth/deployments",
         "created_at": "2023-11-29T16:50:09Z",
-        "updated_at": "2025-09-13T18:14:36Z",
+        "updated_at": "2025-09-13T22:42:08Z",
         "pushed_at": "2025-09-13T09:21:07Z",
         "git_url": "git://github.com/unslothai/unsloth.git",
         "ssh_url": "git@github.com:unslothai/unsloth.git",
@@ -591,8 +591,8 @@
         "svn_url": "https://github.com/unslothai/unsloth",
         "homepage": "https://docs.unsloth.ai/",
         "size": 7806,
-        "stargazers_count": 45429,
-        "watchers_count": 45429,
+        "stargazers_count": 45434,
+        "watchers_count": 45434,
         "language": "Python",
         "has_issues": true,
         "has_projects": false,
@@ -640,7 +640,7 @@
         "visibility": "public",
         "forks": 3689,
         "open_issues": 827,
-        "watchers": 45429,
+        "watchers": 45434,
         "default_branch": "main",
         "temp_clone_token": null,
         "custom_properties": {},
@@ -668,62 +668,9 @@
         "network_count": 3689,
         "subscribers_count": 262
       }
-    },
-    "kaggle": {
-      "datasets": [
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b&type=datasets",
-          "query": "gpt-oss-20b",
-          "type": "datasets"
-        },
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20notebook&type=datasets",
-          "query": "gpt-oss-20b notebook",
-          "type": "datasets"
-        },
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20dataset&type=datasets",
-          "query": "gpt-oss-20b dataset",
-          "type": "datasets"
-        }
-      ],
-      "notebooks": [
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b&type=notebooks",
-          "query": "gpt-oss-20b",
-          "type": "notebooks"
-        },
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20notebook&type=notebooks",
-          "query": "gpt-oss-20b notebook",
-          "type": "notebooks"
-        },
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20dataset&type=notebooks",
-          "query": "gpt-oss-20b dataset",
-          "type": "notebooks"
-        }
-      ],
-      "competitions": [
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b&type=competitions",
-          "query": "gpt-oss-20b",
-          "type": "competitions"
-        },
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20notebook&type=competitions",
-          "query": "gpt-oss-20b notebook",
-          "type": "competitions"
-        },
-        {
-          "search_url": "https://www.kaggle.com/search?q=gpt-oss-20b%20dataset&type=competitions",
-          "query": "gpt-oss-20b dataset",
-          "type": "competitions"
-        }
-      ]
     }
   },
-  "collected_at": "2025-09-13T19:45:43.587Z",
+  "collected_at": "2025-09-13T23:53:09.345Z",
   "offline_cache": {
     "enabled": false,
     "files_downloaded": 0,
