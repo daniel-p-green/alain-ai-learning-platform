@@ -30,7 +30,10 @@ ALAIN turns a model card or reference into a guided, runnable lesson with clear 
 
 - Live Demo: <https://alain-ruddy.vercel.app>
 - Try Now: <https://alain-ruddy.vercel.app/generate>
-- Developer Guide: `web/docs/DEVELOPER_GUIDE.md`
+ - Developer Guide: `web/docs/DEVELOPER_GUIDE.md`
+ - ALAIN‑Kit SDK (CLI + examples): `alain-ai-learning-platform/alain-kit-sdk`
+ - One‑command example: `npm run alain:example`
+ - One‑command CLI: `npm run alain:cli -- --model gpt-oss-20b --apiKey $POE_API_KEY`
 - Devpost Write‑Up: `hackathon-notes/DEVPOST-Submission.md`
 - Hackathon: <https://openai.devpost.com>
 
