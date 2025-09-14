@@ -17,6 +17,12 @@ Flattened variants (online):
 13 - Poe Validate (flattened, online) - flattened/poe/validate.online.v2025-09-13.txt
 14 - API Validate (flattened, online) - flattened/openai-compatible/validate.online.v2025-09-13.txt
 
+Outline-first, multi-output helpers (online):
+15 - Poe Outline (flattened, online) - flattened/poe/outline.online.v2025-09-14.txt
+16 - Poe Section (flattened, online) - flattened/poe/section.online.v2025-09-14.txt
+17 - API Outline (flattened, online) - flattened/openai-compatible/outline.online.v2025-09-14.txt
+18 - API Section (flattened, online) - flattened/openai-compatible/section.online.v2025-09-14.txt
+
 Usage notes:
 - Canonical prompts: use the Harmony .harmony.txt files at the top level; loaders read system + developer blocks.
 - Flattened (manual): for Poe/OpenAI-compatible copy/paste, use files under flattened/.
