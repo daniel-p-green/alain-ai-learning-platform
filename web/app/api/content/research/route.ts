@@ -28,13 +28,14 @@ export async function GET(req: NextRequest) {
     if (file) {
       if (!ALLOW.has(file)) return new Response('forbidden', { status: 403 });
       const p = path.join(dir, file);
-      const body = await fs.readFile(p);
-      const ct = file.endsWith('.json') ? 'application/json' : 'text/markdown; charset=utf-8';
-      return new Response(body, { headers: { 'Content-Type': ct, 'Cache-Control': 'no-store' } });
+      const isJson = file.endsWith('.json');
+      // Read as UTF-8 string so Response body matches Web BodyInit typings
+      const text = await fs.readFile(p, 'utf-8');
+      const ct = isJson ? 'application/json' : 'text/markdown; charset=utf-8';
+      return new Response(text, { headers: { 'Content-Type': ct, 'Cache-Control': 'no-store' } });
     }
     return Response.json({ success: true, files });
   } catch (e: any) {
     return Response.json({ success: false, error: e?.message || 'failed' }, { status: 500 });
   }
 }
-

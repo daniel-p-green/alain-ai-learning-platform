@@ -51,7 +51,7 @@ function parseNotebookFromText(content: string, title: string, model: string): a
       `Teacher Model: ${model.toUpperCase()}\n`,
       `Provider: poe\n`,
       `Target Model: ${model}\n`,
-      `Learn more: https://github.com/your-org/alain-ai-learning-platform\n`,
+      `Learn more: https://github.com/daniel-p-green/alain-ai-learning-platform/\n`,
       `-->\n`
     ]
   });
