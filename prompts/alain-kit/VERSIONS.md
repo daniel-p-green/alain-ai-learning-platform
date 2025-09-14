@@ -40,8 +40,19 @@ Flattened variants (system-first, single-pass, online)
   - File: flattened/openai-compatible/validate.online.v2025-09-13.txt
   - Usage: messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: USER }].
 
+Outline-first helpers (multi-output, online)
+- 15 — Poe Outline (flattened, online)
+  - File: flattened/poe/outline.online.v2025-09-14.txt
+- 16 — Poe Section (flattened, online)
+  - File: flattened/poe/section.online.v2025-09-14.txt
+  - Usage: first call Outline to plan; then call Section repeatedly to fill steps (800–1,500 tokens each) until complete.
+ - 17 — API Outline (OpenAI-compatible, flattened, online)
+  - File: flattened/openai-compatible/outline.online.v2025-09-14.txt
+ - 18 — API Section (OpenAI-compatible, flattened, online)
+  - File: flattened/openai-compatible/section.online.v2025-09-14.txt
+
 All variants enforce the same contract:
 - Return ONLY JSON (no markdown fences)
-- Fields: title, description, learning_objectives[], steps[], assessments[]
+- Fields: For single-pass develop: title, description, learning_objectives[], steps[], assessments[]. For outline/section: follow each file’s JSON schema.
 - Parameterized examples only; no secrets; no external calls
 - If validation fails, REPAIR and return valid JSON
