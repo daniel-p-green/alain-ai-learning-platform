@@ -51,7 +51,8 @@ export class SectionGenerator {
   constructor(options: SectionGeneratorOptions = {}) {
     this.baseUrl = options.baseUrl;
   }
-  private readonly TOKEN_LIMIT = 1500;
+  // Tighten per-section token limit to help keep total under ~6000 for 6 sections
+  private readonly TOKEN_LIMIT = 1000;
   private readonly MIN_TOKENS = 800;
 
   /**
@@ -131,9 +132,10 @@ export class SectionGenerator {
     return `You are ALAIN-Teacher filling specific sections of educational notebooks. Generate content for the requested section only.
 
 SECTION GENERATION RULES:
-• Target ${this.MIN_TOKENS}-${this.TOKEN_LIMIT} tokens per section
-• Use beginner-friendly ELI5 language with analogies
-• Include executable code with comments
+• Target ${this.MIN_TOKENS}-${this.TOKEN_LIMIT} tokens per section (hard cap)
+• Use beginner-friendly ELI5 language with analogies, but employ precise technical terms
+• Add one extra explanatory paragraph that defines key terms and explains rationale/trade-offs
+• Include executable code with comments; prefer 1–2 short code cells (<30 lines each)
 • Add callouts (💡 Tip, ⚠️ Warning, 📝 Note)
 • Ensure reproducibility with seeds/versions
 • Balance markdown explanation with hands-on code
