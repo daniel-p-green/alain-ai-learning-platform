@@ -1,10 +1,11 @@
 import { api } from "encore.dev/api";
 import { metrics, systemMetrics } from "../utils/observability";
+import type { SystemMetrics, MetricsSnapshot } from "../utils/observability";
 
 interface MetricsResponse {
   timestamp: string;
-  system: ReturnType<typeof systemMetrics>;
-  metrics: ReturnType<typeof metrics.snapshot>;
+  system: SystemMetrics;
+  metrics: MetricsSnapshot;
 }
 
 export const getMetrics = api<{}, MetricsResponse>(
@@ -17,4 +18,3 @@ export const getMetrics = api<{}, MetricsResponse>(
     };
   }
 );
-
