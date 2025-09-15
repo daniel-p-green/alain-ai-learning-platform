@@ -115,10 +115,28 @@ export function systemMetrics() {
   };
 }
 
-// Export concrete types to avoid using ReturnType<typeof fn> in API layer,
-// which some compilers/tools may not resolve during codegen.
-export type SystemMetrics = ReturnType<typeof systemMetrics>;
-export type MetricsSnapshot = ReturnType<typeof metrics.snapshot>;
+// Export concrete types (avoid ReturnType for wider tool/TS lib compatibility)
+export interface SystemMetrics {
+  pid: number;
+  uptime_s: number;
+  memory: {
+    rss: number;
+    heapTotal: number;
+    heapUsed: number;
+    external?: number;
+  };
+  cpu: { load1: number; load5: number; load15: number };
+  eventLoopDelay_ms: { p50: number; p95: number; p99: number; max: number };
+  node: { version: string; platform: string };
+}
+
+export interface MetricsSnapshot {
+  counters: Record<string, number>;
+  timers: Record<
+    string,
+    { count: number; avg: number; p50: number; p95: number; p99: number; min: number; max: number }
+  >;
+}
 
 export async function timeIt<T>(name: string, fn: () => Promise<T> | T, labels?: Labels): Promise<T> {
   const start = Date.now();
