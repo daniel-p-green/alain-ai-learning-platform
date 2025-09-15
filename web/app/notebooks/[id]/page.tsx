@@ -14,6 +14,7 @@ export default async function NotebookPage({ params, searchParams }: { params: {
   if (!rec) {
     return <div className="mx-auto max-w-3xl p-6">Notebook not found.</div>;
   }
+  const promptRemix = String(searchParams?.remix || '') === '1';
   return (
     <div className="mx-auto max-w-3xl p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -35,7 +36,7 @@ export default async function NotebookPage({ params, searchParams }: { params: {
             <p className="text-xs mt-1"><a className="text-alain-blue underline" href={String(searchParams.commit)} target="_blank">View commit</a></p>
           )}
         </div>
-        <NotebookActions id={rec.meta.id} />
+        <NotebookActions id={rec.meta.id} promptRemix={promptRemix} />
       </div>
       {rec.nb?.metadata && (
         <div className="text-xs text-ink-600">
@@ -47,4 +48,3 @@ export default async function NotebookPage({ params, searchParams }: { params: {
     </div>
   );
 }
-

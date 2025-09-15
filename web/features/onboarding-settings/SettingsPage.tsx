@@ -73,6 +73,20 @@ export default function SettingsPage() {
   }
 
   const tabs = ["Account", "Providers", "Models", "Appearance", "Onboarding & Demo", "Advanced"];
+  const [gh, setGh] = useState<{ hasToken?: boolean } | null>(null);
+  const [ghToken, setGhToken] = useState('');
+  const [ghBusy, setGhBusy] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/settings/github', { cache: 'no-store' });
+        const j = await res.json();
+        if (res.ok) {
+          setGh({ hasToken: !!j?.hasToken });
+        }
+      } catch {}
+    })();
+  }, []);
 
   return (
     <div className="mx-auto max-w-7xl px-6 md:px-8 py-8 bg-alain-bg text-alain-text">
@@ -289,6 +303,38 @@ export default function SettingsPage() {
           )}
           {tab === "Advanced" && (
             <div className="space-y-3">
+              <div className="p-4 rounded-alain-lg border border-alain-stroke/15 bg-alain-card shadow-alain-sm">
+                <div className="font-medium">GitHub Export (server)</div>
+                <p className="text-sm text-alain-text/80 mt-1">Store the GitHub token on the server for PR exports. Admins only. Token is not shown after saving.</p>
+                <div className="mt-3">
+                  <label className="block text-sm text-alain-text/80">GitHub Token</label>
+                  <input type="password" value={ghToken} onChange={(e)=> setGhToken(e.target.value)} placeholder={gh?.hasToken ? '•••••••• saved on server' : ''} className="mt-1 w-full h-10 px-3 rounded-alain-lg border border-alain-stroke/20 bg-white text-alain-text focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40" />
+                  <p className="text-xs text-alain-text/70 mt-1">Leave blank to keep existing. Repo/branch/dirs come from server env.</p>
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <button className="h-9 px-3 rounded-alain-lg bg-alain-blue text-white disabled:opacity-50" disabled={ghBusy} onClick={async ()=>{
+                    setGhBusy(true);
+                    try {
+                      const payload: any = {};
+                      if (ghToken) payload.token = ghToken;
+                      const res = await fetch('/api/admin/settings/github', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                      const j = await res.json();
+                      if (!res.ok) throw new Error(j?.error || `HTTP ${res.status}`);
+                      setToast('Saved GitHub token');
+                      setGhToken('');
+                      await refreshProbe();
+                    } catch (e:any) {
+                      setToast(e?.message || 'Save failed');
+                    } finally {
+                      setGhBusy(false);
+                      setTimeout(()=> setToast(null), 3000);
+                    }
+                  }}>Save token</button>
+                  {gh?.hasToken && (
+                    <span className="text-xs text-alain-text/70">Token present on server</span>
+                  )}
+                </div>
+              </div>
               <div className="p-4 rounded-alain-lg border border-alain-stroke/15 bg-alain-card shadow-alain-sm">
                 <div className="font-medium">Import / Export JSON</div>
                 <div className="mt-2 flex gap-2">

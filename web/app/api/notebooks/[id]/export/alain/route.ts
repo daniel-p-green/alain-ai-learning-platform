@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getNotebook } from "@/lib/notebookStore";
-import { ghEnv, getFileContent, getBranchHeadSha, createBranch, putFile, createPullRequest } from "@/lib/github";
+import { ghEnv, ghEnvAsync, getFileContent, getBranchHeadSha, createBranch, putFile, createPullRequest } from "@/lib/github";
 
 export const runtime = "nodejs";
 
@@ -27,7 +27,10 @@ function toAlainLesson(id: string, nb: any) {
 export async function POST(_: Request, { params }: { params: { id: string } }) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  const { owner, repo, branch, baseDir } = ghEnv();
+  // Prefer dynamic settings; fall back to env
+  let owner: string, repo: string, branch: string, baseDir: string;
+  try { ({ owner, repo, branch, baseDir } = await ghEnvAsync()); }
+  catch { ({ owner, repo, branch, baseDir } = ghEnv()); }
   // Load notebook (memory or GitHub)
   const mem = getNotebook(params.id);
   let nb: any | null = mem?.nb || null;
@@ -38,7 +41,8 @@ export async function POST(_: Request, { params }: { params: { id: string } }) {
     try { nb = JSON.parse(fc.content); } catch { return NextResponse.json({ error: "invalid notebook" }, { status: 422 }); }
   }
   const lesson = toAlainLesson(params.id, nb);
-  const lessonsDir = process.env.LESSONS_DIR || 'alain-lessons';
+  // Lessons dir may be configured via KV as well; keep env fallback for simplicity
+  const lessonsDir = process.env.LESSONS_DIR || (await (async () => { try { const { kvGet } = await import('@/lib/kv'); return (await kvGet<string>('secrets:lessons_dir')) || 'alain-lessons'; } catch { return 'alain-lessons'; } })());
   const ts = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
   const newBranch = `export/alain-${params.id}-${ts}`;
   try {
@@ -52,4 +56,3 @@ export async function POST(_: Request, { params }: { params: { id: string } }) {
   const pr = await createPullRequest(owner, repo, branch, newBranch, `Export ALAIN lesson: ${lesson.title}`, `This PR adds an ALAIN lesson JSON exported from notebook ${params.id}.\n\n- Path: ${path}\n- Author: ${userId}`);
   return NextResponse.json({ ok: true, branch: newBranch, path: put.content.path, prUrl: (pr as any).html_url || (pr as any).url });
 }
-

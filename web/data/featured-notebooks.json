@@ -1,0 +1,33 @@
+[
+  {
+    "id": "gh:openai/openai-cookbook@main:examples/embeddings/Classification_using_embeddings.ipynb",
+    "title": "OpenAI Cookbook: Classification using embeddings",
+    "org": "OpenAI",
+    "tags": ["embeddings", "classification", "tutorial"]
+  },
+  {
+    "id": "gh:openai/openai-cookbook@main:examples/finetuning/Chat_finetuning_data_preparation.ipynb",
+    "title": "OpenAI Cookbook: Chat finetuning data prep",
+    "org": "OpenAI",
+    "tags": ["finetuning", "data", "prep"]
+  },
+  {
+    "id": "gh:anthropics/anthropic-cookbook@main:techniques/tool_use_with_structured_output.ipynb",
+    "title": "Anthropic: Tool use with structured output",
+    "org": "Anthropic",
+    "tags": ["tools", "structured-output"]
+  },
+  {
+    "id": "gh:mlabonne/llm-course@main/chapters/chapter6_prompt_engineering.ipynb",
+    "title": "Hands-On LLMs: Prompt Engineering (Chapter 6)",
+    "org": "Community",
+    "tags": ["prompting", "education"]
+  },
+  {
+    "id": "gh:googlecolab/colabtools@master/notebooks/ai_notebooks/intro_to_colab_ai.ipynb",
+    "title": "Google Colab: Intro to Colab AI",
+    "org": "Google",
+    "tags": ["colab", "beginner"]
+  }
+]
+
