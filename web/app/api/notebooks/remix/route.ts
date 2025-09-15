@@ -12,7 +12,7 @@ type RemixOptions = {
   takeaways?: boolean;
 };
 
-function md(text: string) {
+function md(text: string | string[]) {
   return { cell_type: 'markdown', metadata: {}, source: Array.isArray(text) ? text : [String(text)] } as any;
 }
 
