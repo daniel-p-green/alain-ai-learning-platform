@@ -2,18 +2,22 @@
 
 ## Overview
 
-ALAIN‑Kit is an AI-powered educational notebook generation system that creates high-quality, Colab-compatible Jupyter notebooks. Built on analysis of 575 top-performing notebooks, it ensures consistent quality and compatibility.
+ALAIN‑Kit generates production‑ready, Colab‑compatible Jupyter notebooks via a single, reliable flow:
 
-Public SDK alias: use `alain-ai-learning-platform/alain-kit-sdk` for imports; it re-exports these modules for external consumers.
+1) The model returns small JSON artifacts (OutlineJSON, then StepFillJSON).
+2) ALAIN‑Kit assembles the final `.ipynb` locally (NotebookBuilder).
+3) Quality + Colab validators enforce pinned installs, structure, and fixes.
+
+Never ask the model to emit a full ipynb — assembly is always local. For apps, use `alain-ai-learning-platform/alain-kit-sdk`, which re‑exports the modules and provides a CLI.
 
 ## Architecture
 
 ```
 alain-kit/
 ├── core/                    # Core generation logic
-│   ├── outline-generator.ts # Step 1: Generate structured outlines
-│   ├── section-generator.ts # Step 2: Fill sections with content
-│   └── notebook-builder.ts  # Step 3: Assemble final notebook
+│   ├── outline-generator.ts # Step 1: Generate OutlineJSON (JSON mode)
+│   ├── section-generator.ts # Step 2: Fill sections → StepFillJSON (JSON mode)
+│   └── notebook-builder.ts  # Step 3: Assemble final ipynb locally
 ├── prompts/                 # Optimized prompts (if used)
 │   ├── outline.txt          # Outline generation prompt
 │   └── section.txt          # Section filling prompt
@@ -27,10 +31,10 @@ alain-kit/
 
 ## Key Features
 
-### 1. Outline-First Generation
-- Prevents token limit issues (2k-4k optimal range)
-- Ensures structured content with 6-15 steps
-- Token budgeting for each section
+### 1. Outline‑First Generation (Single Contract)
+- Model only returns OutlineJSON and StepFillJSON (JSON mode on OpenAI‑compatible backends)
+- Local assembly guarantees consistent kernelspec, pinned installs, env detection
+- Default decoding: outline temp 0.30; fill temp 0.45; top_p 0.9; chunk size 1
 
 ### 2. Quality Validation
 - Based on 575 notebook analysis
@@ -47,34 +51,46 @@ alain-kit/
 - Error handling and validation
 - Scalable section-by-section generation
 
-## Usage
+## Usage (SDK)
 
 ```typescript
-import { ALAINKit } from 'alain-kit-sdk';
+import { ALAINKit } from 'alain-kit-sdk'
 
-const alainKit = new ALAINKit();
-const result = await alainKit.generateNotebook({
-  model: 'https://huggingface.co/model-name',
+const kit = new ALAINKit({ baseUrl: process.env.OPENAI_BASE_URL })
+const res = await kit.generateNotebook({
+  modelReference: 'gpt-oss-20b',
+  apiKey: process.env.POE_API_KEY,
   difficulty: 'beginner',
-  includeAssessments: true
-});
+  maxSections: 8
+})
 
-console.log(`Quality Score: ${result.qualityScore}/100`);
-console.log(`Colab Compatible: ${result.colabCompatible}`);
+// res.notebook is a complete ipynb object
+// res.validationReport includes quality + colab status
 ```
 
-## Quality Standards
+Tip for Poe and local OpenAI‑compatible servers
+- When passing a custom base URL (CLI or SDK), use the provider root without `/v1` (e.g., `https://api.poe.com` or `http://localhost:1234`). The SDK appends `/v1/chat/completions` automatically.
 
-- **Structure**: Title, objectives, prerequisites, setup, 6-15 steps, assessments
-- **Content**: 40-70% markdown ratio, ELI5 explanations, executable code
-- **Compatibility**: Works in Google Colab without manual fixes
-- **Token Budget**: 2,000-4,000 tokens (15-30 min reading time)
+## Quality Standards (Enforced)
+
+- Structure: Objectives, Prereqs, Setup, 6–12 Steps, Exercises, Summary, References
+- Content: Target markdown ratio ~0.56 (acceptable 0.45–0.70), split code cells >40 lines
+- Compatibility: Colab checks + fixes (install cell with pinned versions)
+- Token budget: ~900–1100 tokens per step; soft 7.5k / hard 9k total
 
 ## Generated Notebooks Include
 
 - Environment detection (Colab vs local)
-- Secure token handling
-- Memory management
-- Error handling and troubleshooting
+- Pinned installs (package==version) and setup cell
+- Secure token handling (.env guidance)
+- Memory and troubleshooting guidance
 - Interactive assessments
-- Reproducible setup with pinned versions
+- Reproducible configuration (seeds, versions)
+
+## Web Integration
+
+- Server route calls `ALAINKit.generateNotebook(...)` and returns `res.notebook`.
+- Keep API keys server‑side; pass `baseUrl` (provider root) and `apiKey`.
+- Optional: stream progress (outline → N section fill ticks → assembly) via SSE. Complexity is moderate and does not change the core pipeline.
+
+Tip: For Poe/local providers, set JSON mode via `response_format: { type: 'json_object' }` — already handled in generators.
