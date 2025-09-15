@@ -4,6 +4,9 @@ import { poeProvider, openAIProvider, type Provider as WebProvider } from "@/lib
 
 // Simple in-memory rate limiter per user (RPM)
 const BUCKET: Record<string, number[]> = {};
+// Simple per-user concurrency tracker (in-process)
+const ACTIVE: Map<string, number> = new Map();
+const MAX_USER_CONCURRENCY = Number(process.env.EXECUTE_MAX_CONCURRENCY || 2);
 const WINDOW_MS = 60_000;
 const MAX_RPM = Number(process.env.NEXT_PUBLIC_EXECUTE_RPM || 30);
 const GC_ON_EMPTY = true; // drop user bucket if empty after prune
@@ -37,13 +40,32 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400 });
   }
 
+  // Clamp request parameters to safe defaults
+  const clamp = (n: any, lo: number, hi: number) => {
+    const v = Number(n);
+    if (!isFinite(v)) return lo;
+    return Math.min(Math.max(v, lo), hi);
+  };
+  const DEFAULT_MAX_TOKENS = Number(process.env.EXECUTE_DEFAULT_MAX_TOKENS || 400);
+  const ABS_MAX_TOKENS = Number(process.env.EXECUTE_ABS_MAX_TOKENS || 800);
+  body.max_tokens = clamp(body.max_tokens ?? DEFAULT_MAX_TOKENS, 1, ABS_MAX_TOKENS);
+  body.temperature = clamp(body.temperature ?? 0.7, 0, 1);
+  body.top_p = clamp(body.top_p ?? 0.9, 0, 1);
+
   const stream = body.stream !== false; // default to streaming
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE || "http://localhost:4000";
   const streamViaBackend = (process.env.NEXT_PUBLIC_STREAM_VIA || 'web') === 'backend';
 
+  const uid = userId ?? 'demo-user';
+  // Per-user concurrency guard
+  const current = ACTIVE.get(uid) || 0;
+  if (current >= MAX_USER_CONCURRENCY) {
+    return new Response(JSON.stringify({ success: false, error: { code: 'too_many_requests', message: `Too many concurrent requests. Try again shortly.` } }), { status: 429 });
+  }
+  ACTIVE.set(uid, current + 1);
+
   try {
     // Rate limit per user (use a stable placeholder in demo mode)
-    const uid = userId ?? 'demo-user';
     const gate = allow(uid);
     if (!gate.ok) {
       return new Response(JSON.stringify({
@@ -136,6 +158,8 @@ export async function POST(req: NextRequest) {
               const cps = Math.round((totalChars / dur) * 1000);
               console.log(`[SSE] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
               controller.close();
+              // Decrement concurrency on successful close
+              const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
             } catch (error) {
               // One quick retry on initial failure
               try {
@@ -149,6 +173,7 @@ export async function POST(req: NextRequest) {
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.log(`[SSE:retry] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
                 controller.close();
+                const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
               } catch (e2) {
                 const err = {
                   success: false,
@@ -163,6 +188,7 @@ export async function POST(req: NextRequest) {
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.warn(`[SSE:error] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
                 controller.close();
+                const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
               }
             }
           };
@@ -172,6 +198,7 @@ export async function POST(req: NextRequest) {
           req.signal.addEventListener("abort", () => {
             // Optionally emit an abort event
             controller.close();
+            const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
           });
         },
       });
@@ -209,6 +236,12 @@ export async function POST(req: NextRequest) {
       },
       { status: 500 }
     );
+  }
+  finally {
+    // Ensure decrement for non-streaming path and any early returns within try
+    if (!stream) {
+      const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
+    }
   }
 }
 

@@ -4,8 +4,16 @@ import { NextResponse } from "next/server";
 // Public routes (no auth required)
 // Keep home and generate open; protect selected pages like /stream and /tutorial/*
 const isPublicRoute = createRouteMatcher([
+  // Primary pages for public demo
   "/",
   "/generate(.*)",
+  "/notebooks(.*)",
+  "/tutorials(.*)",
+  "/explore(.*)",
+  
+  "/research(.*)",
+  "/lmstudio(.*)",
+  "/health(.*)",
   // Public read-only APIs (discovery, health)
   "/api/health(.*)",
   "/api/providers(.*)",

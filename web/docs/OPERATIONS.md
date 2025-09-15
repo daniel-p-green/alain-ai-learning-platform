@@ -10,7 +10,7 @@
 
 ## Routes
 - Public: /, /generate, /notebooks, /notebooks/[id], /api/notebooks
-- Auth: /notebooks/[id]/remix, /upload, /my/notebooks
+- Auth: /notebooks/[id]/remix, /my/notebooks
 - Admin: /admin, /admin/moderation, /api/admin/**
 
 ## Env Vars (Web)

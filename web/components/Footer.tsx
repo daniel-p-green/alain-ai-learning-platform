@@ -22,27 +22,38 @@ export default function Footer() {
             <ul className="mt-2 space-y-1 text-sm">
               <li><a className="hover:underline" href="/notebooks">Notebooks</a></li>
               <li><a className="hover:underline" href="/generate">Generate</a></li>
-              <li><a className="hover:underline" href="/settings">Settings</a></li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-display font-semibold text-ink-900">Docs</div>
-            <ul className="mt-2 space-y-1 text-sm">
-              <li><a className="hover:underline" href="/blueprint">Blueprint</a></li>
-              <li><a className="hover:underline" href="/phases">Phases</a></li>
             </ul>
           </div>
           <div>
             <div className="font-display font-semibold text-ink-900">Community</div>
             <ul className="mt-2 space-y-1 text-sm">
               <li><a className="hover:underline" href="#">GitHub</a></li>
-              <li><a className="hover:underline" href="#">X</a></li>
+              <li>
+                <a
+                  className="hover:underline"
+                  href="https://x.com/dgrreen"
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                >
+                  X (@dgrreen)
+                </a>
+              </li>
               <li><a className="hover:underline" href="https://www.linkedin.com/in/danielpgreen" target="_blank" rel="noopener noreferrer">Partner with us</a></li>
             </ul>
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-ink-100 text-xs flex items-center justify-between">
-          <div>© {new Date().getFullYear()} ALAIN</div>
+          <div>
+            © {new Date().getFullYear()} ALAIN · Developed by {" "}
+            <a
+              href="https://linkedin.com/in/danielpgreen"
+              target="_blank"
+              rel="noopener noreferrer me"
+              className="hover:underline"
+            >
+              Daniel Green
+            </a>
+          </div>
           <div className="flex gap-3 text-ink-700">
             <a href="#" className="hover:underline">Privacy</a>
             <a href="#" className="hover:underline">Terms</a>

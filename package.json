@@ -16,7 +16,8 @@
     "alain:example": "npm --workspace alain-kit-sdk run example",
     "alain:cli": "npm --workspace alain-kit-sdk run cli",
     "alain:bench:run": "npm --workspace alain-kit-sdk run bench:run",
-    "alain:bench:analyze": "npm --workspace alain-kit-sdk run bench:analyze"
+    "alain:bench:analyze": "npm --workspace alain-kit-sdk run bench:analyze",
+    "docs:structure": "node scripts/generate-file-structure.mjs"
   },
   "workspaces": [
     "backend",

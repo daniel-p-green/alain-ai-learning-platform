@@ -3,7 +3,9 @@
 - Removed temporary shim functions `NavBarShim` and inline `Footer` loader from `web/app/layout.tsx`. Imported `NavBar` and `Footer` directly.
 - Standardized containers to `max-w-7xl px-6 md:px-8` and text tokens `text-ink-900`.
 - Replaced ad-hoc gray classes with tokenized neutrals (`ink` and `paper`) on:
-  - `web/app/blueprint/page.tsx`
+  - Removed legacy routes: `web/app/blueprint/`, `web/app/phases/`, `web/app/hackathon-notes/`, `web/app/upload/`, `web/app/v1/`, `web/app/home/` (home is now `/`)
+  - Footer cleaned: removed links to `/blueprint` and `/phases`; streamlined to Notebooks/Generate
+  - Middleware/redirects updated to drop legacy paths
   - `web/app/settings/page.tsx`
 - Normalized CTAs to use brand accents:
   - Primary: `bg-alain-yellow text-alain-blue` with visible focus ring.

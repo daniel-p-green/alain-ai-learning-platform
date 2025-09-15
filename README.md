@@ -142,6 +142,48 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 
 ---
 
+## Observability (New)
+
+- Health: existing service health endpoints (e.g., `execution/health`) report provider/DB status.
+- Metrics: `GET /execution/metrics` returns JSON with:
+  - uptime, memory, CPU load, event‑loop delay (p50/p95/p99)
+  - in‑process counters and timing summaries for key handlers
+- Logging: structured JSON to stdout with fields: `ts, level, service, component, msg, ...context`
+  - Backend level: set `LOG_LEVEL=debug|info|warn|error` (default `info`)
+  - ALAIN‑Kit level: set `ALAIN_LOG_LEVEL=debug|info|warn|error`
+  - Slow request threshold: `SLOW_THRESHOLD_MS` (default `750` ms)
+
+What’s instrumented now
+- Backend: `POST /execution/execute` and `POST /execution/teacher/execute` are wrapped with timing + error logs; counters emit successes/failures and latencies; process‑wide error handlers capture `unhandledRejection` and `uncaughtException`.
+- ALAIN‑Kit: `OutlineGenerator.generateOutline`, `SectionGenerator.generateSection`, and notebook build emit timing + usage events.
+
+Usage metrics by model and difficulty
+- ALAIN‑Kit counters/timers (library‑local, available via `alain-kit/core/obs`):
+  - Counters:
+    - `alain_outline_generated_total{model,difficulty}`
+    - `alain_section_generated_total{model,difficulty}`
+    - `alain_pipeline_success_total{model,difficulty}`
+    - `alain_pipeline_failures_total{model,difficulty}`
+  - Timers:
+    - `alain_outline_duration_ms{model,difficulty}`
+    - `alain_section_duration_ms{model,difficulty,section}`
+    - `alain_pipeline_duration_ms{model,difficulty}`
+
+How to read ALAIN‑Kit metrics (Node or browser console)
+- Import and snapshot:
+  - Node: `import { metrics as alainMetrics } from './alain-kit/core/obs'; console.log(alainMetrics.snapshot());`
+  - Browser (when bundling ALAIN‑Kit): `window.alainMetrics?.snapshot?.()` if you export it in your app, or add a simple route to dump it.
+
+Backend route metrics
+- Counters (per provider/model):
+  - `execution_requests_total{provider,model}`
+  - `execution_failures_total{provider,model}`
+  - `teacher_execute_requests_total{model}`
+  - `teacher_execute_failures_total{model}`
+- Latency: `execution.execute_latency_ms` and `execution.teacherExecute_latency_ms` in `/execution/metrics` timers section.
+
+---
+
 ## Repository Structure
 
 - `web/`: Next.js app (UI, editors, in‑browser runners)

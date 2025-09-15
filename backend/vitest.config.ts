@@ -5,6 +5,11 @@ const excludeRuntime = !process.env.ENCORE_RUNTIME_LIB;
 export default defineConfig({
   test: {
     setupFiles: ['./vitest.setup.ts'],
+    exclude: [
+      ...(excludeRuntime ? ['tutorials/*.test.ts'] : []),
+    ],
+  },
+  server: {
     deps: {
       // Prevent pre-bundling of Encore so our mocks take effect first
       external: [
@@ -15,8 +20,5 @@ export default defineConfig({
         'encore.dev/storage/sqldb',
       ],
     },
-    exclude: [
-      ...(excludeRuntime ? ['tutorials/*.test.ts'] : []),
-    ],
   },
 });

@@ -13,4 +13,3 @@ describe('useOnboarding helpers', () => {
     expect(__test__.readOnboarding().completed).toBe(false);
   });
 });
-

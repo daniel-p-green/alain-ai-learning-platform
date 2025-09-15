@@ -50,7 +50,7 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
         </div>
       )}
       <div className="flex flex-wrap gap-2">
-        <Button variant="primary" onClick={() => { window.location.href = `/tutorial/${tutorialId}`; }}>Open Tutorial</Button>
+        <Button variant="primary" onClick={() => { window.location.href = `/tutorial/${tutorialId}`; }}>Open Manual</Button>
         <Button
           variant="secondary"
           onClick={async () => {

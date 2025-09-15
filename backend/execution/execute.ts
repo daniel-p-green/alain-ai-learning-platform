@@ -4,6 +4,7 @@ import { validateBackendEnv } from "../config/env";
 import { allowRate } from "../utils/ratelimit";
 import { secret } from "encore.dev/config";
 import { mapModelForProvider } from "./providers/aliases";
+import { withApiLogging, metrics, trackEvent } from "../utils/observability";
 
 const poeApiKey = secret("POE_API_KEY");
 const openaiBaseUrl = secret("OPENAI_BASE_URL");
@@ -38,7 +39,7 @@ interface ExecuteResponse {
 // Executes LLM requests and returns the complete response.
 export const execute = api<ExecuteRequest, ExecuteResponse>(
   { expose: true, method: "POST", path: "/execute" },
-  async (req, ctx) => {
+  withApiLogging('execution.execute', async (req, ctx) => {
     try {
       validateBackendEnv();
       const userId = await requireUserId(ctx);
@@ -48,21 +49,25 @@ export const execute = api<ExecuteRequest, ExecuteResponse>(
       }
       const provider = getProvider(req.provider);
       const content = await withRetries(() => provider.execute(req));
+      metrics.inc('execution_requests_total', 1, { provider: req.provider, model: req.model });
+      trackEvent('execute_success', { provider: req.provider, model: req.model });
       return { success: true, content };
     } catch (error) {
       const errorData = mapProviderError(error);
+      metrics.inc('execution_failures_total', 1, { provider: req.provider, model: req.model });
+      trackEvent('execute_failure', { provider: req.provider, model: req.model, code: errorData.code });
       return {
         success: false,
         error: errorData,
       };
     }
-  }
+  })
 );
 
 // Teacher model router for lesson generation using GPT-OSS models (no auth required for internal use)
 export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
   { expose: true, method: "POST", path: "/teacher/execute" },
-  async (req, ctx) => {
+  withApiLogging('execution.teacherExecute', async (req, ctx) => {
     try {
       // Force Poe provider and GPT-OSS models for teacher functionality
       const teacherReq = { ...req, provider: "poe" as const };
@@ -89,15 +94,19 @@ export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
 
       const provider = getProvider(teacherReq.provider);
       const content = await withRetries(() => provider.execute(teacherReq));
+      metrics.inc('teacher_execute_requests_total', 1, { model: teacherReq.model });
+      trackEvent('teacher_execute_success', { model: teacherReq.model });
       return { success: true, content };
     } catch (error) {
       const errorData = mapProviderError(error);
+      metrics.inc('teacher_execute_failures_total', 1, { model: req.model });
+      trackEvent('teacher_execute_failure', { model: req.model, code: errorData.code });
       return {
         success: false,
         error: errorData
       };
     }
-  }
+  })
 );
 
 interface Provider {

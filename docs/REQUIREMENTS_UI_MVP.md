@@ -4,7 +4,7 @@ Status: Draft (2025‑09‑13)
 Scope: Web app P0 only. Objective: ship a polished demo path without regressions.
 
 ## User Stories (P0)
-- As a visitor, I can open the new Home at `/home` and navigate to Generate/Tutorials clearly.
+- As a visitor, I can open the Home at `/` and navigate to Generate/Tutorials clearly.
 - As a user, I can paste a Hugging Face model link on Generate and see a preview within ~12s, then export a `.ipynb` to Colab.
 - If local models are detected, Generate defaults to Local; otherwise defaults to Hugging Face.
 - I am never forced to choose advanced toggles (no fallback checkbox); research mode is Standard/Thorough only.
@@ -14,9 +14,8 @@ Scope: Web app P0 only. Objective: ship a polished demo path without regressions
 ## Acceptance Criteria
 
 ### New Shell & Navigation
-- A new app shell exists under `web/app/(app)/layout.tsx` with Sidebar (Generate, Tutorials, Settings) and TopBar.
-- Feature flag `NEXT_PUBLIC_NEW_HOME=1` reveals a link to `/home`; otherwise hidden.
-- Feature flag `NEXT_PUBLIC_NEW_SHELL=1` routes `/generate` to the new shell; turning it off restores current route.
+- App shell exists under `web/app/layout.tsx`.
+- No feature flags for Home; `/` is the canonical landing page.
 
 ### Generate (HF/Local/Text)
 - Tabs: Hugging Face | Local | Text.
