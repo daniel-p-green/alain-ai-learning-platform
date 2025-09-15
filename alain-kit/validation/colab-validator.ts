@@ -19,6 +19,12 @@ export interface ColabValidationResult {
   fixedNotebook?: any;
 }
 
+type ModelReviewConfig = {
+  model: string;
+  baseUrl: string;
+  apiKey: string;
+};
+
 export class ColabValidator {
   private readonly ERROR_PATTERNS = [
     {
@@ -26,10 +32,40 @@ export class ColabValidator {
       type: 'subprocess_pip',
       severity: 'critical' as const,
       description: 'subprocess pip install fails in Colab',
-      fix: (source: string) => source.replace(
-        /subprocess\.check_call\(\[sys\.executable, "-m", "pip", "install".*?\]\)/gs,
-        'if IN_COLAB:\n    !pip install -q transformers torch\nelse:\n    subprocess.check_call([sys.executable, "-m", "pip", "install", "transformers", "torch"])'
-      )
+      fix: (source: string) => {
+        const pipCall = /(^\s*)subprocess\.check_call\(\[sys\.executable,\s*["']-m["'],\s*["']pip["'],\s*["']install["'](.*?)\]\)/gms;
+        return source.replace(pipCall, (_match, indent: string, tail: string) => {
+          const argsTail = tail || '';
+          const cmdList = `[sys.executable, "-m", "pip", "install"${argsTail}]`;
+          const indent1 = `${indent}    `;
+          const indent2 = `${indent1}    `;
+          const indent3 = `${indent2}    `;
+          return [
+            `${indent}cmd = ${cmdList}`,
+            `${indent}try:`,
+            `${indent1}subprocess.check_call(cmd)`,
+            `${indent}except Exception as exc:`,
+            `${indent1}if IN_COLAB:`,
+            `${indent2}packages = [arg for arg in cmd[4:] if isinstance(arg, str)]`,
+            `${indent2}if packages:`,
+            `${indent3}try:`,
+            `${indent3}    import IPython`,
+            `${indent3}    ip = IPython.get_ipython()`,
+            `${indent3}    if ip is not None:`,
+            `${indent3}        ip.run_line_magic('pip', 'install ' + ' '.join(packages))`,
+            `${indent3}    else:`,
+            `${indent3}        import subprocess as _subprocess`,
+            `${indent3}        _subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + packages)`,
+            `${indent3}except Exception as colab_exc:`,
+            `${indent3}    print('⚠️ Colab pip fallback failed:', colab_exc)`,
+            `${indent3}    raise`,
+            `${indent2}else:`,
+            `${indent3}print('No packages specified for pip install; skipping fallback')`,
+            `${indent1}else:`,
+            `${indent2}raise`
+          ].join('\n');
+        });
+      }
     },
     {
       pattern: /os\.environ\["HF_TOKEN"\]\s*=\s*"YOUR_HF_TOKEN"/,
@@ -57,20 +93,40 @@ else:
     }
   ];
 
+  private readonly reviewConfig: ModelReviewConfig | null;
+
+  constructor() {
+    const model = process.env.ALAIN_COLAB_MODEL;
+    const apiKey = process.env.POE_API_KEY || process.env.OPENAI_API_KEY || '';
+    const base = (process.env.ALAIN_COLAB_BASE || process.env.OPENAI_BASE_URL || 'https://api.poe.com/v1').replace(/\/$/, '');
+    this.reviewConfig = model && apiKey ? { model, apiKey, baseUrl: base } : null;
+  }
+
   /**
    * Validate notebook for Colab compatibility
    */
-  validateNotebook(notebookPath: string): ColabValidationResult {
+  async validateNotebook(notebookPath: string): Promise<ColabValidationResult> {
     const notebook = require('fs').readFileSync(notebookPath, 'utf8');
     const notebookData = JSON.parse(notebook);
     
     const issues = this.detectIssues(notebookData);
-    const isCompatible = !issues.some(issue => issue.severity === 'critical');
-    
+    const hasCritical = issues.some(issue => issue.severity === 'critical');
+
+    if (!hasCritical) {
+      return {
+        isCompatible: true,
+        issues,
+        fixedNotebook: null
+      };
+    }
+
+    const fixedNotebook = await this.applyFixes(notebookData, issues);
+    const postIssues = this.detectIssues(fixedNotebook);
+    const compatibleAfterFix = postIssues.length === 0;
     return {
-      isCompatible,
-      issues,
-      fixedNotebook: isCompatible ? null : this.applyFixes(notebookData, issues)
+      isCompatible: compatibleAfterFix,
+      issues: compatibleAfterFix ? [] : postIssues,
+      fixedNotebook
     };
   }
 
@@ -82,15 +138,19 @@ else:
         const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source || '';
         
         this.ERROR_PATTERNS.forEach(pattern => {
-          if (pattern.pattern.test(source)) {
-            issues.push({
-              type: pattern.type,
-              severity: pattern.severity,
-              description: pattern.description,
-              cellIndex: index,
-              autoFixable: true
-            });
+          if (!pattern.pattern.test(source)) { return; }
+          if (pattern.type === 'subprocess_pip') {
+            const normalized = source.replace(/\r?\n/g, '\n');
+            const hasGuard = /if\s+IN_COLAB[\s\S]+?run_line_magic\('pip'/.test(normalized) || /if\s+IN_COLAB[\s\S]+?_subprocess\.check_call/.test(normalized);
+            if (hasGuard) { return; }
           }
+          issues.push({
+            type: pattern.type,
+            severity: pattern.severity,
+            description: pattern.description,
+            cellIndex: index,
+            autoFixable: true
+          });
         });
       }
     });
@@ -98,7 +158,7 @@ else:
     return issues;
   }
 
-  private applyFixes(notebook: any, issues: ColabIssue[]): any {
+  private async applyFixes(notebook: any, issues: ColabIssue[]): Promise<any> {
     const fixedNotebook = JSON.parse(JSON.stringify(notebook));
     
     // Add environment detection cell at beginning
@@ -115,22 +175,77 @@ else:
     fixedNotebook.cells.unshift(envCell);
     
     // Apply fixes to problematic cells
-    issues.forEach(issue => {
+    for (const issue of issues) {
       if (issue.autoFixable && issue.cellIndex !== undefined) {
         const cell = fixedNotebook.cells[issue.cellIndex + 1]; // +1 due to inserted env cell
         if (cell && cell.cell_type === 'code') {
           let source = Array.isArray(cell.source) ? cell.source.join('') : cell.source || '';
-          
           const pattern = this.ERROR_PATTERNS.find(p => p.type === issue.type);
           if (pattern?.fix) {
             source = pattern.fix(source);
-            cell.source = source.split('\n').map(line => line + '\n');
           }
+          if (this.reviewConfig) {
+            const reviewed = await this.requestModelReview(source, issue.type);
+            if (reviewed) {
+              source = reviewed;
+            }
+          }
+          cell.source = this.toNotebookSource(source);
         }
       }
-    });
+    }
     
     return fixedNotebook;
+  }
+
+  private toNotebookSource(text: string): string[] {
+    const normalized = text.replace(/\r?\n/g, '\n');
+    const lines = normalized.split('\n');
+    return lines.map((line, idx) => idx === lines.length - 1 ? line : line + '\n');
+  }
+
+  private async requestModelReview(source: string, issueType: string): Promise<string | null> {
+    if (!this.reviewConfig) return null;
+    const { model, baseUrl, apiKey } = this.reviewConfig;
+    try {
+      const body: any = {
+        model,
+        messages: [
+          {
+            role: 'system',
+            content: 'You rewrite Python notebook cells so they run cleanly in Google Colab. Respond ONLY with JSON: {"fixed": "<rewritten code>"}. Preserve code fences where present. Do not add explanations.'
+          },
+          {
+            role: 'user',
+            content: `Issue type: ${issueType}\n---\n${source}`
+          }
+        ],
+        temperature: 0.1,
+        response_format: { type: 'json_object' as const }
+      };
+      const endpoint = baseUrl.endsWith('/v1') ? baseUrl : `${baseUrl}/v1`;
+      const resp = await fetch(`${endpoint}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      const content = data?.choices?.[0]?.message?.content;
+      if (!content) return null;
+      try {
+        const parsed = JSON.parse(content);
+        if (parsed && typeof parsed.fixed === 'string') {
+          return parsed.fixed.trimEnd();
+        }
+      } catch {}
+      return null;
+    } catch {
+      return null;
+    }
   }
 
   /**
