@@ -102,7 +102,7 @@ export const generateLesson = api(
         ],
         task: "lesson_generation",
         provider: selectedProvider,
-        max_tokens: Math.min(TEACHER_MAX_TOKENS, 3000),
+        max_tokens: TEACHER_MAX_TOKENS,
         temperature: 0.2,
       });
 
@@ -294,7 +294,7 @@ export const generateLocalLesson = api<{
           messages: [ { role: "user", content: lessonPrompt } ],
           task: "lesson_generation",
           provider: selectedProvider,
-          max_tokens: Math.min(TEACHER_MAX_TOKENS, 3000),
+          max_tokens: TEACHER_MAX_TOKENS,
           temperature: 0.2,
         });
         if (!teacherResponse.success || !teacherResponse.content) {
@@ -378,7 +378,7 @@ const inflight = new Map<string, Promise<LessonGenerationResponse>>();
 // Simple per-user in-process concurrency tracker for generation
 const userConcurrency: Map<string, number> = new Map();
 // Hard ceiling for teacher response tokens
-const TEACHER_MAX_TOKENS = Number(process.env.TEACHER_MAX_TOKENS || 2048);
+const TEACHER_MAX_TOKENS = Number(process.env.TEACHER_MAX_TOKENS || 4096);
 
 // Minimal retry wrapper to smooth over transient hiccups
 async function teacherGenerateWithRetry(args: Parameters<typeof teacherGenerate>[0], maxAttempts = 2) {
@@ -593,7 +593,7 @@ async function attemptRepairJSON(
       task: 'lesson_generation',
       provider: provider as any,
       temperature: 0.0,
-      max_tokens: Math.min(TEACHER_MAX_TOKENS, 3000),
+      max_tokens: TEACHER_MAX_TOKENS,
     });
     if (!resp.success || !resp.content) return null;
     // Return raw content; caller will parse and validate.
