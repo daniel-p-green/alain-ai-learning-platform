@@ -11,8 +11,9 @@ interface TestConfig {
 }
 
 const TEST_CONFIGS: TestConfig[] = [
-  { name: 'Ollama', type: 'local', model: 'gpt-oss-20b', baseUrl: 'http://localhost:11434/v1' },
-  { name: 'LM Studio', type: 'local', model: 'gpt-oss-20b', baseUrl: 'http://localhost:1234/v1' },
+  // baseUrl should be provider root (no /v1); SDK appends /v1/chat/completions
+  { name: 'Ollama', type: 'local', model: 'gpt-oss-20b', baseUrl: 'http://localhost:11434' },
+  { name: 'LM Studio', type: 'local', model: 'gpt-oss-20b', baseUrl: 'http://localhost:1234' },
   { name: 'Poe GPT‑OSS‑20B', type: 'poe', model: 'gpt-oss-20b', apiKey: process.env.POE_API_KEY || '' },
   { name: 'Poe GPT‑OSS‑120B', type: 'poe', model: 'gpt-oss-120b', apiKey: process.env.POE_API_KEY || '' }
 ];

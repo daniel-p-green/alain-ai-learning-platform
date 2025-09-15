@@ -4,8 +4,9 @@ import path from 'path';
 
 interface Target { name: string; type: 'local'|'poe'; model: string; baseUrl?: string; apiKey?: string; }
 
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || 'http://localhost:11434/v1';
-const LMSTUDIO_BASE = process.env.LMSTUDIO_BASE_URL || 'http://localhost:1234/v1';
+// Use provider root (no /v1); SDK appends /v1/chat/completions
+const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+const LMSTUDIO_BASE = process.env.LMSTUDIO_BASE_URL || 'http://localhost:1234';
 const POE_KEY = process.env.POE_API_KEY || '';
 
 const TARGETS: Target[] = [
@@ -72,4 +73,3 @@ async function runOne(t: Target, outRoot: string) {
   }
   console.log(`\n📦 Output written under: ${outRoot}`);
 })();
-

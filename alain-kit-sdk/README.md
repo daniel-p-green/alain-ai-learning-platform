@@ -22,6 +22,9 @@ const res = await kit.generateNotebook({
 console.log('Quality:', res.qualityScore, 'Colab:', res.colabCompatible ? '✅' : '⚠️');
 ```
 
+Provider baseUrl tip
+- When passing a custom base URL to the SDK or CLI, use the provider root without `/v1` (e.g., `https://api.poe.com`, `http://localhost:1234`). The SDK appends `/v1/chat/completions` automatically.
+
 Run the example:
 
 ```bash
@@ -36,4 +39,3 @@ npx tsx examples/usage-example.ts
 - `OutlineGenerator`, `SectionGenerator`, `NotebookBuilder`
 
 The SDK aligns with the orchestration guidance in `prompts/alain-kit/util/gpt-oss_orchestration_notes.md`.
-

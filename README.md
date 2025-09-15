@@ -34,6 +34,7 @@ ALAIN turns a model card or reference into a guided, runnable lesson with clear 
  - ALAIN‑Kit SDK (CLI + examples): `alain-ai-learning-platform/alain-kit-sdk`
  - One‑command example: `npm run alain:example`
  - One‑command CLI: `npm run alain:cli -- --model gpt-oss-20b --apiKey $POE_API_KEY`
+   - Tip: when using Poe, pass `--baseUrl https://api.poe.com` (no trailing `/v1`). The SDK appends `/v1/chat/completions` automatically.
 - Devpost Write‑Up: `hackathon-notes/DEVPOST-Submission.md`
 - Hackathon: <https://openai.devpost.com>
 
@@ -102,6 +103,7 @@ Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
 - Web SSE (default): `web/app/api/execute/route.ts` streams tokens directly from providers to the browser. Set `NEXT_PUBLIC_STREAM_VIA=web`.
 - Backend proxy SSE: proxy through Encore at `POST /execute/stream` if enabled. Set `NEXT_PUBLIC_STREAM_VIA=backend` and `NEXT_PUBLIC_BACKEND_BASE`.
 - Note: Encore TS streaming is currently disabled in `backend/execution/stream.ts`. If backend SSE is unavailable, keep `NEXT_PUBLIC_STREAM_VIA=web`.
+  - For MVP, backend SSE is intentionally disabled; use the web SSE path for streaming.
 
 ### Content Layout
 - Auto‑saves and exports live under `content/` (see `content/README.md`).
@@ -199,7 +201,7 @@ MIT License — see `LICENSE` for full text.
   - `TUTORIALS_INGEST=1` — ingest generated lessons into the tutorials DB (steps + assessments).
 
 - Flags (web)
-  - `NEXT_PUBLIC_BACKEND_URL` — base URL for backend API.
+  - `NEXT_PUBLIC_BACKEND_BASE` — base URL for backend API.
   - `NEXT_PUBLIC_GITHUB_REPO` / `NEXT_PUBLIC_GITHUB_BRANCH` — enables “Open in Colab” links.
   - `NEXT_PUBLIC_ENABLE_LEGACY_STORE=1` — opt‑in legacy `/api/notebooks` (otherwise redirects to catalog).
 
