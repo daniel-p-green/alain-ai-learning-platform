@@ -400,7 +400,7 @@ async function teacherGenerateWithRetry(args: Parameters<typeof teacherGenerate>
 // Extract model information from Hugging Face URL
 export async function extractHFModelInfo(hfUrl: string) {
   // Strict HF parsing and host allowlisting
-  let ref: ReturnType<typeof parseHfUrl>;
+  let ref: import('../utils/hf').HfModelRef;
   try {
     ref = parseHfUrl(hfUrl);
   } catch {
