@@ -1,0 +1,72 @@
+{
+  "title": "TinyLlama‑1.1B‑Chat (GGUF) – A Beginner’s Guide",
+  "description": "Learn how to use TinyLlama-1.1B-Chat-v1.0-GGUF, a compact language model perfect for beginners.",
+  "learning_objectives": [
+    "Understand what TinyLlama and GGUF format are",
+    "Learn how to download and set up TinyLlama",
+    "Run your first chat with TinyLlama",
+    "Understand the basics of model parameters"
+  ],
+  "steps": [
+    {
+      "title": "TinyLlama‑1.1B‑Chat (GGUF) – A Beginner’s Guide",
+      "content": "*Learn how to download, load, and chat with a tiny, fast‑running language model.* ---",
+      "code_template": "# TinyLlama‑1.1B‑Chat (GGUF) – A Beginner’s Guide\nprint(\"Step: TinyLlama‑1.1B‑Chat (GGUF) – A Beginner’s Guide\")"
+    },
+    {
+      "title": "1. What You’ll Learn",
+      "content": "- **What GGUF is** – a super‑compressed model format that runs fast on a laptop. - **How to set up a Python environment** – install the right libraries and a Hugging Face token. - **How to download TinyLlama from Hugging Face** – using the `huggingface_hub` API. - **How to load the model in PyTorch** – with `transformers` and `accelerate`. - **How to generate text** – from a simple prompt to a full chat loop. ---",
+      "code_template": "# 1. What You’ll Learn\nprint(\"Step: 1. What You’ll Learn\")"
+    },
+    {
+      "title": "2. Learning Objectives",
+      "content": "By the end of this tutorial you will be able to: 1. **Explain** what the GGUF format is and why it’s useful for small‑scale inference. 2. **Set up** a virtual environment, install the required packages, and configure a `.env` file. 3. **Download** the TinyLlama‑1.1B‑Chat model from Hugging Face using the `huggingface_hub` library. 4. **Run** a simple chat loop that sends a prompt to the model and prints the response. ---",
+      "code_template": "# 2. Learning Objectives\nprint(\"Step: 2. Learning Objectives\")"
+    },
+    {
+      "title": "3. Step‑by‑Step Lessons",
+      "content": "> **Analogy** – Think of Hugging Face as a giant library. > The *model* is a book, the *tokenizer* is a translator that turns words into numbers, and *GGUF* is a compressed, lightweight version of that book that fits in your backpack. ### Lesson 1 – Create the Project Folder & Virtual Environment",
+      "code_template": "# 3. Step‑by‑Step Lessons\nprint(\"Step: 3. Step‑by‑Step Lessons\")"
+    },
+    {
+      "title": "1️⃣ Make a folder for the tutorial",
+      "content": "mkdir tinyllama_tutorial cd tinyllama_tutorial",
+      "code_template": "# 1️⃣ Make a folder for the tutorial\nprint(\"Step: 1️⃣ Make a folder for the tutorial\")"
+    }
+  ],
+  "assessments": [
+    {
+      "question": ".** What file format does TinyLlama‑1.1B‑Chat use in this tutorial?",
+      "options": [
+        "`.pt`",
+        "`.bin`",
+        "`.gguf`",
+        "`"
+      ],
+      "correct_index": 0,
+      "explanation": "This is the correct answer based on the lesson content."
+    },
+    {
+      "question": ".** Which Python library is responsible for loading the TinyLlama model and tokenizer?",
+      "options": [
+        "TensorFlow",
+        "PyTorch",
+        "JAX",
+        "H"
+      ],
+      "correct_index": 0,
+      "explanation": "This is the correct answer based on the lesson content."
+    },
+    {
+      "question": ".** Which environment variable must be set to download the model from Hugging Face?",
+      "options": [
+        "`API_KEY`",
+        "`HF_TOKEN`",
+        "`MODEL_PATH`",
+        "`"
+      ],
+      "correct_index": 0,
+      "explanation": "This is the correct answer based on the lesson content."
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "title": "TinyLlama GGUF: Your First Small Language Model",
+  "description": "Learn how to use TinyLlama, a tiny but powerful language model in GGUF format. Perfect for beginners who want to run AI on their own computer!",
+  "learning_objectives": [
+    "Understand what TinyLlama and GGUF format are",
+    "Learn how to download and set up TinyLlama",
+    "Run your first chat with TinyLlama",
+    "Understand the basics of model parameters"
+  ],
+  "steps": [
+    {
+      "title": "What is TinyLlama GGUF?",
+      "content": "TinyLlama is like having a mini AI assistant that can run on your laptop! GGUF is a special file format that makes the model smaller and faster - think of it like compressing a huge movie file so it fits on your phone. This model has 1.1 billion parameters (that's like 1.1 billion tiny brain connections) but only takes about 1GB of space.",
+      "code_template": "# Let's check if we have the requirements\nimport os\nprint('Python version:', os.sys.version)\nprint('Ready to download TinyLlama!')"
+    },
+    {
+      "title": "Installing Requirements",
+      "content": "Before we can use TinyLlama, we need to install some helper tools. Think of these like apps you need on your phone before you can use other apps. We'll use llama-cpp-python which is like a translator that helps Python talk to our AI model.",
+      "code_template": "# Install the required packages\n!pip install llama-cpp-python requests\nprint('✅ Installation complete!')"
+    },
+    {
+      "title": "Downloading TinyLlama",
+      "content": "Now we'll download the actual AI model. It's like downloading a smart app that can chat with you. The file will be about 1GB, so it might take a few minutes depending on your internet speed.",
+      "code_template": "import requests\nfrom pathlib import Path\n\n# Download TinyLlama GGUF model\nurl = 'https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf'\nfilename = 'tinyllama.gguf'\n\nif not Path(filename).exists():\n    print('Downloading TinyLlama...')\n    response = requests.get(url)\n    with open(filename, 'wb') as f:\n        f.write(response.content)\n    print('✅ Download complete!')\nelse:\n    print('✅ TinyLlama already downloaded!')"
+    },
+    {
+      "title": "Your First Chat with TinyLlama",
+      "content": "Time for the fun part! We'll load our AI model and have a conversation. It's like waking up your AI assistant and asking it questions. The model will generate responses based on what it learned during training.",
+      "code_template": "from llama_cpp import Llama\n\n# Load the model\nllm = Llama(model_path='tinyllama.gguf', n_ctx=2048)\n\n# Have a conversation\nprompt = 'Hello! Can you tell me a joke?'\nresponse = llm(prompt, max_tokens=100, temperature=0.7)\n\nprint('You:', prompt)\nprint('TinyLlama:', response['choices'][0]['text'])"
+    }
+  ],
+  "assessments": [
+    {
+      "question": "What does GGUF format do for AI models?",
+      "options": [
+        "Makes models smaller and faster to load",
+        "Makes models bigger and more accurate",
+        "Changes the model's personality",
+        "Converts text to images"
+      ],
+      "correct_index": 0,
+      "explanation": "GGUF format compresses AI models to make them smaller and faster to load, just like how ZIP files make regular files smaller. This lets you run powerful AI models on regular computers instead of needing expensive servers."
+    },
+    {
+      "question": "How many parameters does TinyLlama have?",
+      "options": [
+        "1.1 million parameters",
+        "1.1 billion parameters",
+        "1.1 trillion parameters",
+        "1.1 thousand parameters"
+      ],
+      "correct_index": 1,
+      "explanation": "TinyLlama has 1.1 billion parameters. Think of parameters like brain connections - more connections usually mean smarter responses, but TinyLlama proves that even 'small' models with 1.1 billion connections can be very useful!"
+    },
+    {
+      "question": "What is llama-cpp-python used for?",
+      "options": [
+        "Creating new AI models from scratch",
+        "Converting text to speech",
+        "Helping Python communicate with GGUF models",
+        "Training models on your data"
+      ],
+      "correct_index": 2,
+      "explanation": "llama-cpp-python is like a translator that helps Python programs talk to AI models in GGUF format. Without it, Python wouldn't know how to load and use these special model files."
+    },
+    {
+      "question": "What happens when you set temperature=0.7 in the model?",
+      "options": [
+        "The model gets physically warmer",
+        "The model responds more creatively and randomly",
+        "The model responds more predictably and safely",
+        "The model runs 70% faster"
+      ],
+      "correct_index": 1,
+      "explanation": "Temperature controls creativity! Higher temperature (like 0.7) makes the AI more creative and unpredictable, like a creative writer. Lower temperature (like 0.1) makes it more focused and predictable, like a careful scientist."
+    }
+  ]
+}

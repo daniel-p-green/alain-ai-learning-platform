@@ -29,7 +29,7 @@ describe('harmony helpers', () => {
   });
 
   it('parses real research.harmony.txt with non-empty sections', () => {
-    const file = path.join(process.cwd(), '../prompts/alain-kit/research.harmony.txt');
+    const file = path.resolve(__dirname, '../../prompts/alain-kit/research.harmony.txt');
     const raw = fs.readFileSync(file, 'utf8');
     const { system, developer } = parseHarmonyPrompt(raw);
     expect(system.length).toBeGreaterThan(0);
@@ -37,7 +37,7 @@ describe('harmony helpers', () => {
   });
 
   it('parses real research.offline.harmony.txt with non-empty sections', () => {
-    const file = path.join(process.cwd(), '../prompts/alain-kit/research.offline.harmony.txt');
+    const file = path.resolve(__dirname, '../../prompts/alain-kit/research.offline.harmony.txt');
     const raw = fs.readFileSync(file, 'utf8');
     const { system, developer } = parseHarmonyPrompt(raw);
     expect(system.length).toBeGreaterThan(0);
@@ -45,7 +45,7 @@ describe('harmony helpers', () => {
   });
   
   it('parses real design.harmony.txt with non-empty sections', () => {
-    const file = path.join(process.cwd(), '../prompts/alain-kit/design.harmony.txt');
+    const file = path.resolve(__dirname, '../../prompts/alain-kit/design.harmony.txt');
     const raw = fs.readFileSync(file, 'utf8');
     const { system, developer } = parseHarmonyPrompt(raw);
     expect(system.length).toBeGreaterThan(0);
@@ -53,7 +53,7 @@ describe('harmony helpers', () => {
   });
 
   it('parses real validate.harmony.txt with non-empty sections', () => {
-    const file = path.join(process.cwd(), '../prompts/alain-kit/validate.harmony.txt');
+    const file = path.resolve(__dirname, '../../prompts/alain-kit/validate.harmony.txt');
     const raw = fs.readFileSync(file, 'utf8');
     const { system, developer } = parseHarmonyPrompt(raw);
     expect(system.length).toBeGreaterThan(0);

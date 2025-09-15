@@ -1,4 +1,5 @@
 import { extractJsonLoose } from './json-utils';
+import { createLogger, timeIt, trackEvent, metrics } from './obs';
 
 /**
  * ALAIN-Kit Outline Generator
@@ -70,6 +71,7 @@ interface OutlineGenerationOptions {
 
 export class OutlineGenerator {
   private baseUrl?: string;
+  private log = createLogger('OutlineGenerator');
 
   constructor(options: OutlineGeneratorOptions = {}) {
     this.baseUrl = options.baseUrl;
@@ -82,6 +84,9 @@ export class OutlineGenerator {
    * Generate structured outline for a given model/topic
    */
   async generateOutline(options: OutlineGenerationOptions): Promise<NotebookOutline> {
+    const op = 'generateOutline';
+    const started = Date.now();
+    return await timeIt(`ALAINKit.${op}`, async () => {
     // Validate inputs
     if (!options.model) {
       throw new Error('Model is required');
@@ -93,16 +98,22 @@ export class OutlineGenerator {
     
     // Use this.baseUrl for local model inference if provided
     const endpoint = this.baseUrl || 'https://api.poe.com';
+    // Allow callers to provide a subject/title and optional context (e.g., remix headings) via customPrompt
+    const subject = (customPrompt as any)?.title || model;
+    const context: string | undefined = (customPrompt as any)?.context;
     
-    const prompt = this.buildOutlinePrompt(model, difficulty);
+    const prompt = this.buildOutlinePrompt(subject, difficulty, context);
     
-    const body = {
+    const body: any = {
       model,
       messages: [{ role: 'user', content: prompt }],
-      temperature: customPrompt?.temperature || 0.1,
-      max_tokens: customPrompt?.maxTokens || 2000,
-      response_format: { type: 'json_object' as const }
+      temperature: (customPrompt as any)?.temperature || 0.1,
+      max_tokens: (customPrompt as any)?.maxTokens || 2000
     };
+    // Some local OpenAI-compatible servers (e.g., LM Studio) reject response_format=json_object.
+    if (!this.isLocalBaseUrl()) {
+      body.response_format = { type: 'json_object' } as const;
+    }
     const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, apiKey, body);
 
     let outline = this.parseOutlineResponse(content);
@@ -111,7 +122,7 @@ export class OutlineGenerator {
       try {
         outline = await this.repairOutline(outline, validation.issues, { model, apiKey: apiKey || '', difficulty });
       } catch (error) {
-        console.warn('Failed to repair outline, proceeding with deterministic fix:', error);
+        this.log.warn('repair_failed_deterministic_fallback', { error: (error as any)?.message || String(error) });
       }
       // Re-validate after repair; if still failing, apply minimal deterministic repair
       validation = this.validateOutline(outline);
@@ -119,10 +130,16 @@ export class OutlineGenerator {
         outline = this.repairOutlineDeterministic(outline);
       }
     }
+    const dur = Date.now() - started;
+    metrics.inc('alain_outline_generated_total', 1, { model, difficulty });
+    metrics.observe('alain_outline_duration_ms', dur, { model, difficulty });
+    trackEvent('alain_outline_generated', { model, difficulty, duration_ms: dur });
     return outline;
+  });
   }
 
-  private buildOutlinePrompt(modelReference: string, difficulty: string): string {
+  private buildOutlinePrompt(subject: string, difficulty: string, context?: string): string {
+    const ctx = context ? `\n\nSOURCE CONTEXT (use to shape sections, do not copy verbatim):\n${context}\n` : '';
     return `You are ALAIN-Teacher creating educational notebook outlines.
 You MUST respond with ONLY valid JSON. No markdown, no extra text. The response must begin with { and end with }.
 
@@ -194,14 +211,15 @@ QUALITY PATTERNS:
   "target_reading_time": "15-20 minutes"
 }
 
-Generate outline for: ${modelReference}`;
+Generate outline for: ${subject}
+Audience: absolute beginners (ELI5, non-developers). Use analogies and avoid jargon.${ctx}`;
   }
 
   private parseOutlineResponse(content: string): NotebookOutline {
     try { 
       return JSON.parse(content); 
     } catch (error) {
-      console.warn('Direct JSON parsing failed:', error);
+      this.log.warn('outline_json_parse_failed', { error: (error as any)?.message || String(error) });
     }
     
     const loose = extractJsonLoose(content);
@@ -209,7 +227,7 @@ Generate outline for: ${modelReference}`;
       return loose as NotebookOutline;
     }
     
-    console.error('Failed to extract JSON from response:', content.substring(0, 200));
+    this.log.error('outline_json_extract_failed', { head: content.substring(0, 200) });
     throw new Error('No valid JSON found in outline response');
   }
 
@@ -252,14 +270,17 @@ Generate outline for: ${modelReference}`;
       `Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives.\n`+
       `Here is the current outline JSON to repair:\n${JSON.stringify(outline, null, 2)}`;
 
-    const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, ctx.apiKey, {
+    const reqBody: any = {
       model: ctx.model,
       messages: [{ role: 'user', content: repairPrompt }],
       temperature: 0.0,
       top_p: 1.0,
-      max_tokens: 900,
-      response_format: { type: 'json_object' }
-    });
+      max_tokens: 900
+    };
+    if (!this.isLocalBaseUrl()) {
+      reqBody.response_format = { type: 'json_object' };
+    }
+    const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, ctx.apiKey, reqBody);
     const repaired = this.parseOutlineResponse(content);
     return repaired;
   }
@@ -303,6 +324,7 @@ Generate outline for: ${modelReference}`;
     
     while (attempt < 3) {
       try {
+        const started = Date.now();
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -319,15 +341,22 @@ Generate outline for: ${modelReference}`;
         const data = await response.json();
         const content = data.choices?.[0]?.message?.content;
         if (!content) throw new Error('Empty content');
+        this.log.debug('outline_request_success', { attempt: attempt + 1, duration_ms: Date.now() - started });
         return content as string;
       } catch (e) {
         attempt++;
         if (attempt >= 3) throw e;
         const jitter = Math.round(delay * (0.8 + Math.random() * 0.4));
+        this.log.warn('outline_request_retry', { attempt, delay_ms: jitter });
         await new Promise(r => setTimeout(r, jitter));
         delay = Math.min(5000, delay * 2);
       }
     }
     throw new Error('Max retries exceeded');
+  }
+
+  private isLocalBaseUrl(): boolean {
+    const u = this.baseUrl || '';
+    return /localhost|127\.0\.0\.1/i.test(u);
   }
 }

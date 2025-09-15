@@ -1,6 +1,8 @@
 import React from 'react';
 import TryPrompt from '@/components/TryPrompt';
 import MarkCompleteButton from '@/components/MarkCompleteButton';
+import StepRunner from '@/components/StepRunner';
+import StepAssessments from '@/components/StepAssessments';
 
 type Step = { id: number; step_order: number; title: string; content: string; code_template?: string | null; expected_output?: string | null };
 type Maker = { name?: string; org_type?: string; homepage?: string | null; license?: string | null; repo?: string | null };
@@ -23,7 +25,7 @@ async function fetchProgress(id: string): Promise<{ current_step: number; comple
 
 export default async function TutorialPage({ params }: { params: { id: string } }) {
   const t = await fetchTutorial(params.id);
-  if (!t) return <div className="max-w-4xl mx-auto p-6">Tutorial not found.</div>;
+  if (!t) return <div className="max-w-4xl mx-auto p-6">Manual not found.</div>;
   const prog = await fetchProgress(params.id);
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -63,11 +65,23 @@ export default async function TutorialPage({ params }: { params: { id: string } 
             <div className="font-medium">{s.step_order}. {s.title}</div>
             <div className="prose prose-sm max-w-none mt-2 whitespace-pre-wrap">{s.content}</div>
             {s.code_template && (
-              <pre className="mt-3 text-xs bg-ink-50 p-3 rounded overflow-x-auto"><code>{s.code_template}</code></pre>
+              <div className="mt-3">
+                <StepRunner
+                  provider={t.provider}
+                  model={t.model}
+                  codeTemplate={s.code_template || ''}
+                  temperature={0.7}
+                  maxTokens={300}
+                />
+              </div>
             )}
             {s.expected_output && (
               <div className="text-xs text-ink-700 mt-2">Expected: {s.expected_output}</div>
             )}
+            {/* Inline assessments for this step (MCQs) */}
+            <div className="mt-4">
+              <StepAssessments tutorialId={t.id} stepOrder={s.step_order} />
+            </div>
             <MarkCompleteButton tutorialId={t.id} stepOrder={s.step_order} />
           </li>
         ))}
