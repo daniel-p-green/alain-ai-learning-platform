@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { putNotebook, getNotebook, type NotebookMeta } from '@/lib/notebookStore';
 import { parseGhId, fetchPublicNotebook } from '@/lib/githubRaw';
+import { poeProvider, openAIProvider, type Provider as WebProvider } from '@/lib/providers';
 
 export const runtime = 'nodejs';
 
@@ -10,6 +11,11 @@ type RemixOptions = {
   tryIt?: boolean;
   tips?: boolean;
   takeaways?: boolean;
+  // Prototype: translate markdown content to target difficulty
+  translate?: boolean;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  provider?: 'poe' | 'openai-compatible';
+  model?: string;
 };
 
 function md(text: string | string[]) {
@@ -126,7 +132,7 @@ function buildTakeaways(): any {
   return md(txt);
 }
 
-function applyTransforms(nb: any, opts: RemixOptions): any {
+async function applyTransforms(nb: any, opts: RemixOptions): Promise<any> {
   const cells = Array.isArray(nb?.cells) ? nb.cells.map((c: any) => ({ ...c })) : [];
   const out: any[] = [];
   const headings = extractHeadings(cells);
@@ -150,9 +156,23 @@ function applyTransforms(nb: any, opts: RemixOptions): any {
   // MCQ support cells (install + helper)
   let mcqPrimed = false;
   let mcqCount = 0;
+  // Optional translator
+  const translator = await buildTranslator(opts);
   for (let i = 0; i < cells.length; i++) {
     const c = cells[i];
-    out.push(c);
+    // If translating, rewrite markdown cells only
+    if (translator && isMarkdownCell(c)) {
+      try {
+        const src = Array.isArray(c.source) ? c.source.join('') : String(c.source || '');
+        const rewritten = await translator(src);
+        const lines = (rewritten || src).split(/\n/).map(l => l.endsWith('\n') ? l : l + '\n');
+        out.push({ ...c, source: lines });
+      } catch {
+        out.push(c);
+      }
+    } else {
+      out.push(c);
+    }
     // Insert interactive MCQs after prominent markdown sections
     if (opts.mcqs && isMarkdownCell(c) && mcqCount < 3) {
       const topic = headings[mcqCount] || firstTitle;
@@ -181,6 +201,36 @@ function applyTransforms(nb: any, opts: RemixOptions): any {
   return remixed;
 }
 
+async function buildTranslator(opts: RemixOptions): Promise<((md: string) => Promise<string>) | null> {
+  if (!opts?.translate) return null;
+  // Pick provider based on env or explicit selection
+  const haveOpenAI = !!(process.env.OPENAI_BASE_URL && process.env.OPENAI_API_KEY);
+  const havePoe = !!process.env.POE_API_KEY;
+  const providerId: 'openai-compatible' | 'poe' | null = (opts.provider as any) || (haveOpenAI ? 'openai-compatible' : havePoe ? 'poe' : null);
+  if (!providerId) return null;
+  const provider: WebProvider = providerId === 'openai-compatible' ? openAIProvider : poeProvider;
+  const model = opts.model || (providerId === 'openai-compatible' ? 'gpt-4o' : 'gpt-4o-mini');
+  const difficulty = opts.difficulty || 'beginner';
+  const system = [
+    `You are ALAIN-Translator. Rewrite the following Markdown for a ${difficulty} learner.`,
+    `Rules: keep all facts, links, and headings; preserve code fences verbatim; simplify wording; define jargon briefly;`,
+    `add short analogies if helpful; do not add new claims; output only Markdown text (no backticks or JSON).`
+  ].join(' ');
+  return async (md: string) => {
+    const content = await provider.execute({
+      provider: providerId,
+      model,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: md }
+      ],
+      temperature: 0.2,
+      max_tokens: 800
+    });
+    return (content || '').trim();
+  };
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
@@ -206,7 +256,7 @@ export async function POST(req: Request) {
     }
     if (!nb) return NextResponse.json({ error: 'not_found' }, { status: 404 });
 
-    const transformed = applyTransforms(nb, options);
+    const transformed = await applyTransforms(nb, options);
     const newId = 'remix-' + Math.random().toString(36).slice(2, 10);
     const meta: NotebookMeta = {
       id: newId,
