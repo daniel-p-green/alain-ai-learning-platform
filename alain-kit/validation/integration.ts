@@ -22,6 +22,15 @@ export interface ALAINKitResult {
   qualityMetrics: QualityMetrics;
   colabValidation: ColabValidationResult;
   validationReport: string;
+  phaseTimings?: {
+    outline_ms: number;
+    sections_ms_total: number;
+    section_ms: number[];
+    build_ms: number;
+    quality_ms: number;
+    colab_ms: number;
+    total_ms: number;
+  };
 }
 
 export class ALAINKit {
@@ -55,11 +64,14 @@ export class ALAINKit {
     difficulty?: 'beginner' | 'intermediate' | 'advanced';
     maxSections?: number;
     customPrompt?: {
-      title: string;
-      description: string;
-      difficulty: string;
-      topics: string[];
+      title?: string;
+      description?: string;
+      difficulty?: 'beginner' | 'intermediate' | 'advanced';
+      topics?: string[];
+      context?: string;
       modelSpecificInstructions?: string;
+      temperature?: number;
+      maxTokens?: number;
     };
   }): Promise<ALAINKitResult> {
     const pipelineStart = Date.now();
@@ -67,12 +79,14 @@ export class ALAINKit {
       const isLocalProvider = !!this.baseUrl && (/localhost|127\.0\.0\.1/i.test(this.baseUrl));
       const apiKeyOrLocal = isLocalProvider ? (config.apiKey || 'local') : (config.apiKey || '');
       // Step 1: Generate outline
+      const tOutlineStart = Date.now();
       const outline = await this.outlineGenerator.generateOutline({
         model: config.modelReference,
         apiKey: apiKeyOrLocal,
         difficulty: config.difficulty || 'beginner',
         customPrompt: config.customPrompt
       });
+      const tOutline = Date.now() - tOutlineStart;
 
       // Validate outline
       const outlineValidation = this.outlineGenerator.validateOutline(outline);
@@ -90,14 +104,15 @@ export class ALAINKit {
         const m = f.match(/^(\d+)\.json$/);
         if (m) completed.add(Number(m[1]));
       }
-      const sections: GeneratedSection[] = [];
       const maxSections = Math.min(config.maxSections || outline.outline.length, outline.outline.length);
+      const sections: Array<GeneratedSection | undefined> = new Array(maxSections).fill(undefined);
+      const sectionDurations: number[] = [];
       // Preload any saved sections (resume)
       for (const idx of Array.from(completed).sort((a,b)=>a-b)) {
         if (idx >= 1 && idx <= maxSections) {
           try {
             const rec = JSON.parse(fs.readFileSync(path.join(sectionsDir, `${idx}.json`), 'utf-8'));
-            sections.push(rec);
+            sections[idx - 1] = rec;
           } catch {}
         }
       }
@@ -109,37 +124,59 @@ export class ALAINKit {
         if (completed.has(sectionNumber)) continue;
         tasks.push(async () => {
           const fn = async () => {
+            const secStart = Date.now();
+            const previousSections = sections.slice(0, sectionNumber - 1).filter((s): s is GeneratedSection => !!s);
             const section = await this.sectionGenerator.generateSection({
               outline,
               sectionNumber,
-              previousSections: sections,
+              previousSections,
               modelReference: config.modelReference,
               apiKey: apiKeyOrLocal,
               customPrompt: config.customPrompt,
               difficulty: config.difficulty || 'beginner'
             });
+            const secDur = Date.now() - secStart;
+            try { sectionDurations.push(secDur); } catch {}
             const v = this.sectionGenerator.validateSection(section);
-            if (v.isValid) {
-              sections.push(section);
-              // Save checkpoint
-              try { fs.writeFileSync(path.join(sectionsDir, `${sectionNumber}.json`), JSON.stringify(section, null, 2)); } catch {}
+            if (!v.isValid) {
+              throw new Error(`Section ${sectionNumber} failed validation: ${v.issues.join(', ')}`);
             }
+            sections[sectionNumber - 1] = section;
+            // Save checkpoint
+            try { fs.writeFileSync(path.join(sectionsDir, `${sectionNumber}.json`), JSON.stringify(section, null, 2)); } catch {}
           };
           await this.attemptWithBackoff(fn, 3);
         });
       }
+      const tSectionsStart = Date.now();
       await this.runPool(tasks, maxConcurrency);
+      const tSectionsTotal = Date.now() - tSectionsStart;
+
+      const orderedSections = sections.slice(0, maxSections);
+      const missing = orderedSections
+        .map((section, index) => (section ? null : index + 1))
+        .filter((value): value is number => value !== null);
+      if (missing.length > 0) {
+        throw new Error(`Section generation incomplete. Missing sections: ${missing.join(', ')}`);
+      }
+      const resolvedSections = orderedSections as GeneratedSection[];
 
       // Step 3: Build notebook
-      let notebook = this.notebookBuilder.buildNotebook(outline, sections);
+      const tBuildStart = Date.now();
+      let notebook = this.notebookBuilder.buildNotebook(outline, resolvedSections);
+      const tBuild = Date.now() - tBuildStart;
 
       // Step 4: Quality validation
       const tempPath = `/tmp/alain-notebook-${Date.now()}.ipynb`;
       require('fs').writeFileSync(tempPath, JSON.stringify(notebook, null, 2));
+      const tQualityStart = Date.now();
       const qualityMetrics = this.qualityValidator.validateNotebook(tempPath);
+      const tQuality = Date.now() - tQualityStart;
 
       // Step 5: Colab validation and fixes
-      const colabValidation = this.colabValidator.validateNotebook(tempPath);
+      const tColabStart = Date.now();
+      const colabValidation = await this.colabValidator.validateNotebook(tempPath);
+      const tColab = Date.now() - tColabStart;
       if (!colabValidation.isCompatible && colabValidation.fixedNotebook) {
         notebook = colabValidation.fixedNotebook;
       }
@@ -150,17 +187,26 @@ export class ALAINKit {
       const duration = Date.now() - pipelineStart;
       metrics.inc('alain_pipeline_success_total', 1, { model: config.modelReference, difficulty: config.difficulty || 'beginner' });
       metrics.observe('alain_pipeline_duration_ms', duration, { model: config.modelReference, difficulty: config.difficulty || 'beginner' });
-      trackEvent('alain_pipeline_success', { model: config.modelReference, difficulty: config.difficulty || 'beginner', duration_ms: duration, sections: sections.length, qualityScore: qualityMetrics.qualityScore });
+      trackEvent('alain_pipeline_success', { model: config.modelReference, difficulty: config.difficulty || 'beginner', duration_ms: duration, sections: resolvedSections.length, qualityScore: qualityMetrics.qualityScore });
       return {
         success: true,
         qualityScore: qualityMetrics.qualityScore,
         colabCompatible: colabValidation.isCompatible,
         notebook,
         outline,
-        sections,
+        sections: resolvedSections,
         qualityMetrics,
         colabValidation,
-        validationReport
+        validationReport,
+        phaseTimings: {
+          outline_ms: tOutline,
+          sections_ms_total: tSectionsTotal,
+          section_ms: sectionDurations,
+          build_ms: tBuild,
+          quality_ms: tQuality,
+          colab_ms: tColab,
+          total_ms: duration
+        }
       };
 
     } catch (error) {

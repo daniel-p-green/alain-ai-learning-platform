@@ -165,7 +165,7 @@ async function applyTransforms(nb: any, opts: RemixOptions): Promise<any> {
       try {
         const src = Array.isArray(c.source) ? c.source.join('') : String(c.source || '');
         const rewritten = await translator(src);
-        const lines = (rewritten || src).split(/\n/).map(l => l.endsWith('\n') ? l : l + '\n');
+        const lines = (rewritten || src).split(/\n/).map((l: string) => l.endsWith('\n') ? l : l + '\n');
         out.push({ ...c, source: lines });
       } catch {
         out.push(c);

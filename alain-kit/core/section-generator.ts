@@ -5,6 +5,8 @@
  * Ensures beginner-friendly content with executable code and proper structure.
  */
 import { createLogger, timeIt, trackEvent, metrics } from './obs';
+import { capsFor } from './providers';
+import { supportsTemperature } from './model-caps';
 
 export interface NotebookCell {
   cell_type: 'markdown' | 'code';
@@ -51,7 +53,8 @@ export class SectionGenerator {
   constructor(options: SectionGeneratorOptions = {}) {
     this.baseUrl = options.baseUrl;
   }
-  private readonly TOKEN_LIMIT = 1500;
+  // Tighten per-section token limit to help keep total under ~6000 for 6 sections
+  private readonly TOKEN_LIMIT = 1000;
   private readonly MIN_TOKENS = 800;
 
   /**
@@ -75,25 +78,28 @@ export class SectionGenerator {
     const prompt = this.buildSectionPrompt(outline, sectionNumber, previousSections, modelReference);
     
     const endpoint = this.baseUrl || 'https://api.poe.com';
-    
+    const providerCaps = capsFor(this.baseUrl);
+
     let response: Response;
     let data: any;
     
     try {
+      const body: any = {
+        model: modelReference,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: customPrompt?.maxTokens || this.TOKEN_LIMIT,
+      };
+      if (supportsTemperature(modelReference)) {
+        body.temperature = customPrompt?.temperature ?? 0.2;
+      }
+      if (providerCaps.allowResponseFormat) body.response_format = { type: 'json_object' as const };
       response = await fetch(`${endpoint}/v1/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          model: modelReference,
-          messages: [{ role: 'user', content: prompt }],
-          temperature: customPrompt?.temperature || 0.2,
-          max_tokens: customPrompt?.maxTokens || this.TOKEN_LIMIT,
-          // Prefer JSON mode for strict parsing when provider supports it
-          response_format: { type: 'json_object' as const }
-        })
+        body: JSON.stringify(body)
       });
       
       if (!response.ok) {
@@ -131,9 +137,10 @@ export class SectionGenerator {
     return `You are ALAIN-Teacher filling specific sections of educational notebooks. Generate content for the requested section only.
 
 SECTION GENERATION RULES:
-• Target ${this.MIN_TOKENS}-${this.TOKEN_LIMIT} tokens per section
-• Use beginner-friendly ELI5 language with analogies
-• Include executable code with comments
+• Target ${this.MIN_TOKENS}-${this.TOKEN_LIMIT} tokens per section (hard cap)
+• Use beginner-friendly ELI5 language with analogies, but employ precise technical terms
+• Add one extra explanatory paragraph that defines key terms and explains rationale/trade-offs
+• Include executable code with comments; prefer 1–2 short code cells (<30 lines each)
 • Add callouts (💡 Tip, ⚠️ Warning, 📝 Note)
 • Ensure reproducibility with seeds/versions
 • Balance markdown explanation with hands-on code
@@ -183,22 +190,32 @@ Generate content for section ${sectionNumber} only.`;
     try {
       return JSON.parse(content);
     } catch (e) {
-      console.warn('Section JSON parse failed. Attempting loose extraction.');
-      // Extract JSON boundaries
-      const jsonStart = content.indexOf('{');
-      const jsonEnd = content.lastIndexOf('}');
-      
-      if (jsonStart !== -1 && jsonEnd !== -1) {
-        try {
-          return JSON.parse(content.substring(jsonStart, jsonEnd + 1));
-        } catch (e2) {
-          // Fallback section if parsing fails
-          return this.createFallbackSection(sectionNumber, content);
-        }
+      console.warn('Section JSON parse failed. Attempting bracket-matched extraction.');
+      const extracted = this.extractFirstJsonObject(content);
+      if (extracted) {
+        try { return JSON.parse(extracted); } catch {}
       }
-      
       return this.createFallbackSection(sectionNumber, content);
     }
+  }
+
+  private extractFirstJsonObject(text: string): string | null {
+    const s = String(text || '');
+    let start = -1;
+    let depth = 0;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (ch === '{') {
+        if (start === -1) start = i;
+        depth++;
+      } else if (ch === '}') {
+        if (depth > 0) depth--;
+        if (depth === 0 && start !== -1) {
+          return s.slice(start, i + 1);
+        }
+      }
+    }
+    return null;
   }
 
   private createFallbackSection(sectionNumber: number, content: string): GeneratedSection {

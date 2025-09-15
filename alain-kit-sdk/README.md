@@ -39,3 +39,23 @@ npx tsx examples/usage-example.ts
 - `OutlineGenerator`, `SectionGenerator`, `NotebookBuilder`
 
 The SDK aligns with the orchestration guidance in `prompts/alain-kit/util/gpt-oss_orchestration_notes.md`.
+
+## Environment and API Keys
+
+- ALAIN‑Kit loads environment variables from `.env.local` (preferred) then `.env`.
+  - The CLI loads from your current working directory first, then from the repo root.
+  - Common keys: `POE_API_KEY` (preferred for Poe‑compatible servers), `OPENAI_API_KEY`, `HF_TOKEN`.
+- Every generated notebook includes two early cells:
+  - A short primer explaining why `.env` files matter and where to put them.
+  - A loader cell that installs `python‑dotenv` if needed, loads `.env.local`/`.env`, prompts for missing keys, and can write `.env.local` with 0600 permissions (toggle `SAVE_TO_ENV = False` to disable).
+- The CLI seeds `<outDir>/.env.local.example` on first run if no `.env` is present.
+
+Tip: keep secrets out of version control. `.gitignore` already ignores `.env*`.
+
+## .env Best Practices
+
+- Use `.env.local` for machine-specific secrets; keep `.env` for shared non-secret defaults.
+- Never commit real secrets. Use placeholder examples (the CLI seeds `.env.local.example`).
+- Quote values that contain spaces or special characters.
+- Rotate and revoke tokens you no longer use; prefer least-privilege scopes.
+- In Colab, you can also use `google.colab.userdata` to store keys per session.

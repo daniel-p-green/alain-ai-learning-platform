@@ -62,14 +62,18 @@ function syllableCount(word: string): number {
 }
 
 function printHelp() {
-  console.log(`ALAIN-Kit CLI\n\nUsage:\n  alain-kit --model <model> [--apiKey <key>] [--baseUrl <url>] [--difficulty <level>] [--maxSections <n>] [--outDir <path>] [--remix <ipynb>]\n\nFlags:\n  --model         Model reference or name (e.g., gpt-oss-20b)\n  --apiKey        Provider API key (e.g., POE_API_KEY)\n  --baseUrl       Provider base URL (root, no /v1). Example: https://api.poe.com\n  --difficulty    beginner | intermediate | advanced (default: beginner)\n  --maxSections   Number of sections to generate (default: 6)\n  --outDir        Output directory (default: ./output)\n  --remix         Remix an existing notebook (path to .ipynb). Runs full ALAIN pipeline (ELI5).\n  --help, -h      Show this help\n\nTips:\n  - Poe: use --baseUrl https://api.poe.com (do not include /v1).\n    The CLI appends /v1/chat/completions automatically.\n  - Local OpenAI-compatible servers: pass the server root (e.g., http://localhost:1234).`);
+  console.log(`ALAIN-Kit CLI\n\nUsage:\n  alain-kit --model <model> [--apiKey <key>] [--baseUrl <url>] [--difficulty <level>] [--maxSections <n>] [--outDir <path>] [--sectionTokens <n>] [--remix <ipynb>]\n\nFlags:\n  --model         Model reference or name (e.g., gpt-oss-20b)\n  --apiKey        Provider API key (e.g., POE_API_KEY)\n  --baseUrl       Provider base URL (root, no /v1). Example: https://api.poe.com\n  --difficulty    beginner | intermediate | advanced (default: beginner)\n  --maxSections   Number of sections to generate (default: 6)\n  --sectionTokens Max tokens per section (hint to generator; default internal ~1000)\n  --outDir        Output directory (default: ./output)\n  --remix         Remix an existing notebook (path to .ipynb). Runs full ALAIN pipeline (ELI5).\n  --help, -h      Show this help\n\nEnv & API keys:\n  - Loads .env.local then .env from CWD; also from repo root.\n  - Keys: POE_API_KEY (preferred), OPENAI_API_KEY, HF_TOKEN.\n  - CLI seeds an example at <outDir>/.env.local.example on first run.\n\nTips:\n  - Poe: use --baseUrl https://api.poe.com (do not include /v1).\n    The CLI appends /v1/chat/completions automatically.\n  - Local OpenAI-compatible servers: pass the server root (e.g., http://localhost:1234).`);
 }
 
 async function main() {
-  // Load env: CWD first, then repo root (two levels up from bin/)
+  // Load env: prefer .env.local over .env, from CWD then repo root
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  dotenv.config();
+  // CWD
+  dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+  dotenv.config({ path: path.join(process.cwd(), '.env') });
+  // Repo root (two levels up from bin/)
+  dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env.local') });
   dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
   if (process.argv.includes('--help') || process.argv.includes('-h')) {
     printHelp();
@@ -81,6 +85,8 @@ async function main() {
   const difficulty = (parseArg('--difficulty', 'beginner') as 'beginner'|'intermediate'|'advanced');
   const maxSections = Number(parseArg('--maxSections', '6')) || 6;
   const outDir = parseArg('--outDir', path.join(process.cwd(), 'output'))!;
+  const sectionTokensStr = parseArg('--sectionTokens');
+  const sectionTokens = sectionTokensStr ? Number(sectionTokensStr) : undefined;
   const remixPath = parseArg('--remix');
 
   // Warn if user passed a baseUrl that already includes /v1
@@ -119,7 +125,8 @@ async function main() {
       modelReference: model,
       apiKey,
       difficulty,
-      maxSections
+      maxSections,
+      customPrompt: sectionTokens ? ({ maxTokens: sectionTokens } as any) : undefined
     });
   }
 
@@ -181,6 +188,23 @@ async function main() {
 
   console.log(`✅ Wrote notebook: ${nbPath}`);
   console.log(`📋 Validation: ${reportPath}`);
+  // Seed an env example if none present in outDir
+  try {
+    const envLocal = path.join(outDir, '.env.local');
+    const envFile = path.join(outDir, '.env');
+    const envExample = path.join(outDir, '.env.local.example');
+    if (!fs.existsSync(envLocal) && !fs.existsSync(envFile) && !fs.existsSync(envExample)) {
+      const example = [
+        '# ALAIN-Kit environment example (copy to .env.local)\n',
+        '# Never commit real secrets. This file is for local use.\n',
+        'POE_API_KEY=\n',
+        'OPENAI_API_KEY=\n',
+        'OPENAI_BASE_URL=https://api.poe.com/v1\n',
+        'HF_TOKEN=\n'
+      ].join('');
+      fs.writeFileSync(envExample, example);
+    }
+  } catch {}
   const metrics = {
     model,
     baseUrl: baseUrl || 'poe',
@@ -193,7 +217,8 @@ async function main() {
     cells: res.notebook?.cells?.length ?? 0,
     markdownCells: res.notebook?.cells?.filter((c: any)=>c.cell_type==='markdown').length ?? 0,
     codeCells: res.notebook?.cells?.filter((c: any)=>c.cell_type==='code').length ?? 0,
-    readability: { fkGrade, markdownRatio }
+    readability: { fkGrade, markdownRatio },
+    phaseTimings: res.phaseTimings || undefined
   } as any;
   const metricsPath = path.join(outDir, `alain-metrics-${stamp}.json`);
   fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2));

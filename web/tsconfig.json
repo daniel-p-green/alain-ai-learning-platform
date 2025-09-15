@@ -19,7 +19,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@alain-kit/*": ["../alain-kit/*"]
     },
     "plugins": [
       {
