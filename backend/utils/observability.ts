@@ -115,6 +115,11 @@ export function systemMetrics() {
   };
 }
 
+// Export concrete types to avoid using ReturnType<typeof fn> in API layer,
+// which some compilers/tools may not resolve during codegen.
+export type SystemMetrics = ReturnType<typeof systemMetrics>;
+export type MetricsSnapshot = ReturnType<typeof metrics.snapshot>;
+
 export async function timeIt<T>(name: string, fn: () => Promise<T> | T, labels?: Labels): Promise<T> {
   const start = Date.now();
   try {
@@ -170,4 +175,3 @@ function sanitize(obj: any) {
     return { note: 'unserializable' };
   }
 }
-

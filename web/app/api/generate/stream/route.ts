@@ -18,9 +18,9 @@ export async function GET(req: Request) {
         send('status', { phase: 'start', model, difficulty })
 
         // Lazy-import ALAIN-Kit to avoid web bundling issues
-        const { OutlineGenerator } = await import('../../../../../alain-kit/core/outline-generator')
-        const { SectionGenerator } = await import('../../../../../alain-kit/core/section-generator')
-        const { NotebookBuilder } = await import('../../../../../alain-kit/core/notebook-builder')
+        const { OutlineGenerator } = await import('../../../../../../alain-kit/core/outline-generator')
+        const { SectionGenerator } = await import('../../../../../../alain-kit/core/section-generator')
+        const { NotebookBuilder } = await import('../../../../../../alain-kit/core/notebook-builder')
 
         const baseUrl = process.env.OPENAI_BASE_URL || 'https://api.poe.com'
         const apiKey = process.env.POE_API_KEY
@@ -67,4 +67,3 @@ export async function GET(req: Request) {
     }
   })
 }
-
