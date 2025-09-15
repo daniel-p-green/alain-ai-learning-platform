@@ -73,7 +73,7 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
             <div className="space-y-2 text-sm">
               <label className="flex items-center gap-2"><input type="checkbox" checked={optObjectives} onChange={(e)=> setOptObjectives(e.target.checked)} /> Add Learning Objectives</label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={optMcqs} onChange={(e)=> setOptMcqs(e.target.checked)} /> Insert Knowledge Checks (MCQs)</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={optTryIt} onChange={(e)=> setOptTryIt(e.target.checked)} /> Add "Try It Yourself" prompts</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={optTryIt} onChange={(e)=> setOptTryIt(e.target.checked)} /> Add &quot;Try It Yourself&quot; prompts</label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={optTips} onChange={(e)=> setOptTips(e.target.checked)} /> Add Pro Tips</label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={optTakeaways} onChange={(e)=> setOptTakeaways(e.target.checked)} /> Add Key Takeaways</label>
             </div>
