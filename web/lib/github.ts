@@ -10,8 +10,22 @@ type PutFileParams = {
   sha?: string; // required for updates
 };
 
+let _cachedToken: string | undefined;
+async function ghToken(): Promise<string> {
+  if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
+  if (typeof _cachedToken === 'string') return _cachedToken;
+  try {
+    const { kvGet } = await import('@/lib/kv');
+    const t = await kvGet<string>('secrets:github_token');
+    _cachedToken = t || '';
+    return _cachedToken;
+  } catch {
+    return '';
+  }
+}
+
 async function ghFetch(path: string, init: RequestInit = {}) {
-  const token = process.env.GITHUB_TOKEN;
+  const token = await ghToken();
   if (!token) throw new Error("GITHUB_TOKEN not set");
   const base = "https://api.github.com";
   const headers = {
@@ -59,6 +73,21 @@ export function ghEnv() {
   const [owner, name] = repo.split("/", 2);
   const branch = process.env.GITHUB_BRANCH || "main";
   const baseDir = process.env.NOTEBOOKS_DIR || "notebooks";
+  return { owner, repo: name, branch, baseDir };
+}
+
+export async function ghEnvAsync() {
+  let repo = process.env.GITHUB_REPO || "";
+  let branch = process.env.GITHUB_BRANCH || "main";
+  let baseDir = process.env.NOTEBOOKS_DIR || "notebooks";
+  try {
+    const { kvGet } = await import('@/lib/kv');
+    repo = repo || (await kvGet<string>('secrets:github_repo')) || '';
+    branch = (await kvGet<string>('secrets:github_branch')) || branch;
+    baseDir = (await kvGet<string>('secrets:notebooks_dir')) || baseDir;
+  } catch {}
+  if (!repo.includes('/')) throw new Error("GITHUB_REPO must be 'owner/name'");
+  const [owner, name] = repo.split('/', 2);
   return { owner, repo: name, branch, baseDir };
 }
 

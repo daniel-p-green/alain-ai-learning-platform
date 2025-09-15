@@ -1,4 +1,6 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
+const GitHubOpenForm = dynamic(() => import('@/components/GitHubOpenForm'), { ssr: false });
 import CopyButton from '@/components/CopyButton';
 import { headers } from 'next/headers';
 
@@ -36,7 +38,7 @@ export default async function PublicNotebooks({ searchParams }: { searchParams: 
   return (
     <div className="max-w-5xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-semibold mb-4">Public & Unlisted Notebooks</h1>
-      <p className="text-sm text-ink-600 mb-6">Configure NEXT_PUBLIC_BACKEND_URL for backend access.</p>
+      <p className="text-sm text-ink-600 mb-6">Configure NEXT_PUBLIC_BACKEND_BASE for backend access. <a className="underline text-alain-blue" href="/notebooks/featured">Featured (GitHub)</a></p>
       <form className="mb-4 flex flex-wrap items-end gap-2" method="GET">
         <div>
           <label className="block text-xs text-ink-600">Model</label>
@@ -57,6 +59,10 @@ export default async function PublicNotebooks({ searchParams }: { searchParams: 
         </div>
         <button className="inline-flex items-center h-8 px-3 rounded bg-ink-900 text-white text-sm" type="submit">Filter</button>
       </form>
+      <div className="mb-6 p-3 rounded border bg-white/70">
+        <div className="font-medium text-sm mb-2">Open from GitHub</div>
+        <GitHubOpenForm />
+      </div>
       {items.length === 0 && (
         <div className="text-ink-600">No public notebooks yet.</div>
       )}
