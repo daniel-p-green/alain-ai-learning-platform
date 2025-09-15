@@ -1,6 +1,7 @@
 import { extractJsonLoose } from './json-utils';
 import { createLogger, timeIt, trackEvent, metrics } from './obs';
 import { capsFor } from './providers';
+import { supportsTemperature } from './model-caps';
 
 /**
  * ALAIN-Kit Outline Generator

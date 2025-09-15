@@ -121,6 +121,30 @@ jq '.qualityScore, .sectionCount, .readability' $(ls -t alain-ai-learning-platfo
 - Quality score: target ≥ 90
 - Markdown ratio: 0.40–0.70
 
+### 6. Colab Pip Fallback (Manual Spot Check)
+- Goal: ensure the Colab validator rewrites `subprocess.check_call([...pip install...])` when no Colab guard is present.
+- Steps:
+  1. Create a trivial notebook with a single code cell containing:
+     ```python
+     import subprocess, sys
+     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'transformers', 'torch'])
+     ```
+     Save as `tmp-colab.ipynb`.
+  2. Run a short Node script:
+     ```bash
+     node - <<'JS'
+     const { ColabValidator } = require('./alain-kit/validation/colab-validator');
+     const res = new ColabValidator().validateNotebook('tmp-colab.ipynb');
+     res.then((out) => {
+       console.log('issues:', out.issues);
+       console.log('fixed cell:', out.fixedNotebook?.cells?.[0]?.source?.join(''));
+     });
+     JS
+     ```
+  3. Confirm the fixed cell now contains the Colab guard with a `%pip` fallback and that `issues` is empty.
+
+Automation: `backend/validation/colab-validator.test.ts` provides unit coverage for both unguarded and guarded code paths.
+
 ## Critical Areas to Focus On
 
 ### 1. JSON Parsing Robustness
