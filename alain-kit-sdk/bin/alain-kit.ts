@@ -156,9 +156,12 @@ async function main() {
   const firstMd = Array.isArray(res.notebook?.cells?.[0]?.source) ? res.notebook?.cells?.[0]?.source.join('') : String(res.notebook?.cells?.[0]?.source || '');
   const h1 = (firstMd.match(/^#\s+(.+)$/m)?.[1]) || String(res.notebook?.metadata?.title || 'getting started');
   const topic = slugify(h1, 7);
-  const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '.');
-  let fileName = `${maker}_${modelPart}_${level}_${topic}_${dateStr}-ALAIN.ipynb`;
-  const nbPath = path.join(outDir, remixPath ? `${maker}_${modelPart}_${level}_${topic}_${dateStr}-ALAIN-remix.ipynb` : fileName);
+  // UTC timestamp for filenames: YYYY.MM.DD-HH.MM.SSZ
+  const nowIso = new Date().toISOString();
+  const dateStr = nowIso.slice(0,10).replace(/-/g, '.');
+  const timeStr = `${nowIso.slice(11,19).replace(/:/g, '.')}Z`;
+  let fileName = `${maker}_${modelPart}_${level}_${topic}_${dateStr}-${timeStr}-ALAIN.ipynb`;
+  const nbPath = path.join(outDir, remixPath ? `${maker}_${modelPart}_${level}_${topic}_${dateStr}-${timeStr}-ALAIN-remix.ipynb` : fileName);
   if (remixPath) {
     try {
       const credit = [
@@ -178,6 +181,42 @@ async function main() {
       };
     } catch {}
   }
+  // Add created timestamp and rough estimated time-to-complete to notebook metadata and a small banner cell.
+  try {
+    const cells = Array.isArray(res.notebook?.cells) ? res.notebook.cells : (res.notebook.cells = []);
+    const meta = (res.notebook.metadata = { ...(res.notebook.metadata || {}) });
+    // Created UTC
+    meta.created_utc = nowIso;
+    // Rough estimate based on difficulty and section count
+    const sectionCount = Array.isArray(res.sections) ? res.sections.length : (res.sectionCount ?? cells.length ? Math.max(4, Math.round(cells.length / 6)) : 6);
+    const perSection: Record<string, { min: number; max: number }> = {
+      beginner: { min: 6, max: 10 },
+      intermediate: { min: 8, max: 12 },
+      advanced: { min: 10, max: 15 }
+    };
+    const per = perSection[level] || perSection.beginner;
+    let estMin = Math.round(sectionCount * per.min);
+    let estMax = Math.round(sectionCount * per.max);
+    // Clamp to a sensible overall range
+    estMin = Math.max(25, Math.min(estMin, 150));
+    estMax = Math.max(estMin + 10, Math.min(estMax, 240));
+    meta.estimated_time_minutes = { min: estMin, max: estMax } as any;
+    meta.estimated_time_text = `${estMin}–${estMax} minutes (rough)`;
+    // Insert a small banner right after the title H1 if found, else prepend
+    let insertIdx = 0;
+    for (let i = 0; i < cells.length; i++) {
+      const c = cells[i];
+      if (c?.cell_type === 'markdown') {
+        const src = Array.isArray(c.source) ? c.source.join('') : String(c.source || '');
+        if (/^#\s+/.test(src)) { insertIdx = i + 1; break; }
+      }
+    }
+    const banner = [
+      `\n> ⏱️ Estimated time to complete: ${estMin}–${estMax} minutes (rough).  `,
+      `\n> 🕒 Created (UTC): ${nowIso}\n\n`
+    ];
+    cells.splice(insertIdx, 0, { cell_type: 'markdown', metadata: {}, source: banner });
+  } catch {}
   const reportPath = path.join(outDir, `alain-validation-${stamp}.md`);
   fs.writeFileSync(nbPath, JSON.stringify(res.notebook, null, 2));
   // Append readability metrics to report for quick inspection
@@ -218,6 +257,8 @@ async function main() {
     markdownCells: res.notebook?.cells?.filter((c: any)=>c.cell_type==='markdown').length ?? 0,
     codeCells: res.notebook?.cells?.filter((c: any)=>c.cell_type==='code').length ?? 0,
     readability: { fkGrade, markdownRatio },
+    createdUtc: nowIso,
+    estimatedTimeMinutes: (res.notebook?.metadata?.estimated_time_minutes) || undefined,
     phaseTimings: res.phaseTimings || undefined
   } as any;
   const metricsPath = path.join(outDir, `alain-metrics-${stamp}.json`);
@@ -225,6 +266,12 @@ async function main() {
 
   console.log(`Quality: ${res.qualityScore}  Colab: ${res.colabCompatible ? '✅' : '⚠️'}`);
   console.log(`Readability: FK=${fkGrade.toFixed(1)}  MD Ratio=${(markdownRatio*100).toFixed(1)}%`);
+  try {
+    const est = (res.notebook?.metadata as any)?.estimated_time_minutes;
+    if (est?.min && est?.max) {
+      console.log(`⏱️ Estimated time: ${est.min}–${est.max} minutes (rough)`);
+    }
+  } catch {}
   console.log(`📊 Metrics: ${metricsPath}`);
 }
 
