@@ -58,10 +58,19 @@ export class QualityValidator {
         if (source.match(/^#\s+/)) structure.hasTitle = true;
         if (source.toLowerCase().includes('objective')) structure.hasObjectives = true;
         if (source.toLowerCase().includes('setup')) structure.hasSetup = true;
-        if (source.toLowerCase().includes('question')) structure.hasAssessments = true;
+        // Assessments detection: either explicit questions or the Knowledge Check block
+        const lower = source.toLowerCase();
+        if (lower.includes('question') || /knowledge\s*check/i.test(source)) {
+          structure.hasAssessments = true;
+        }
         if (source.match(/^##\s+Step\s+\d+/i)) stepCount++;
       } else if (cell.cell_type === 'code') {
         codeCells++;
+        // Recognize MCQ helper usage as assessments signal
+        const src = Array.isArray(cell.source) ? cell.source.join('') : cell.source || '';
+        if (/render_mcq\s*\(/.test(src) || /import\s+ipywidgets\s+as\s+widgets/.test(src)) {
+          structure.hasAssessments = true;
+        }
       }
     });
 
