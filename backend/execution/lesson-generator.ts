@@ -72,17 +72,17 @@ export const generateLesson = api(
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     }
-    // Per-user in-process concurrency guard
+    // Dedupe concurrent requests: same hfUrl+difficulty coalesce to one in-flight promise (short TTL)
+    const key = `${req.hfUrl}::${req.difficulty}`;
+    const existing = inflight.get(key);
+    if (existing) return await existing;
+    // Per-user in-process concurrency guard (only count fresh tasks)
     const maxConc = Number(process.env.GENERATE_MAX_CONCURRENCY || 1);
     const current = userConcurrency.get(userId) || 0;
     if (current >= maxConc) {
       throw APIError.resourceExhausted('Too many concurrent generations. Please wait for an active job to finish.');
     }
     userConcurrency.set(userId, current + 1);
-    // Dedupe concurrent requests: same hfUrl+difficulty coalesce to one in-flight promise (short TTL)
-    const key = `${req.hfUrl}::${req.difficulty}`;
-    const existing = inflight.get(key);
-    if (existing) return await existing;
     const task = (async (): Promise<LessonGenerationResponse> => {
       try {
       // Extract model information from HF URL
@@ -266,16 +266,15 @@ export const generateLocalLesson = api<{
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     }
     // Per-user in-process concurrency guard
+    const key = `local::${req.modelId}::${req.difficulty}`;
+    const existing = inflight.get(key);
+    if (existing) return await existing;
     const maxConc = Number(process.env.GENERATE_MAX_CONCURRENCY || 1);
     const current = userConcurrency.get(userId) || 0;
     if (current >= maxConc) {
       throw APIError.resourceExhausted('Too many concurrent generations. Please wait for an active job to finish.');
     }
     userConcurrency.set(userId, current + 1);
-
-    const key = `local::${req.modelId}::${req.difficulty}`;
-    const existing = inflight.get(key);
-    if (existing) return await existing;
     const task = (async (): Promise<LessonGenerationResponse> => {
       try {
         const base = (process.env.OPENAI_BASE_URL || '').trim() || 'http://localhost:1234/v1';

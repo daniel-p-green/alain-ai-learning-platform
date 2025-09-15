@@ -57,23 +57,34 @@ export async function POST(req: NextRequest) {
   const streamViaBackend = (process.env.NEXT_PUBLIC_STREAM_VIA || 'web') === 'backend';
 
   const uid = userId ?? 'demo-user';
-  // Per-user concurrency guard
+  const gate = allow(uid);
+  if (!gate.ok) {
+    return new Response(JSON.stringify({
+      success: false,
+      error: { code: "rate_limited", message: `Too many requests. Try again in ${gate.retryAfter}s.` }
+    }), { status: 429, headers: { 'Retry-After': String(gate.retryAfter || 60) } });
+  }
+
+  // Per-user concurrency guard (only increment when request is accepted)
   const current = ACTIVE.get(uid) || 0;
   if (current >= MAX_USER_CONCURRENCY) {
     return new Response(JSON.stringify({ success: false, error: { code: 'too_many_requests', message: `Too many concurrent requests. Try again shortly.` } }), { status: 429 });
   }
   ACTIVE.set(uid, current + 1);
+  let released = false;
+  const release = () => {
+    if (released) return;
+    const now = ACTIVE.get(uid) || 1;
+    const next = Math.max(0, now - 1);
+    if (next <= 0) {
+      ACTIVE.delete(uid);
+    } else {
+      ACTIVE.set(uid, next);
+    }
+    released = true;
+  };
 
   try {
-    // Rate limit per user (use a stable placeholder in demo mode)
-    const gate = allow(uid);
-    if (!gate.ok) {
-      return new Response(JSON.stringify({
-        success: false,
-        error: { code: "rate_limited", message: `Too many requests. Try again in ${gate.retryAfter}s.` }
-      }), { status: 429, headers: { 'Retry-After': String(gate.retryAfter || 60) } });
-    }
-
     // Get Clerk JWT token to forward to backend
     const token = await getToken();
 
@@ -92,10 +103,31 @@ export async function POST(req: NextRequest) {
         });
         if (!upstream.ok || !upstream.body) {
           const err = await safeJson(upstream);
+          release();
           return Response.json(err || { success: false, error: { code: 'upstream_error', message: 'Backend stream failed' } }, { status: upstream.status || 502 });
         }
-        // Pipe upstream SSE through
-        return new Response(upstream.body, {
+        const reader = upstream.body.getReader();
+        const proxied = new ReadableStream<Uint8Array>({
+          async pull(controller) {
+            try {
+              const { done, value } = await reader.read();
+              if (done) {
+                release();
+                controller.close();
+                return;
+              }
+              if (value) controller.enqueue(value);
+            } catch (error) {
+              release();
+              controller.error(error);
+            }
+          },
+          async cancel(reason) {
+            release();
+            await reader.cancel(reason);
+          }
+        });
+        return new Response(proxied, {
           headers: {
             'Content-Type': 'text/event-stream; charset=utf-8',
             'Cache-Control': 'no-cache, no-transform',
@@ -159,7 +191,7 @@ export async function POST(req: NextRequest) {
               console.log(`[SSE] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
               controller.close();
               // Decrement concurrency on successful close
-              const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
+              release();
             } catch (error) {
               // One quick retry on initial failure
               try {
@@ -173,7 +205,7 @@ export async function POST(req: NextRequest) {
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.log(`[SSE:retry] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
                 controller.close();
-                const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
+                release();
               } catch (e2) {
                 const err = {
                   success: false,
@@ -188,7 +220,7 @@ export async function POST(req: NextRequest) {
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.warn(`[SSE:error] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
                 controller.close();
-                const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
+                release();
               }
             }
           };
@@ -198,7 +230,7 @@ export async function POST(req: NextRequest) {
           req.signal.addEventListener("abort", () => {
             // Optionally emit an abort event
             controller.close();
-            const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
+            release();
           });
         },
       });
@@ -225,6 +257,7 @@ export async function POST(req: NextRequest) {
       return Response.json(data, { status: encoreResponse.status });
     }
   } catch (error) {
+    release();
     console.error("Proxy error:", error);
     return Response.json(
       {
@@ -240,7 +273,7 @@ export async function POST(req: NextRequest) {
   finally {
     // Ensure decrement for non-streaming path and any early returns within try
     if (!stream) {
-      const now = ACTIVE.get(uid) || 1; ACTIVE.set(uid, Math.max(0, now - 1));
+      release();
     }
   }
 }

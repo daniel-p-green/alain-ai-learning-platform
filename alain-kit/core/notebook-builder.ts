@@ -66,6 +66,15 @@ export class NotebookBuilder {
     // Environment detection cell (Colab compatibility)
     cells.push(this.createEnvironmentCell());
 
+    // Secret management primer + .env loader/creator
+    cells.push(this.createEnvDocsCell());
+    cells.push(this.createDotenvCell());
+
+    // Provider setup (Poe-friendly OpenAI-compatible client)
+    cells.push(this.createProviderSetupCell());
+    // Quick provider smoke test
+    cells.push(this.createProviderSmokeCell());
+
     // Title and overview
     cells.push(this.createTitleCell(outline.title, outline.overview));
 
@@ -175,6 +184,164 @@ export class NotebookBuilder {
         "        output.enable_custom_widget_manager()\n",
         "    except Exception:\n",
         "        pass\n"
+      ],
+      execution_count: null as any,
+      outputs: [] as any[]
+    };
+  }
+
+  private createEnvDocsCell() {
+    return {
+      cell_type: "markdown" as const,
+      metadata: {},
+      source: [
+        "## API Keys and .env Files\\n\\n",
+        "Most AI providers require API keys. We never hardcode secrets in notebooks. Instead, we keep them in a local .env file and load them at runtime.\\n\\n",
+        "- Keep secrets out of version control (ensure `.env*` is ignored).\\n",
+        "- Prefer `.env.local` for machine-specific overrides; fall back to `.env`.\\n",
+        "- Common keys used here: `POE_API_KEY`, `OPENAI_API_KEY`, `HF_TOKEN`.\\n\\n",
+        "The next cell will:\\n",
+        "- Load `.env.local` or `.env` if present.\\n",
+        "- Prompt for any missing keys.\\n",
+        "- Optionally create/update `.env.local` (600 perms) so future runs just work.\\n"
+      ]
+    };
+  }
+
+  private createDotenvCell() {
+    return {
+      cell_type: "code" as const,
+      metadata: {},
+      source: [
+        "# 🔐 Load and manage secrets from .env\\n",
+        "import os, stat, pathlib\\n",
+        "from getpass import getpass\\n",
+        "\\n",
+        "# Install python-dotenv if missing\\n",
+        "try:\\n",
+        "    import dotenv  # type: ignore\\n",
+        "except Exception:\\n",
+        "    import sys, subprocess\\n",
+        "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'python-dotenv>=1.0.0'])\\n",
+        "    import dotenv  # type: ignore\\n",
+        "\\n",
+        "# Prefer .env.local over .env\\n",
+        "cwd = pathlib.Path.cwd()\\n",
+        "env_local = cwd / '.env.local'\\n",
+        "env_file = cwd / '.env'\\n",
+        "chosen = env_local if env_local.exists() else (env_file if env_file.exists() else None)\\n",
+        "if chosen:\\n",
+        "    dotenv.load_dotenv(dotenv_path=str(chosen))\\n",
+        "    print(f'Loaded env from {chosen.name}')\\n",
+        "else:\\n",
+        "    print('No .env.local or .env found; will prompt for keys.')\\n",
+        "\\n",
+        "# Keys we might use in this notebook\\n",
+        "keys = ['POE_API_KEY', 'OPENAI_API_KEY', 'HF_TOKEN']\\n",
+        "missing = [k for k in keys if not os.environ.get(k)]\\n",
+        "for k in missing:\\n",
+        "    val = getpass(f'Enter {k} (hidden, press Enter to skip): ')\\n",
+        "    if val:\\n",
+        "        os.environ[k] = val\\n",
+        "\\n",
+        "# Decide whether to persist to .env.local for convenience\\n",
+        "SAVE_TO_ENV = True  # set False to disable writing\\n",
+        "if SAVE_TO_ENV:\\n",
+        "    target = env_local\\n",
+        "    existing = {}\\n",
+        "    if target.exists():\\n",
+        "        try:\\n",
+        "            for line in target.read_text().splitlines():\\n",
+        "                if not line.strip() or line.strip().startswith('#') or '=' not in line:\\n",
+        "                    continue\\n",
+        "                k,v = line.split('=',1)\\n",
+        "                existing[k.strip()] = v.strip()\\n",
+        "        except Exception:\\n",
+        "            pass\\n",
+        "    for k in keys:\\n",
+        "        v = os.environ.get(k)\\n",
+        "        if v:\\n",
+        "            existing[k] = v\\n",
+        "    lines = []\\n",
+        "    for k,v in existing.items():\\n",
+        "        vv = v\\n",
+        "        if any(ch in v for ch in ' #\"\\\\'\\n'):\\n",
+        "            vv = \"\" + '"' + \"\" + v.replace('"', '\\\\"') + \"\" + '"' + \"\"\\n",
+        "        lines.append(f\"{k}={vv}\")\\n",
+        "    target.write_text('\\\\n'.join(lines) + '\\\\n')\\n",
+        "    try:\\n",
+        "        target.chmod(0o600)  # 600\\n",
+        "    except Exception:\\n",
+        "        pass\\n",
+        "    print(f'🔏 Wrote secrets to {target.name} (permissions 600)')\\n",
+        "\\n",
+        "# Simple recap (masked)\\n",
+        "def mask(v):\\n",
+        "    if not v: return '∅'\\n",
+        "    return v[:3] + '…' + v[-2:] if len(v) > 6 else '•••'\\n",
+        "for k in keys:\\n",
+        "    print(f'{k}:', mask(os.environ.get(k)))\\n"
+      ],
+      execution_count: null as any,
+      outputs: [] as any[]
+    } as any;
+  }
+
+  private createProviderSetupCell() {
+    return {
+      cell_type: "code" as const,
+      metadata: {},
+      source: [
+        "# 🌐 ALAIN Provider Setup (Poe)\n",
+        "# This notebook uses an OpenAI-compatible client.\n",
+        "# Set POE_API_KEY in your environment or enter when prompted.\n",
+        "import os\n",
+        "try:\n",
+        "    # Prefer Poe; fall back to OPENAI_API_KEY if set\n",
+        "    poe = os.environ.get('POE_API_KEY')\n",
+        "    if poe:\n",
+        "        os.environ.setdefault('OPENAI_BASE_URL', 'https://api.poe.com/v1')\n",
+        "        os.environ.setdefault('OPENAI_API_KEY', poe)\n",
+        "    # Prompt if no key present\n",
+        "    if not os.environ.get('OPENAI_API_KEY'):\n",
+        "        from getpass import getpass\n",
+        "        os.environ['OPENAI_API_KEY'] = getpass('Enter POE_API_KEY (input hidden): ')\n",
+        "        os.environ.setdefault('OPENAI_BASE_URL', 'https://api.poe.com/v1')\n",
+        "    # Ensure openai client is installed\n",
+        "    try:\n",
+        "        from openai import OpenAI  # type: ignore\n",
+        "    except Exception:\n",
+        "        import sys, subprocess\n",
+        "        subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'openai>=1.34.0'])\n",
+        "        from openai import OpenAI  # type: ignore\n",
+        "    # Create client\n",
+        "    from openai import OpenAI\n",
+        "    client = OpenAI(base_url=os.environ['OPENAI_BASE_URL'], api_key=os.environ['OPENAI_API_KEY'])\n",
+        "    print('✅ Provider ready:', os.environ.get('OPENAI_BASE_URL'))\n",
+        "except Exception as e:\n",
+        "    print('⚠️ Provider setup failed:', e)\n"
+      ],
+      execution_count: null as any,
+      outputs: [] as any[]
+    };
+  }
+
+  private createProviderSmokeCell() {
+    return {
+      cell_type: "code" as const,
+      metadata: {},
+      source: [
+        "# 🔎 Provider Smoke Test (1-token)\n",
+        "import os\n",
+        "model = os.environ.get('ALAIN_MODEL') or 'gpt-4o-mini'\n",
+        "if 'client' not in globals():\n",
+        "    print('⚠️ Provider client not available; skipping smoke test')\n",
+        "else:\n",
+        "    try:\n",
+        "        resp = client.chat.completions.create(model=model, messages=[{\"role\":\"user\",\"content\":\"ping\"}], max_tokens=1)\n",
+        "        print('✅ Smoke OK:', resp.choices[0].message.content)\n",
+        "    except Exception as e:\n",
+        "        print('⚠️ Smoke test failed:', e)\n"
       ],
       execution_count: null as any,
       outputs: [] as any[]
