@@ -1,5 +1,6 @@
 import { extractJsonLoose } from './json-utils';
 import { createLogger, timeIt, trackEvent, metrics } from './obs';
+import { capsFor } from './providers';
 
 /**
  * ALAIN-Kit Outline Generator
@@ -103,20 +104,44 @@ export class OutlineGenerator {
     const context: string | undefined = (customPrompt as any)?.context;
     
     const prompt = this.buildOutlinePrompt(subject, difficulty, context);
-    
-    const body: any = {
-      model,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: (customPrompt as any)?.temperature || 0.1,
-      max_tokens: (customPrompt as any)?.maxTokens || 2000
-    };
-    // Some local OpenAI-compatible servers (e.g., LM Studio) reject response_format=json_object.
-    if (!this.isLocalBaseUrl()) {
-      body.response_format = { type: 'json_object' } as const;
-    }
-    const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, apiKey, body);
+    const systemPrompt = this.buildSystemPrompt();
+    const providerCaps = capsFor(this.baseUrl);
+    const allowTemperature = supportsTemperature(model);
 
-    let outline = this.parseOutlineResponse(content);
+    let outline: NotebookOutline | undefined;
+    let lastError: any;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      const userPrompt = attempt === 1
+        ? prompt
+        : this.buildRetryOutlinePrompt(subject, difficulty, context);
+      const body: any = {
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        max_tokens: (customPrompt as any)?.maxTokens || 2000
+      };
+      if (allowTemperature) {
+        body.temperature = attempt === 1 ? ((customPrompt as any)?.temperature || 0.1) : 0;
+      }
+      if (providerCaps.allowResponseFormat) {
+        body.response_format = { type: 'json_object' } as const;
+      }
+      const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, apiKey, body);
+      try {
+        outline = this.parseOutlineResponse(content);
+        break;
+      } catch (error) {
+        lastError = error;
+        if (attempt === 2) {
+          throw error;
+        }
+      }
+    }
+    if (!outline) {
+      throw lastError || new Error('No outline JSON generated');
+    }
     let validation = this.validateOutline(outline);
     if (!validation.isValid) {
       try {
@@ -215,6 +240,10 @@ Generate outline for: ${subject}
 Audience: absolute beginners (ELI5, non-developers). Use analogies and avoid jargon.${ctx}`;
   }
 
+  private buildRetryOutlinePrompt(subject: string, difficulty: string, context?: string): string {
+    return `${this.buildOutlinePrompt(subject, difficulty, context)}\n\nYour previous reply was not valid JSON. Reply again with ONLY the OutlineJSON object (start with {, end with }). No commentary.`;
+  }
+
   private parseOutlineResponse(content: string): NotebookOutline {
     try { 
       return JSON.parse(content); 
@@ -229,6 +258,10 @@ Audience: absolute beginners (ELI5, non-developers). Use analogies and avoid jar
     
     this.log.error('outline_json_extract_failed', { head: content.substring(0, 200) });
     throw new Error('No valid JSON found in outline response');
+  }
+
+  private buildSystemPrompt(): string {
+    return 'You are ALAIN-Teacher, an assistant that must reply with strict JSON objects that match the OutlineJSON schema. Never include natural language commentary, markdown, or code fences.';
   }
 
   /**
@@ -265,6 +298,7 @@ Audience: absolute beginners (ELI5, non-developers). Use analogies and avoid jar
 
   private async repairOutline(outline: NotebookOutline, issues: string[], ctx: { model: string; apiKey: string; difficulty: 'beginner'|'intermediate'|'advanced'; }): Promise<NotebookOutline> {
     const endpoint = this.baseUrl || 'https://api.poe.com';
+    const providerCaps = capsFor(this.baseUrl);
     const repairPrompt = `You previously generated a JSON outline for a tutorial. It needs repair to meet constraints.\n`+
       `Return ONLY valid JSON (start with { and end with }). Fix the following issues: ${issues.join('; ')}.\n`+
       `Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives.\n`+
@@ -272,12 +306,18 @@ Audience: absolute beginners (ELI5, non-developers). Use analogies and avoid jar
 
     const reqBody: any = {
       model: ctx.model,
-      messages: [{ role: 'user', content: repairPrompt }],
-      temperature: 0.0,
+      messages: [
+        { role: 'system', content: this.buildSystemPrompt() },
+        { role: 'user', content: repairPrompt },
+        { role: 'user', content: 'Return ONLY the repaired OutlineJSON object. Start with { and end with }.' }
+      ],
       top_p: 1.0,
       max_tokens: 900
     };
-    if (!this.isLocalBaseUrl()) {
+    if (supportsTemperature(ctx.model)) {
+      reqBody.temperature = 0.0;
+    }
+    if (providerCaps.allowResponseFormat) {
       reqBody.response_format = { type: 'json_object' };
     }
     const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, ctx.apiKey, reqBody);
@@ -355,8 +395,4 @@ Audience: absolute beginners (ELI5, non-developers). Use analogies and avoid jar
     throw new Error('Max retries exceeded');
   }
 
-  private isLocalBaseUrl(): boolean {
-    const u = this.baseUrl || '';
-    return /localhost|127\.0\.0\.1/i.test(u);
-  }
 }

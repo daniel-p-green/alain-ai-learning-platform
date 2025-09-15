@@ -1,3 +1,5 @@
+import { supportsTemperature } from '../core/model-caps';
+
 /**
  * ALAIN-Kit Colab Validator
  * 
@@ -141,7 +143,11 @@ else:
           if (!pattern.pattern.test(source)) { return; }
           if (pattern.type === 'subprocess_pip') {
             const normalized = source.replace(/\r?\n/g, '\n');
-            const hasGuard = /if\s+IN_COLAB[\s\S]+?run_line_magic\('pip'/.test(normalized) || /if\s+IN_COLAB[\s\S]+?_subprocess\.check_call/.test(normalized);
+            const hasGuard = /if\s+IN_COLAB/.test(normalized) && (
+              normalized.includes("run_line_magic('pip'") ||
+              normalized.includes('run_line_magic("pip"') ||
+              normalized.includes('_subprocess.check_call(')
+            );
             if (hasGuard) { return; }
           }
           issues.push({

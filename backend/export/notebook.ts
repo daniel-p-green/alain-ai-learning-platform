@@ -61,6 +61,33 @@ export function buildNotebook(
   }
   cells.push({ cell_type: "markdown", metadata: {}, source: intro });
 
+  // 1b) Environment detection (Colab/local)
+  cells.push({
+    cell_type: "code",
+    metadata: {},
+    source: [
+      "# 🔧 Environment Detection and Setup\\n",
+      "import sys\\n",
+      "import os\\n",
+      "\\n",
+      "# Detect environment\\n",
+      "IN_COLAB = 'google.colab' in sys.modules\\n",
+      "env_label = 'Google Colab' if IN_COLAB else 'Local'\\n",
+      "print(f'Environment: {env_label}')\\n",
+      "\\n",
+      "# Setup environment-specific configurations\\n",
+      "if IN_COLAB:\\n",
+      "    print('📝 Colab-specific optimizations enabled')\\n",
+      "    try:\\n",
+      "        from google.colab import output\\n",
+      "        output.enable_custom_widget_manager()\\n",
+      "    except Exception:\\n",
+      "        pass\\n"
+    ],
+    outputs: [],
+    execution_count: null,
+  });
+
   // Reproducibility tips (inline)
   intro.push("\n---\n\n");
   intro.push("### Reproducibility Tips\n");
@@ -121,16 +148,110 @@ export function buildNotebook(
     execution_count: null,
   });
 
+  // 2c) API Keys and .env Files (primer)
+  cells.push({
+    cell_type: "markdown",
+    metadata: {},
+    source: [
+      "## API Keys and .env Files\\n\\n",
+      "Many providers require API keys. Do not hardcode secrets in notebooks. Use a local .env file that the notebook loads at runtime.\\n\\n",
+      "- Why .env? Keeps secrets out of source control and tutorials.\\n",
+      "- Where? Place `.env.local` (preferred) or `.env` in the same folder as this notebook. `.env.local` overrides `.env`.\\n",
+      "- What keys? Common: `POE_API_KEY` (Poe-compatible servers), `OPENAI_API_KEY` (OpenAI-compatible), `HF_TOKEN` (Hugging Face).\\n",
+      "- Find your keys: Poe-compatible provider dashboard; Hugging Face token: https://huggingface.co/settings/tokens.\\n\\n",
+      "The next cell will: load `.env.local`/`.env`, prompt for missing keys, and optionally write `.env.local` with secure permissions so future runs just work."
+    ]
+  });
+
+  // 2d) Load and manage secrets from .env
+  cells.push({
+    cell_type: "code",
+    metadata: {},
+    source: [
+      "# 🔐 Load and manage secrets from .env\\n",
+      "# This cell will: (1) load .env.local/.env, (2) prompt for missing keys, (3) optionally write .env.local (0600).\\n",
+      "# Location: place your .env files next to this notebook (recommended) or at project root.\\n",
+      "# Disable writing: set SAVE_TO_ENV = False below.\\n",
+      "import os, pathlib\\n",
+      "from getpass import getpass\\n",
+      "\\n",
+      "# Install python-dotenv if missing\\n",
+      "try:\\n",
+      "    import dotenv  # type: ignore\\n",
+      "except Exception:\\n",
+      "    import sys, subprocess\\n",
+      "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'python-dotenv>=1.0.0'])\\n",
+      "    import dotenv  # type: ignore\\n",
+      "\\n",
+      "# Prefer .env.local over .env\\n",
+      "cwd = pathlib.Path.cwd()\\n",
+      "env_local = cwd / '.env.local'\\n",
+      "env_file = cwd / '.env'\\n",
+      "chosen = env_local if env_local.exists() else (env_file if env_file.exists() else None)\\n",
+      "if chosen:\\n",
+      "    dotenv.load_dotenv(dotenv_path=str(chosen))\\n",
+      "    print(f'Loaded env from {chosen.name}')\\n",
+      "else:\\n",
+      "    print('No .env.local or .env found; will prompt for keys.')\\n",
+      "\\n",
+      "# Keys we might use in this notebook\\n",
+      "keys = ['POE_API_KEY', 'OPENAI_API_KEY', 'HF_TOKEN']\\n",
+      "missing = [k for k in keys if not os.environ.get(k)]\\n",
+      "for k in missing:\\n",
+      "    val = getpass(f'Enter {k} (hidden, press Enter to skip): ')\\n",
+      "    if val:\\n",
+      "        os.environ[k] = val\\n",
+      "\\n",
+      "# Decide whether to persist to .env.local for convenience\\n",
+      "SAVE_TO_ENV = True  # set False to disable writing\\n",
+      "if SAVE_TO_ENV:\\n",
+      "    target = env_local\\n",
+      "    existing = {}\\n",
+      "    if target.exists():\\n",
+      "        try:\\n",
+      "            for line in target.read_text().splitlines():\\n",
+      "                if not line.strip() or line.strip().startswith('#') or '=' not in line:\\n",
+      "                    continue\\n",
+      "                k,v = line.split('=',1)\\n",
+      "                existing[k.strip()] = v.strip()\\n",
+      "        except Exception:\\n",
+      "            pass\\n",
+      "    for k in keys:\\n",
+      "        v = os.environ.get(k)\\n",
+      "        if v:\\n",
+      "            existing[k] = v\\n",
+      "    lines = []\\n",
+      "    for k,v in existing.items():\\n",
+      "        # Always quote; escape backslashes and double quotes for safety\\n",
+      "        escaped = v.replace(\"\\\\\", \"\\\\\\\\\")\\n",
+      "        escaped = escaped.replace(\"\\\"\", \"\\\\\"\")\\n",
+      "        vv = f'\"{escaped}\"'\\n",
+      "        lines.append(f\"{k}={vv}\")\\n",
+      "    target.write_text('\\\\n'.join(lines) + '\\\\n')\\n",
+      "    try:\\n",
+      "        target.chmod(0o600)  # 600\\n",
+      "    except Exception:\\n",
+      "        pass\\n",
+      "    print(f'🔏 Wrote secrets to {target.name} (permissions 600)')\\n",
+      "\\n",
+      "# Simple recap (masked)\\n",
+      "def mask(v):\\n",
+      "    if not v: return '∅'\\n",
+      "    return v[:3] + '…' + v[-2:] if len(v) > 6 else '•••'\\n",
+      "for k in keys:\\n",
+      "    print(f'{k}:', mask(os.environ.get(k)))\\n",
+    ],
+    outputs: [],
+    execution_count: null,
+  });
+
   // 3) Provider env/config
   // Provide a sensible default for local OpenAI-compatible runtimes.
   // LM Studio commonly runs on :1234; Ollama on :11434.
   const envSource = [
-    "# Configure OpenAI-compatible client\n",
+    "# Configure OpenAI-compatible client (maps POE_API_KEY if present)\n",
     "import os\n",
-    "from dotenv import load_dotenv\n",
     "from getpass import getpass\n",
-    "# Load environment variables from .env file if it exists\n",
-    "load_dotenv()\n",
     "# Try to read secrets from Colab userdata if available\n",
     "try:\n",
     "  from google.colab import userdata  # type: ignore\n",
@@ -140,8 +261,9 @@ export function buildNotebook(
     "  _poe = None; _openai = None\n",
     `PROVIDER = "${meta.provider}"  # "poe" or "openai-compatible"\n`,
     `os.environ.setdefault("OPENAI_BASE_URL", "${providerBase}")\n`,
-    `# Set your API key. For Poe, set POE_API_KEY; for local (LM Studio/Ollama) any non-empty string works.\n`,
-    `os.environ.setdefault("OPENAI_API_KEY", _poe or _openai or os.getenv("POE_API_KEY") or os.getenv("OPENAI_API_KEY") or "")\n`,
+    `poe = _poe or os.getenv("POE_API_KEY")\n`,
+    `if poe:\n    os.environ.setdefault("OPENAI_BASE_URL", "https://api.poe.com/v1")\n    os.environ.setdefault("OPENAI_API_KEY", poe)\n`,
+    `elif _openai and not os.getenv("OPENAI_API_KEY"):\n    os.environ["OPENAI_API_KEY"] = _openai\n`,
     "# Local-friendly defaults to avoid prompting beginners\n",
     "if (PROVIDER == 'openai-compatible') and not os.environ.get('OPENAI_API_KEY'):\n",
     "  base = os.environ.get('OPENAI_BASE_URL','')\n",
@@ -151,7 +273,7 @@ export function buildNotebook(
     "    os.environ['OPENAI_API_KEY'] = 'ollama'\n",
     "# Fallback interactive prompt if still missing\n",
     "if not os.environ.get('OPENAI_API_KEY'):\n",
-    "  os.environ['OPENAI_API_KEY'] = getpass('Enter API key (input hidden): ')\n",
+    "  os.environ['OPENAI_API_KEY'] = getpass('Enter POE_API_KEY or OPENAI_API_KEY (hidden): ')\n",
     "# OPENAI_BASE_URL and OPENAI_API_KEY environment variables are set above\n",
   ];
   cells.push({ cell_type: "code", metadata: {}, source: envSource, outputs: [], execution_count: null });

@@ -5,6 +5,8 @@
  * Ensures beginner-friendly content with executable code and proper structure.
  */
 import { createLogger, timeIt, trackEvent, metrics } from './obs';
+import { capsFor } from './providers';
+import { supportsTemperature } from './model-caps';
 
 export interface NotebookCell {
   cell_type: 'markdown' | 'code';
@@ -76,25 +78,28 @@ export class SectionGenerator {
     const prompt = this.buildSectionPrompt(outline, sectionNumber, previousSections, modelReference);
     
     const endpoint = this.baseUrl || 'https://api.poe.com';
-    
+    const providerCaps = capsFor(this.baseUrl);
+
     let response: Response;
     let data: any;
     
     try {
+      const body: any = {
+        model: modelReference,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: customPrompt?.maxTokens || this.TOKEN_LIMIT,
+      };
+      if (supportsTemperature(modelReference)) {
+        body.temperature = customPrompt?.temperature ?? 0.2;
+      }
+      if (providerCaps.allowResponseFormat) body.response_format = { type: 'json_object' as const };
       response = await fetch(`${endpoint}/v1/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          model: modelReference,
-          messages: [{ role: 'user', content: prompt }],
-          temperature: customPrompt?.temperature || 0.2,
-          max_tokens: customPrompt?.maxTokens || this.TOKEN_LIMIT,
-          // Prefer JSON mode for strict parsing when provider supports it
-          response_format: { type: 'json_object' as const }
-        })
+        body: JSON.stringify(body)
       });
       
       if (!response.ok) {
@@ -185,22 +190,32 @@ Generate content for section ${sectionNumber} only.`;
     try {
       return JSON.parse(content);
     } catch (e) {
-      console.warn('Section JSON parse failed. Attempting loose extraction.');
-      // Extract JSON boundaries
-      const jsonStart = content.indexOf('{');
-      const jsonEnd = content.lastIndexOf('}');
-      
-      if (jsonStart !== -1 && jsonEnd !== -1) {
-        try {
-          return JSON.parse(content.substring(jsonStart, jsonEnd + 1));
-        } catch (e2) {
-          // Fallback section if parsing fails
-          return this.createFallbackSection(sectionNumber, content);
-        }
+      console.warn('Section JSON parse failed. Attempting bracket-matched extraction.');
+      const extracted = this.extractFirstJsonObject(content);
+      if (extracted) {
+        try { return JSON.parse(extracted); } catch {}
       }
-      
       return this.createFallbackSection(sectionNumber, content);
     }
+  }
+
+  private extractFirstJsonObject(text: string): string | null {
+    const s = String(text || '');
+    let start = -1;
+    let depth = 0;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (ch === '{') {
+        if (start === -1) start = i;
+        depth++;
+      } else if (ch === '}') {
+        if (depth > 0) depth--;
+        if (depth === 0 && start !== -1) {
+          return s.slice(start, i + 1);
+        }
+      }
+    }
+    return null;
   }
 
   private createFallbackSection(sectionNumber: number, content: string): GeneratedSection {
