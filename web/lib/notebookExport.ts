@@ -3,7 +3,7 @@ const MAX_TOKENS = Number(process.env.NOTEBOOK_MAX_TOKENS || '400');
 export function buildNotebookFromLesson(lesson: any) {
   const cells: any[] = [];
   const meta = lesson || {};
-  const title = meta.title || 'Lesson';
+  const title = meta.title || 'Manual';
   const desc = meta.description || '';
   
   // Attribution comment cell
@@ -91,7 +91,16 @@ export function buildNotebookFromLesson(lesson: any) {
   }
   return {
     cells,
-    metadata: { kernelspec: { name: 'python3', language: 'python', display_name: 'Python 3' }, language_info: { name: 'python' } },
+    metadata: {
+      kernelspec: { name: 'python3', language: 'python', display_name: 'Python 3' },
+      language_info: { name: 'python' },
+      alain: {
+        schemaVersion: '1.0.0',
+        createdAt: new Date().toISOString(),
+        title,
+        builder: { name: 'alain-web-export', version: '0.1.0' }
+      }
+    },
     nbformat: 4,
     nbformat_minor: 5,
   };
