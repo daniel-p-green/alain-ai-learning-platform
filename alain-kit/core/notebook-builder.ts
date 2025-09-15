@@ -7,6 +7,18 @@
 
 import { NotebookOutline } from './outline-generator';
 import { GeneratedSection } from './section-generator';
+import { createLogger, trackEvent } from './obs';
+
+export interface Assessment {
+  question: string;
+  options: string[];
+  correct_index: number;
+  explanation: string;
+}
+
+export interface Setup {
+  requirements?: string[];
+}
 
 export interface JupyterNotebook {
   cells: Array<{
@@ -24,17 +36,32 @@ export interface JupyterNotebook {
       name: string;
       version: string;
     };
+    alain?: {
+      schemaVersion: string;
+      createdAt: string;
+      title?: string;
+      builder?: { name: string; version?: string };
+    };
   };
   nbformat: number;
   nbformat_minor: number;
 }
 
 export class NotebookBuilder {
+  private log = createLogger('NotebookBuilder');
   /**
    * Build complete Jupyter notebook from outline and sections
    */
   buildNotebook(outline: NotebookOutline, sections: GeneratedSection[]): JupyterNotebook {
-    const cells = [];
+    const started = Date.now();
+    // Validate inputs
+    if (!outline?.title || !outline.overview) {
+      throw new Error('Invalid outline: missing title or overview');
+    }
+    if (!Array.isArray(sections)) {
+      throw new Error('Sections must be an array');
+    }
+    const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [];
 
     // Environment detection cell (Colab compatibility)
     cells.push(this.createEnvironmentCell());
@@ -52,7 +79,8 @@ export class NotebookBuilder {
 
     // Setup section
     if (outline.setup) {
-      cells.push(this.createSetupCell(outline.setup));
+      const setupCells = this.createSetupCells(outline.setup);
+      setupCells.forEach(cell => cells.push(cell));
     }
 
     // Ensure ipywidgets is available for interactive MCQs
@@ -67,17 +95,24 @@ export class NotebookBuilder {
         "except Exception:\n",
         "    import sys, subprocess\n",
         "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'ipywidgets>=8.0.0'])\n"
-      ]
-    });
+      ],
+      execution_count: null as any,
+      outputs: [] as any[]
+    } as any);
 
     // Generated sections
     sections.forEach(section => {
       section.content.forEach(cell => {
-        cells.push({
+        const obj: any = {
           cell_type: cell.cell_type,
           metadata: {},
           source: this.formatCellSource(cell.source)
-        });
+        };
+        if (cell.cell_type === 'code') {
+          obj.execution_count = null;
+          obj.outputs = [];
+        }
+        cells.push(obj);
       });
     });
 
@@ -90,7 +125,8 @@ export class NotebookBuilder {
     // Troubleshooting guide
     cells.push(this.createTroubleshootingCell());
 
-    return {
+    const createdAt = new Date().toISOString();
+    const nb = {
       cells,
       metadata: {
         kernelspec: {
@@ -100,12 +136,22 @@ export class NotebookBuilder {
         },
         language_info: {
           name: "python",
-          version: "3.8.0"
+          version: "3"
+        },
+        alain: {
+          schemaVersion: "1.0.0",
+          createdAt,
+          title: outline.title,
+          builder: { name: "alain-kit", version: "0.1.0" }
         }
       },
       nbformat: 4,
       nbformat_minor: 4
     };
+    const dur = Date.now() - started;
+    try { trackEvent('alain_notebook_built', { cells: cells.length, sections: sections.length, duration_ms: dur }); } catch {}
+    this.log.info('timing', { op: 'buildNotebook', duration_ms: dur, cells: cells.length, sections: sections.length });
+    return nb;
   }
 
   private createEnvironmentCell() {
@@ -123,8 +169,15 @@ export class NotebookBuilder {
         "\n",
         "# Setup environment-specific configurations\n",
         "if IN_COLAB:\n",
-        "    print('📝 Colab-specific optimizations enabled')\n"
-      ]
+        "    print('📝 Colab-specific optimizations enabled')\n",
+        "    try:\n",
+        "        from google.colab import output\n",
+        "        output.enable_custom_widget_manager()\n",
+        "    except Exception:\n",
+        "        pass\n"
+      ],
+      execution_count: null as any,
+      outputs: [] as any[]
     };
   }
 
@@ -159,8 +212,8 @@ export class NotebookBuilder {
     };
   }
 
-  private createSetupCell(setup: any) {
-    const cells = [
+  private createSetupCells(setup: Setup): Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> {
+    const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [
       {
         cell_type: "markdown" as const,
         metadata: {},
@@ -168,12 +221,16 @@ export class NotebookBuilder {
       }
     ];
 
-    if (setup.requirements?.length > 0) {
+    if (setup.requirements && setup.requirements.length > 0) {
       cells.push({
         cell_type: "code" as const,
         metadata: {},
         source: [
           "# Install packages (Colab-compatible)\n",
+          "# Check if we're in Colab\n",
+          "import sys\n",
+          "IN_COLAB = 'google.colab' in sys.modules\n",
+          "\n",
           "if IN_COLAB:\n",
           `    !pip install -q ${setup.requirements.join(' ')}\n`,
           "else:\n",
@@ -185,11 +242,11 @@ export class NotebookBuilder {
       });
     }
 
-    return cells[0]; // Return first cell, additional setup handled in sections
+    return cells;
   }
 
-  private createAssessmentsCells(assessments: any[]) {
-    const cells: any[] = [];
+  private createAssessmentsCells(assessments: Assessment[]) {
+    const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [];
     cells.push({
       cell_type: 'markdown' as const,
       metadata: {},
@@ -206,11 +263,12 @@ export class NotebookBuilder {
         'import ipywidgets as widgets\n',
         'from IPython.display import display, Markdown\n\n',
         'def render_mcq(question, options, correct_index, explanation):\n',
-        "    rb = widgets.RadioButtons(options=[f'{chr(65+i)}. '+opt for i,opt in enumerate(options)], description='')\n",
+        "    # Use (label, value) so rb.value is the numeric index\n",
+        "    rb = widgets.RadioButtons(options=[(f'{chr(65+i)}. '+opt, i) for i,opt in enumerate(options)], description='')\n",
         "    grade_btn = widgets.Button(description='Grade', button_style='primary')\n",
         "    feedback = widgets.HTML(value='')\n",
         '    def on_grade(_):\n',
-        '        sel = rb.index\n',
+        '        sel = rb.value\n',
         "        if sel is None:\n            feedback.value = '<p>⚠️ Please select an option.</p>'\n            return\n",
         '        if sel == correct_index:\n',
         "            feedback.value = '<p>✅ Correct!</p>'\n",
@@ -222,11 +280,27 @@ export class NotebookBuilder {
         '    display(rb)\n',
         '    display(grade_btn)\n',
         '    display(feedback)\n'
-      ]
-    });
+      ],
+      execution_count: null as any,
+      outputs: [] as any[]
+    } as any);
     assessments.forEach((mcq, i) => {
-      const call = `render_mcq(${JSON.stringify(mcq.question)}, ${JSON.stringify(mcq.options)}, ${mcq.correct_index}, ${JSON.stringify(mcq.explanation)})\n`;
-      cells.push({ cell_type: 'code', metadata: {}, source: [call] });
+      // Validate MCQ structure
+      if (!mcq.question || !Array.isArray(mcq.options) || typeof mcq.correct_index !== 'number' || !mcq.explanation) {
+        console.warn(`Skipping invalid MCQ at index ${i}:`, mcq);
+        return;
+      }
+      if (mcq.correct_index < 0 || mcq.correct_index >= mcq.options.length) {
+        console.warn(`Skipping MCQ with out-of-range correct_index at ${i}`);
+        return;
+      }
+      
+      try {
+        const call = `render_mcq(${JSON.stringify(mcq.question)}, ${JSON.stringify(mcq.options)}, ${mcq.correct_index}, ${JSON.stringify(mcq.explanation)})\n`;
+        cells.push({ cell_type: 'code' as const, metadata: {}, source: [call], execution_count: null as any, outputs: [] as any[] } as any);
+      } catch (error) {
+        console.warn(`Failed to serialize MCQ at index ${i}:`, error);
+      }
     });
     return cells;
   }
@@ -252,7 +326,8 @@ export class NotebookBuilder {
     };
   }
 
-  private formatCellSource(source: string): string[] {
-    return source.split('\n').map(line => line + '\n');
+  private formatCellSource(source: string | string[]): string[] {
+    if (Array.isArray(source)) return source.map(s => (s.endsWith('\n') ? s : s + '\n'));
+    return String(source || '').split('\n').map(line => line + '\n');
   }
 }

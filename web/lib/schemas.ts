@@ -45,6 +45,23 @@ export const ExportNotebookSchema = z.object({
   metadata: z.record(z.any()).optional(),
 });
 
+// ALAIN manifest (embedded or sidecar)
+export const AlainEmbeddedSchema = z.object({
+  schemaVersion: z.string(),
+  createdAt: z.string(),
+  title: z.string().optional(),
+  builder: z.object({ name: z.string(), version: z.string().optional() }).optional(),
+}).strict();
+
+export const AlainSidecarSchema = z.object({
+  schemaVersion: z.string(),
+  generatedAt: z.string(),
+  title: z.string().optional().default(''),
+  notebookFile: z.string(),
+  integrity: z.object({ nbSha256: z.string() }).strict(),
+  alain: AlainEmbeddedSchema.nullable().optional(),
+}).strict();
+
 // Hugging Face Model Info (as returned by our web API proxy)
 export const HFModelInfoSchema = z.object({
   license: z.string().nullable().optional(),
@@ -59,6 +76,8 @@ export type ProvidersResponse = z.infer<typeof ProvidersResponseSchema>;
 export type GenerateSuccess = z.infer<typeof GenerateSuccessSchema>;
 export type APIError = z.infer<typeof APIErrorSchema>;
 export type ExportNotebook = z.infer<typeof ExportNotebookSchema>;
+export type AlainEmbedded = z.infer<typeof AlainEmbeddedSchema>;
+export type AlainSidecar = z.infer<typeof AlainSidecarSchema>;
 
 // Helpers
 export function isSuccessEnvelope(x: unknown): x is GenerateSuccess {

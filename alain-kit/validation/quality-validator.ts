@@ -63,7 +63,8 @@ export class QualityValidator {
         if (lower.includes('question') || /knowledge\s*check/i.test(source)) {
           structure.hasAssessments = true;
         }
-        if (source.match(/^##\s+Step\s+\d+/i)) stepCount++;
+        // Count both "Step N" and fallback "Section N" headings
+        if (/^##\s+(Step|Section)\s+\d+/i.test(source)) stepCount++;
       } else if (cell.cell_type === 'code') {
         codeCells++;
         // Recognize MCQ helper usage as assessments signal
