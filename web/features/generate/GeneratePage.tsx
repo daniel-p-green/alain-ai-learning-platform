@@ -247,7 +247,7 @@ export default function GenerateLessonPage() {
             }
           : undefined,
       });
-      setSnackbar('Lesson ready! Open the tutorial or export to Colab.');
+      setSnackbar('Manual ready! Open it or export to Colab.');
       setTimeout(() => setSnackbar(null), 2500);
     } catch (e: unknown) {
       if (e instanceof APIClientError) {
@@ -266,8 +266,8 @@ export default function GenerateLessonPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
-      <h1 className="text-2xl font-black font-display">Generate Lesson</h1>
-      <p className="text-sm text-ink-700">Works offline. Same UX as cloud. Export to Jupyter.</p>
+      <h1 className="text-2xl font-black font-display">Generate Manual</h1>
+      <p className="text-sm text-ink-700">Recommended defaults. Works offline or hosted. Export to Jupyter/Colab.</p>
       {envBanner && (
         <div className="mt-2 text-xs text-ink-700 border border-ink-100 rounded-card bg-paper-0 p-2">
           <span className="font-medium">Env:</span> {envBanner.offlineMode ? 'Offline' : 'Hosted'} · Provider: {envBanner.teacherProvider || 'unknown'} · Base URL: {envBanner.openaiBaseUrl || 'n/a'}

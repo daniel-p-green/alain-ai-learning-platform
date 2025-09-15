@@ -19,6 +19,23 @@ cd /Users/danielgreen/Downloads/OSS\ hackathon/alain-ai-learning-platform
 npm install
 ```
 
+### JS/TS Unit Tests (Vitest)
+- Run all JS/TS unit tests from the repo root (projects: backend + web):
+```bash
+npx vitest run --reporter=dot
+```
+- Notes:
+  - E2E Playwright specs under `web/e2e/**` are excluded from Vitest.
+  - Backend “tutorials” DB/runtime tests are skipped unless `ENCORE_RUNTIME_LIB` is set (see backend/TESTING.md).
+  - HF metadata fetch runs in offline mode during tests to avoid network flakiness.
+
+### Enable Encore-Dependent Backend Tests
+Some backend tutorial tests require the Encore runtime library. To run them:
+```bash
+export ENCORE_RUNTIME_LIB="$(node -e "console.log(require.resolve('encore.dev/dist/internal/runtime/napi/encore-runtime.node'))")"
+npx vitest run --reporter=dot
+```
+
 ### Required Environment Variables
 In your shell (or `.env` you source before running):
 ```bash

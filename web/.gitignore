@@ -1,1 +1,12 @@
 .vercel
+# Playwright/Vite/Vitest artifacts
+test-results/
+playwright-report/
+coverage/
+*.trace
+*.log
+
+# Next.js build
+.next/
+.env.local
+tsconfig.tsbuildinfo

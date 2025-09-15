@@ -3,9 +3,9 @@
 This document summarizes the P0 implementation work, feature flags, and how to verify.
 
 ## What changed
-- New page: `/home` — simplified hero + clear CTAs.
-- New shell applied to default `/generate`, `/notebooks`, `/notebooks/[id]`, and `/settings` via a route group layout `(app)`; legacy Generate kept at `/v1/generate`.
-- NavBar links now point to `/generate` (new shell) directly. Optional `New Home` link is still flag‑gated.
+- New home at `/` — simplified hero + clear CTAs.
+- App shell applied to `/generate`, `/notebooks`, `/notebooks/[id]`.
+- NavBar links now point to `/generate` directly.
 - Generate page:
   - Hides the "Force fallback mode" checkbox unless `NEXT_PUBLIC_ENABLE_FALLBACK_UI=1`.
   - Hides the "Web-only" research option unless enabled via the same flag.
@@ -14,28 +14,26 @@ This document summarizes the P0 implementation work, feature flags, and how to v
   - Added Vitest config and unit tests for schemas and API response parsing.
 
 ## Feature flags (build-time)
-- `NEXT_PUBLIC_NEW_HOME=1` — add a "New Home" link and enable `/home` trial.
+- `NEXT_PUBLIC_SITE_URL` — used for absolute Open Graph/Twitter image URLs.
 - `NEXT_PUBLIC_ENABLE_FALLBACK_UI=1` — show fallback checkbox and web-only research option on Generate.
 
 ## Files
-- Pages: `web/app/home/page.tsx`, `web/app/(app)/layout.tsx`, `web/app/(app)/generate/page.tsx`, `web/app/v1/generate/page.tsx`
-- Nav: `web/components/NavBar.tsx` (flagged links)
-- Generate tweaks: `web/app/(app)/generate/page.tsx`
+- Pages: `web/app/page.tsx`, `web/app/layout.tsx`, `web/app/generate/page.tsx`
+- Nav: `web/components/NavBar.tsx`
+- Generate tweaks: `web/app/generate/page.tsx`
 - Typed API: `web/lib/schemas.ts`, `web/lib/api.ts`
 - Tests: `web/__tests__/schemas.test.ts`, `web/__tests__/api-parse.test.ts`, `web/vitest.config.ts`
 - Requirements: `docs/REQUIREMENTS_UI_MVP.md`
 
 ## Verify locally
 1. `cd web && npm install`
-2. `npm run dev` and set flags in `.env.local`:
-   - `NEXT_PUBLIC_NEW_HOME=1`
-   - `NEXT_PUBLIC_NEW_SHELL=1`
-3. Visit `/home`, then click Generate (should go to `/new/generate`).
-4. Go to `/generate` (legacy) to confirm no regressions.
-5. Run tests: `npm run test` (all green).
+2. `npm run dev` and optionally set flags in `.env.local`:
+   - `NEXT_PUBLIC_ENABLE_FALLBACK_UI=1`
+3. Visit `/`, then click Generate.
+4. Run tests: `npm run test` (all green).
 
 ## Cleanup & scope discipline
-- No global CSS or token changes; all work is additive and behind flags.
+- No global CSS or token changes; all work is additive.
 - No migrations; existing routes and APIs unchanged.
 - Fallback UI is opt-in for Vercel demos only.
 

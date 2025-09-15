@@ -1,0 +1,8 @@
+/* TEAM */
+Developer: Daniel Green
+Twitter: https://x.com/dgrreen
+LinkedIn: https://linkedin.com/in/danielpgreen
+
+/* SITE */
+Site: ALAIN — Applied Learning AI Notebooks
+Description: Interactive AI learning platform with real models and hands-on tutorials

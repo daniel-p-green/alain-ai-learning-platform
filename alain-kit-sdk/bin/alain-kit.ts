@@ -62,7 +62,7 @@ function syllableCount(word: string): number {
 }
 
 function printHelp() {
-  console.log(`ALAIN-Kit CLI\n\nUsage:\n  alain-kit --model <model> [--apiKey <key>] [--baseUrl <url>] [--difficulty <level>] [--maxSections <n>] [--outDir <path>]\n\nFlags:\n  --model         Model reference or name (e.g., gpt-oss-20b)\n  --apiKey        Provider API key (e.g., POE_API_KEY)\n  --baseUrl       Provider base URL (root, no /v1). Example: https://api.poe.com\n  --difficulty    beginner | intermediate | advanced (default: beginner)\n  --maxSections   Number of sections to generate (default: 6)\n  --outDir        Output directory (default: ./output)\n  --help, -h      Show this help\n\nTips:\n  - Poe: use --baseUrl https://api.poe.com (do not include /v1).\n    The CLI appends /v1/chat/completions automatically.\n  - Local OpenAI-compatible servers: pass the server root (e.g., http://localhost:1234).`);
+  console.log(`ALAIN-Kit CLI\n\nUsage:\n  alain-kit --model <model> [--apiKey <key>] [--baseUrl <url>] [--difficulty <level>] [--maxSections <n>] [--outDir <path>] [--remix <ipynb>]\n\nFlags:\n  --model         Model reference or name (e.g., gpt-oss-20b)\n  --apiKey        Provider API key (e.g., POE_API_KEY)\n  --baseUrl       Provider base URL (root, no /v1). Example: https://api.poe.com\n  --difficulty    beginner | intermediate | advanced (default: beginner)\n  --maxSections   Number of sections to generate (default: 6)\n  --outDir        Output directory (default: ./output)\n  --remix         Remix an existing notebook (path to .ipynb). Runs full ALAIN pipeline (ELI5).\n  --help, -h      Show this help\n\nTips:\n  - Poe: use --baseUrl https://api.poe.com (do not include /v1).\n    The CLI appends /v1/chat/completions automatically.\n  - Local OpenAI-compatible servers: pass the server root (e.g., http://localhost:1234).`);
 }
 
 async function main() {
@@ -81,18 +81,47 @@ async function main() {
   const difficulty = (parseArg('--difficulty', 'beginner') as 'beginner'|'intermediate'|'advanced');
   const maxSections = Number(parseArg('--maxSections', '6')) || 6;
   const outDir = parseArg('--outDir', path.join(process.cwd(), 'output'))!;
+  const remixPath = parseArg('--remix');
 
   // Warn if user passed a baseUrl that already includes /v1
   if (baseUrl && /\/v1\b/.test(baseUrl)) {
     console.warn('⚠️  baseUrl includes /v1; ALAIN-Kit will append /v1/chat/completions. Use the provider root (e.g., https://api.poe.com).');
   }
   const kit = new ALAINKit({ baseUrl });
-  const res = await kit.generateNotebook({
-    modelReference: model,
-    apiKey,
-    difficulty,
-    maxSections
-  });
+  let res: any;
+  if (remixPath) {
+    if (!fs.existsSync(remixPath)) {
+      console.error(`❌ Remix source not found: ${remixPath}`);
+      process.exit(1);
+    }
+    const src = JSON.parse(fs.readFileSync(remixPath, 'utf-8'));
+    const title = inferTitle(src) || 'Notebook';
+    const heads = extractHeadings(src);
+    const excerpt = extractPlainText(src, 8000);
+    res = await kit.generateNotebook({
+      modelReference: model,
+      apiKey,
+      difficulty: 'beginner',
+      maxSections,
+      customPrompt: {
+        title: `${title} — ELI5 Remix`,
+        description: 'Beginner-friendly remix of the source notebook (non-developers).',
+        difficulty: 'beginner',
+        topics: heads,
+        // @ts-ignore extra keys for OutlineGenerator
+        context: `Source headings: ${heads.join(' | ')}\n\nExcerpt (markdown-only):\n${excerpt}`,
+        temperature: 0.1,
+        maxTokens: 2000
+      } as any
+    });
+  } else {
+    res = await kit.generateNotebook({
+      modelReference: model,
+      apiKey,
+      difficulty,
+      maxSections
+    });
+  }
 
   if (!res.success) {
     console.error('❌ Generation failed');
@@ -121,8 +150,27 @@ async function main() {
   const h1 = (firstMd.match(/^#\s+(.+)$/m)?.[1]) || String(res.notebook?.metadata?.title || 'getting started');
   const topic = slugify(h1, 7);
   const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '.');
-  const fileName = `${maker}_${modelPart}_${level}_${topic}_${dateStr}-ALAIN.ipynb`;
-  const nbPath = path.join(outDir, fileName);
+  let fileName = `${maker}_${modelPart}_${level}_${topic}_${dateStr}-ALAIN.ipynb`;
+  const nbPath = path.join(outDir, remixPath ? `${maker}_${modelPart}_${level}_${topic}_${dateStr}-ALAIN-remix.ipynb` : fileName);
+  if (remixPath) {
+    try {
+      const credit = [
+        '---\n',
+        '**Remix Note**: This ELI5 version was created with the Applied Learning AI Notebooks (ALAIN) Project on 09.14.2025.\\n',
+        'Created by [Daniel Green](https://www.linkedin.com/in/danielpgreen).\\n',
+        '---\n\n'
+      ];
+      res.notebook.cells.unshift({ cell_type: 'markdown', metadata: {}, source: credit });
+      res.notebook.metadata = {
+        ...(res.notebook.metadata || {}),
+        remix: true,
+        remix_source: path.basename(remixPath),
+        remix_date: '2025-09-14',
+        remix_by: 'Daniel Green',
+        remix_by_link: 'https://www.linkedin.com/in/danielpgreen'
+      };
+    } catch {}
+  }
   const reportPath = path.join(outDir, `alain-validation-${stamp}.md`);
   fs.writeFileSync(nbPath, JSON.stringify(res.notebook, null, 2));
   // Append readability metrics to report for quick inspection
@@ -156,3 +204,41 @@ async function main() {
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
+
+// --- Remix helpers ---
+function asText(src: any): string { return Array.isArray(src) ? src.join('') : String(src || ''); }
+function inferTitle(nb: any): string | undefined {
+  const cells = Array.isArray(nb?.cells) ? nb.cells : [];
+  for (const c of cells) {
+    if (c.cell_type === 'markdown') {
+      const m = asText(c.source).match(/^#\s+(.+)$/m);
+      if (m) return m[1].trim();
+    }
+  }
+  return nb?.metadata?.title;
+}
+function extractHeadings(nb: any, limit = 8): string[] {
+  const heads: string[] = [];
+  const cells = Array.isArray(nb?.cells) ? nb.cells : [];
+  for (const c of cells) {
+    if (c?.cell_type !== 'markdown') continue;
+    const lines = asText(c.source).split(/\r?\n/);
+    for (const line of lines) {
+      const m = /^(#{1,3})\s+(.+)/.exec(line.trim());
+      if (m) heads.push(m[2].trim());
+      if (heads.length >= limit) return heads;
+    }
+  }
+  return heads;
+}
+function extractPlainText(nb: any, maxChars = 8000): string {
+  let out = '';
+  const cells = Array.isArray(nb?.cells) ? nb.cells : [];
+  for (const c of cells) {
+    if (c?.cell_type === 'markdown') {
+      out += asText(c.source) + '\n\n';
+      if (out.length >= maxChars) break;
+    }
+  }
+  return out.slice(0, maxChars);
+}

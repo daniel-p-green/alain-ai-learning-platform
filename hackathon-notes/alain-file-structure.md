@@ -106,3 +106,12 @@ Sidecar manifest
 - Dev: `cd web && npm run dev`
 - Build: `cd web && npm run build`
 - E2E: `cd web && npx playwright install && npm run test:e2e`
+
+## API: Remix
+- `web/app/api/notebooks/remix/route.ts` — lightweight scaffold remix (keeps original cells, adds ELI5 layers)
+- `web/app/api/notebooks/remix/alain/route.ts` — full ALAIN flow remix (Outline → Sections → Build) using provider at `baseUrl`
+
+## CLI: Remix flag
+- New flag: `--remix <path.ipynb>` runs full ALAIN ELI5 remix against a local or remote provider.
+- Example with LM Studio:
+  - `npx -y tsx alain-ai-learning-platform/alain-kit-sdk/bin/alain-kit.ts --model openai/gpt-oss-20b --baseUrl http://localhost:1234 --maxSections 8 --outDir notebook_output --remix gpt-5_prompting_guide.ipynb`

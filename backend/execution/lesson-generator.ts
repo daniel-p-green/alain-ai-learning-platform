@@ -72,6 +72,13 @@ export const generateLesson = api(
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     }
+    // Per-user in-process concurrency guard
+    const maxConc = Number(process.env.GENERATE_MAX_CONCURRENCY || 1);
+    const current = userConcurrency.get(userId) || 0;
+    if (current >= maxConc) {
+      throw APIError.resourceExhausted('Too many concurrent generations. Please wait for an active job to finish.');
+    }
+    userConcurrency.set(userId, current + 1);
     // Dedupe concurrent requests: same hfUrl+difficulty coalesce to one in-flight promise (short TTL)
     const key = `${req.hfUrl}::${req.difficulty}`;
     const existing = inflight.get(key);
@@ -95,6 +102,8 @@ export const generateLesson = api(
         ],
         task: "lesson_generation",
         provider: selectedProvider,
+        max_tokens: Math.min(TEACHER_MAX_TOKENS, 3000),
+        temperature: 0.2,
       });
 
       if (!teacherResponse.success || !teacherResponse.content) {
@@ -233,7 +242,9 @@ export const generateLesson = api(
     inflight.set(key, task);
     // Cleanup after a short delay once it resolves
     task.finally(() => setTimeout(() => inflight.delete(key), 5000));
-    return await task;
+    try { return await task; } finally {
+      const now = userConcurrency.get(userId) || 1; userConcurrency.set(userId, Math.max(0, now - 1));
+    }
   }
 );
 
@@ -254,6 +265,13 @@ export const generateLocalLesson = api<{
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     }
+    // Per-user in-process concurrency guard
+    const maxConc = Number(process.env.GENERATE_MAX_CONCURRENCY || 1);
+    const current = userConcurrency.get(userId) || 0;
+    if (current >= maxConc) {
+      throw APIError.resourceExhausted('Too many concurrent generations. Please wait for an active job to finish.');
+    }
+    userConcurrency.set(userId, current + 1);
 
     const key = `local::${req.modelId}::${req.difficulty}`;
     const existing = inflight.get(key);
@@ -276,6 +294,8 @@ export const generateLocalLesson = api<{
           messages: [ { role: "user", content: lessonPrompt } ],
           task: "lesson_generation",
           provider: selectedProvider,
+          max_tokens: Math.min(TEACHER_MAX_TOKENS, 3000),
+          temperature: 0.2,
         });
         if (!teacherResponse.success || !teacherResponse.content) {
           throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
@@ -347,12 +367,18 @@ export const generateLocalLesson = api<{
     })();
     inflight.set(key, task);
     task.finally(() => setTimeout(() => inflight.delete(key), 5000));
-    return await task;
+    try { return await task; } finally {
+      const now = userConcurrency.get(userId) || 1; userConcurrency.set(userId, Math.max(0, now - 1));
+    }
   }
 );
 
 // In-memory map of in-flight generation promises
 const inflight = new Map<string, Promise<LessonGenerationResponse>>();
+// Simple per-user in-process concurrency tracker for generation
+const userConcurrency: Map<string, number> = new Map();
+// Hard ceiling for teacher response tokens
+const TEACHER_MAX_TOKENS = Number(process.env.TEACHER_MAX_TOKENS || 2048);
 
 // Minimal retry wrapper to smooth over transient hiccups
 async function teacherGenerateWithRetry(args: Parameters<typeof teacherGenerate>[0], maxAttempts = 2) {
@@ -567,7 +593,7 @@ async function attemptRepairJSON(
       task: 'lesson_generation',
       provider: provider as any,
       temperature: 0.0,
-      max_tokens: 3000,
+      max_tokens: Math.min(TEACHER_MAX_TOKENS, 3000),
     });
     if (!resp.success || !resp.content) return null;
     // Return raw content; caller will parse and validate.
@@ -638,6 +664,13 @@ export const generateFromText = api<{
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
     }
+    // Per-user in-process concurrency guard
+    const maxConc = Number(process.env.GENERATE_MAX_CONCURRENCY || 1);
+    const current = userConcurrency.get(userId) || 0;
+    if (current >= maxConc) {
+      throw APIError.resourceExhausted('Too many concurrent generations. Please wait for an active job to finish.');
+    }
+    userConcurrency.set(userId, current + 1);
     const text = (req.textContent || '').trim();
     if (!text) return { success: false, error: { code: 'invalid_argument', message: 'textContent required' } } as any;
 
@@ -724,7 +757,9 @@ export const generateFromText = api<{
     })();
     inflight.set(key, task);
     task.finally(() => setTimeout(() => inflight.delete(key), 5000));
-    return await task;
+    try { return await task; } finally {
+      const now = userConcurrency.get(userId) || 1; userConcurrency.set(userId, Math.max(0, now - 1));
+    }
   }
 );
 

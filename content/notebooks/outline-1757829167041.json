@@ -1,0 +1,130 @@
+{
+  "title": "TinyLlama 1.1B Chat: From GGUF to Interactive Inference",
+  "overview": "Learn how to load the TinyLlama‑1.1B‑Chat‑v1.0 GGUF model from Hugging Face, run fast inference, customize prompts, and deploy a lightweight chat API. This lesson covers environment setup, model loading, generation, batching, and basic fine‑tuning using the Hugging Face ecosystem.",
+  "objectives": [
+    "Install and configure the required Python packages for GGUF inference.",
+    "Load the TinyLlama‑1.1B‑Chat model and tokenizer from the Hugging Face Hub.",
+    "Generate text with custom prompts and control generation parameters.",
+    "Deploy the model as a simple REST API for real‑time chat."
+  ],
+  "prerequisites": [
+    "Basic Python programming (3.8+).",
+    "Familiarity with Hugging Face Transformers API."
+  ],
+  "setup": {
+    "requirements": [
+      "transformers==4.35.0",
+      "torch==2.0.1",
+      "accelerate==0.21.0",
+      "huggingface_hub==0.20.3",
+      "fastapi==0.110.0",
+      "uvicorn==0.29.0"
+    ],
+    "environment": [
+      "HF_TOKEN (optional, for private models)"
+    ],
+    "commands": [
+      "pip install -r requirements.txt",
+      "export HF_TOKEN=YOUR_HF_TOKEN"
+    ]
+  },
+  "outline": [
+    {
+      "step": 1,
+      "title": "Step 1: Environment & Dependencies",
+      "type": "setup",
+      "estimated_tokens": 350,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 2,
+      "title": "Step 2: Understanding GGUF and TinyLlama",
+      "type": "concept",
+      "estimated_tokens": 400,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 3,
+      "title": "Step 3: Loading the Model & Tokenizer",
+      "type": "code",
+      "estimated_tokens": 450,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 4,
+      "title": "Step 4: Basic Text Generation",
+      "type": "code",
+      "estimated_tokens": 400,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 5,
+      "title": "Step 5: Prompt Engineering & Generation Controls",
+      "type": "concept",
+      "estimated_tokens": 350,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 6,
+      "title": "Step 6: Batch Inference for Performance",
+      "type": "code",
+      "estimated_tokens": 400,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 7,
+      "title": "Step 7: Fine‑Tuning on a Tiny Dataset",
+      "type": "code",
+      "estimated_tokens": 450,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 8,
+      "title": "Step 8: Deploying as a FastAPI Chat Service",
+      "type": "code",
+      "estimated_tokens": 500,
+      "content_type": "markdown + code"
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Exercise 1: Generate a Short Story",
+      "difficulty": "beginner",
+      "estimated_tokens": 200
+    },
+    {
+      "title": "Exercise 2: Fine‑Tune on a Custom FAQ",
+      "difficulty": "intermediate",
+      "estimated_tokens": 250
+    },
+    {
+      "title": "Exercise 3: Create a Dockerized Chat API",
+      "difficulty": "advanced",
+      "estimated_tokens": 300
+    }
+  ],
+  "assessments": [
+    {
+      "question": "Which library is required to load GGUF models in Hugging Face Transformers?",
+      "options": [
+        "torch",
+        "transformers",
+        "accelerate",
+        "huggingface_hub"
+      ],
+      "correct_index": 1,
+      "explanation": "The `transformers` library provides the `AutoModelForCausalLM.from_pretrained` method that supports GGUF format via the `trust_remote_code=True` flag."
+    }
+  ],
+  "summary": "You now know how to set up a Python environment for GGUF inference, load TinyLlama‑1.1B‑Chat, generate text with fine‑tuned control, batch requests for speed, and expose the model through a lightweight FastAPI service.",
+  "next_steps": "Explore LoRA fine‑tuning, integrate with LangChain for retrieval‑augmented generation, or deploy the API to a cloud platform like AWS Lambda or GCP Cloud Run.",
+  "references": [
+    "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
+    "https://huggingface.co/docs/transformers/main_classes/model#transformers.AutoModelForCausalLM",
+    "https://huggingface.co/docs/hub/guides/gguf",
+    "https://fastapi.tiangolo.com/",
+    "https://github.com/huggingface/transformers/tree/main/examples/pytorch/language-modeling"
+  ],
+  "estimated_total_tokens": 4100,
+  "target_reading_time": "20-25 minutes"
+}

@@ -21,9 +21,26 @@ hackathon-notes/*
 web/.env.local
 web/.next
 web/tsconfig.tsbuildinfo
+web/test-results/
+web/playwright-report/
 *.tsbuildinfo
 *.log
 
 # Test sandbox directory
 test_sandbox/
 .vercel
+
+# Generated benchmarks and test outputs
+bench/
+alain-kit/**/test/output/
+alain-kit/**/test/node_modules/
+alain-kit-sdk/output/
+**/.ipynb_checkpoints/
+
+# Curate generated content: track only selected samples
+# Ignore dated subfolders under content/notebooks and content/lessons by default
+content/notebooks/**/20*/
+content/lessons/**/20*/
+
+# Allow keeping curated samples by explicitly adding them (use ! negation rules locally if needed)
+.env
