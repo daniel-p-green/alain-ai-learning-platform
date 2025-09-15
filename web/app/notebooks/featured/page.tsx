@@ -1,6 +1,6 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
-const GitHubOpenForm = dynamic(() => import('@/components/GitHubOpenForm'), { ssr: false });
+import nextDynamic from 'next/dynamic';
+const GitHubOpenForm = nextDynamic(() => import('@/components/GitHubOpenForm'), { ssr: false });
 
 async function fetchFeatured() {
   try {
