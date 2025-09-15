@@ -1,25 +1,32 @@
-import { NextRequest } from 'next/server';
-import { createReadStream, statSync } from 'fs';
-import { resolve } from 'path';
+import fs from 'fs/promises';
+import path from 'path';
 
-export async function GET(req: NextRequest) {
-  const rel = req.nextUrl.searchParams.get('path') || '';
-  const base = resolve(process.cwd(), '..', 'content');
-  const candidate = resolve(base, rel.replace(/^\/+/, ''));
-  if (!candidate.startsWith(base)) {
-    return new Response('Forbidden', { status: 403 });
+export const runtime = 'nodejs';
+
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const rel = url.searchParams.get('path') || '';
+  if (!rel || !rel.startsWith('content/')) {
+    return new Response(JSON.stringify({ error: 'invalid path' }), { status: 400 });
+  }
+  const abs = path.resolve(process.cwd(), rel);
+  const base = path.resolve(process.cwd(), 'content');
+  if (!abs.startsWith(base)) {
+    return new Response(JSON.stringify({ error: 'forbidden' }), { status: 403 });
   }
   try {
-    const st = statSync(candidate);
-    const stream = createReadStream(candidate);
-    const headers = new Headers();
-    const filename = rel.split('/').pop() || 'file';
-    headers.set('Content-Type', 'application/octet-stream');
-    headers.set('Content-Length', String(st.size));
-    headers.set('Content-Disposition', `attachment; filename="${filename}"`);
-    return new Response(stream as any, { headers });
-  } catch {
-    return new Response('Not found', { status: 404 });
+    const buf = await fs.readFile(abs);
+    const name = path.basename(abs);
+    // Convert Buffer to Uint8Array view for Response body
+    const u8 = new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+    return new Response(u8 as any, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': `attachment; filename="${name}"`,
+      },
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'not found' }), { status: 404 });
   }
 }
-
