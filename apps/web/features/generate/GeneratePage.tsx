@@ -495,8 +495,8 @@ export default function GenerateLessonPage() {
               const res = await fetch(backendUrl(`/export/colab/${id}`));
               nb = await res.json();
             }
-            const ***REMOVED*** = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(***REMOVED***);
+            const notebookBlob = new Blob([JSON.stringify(nb, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(notebookBlob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `${suggestedName}.ipynb`;

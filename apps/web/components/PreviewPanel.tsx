@@ -69,8 +69,8 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
               const res = await fetch(backendUrl(`/tutorials/${id}`));
               lesson = await res.json();
             }
-            const ***REMOVED*** = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(***REMOVED***);
+            const lessonBlob = new Blob([JSON.stringify(lesson, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(lessonBlob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `${(preview.title || 'lesson').replace(/\s+/g,'_')}.json`;

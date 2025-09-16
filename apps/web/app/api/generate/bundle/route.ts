@@ -74,8 +74,8 @@ export async function POST(req: Request) {
   })()
   zip.file('README.md', buildReadme(title))
 
-  const ***REMOVED*** = await zip.generateAsync({ type: 'nodebuffer' })
-  return new NextResponse(***REMOVED*** as any, {
+  const archiveBuffer = await zip.generateAsync({ type: 'nodebuffer' })
+  return new NextResponse(archiveBuffer as any, {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="alain-bundle-${Date.now()}.zip"`

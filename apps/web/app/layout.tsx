@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { League_Spartan, Inter, Montserrat } from "next/font/google";
 import NavBar from "../components/NavBar";
+import NavBarPublic from "../components/NavBarPublic";
 import Footer from "../components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { hasClerk } from "../lib/env";
 import Script from "next/script";
 import "./globals.css";
 
@@ -33,7 +35,6 @@ export const metadata: Metadata = {
 };
 
 function MaybeClerk({ children }: { children: React.ReactNode }) {
-  const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
   if (hasClerk) return <ClerkProvider>{children}</ClerkProvider>;
   return <>{children}</>;
 }
@@ -71,7 +72,7 @@ export default function RootLayout({
           {/* Skip link for keyboard users */}
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-alain-blue text-white px-3 py-1 rounded">Skip to content</a>
           {/* NavBar with mobile drawer */}
-          <NavBar />
+          {hasClerk ? <NavBar /> : <NavBarPublic />}
           <main id="main" className="min-h-[calc(100vh-64px)]">
             {children}
           </main>

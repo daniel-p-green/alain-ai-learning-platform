@@ -20,14 +20,14 @@ function toGhId(input: string): string | null {
       }
     }
     if (host === 'github.com') {
-      // Handle ***REMOVED*** URLs
+      // Handle blob URLs
       const parts = path.split('/');
-      const ***REMOVED***Idx = parts.indexOf('***REMOVED***');
-      if (***REMOVED***Idx !== -1 && parts.length > ***REMOVED***Idx + 2) {
+      const blobIdx = parts.indexOf('blob');
+      if (blobIdx !== -1 && parts.length > blobIdx + 2) {
         const owner = parts[0];
         const repo = parts[1];
-        const ref = parts[***REMOVED***Idx + 1];
-        const filePath = parts.slice(***REMOVED***Idx + 2).join('/');
+        const ref = parts[blobIdx + 1];
+        const filePath = parts.slice(blobIdx + 2).join('/');
         if (filePath.endsWith('.ipynb')) return `gh:${owner}/${repo}@${ref}:${filePath}`;
       }
     }
@@ -49,7 +49,7 @@ export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolea
     }}>
       <div className="grow min-w-[260px]">
         <label className="block text-xs text-ink-600">GitHub Notebook URL</label>
-        <input value={url} onChange={(e)=> setUrl(e.target.value)} placeholder="https://github.com/owner/repo/***REMOVED***/main/path/notebook.ipynb" className="w-full rounded border px-3 py-2" />
+        <input value={url} onChange={(e)=> setUrl(e.target.value)} placeholder="https://github.com/owner/repo/blob/main/path/notebook.ipynb" className="w-full rounded border px-3 py-2" />
         {err && <div className="text-xs text-red-600 mt-1">{err}</div>}
       </div>
       <button type="submit" className="inline-flex items-center h-9 px-3 rounded bg-ink-900 text-white">Open</button>
@@ -57,4 +57,3 @@ export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolea
     </form>
   );
 }
-
