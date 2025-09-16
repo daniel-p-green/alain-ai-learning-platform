@@ -6,11 +6,13 @@ import { createHash } from "crypto";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { buildResearchMarkdowns } from "./research-format";
+import { fileURLToPath } from "url";
 
 // Storage configuration
 // Default to repo-level `resources/content` directory to keep generated artifacts in-tree.
 // Override with ALAIN_STORAGE_ROOT to customize.
-const DEFAULT_STORAGE_ROOT = path.resolve(__dirname, '../../..', 'resources', 'content');
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+const DEFAULT_STORAGE_ROOT = path.resolve(moduleDir, '../../..', 'resources', 'content');
 const STORAGE_ROOT = (() => {
   const custom = (process.env.ALAIN_STORAGE_ROOT || '').trim();
   if (!custom) return DEFAULT_STORAGE_ROOT;
