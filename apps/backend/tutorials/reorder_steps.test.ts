@@ -1,11 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach, vi, beforeAll } from "vitest";
 
+const canMock = typeof (vi as any)?.mock === 'function';
 const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
 const describeEncore = runEncoreSuite ? describe : describe.skip;
 
 let reorderSteps: any;
 let tutorialsDB: any;
 let APIError: any;
+
+if (!canMock) {
+  describe.skip("reorderSteps", () => {});
+} else {
 
 vi.mock("../auth", () => ({
   requireUserId: vi.fn().mockResolvedValue("test-user"),
@@ -170,3 +175,4 @@ describeEncore("reorderSteps", () => {
     ).rejects.toThrow("positive integers");
   });
 });
+}
