@@ -63,6 +63,9 @@ export class NotebookBuilder {
     }
     const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [];
 
+    // ALAIN branding (expanded name) – show first
+    cells.push(this.createBrandingCell());
+
     // Environment detection cell (Colab compatibility)
     cells.push(this.createEnvironmentCell());
 
@@ -74,9 +77,6 @@ export class NotebookBuilder {
     cells.push(this.createProviderSetupCell());
     // Quick provider smoke test
     cells.push(this.createProviderSmokeCell());
-
-    // ALAIN branding (expanded name)
-    cells.push(this.createBrandingCell());
 
     // Title and overview
     cells.push(this.createTitleCell(outline.title, outline.overview));

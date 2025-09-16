@@ -153,13 +153,16 @@ export function buildNotebook(
     cell_type: "markdown",
     metadata: {},
     source: [
-      "## API Keys and .env Files\\n\\n",
-      "Many providers require API keys. Do not hardcode secrets in notebooks. Use a local .env file that the notebook loads at runtime.\\n\\n",
-      "- Why .env? Keeps secrets out of source control and tutorials.\\n",
-      "- Where? Place `.env.local` (preferred) or `.env` in the same folder as this notebook. `.env.local` overrides `.env`.\\n",
-      "- What keys? Common: `POE_API_KEY` (Poe-compatible servers), `OPENAI_API_KEY` (OpenAI-compatible), `HF_TOKEN` (Hugging Face).\\n",
-      "- Find your keys: Poe-compatible provider dashboard; Hugging Face token: https://huggingface.co/settings/tokens.\\n\\n",
-      "The next cell will: load `.env.local`/`.env`, prompt for missing keys, and optionally write `.env.local` with secure permissions so future runs just work."
+      "## API Keys and .env Files\n",
+      "\n",
+      "Many providers require API keys. Do not hardcode secrets in notebooks. Use a local .env file that the notebook loads at runtime.\n",
+      "\n",
+      "- Why .env? Keeps secrets out of source control and tutorials.\n",
+      "- Where? Place `.env.local` (preferred) or `.env` in the same folder as this notebook. `.env.local` overrides `.env`.\n",
+      "- What keys? Common: `POE_API_KEY` (Poe-compatible servers), `OPENAI_API_KEY` (OpenAI-compatible), `HF_TOKEN` (Hugging Face).\n",
+      "- Find your keys: Poe-compatible provider dashboard; Hugging Face token: https://huggingface.co/settings/tokens.\n",
+      "\n",
+      "The next cell will: load `.env.local`/`.env`, prompt for missing keys, and optionally write `.env.local` with secure permissions so future runs just work.\n"
     ]
   });
 
