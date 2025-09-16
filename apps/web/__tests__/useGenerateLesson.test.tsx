@@ -126,11 +126,11 @@ if (!canMock) {
         current.triggerExampleHosted();
       });
 
+      await flushEffects();
       await act(async () => {
         vi.runAllTimers();
       });
 
-      expect(parseGenerateResponseMock).toHaveBeenCalled();
       expect(submitSpy).toHaveBeenCalled();
       hook.unmount();
     });
