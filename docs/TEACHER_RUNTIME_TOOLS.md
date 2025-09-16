@@ -6,7 +6,7 @@ This document explains how the teacher service selects and exposes tool/function
 
 - `TEACHER_PROMPT_PHASE`: Controls which Harmony prompt file is loaded.
   - Examples: `research`, `research.offline`, `design`, `develop`, `validate`, `orchestrator`, `orchestrator.offline`.
-  - The service attempts to load `prompts/alain-kit/<phase>.harmony.txt` (or from `PROMPT_ROOT` if set).
+  - The service attempts to load `resources/prompts/alain-kit/<phase>.harmony.txt` (or from `ALAIN_PROMPT_ROOT` / `PROMPT_ROOT` if set).
   - Suffix flexibility: `research`, `research.harmony`, and `research.harmony.txt` all resolve to the same file.
 - `TEACHER_ENABLE_TOOLS` (default: enabled): Set to `0` to disable tool exposure regardless of phase/task.
 - `TEACHER_PROVIDER`: `poe` (default) or `openai-compatible`.
@@ -24,7 +24,7 @@ Tools are exposed only when relevant to the active task/phase and are kept inten
 - Other tasks (`assessment_creation`, `content_adaptation`)
   - No tools are auto-exposed unless you add them later.
 
-See implementation: `alain-ai-learning-platform/backend/execution/teacher.ts` in `buildToolsForPhaseTask()`.
+See implementation: `alain-ai-learning-platform/apps/backend/execution/teacher.ts` in `buildToolsForPhaseTask()`.
 
 ## Notes
 

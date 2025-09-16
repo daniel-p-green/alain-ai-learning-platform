@@ -1,0 +1,49 @@
+{
+  "model": "kimi-k2",
+  "baseUrl": "https://api.poe.com",
+  "difficulty": "beginner",
+  "maxSections": 6,
+  "qualityScore": 90,
+  "colabCompatible": false,
+  "sectionCount": 6,
+  "qualityMetrics": {
+    "qualityScore": 90,
+    "stepCount": 6,
+    "markdownRatio": 0.48717948717948717,
+    "estimatedTokens": 5791,
+    "estimatedReadingTime": 29,
+    "hasRequiredSections": true,
+    "meetsStandards": true
+  },
+  "cells": 42,
+  "markdownCells": 21,
+  "codeCells": 21,
+  "readability": {
+    "fkGrade": 9.962340219912377,
+    "markdownRatio": 0.362745791483944
+  },
+  "createdUtc": "2025-09-16T03:49:46.231Z",
+  "estimatedTimeMinutes": {
+    "min": 36,
+    "max": 60
+  },
+  "phaseTimings": {
+    "outline_ms": 110598,
+    "sections_ms_total": 469432,
+    "section_ms": [
+      37855,
+      42697,
+      32876,
+      51644,
+      40593,
+      76482,
+      56410,
+      69011,
+      58545
+    ],
+    "build_ms": 0,
+    "quality_ms": 1,
+    "colab_ms": 1,
+    "total_ms": 580033
+  }
+}

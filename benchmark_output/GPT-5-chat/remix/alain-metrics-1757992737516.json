@@ -1,0 +1,46 @@
+{
+  "model": "GPT-5-chat",
+  "baseUrl": "https://api.poe.com",
+  "difficulty": "beginner",
+  "maxSections": 6,
+  "qualityScore": 80,
+  "colabCompatible": false,
+  "sectionCount": 6,
+  "qualityMetrics": {
+    "qualityScore": 80,
+    "stepCount": 6,
+    "markdownRatio": 0.4666666666666667,
+    "estimatedTokens": 7711,
+    "estimatedReadingTime": 38.6,
+    "hasRequiredSections": true,
+    "meetsStandards": false
+  },
+  "cells": 33,
+  "markdownCells": 16,
+  "codeCells": 17,
+  "readability": {
+    "fkGrade": 8.618155260420867,
+    "markdownRatio": 0.4793454173532587
+  },
+  "createdUtc": "2025-09-16T03:18:57.516Z",
+  "estimatedTimeMinutes": {
+    "min": 36,
+    "max": 60
+  },
+  "phaseTimings": {
+    "outline_ms": 15989,
+    "sections_ms_total": 68602,
+    "section_ms": [
+      9757,
+      10515,
+      12312,
+      12170,
+      10103,
+      13740
+    ],
+    "build_ms": 1,
+    "quality_ms": 2,
+    "colab_ms": 3,
+    "total_ms": 84600
+  }
+}

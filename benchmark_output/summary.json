@@ -1,0 +1,2410 @@
+{
+  "duration_min": "80.3",
+  "quick": false,
+  "items": [
+    {
+      "kind": "error",
+      "model": "gpt-5",
+      "error": "preflight_failed: 200"
+    },
+    {
+      "kind": "remix",
+      "model": "gpt-5",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/remix",
+      "metrics": {
+        "error": "no_metrics"
+      },
+      "stats": null,
+      "linkSummary": null,
+      "score": 45,
+      "log": "{\"ts\":\"2025-09-16T02:35:46.084Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Expected ',' or '}' after property value in JSON at position 2539\"}\n{\"ts\":\"2025-09-16T02:35:46.085Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"{\\n  \\\"title\\\": \\\"GPT-5 Prompting Guide — ELI5 Remix: Talk to AI Like a Helpful Teammate\\\",\\n  \\\"overview\\\": \\\"Learn how to speak to GPT-5 so it helps you exactly how you want. We’ll use simple analogies (like\"}\n{\"ts\":\"2025-09-16T02:36:04.266Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Expected ',' or '}' after property value in JSON at position 2882\"}\n{\"ts\":\"2025-09-16T02:36:04.267Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"{\\n  \\\"title\\\": \\\"GPT-5 Prompting Guide — ELI5 Remix for Beginners\\\",\\n  \\\"overview\\\": \\\"Learn how to talk to GPT-5 so it helps you better: like giving clear instructions to a helpful robot friend. We’ll use s\"}\n{\"ts\":\"2025-09-16T02:36:04.267Z\",\"level\":\"error\",\"msg\":\"error\",\"component\":\"ALAINKit.generateOutline\",\"duration_ms\":37604,\"error\":\"No valid JSON found in outline response\"}\n❌ Generation failed\nGeneration failed: No valid JSON found in outline response\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_beginner/alain-metrics-1757990223128.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.37.03Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 8179,
+          "estimatedReadingTime": 40.9,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 31,
+        "markdownCells": 15,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 8.775699189465218,
+          "markdownRatio": 0.4494141260713898
+        },
+        "createdUtc": "2025-09-16T02:37:03.128Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 12430,
+          "sections_ms_total": 45977,
+          "section_ms": [
+            4378,
+            8331,
+            5486,
+            7299,
+            6151,
+            14324
+          ],
+          "build_ms": 2,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 58417
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:36:10.854Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:36:17.139Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:36:17.140Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to repair JSON: Must have at least 2 assessment questions. Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives. The current has 8 steps. It has 1 assessment. \"}\n{\"ts\":\"2025-09-16T02:36:17.140Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_intermediate/alain-metrics-1757990397381.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.39.57Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 100,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 100,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 3726,
+          "estimatedReadingTime": 18.6,
+          "hasRequiredSections": true,
+          "meetsStandards": true
+        },
+        "cells": 31,
+        "markdownCells": 15,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 7.715495486607807,
+          "markdownRatio": 0.30587926509186353
+        },
+        "createdUtc": "2025-09-16T02:39:57.381Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 8842,
+          "sections_ms_total": 164980,
+          "section_ms": [
+            22342,
+            13125,
+            28437,
+            35357,
+            33027,
+            32686
+          ],
+          "build_ms": 2,
+          "quality_ms": 2,
+          "colab_ms": 1,
+          "total_ms": 173829
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:37:12.393Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_advanced/alain-metrics-1757990534399.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-5/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.42.14Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4666666666666667,
+          "estimatedTokens": 7194,
+          "estimatedReadingTime": 36,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 32,
+        "markdownCells": 15,
+        "codeCells": 17,
+        "readability": {
+          "fkGrade": 12.172070899935793,
+          "markdownRatio": 0.5221894839160415
+        },
+        "createdUtc": "2025-09-16T02:42:14.399Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 21283,
+          "sections_ms_total": 115283,
+          "section_ms": [
+            29640,
+            9056,
+            29571,
+            8884,
+            12012,
+            11640,
+            13935
+          ],
+          "build_ms": 2,
+          "quality_ms": 2,
+          "colab_ms": 2,
+          "total_ms": 136575
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:40:12.736Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:40:12.737Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to produce JSON outline for lesson on gpt-oss-20b. Audience advanced practitioners and researchers. Must include 4 objectives, prerequisites, setup with ipywidgets>=8.0.0, environ\"}\n{\"ts\":\"2025-09-16T02:40:19.106Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "gpt-oss-120b",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/remix/alain-metrics-1757990604037.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/remix/provider_gpt-oss-120b_beginner_environment-detection_2025.09.16-02.43.24Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "gpt-oss-120b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 6223,
+          "estimatedReadingTime": 31.1,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 32,
+        "markdownCells": 16,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 9.0580625414417,
+          "markdownRatio": 0.4227626071357385
+        },
+        "createdUtc": "2025-09-16T02:43:24.037Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 10626,
+          "sections_ms_total": 57371,
+          "section_ms": [
+            14871,
+            10216,
+            12274,
+            1166,
+            17519,
+            1320
+          ],
+          "build_ms": 2,
+          "quality_ms": 2,
+          "colab_ms": 3,
+          "total_ms": 68004
+        }
+      },
+      "stats": {
+        "headings": 19,
+        "links": 1,
+        "fences": 0,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:42:25.737Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:42:26.657Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:42:26.657Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>The user hasn't sent any request yet. The system message describes role. There's no user request. Possibly they will ask something next. I should wait for user input.\\n\\nSure, I'm ready whe\"}\n{\"ts\":\"2025-09-16T02:42:26.657Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_beginner/alain-metrics-1757990674608.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.44.34Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.5,
+          "estimatedTokens": 8455,
+          "estimatedReadingTime": 42.3,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 34,
+        "markdownCells": 17,
+        "codeCells": 17,
+        "readability": {
+          "fkGrade": 8.49144906085301,
+          "markdownRatio": 0.4286154794942954
+        },
+        "createdUtc": "2025-09-16T02:44:34.608Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 11696,
+          "sections_ms_total": 58194,
+          "section_ms": [
+            8027,
+            19125,
+            7897,
+            8039,
+            8385,
+            6716
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 69898
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:43:30.221Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:43:36.404Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_intermediate/alain-metrics-1757990790933.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.46.30Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 70,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 70,
+          "stepCount": 5,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 6941,
+          "estimatedReadingTime": 34.7,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 9.464511270916887,
+          "markdownRatio": 0.41289283326241566
+        },
+        "createdUtc": "2025-09-16T02:46:30.933Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 22731,
+          "sections_ms_total": 93151,
+          "section_ms": [
+            9163,
+            6886,
+            33279,
+            8887,
+            20036,
+            14893
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 2,
+          "total_ms": 115891
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 94,
+      "log": "{\"ts\":\"2025-09-16T02:44:50.304Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:44:57.771Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_advanced/alain-metrics-1757990863131.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-120b/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.47.43Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45454545454545453,
+          "estimatedTokens": 10382,
+          "estimatedReadingTime": 51.9,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 35,
+        "markdownCells": 16,
+        "codeCells": 19,
+        "readability": {
+          "fkGrade": 9.418251610153725,
+          "markdownRatio": 0.4326840416832659
+        },
+        "createdUtc": "2025-09-16T02:47:43.131Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 13024,
+          "sections_ms_total": 58722,
+          "section_ms": [
+            8716,
+            7741,
+            8268,
+            14103,
+            10423,
+            9465
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 71758
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:46:44.396Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "gpt-oss-20b",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/remix/alain-metrics-1757990970115.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/remix/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.49.30Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 6677,
+          "estimatedReadingTime": 33.4,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 32,
+        "markdownCells": 16,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 8.462623432988398,
+          "markdownRatio": 0.3679127635509411
+        },
+        "createdUtc": "2025-09-16T02:49:30.115Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 15223,
+          "sections_ms_total": 90075,
+          "section_ms": [
+            8453,
+            9282,
+            10443,
+            36060,
+            16233,
+            9600
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 105306
+        }
+      },
+      "stats": {
+        "headings": 30,
+        "links": 1,
+        "fences": 4,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:47:51.109Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:48:00.031Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_beginner/alain-metrics-1757991079484.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.51.19Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.5,
+          "estimatedTokens": 6270,
+          "estimatedReadingTime": 31.4,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 32,
+        "markdownCells": 16,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 9.536496766831494,
+          "markdownRatio": 0.4425199002425609
+        },
+        "createdUtc": "2025-09-16T02:51:19.485Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 18688,
+          "sections_ms_total": 90101,
+          "section_ms": [
+            22348,
+            7992,
+            6538,
+            28890,
+            9855,
+            14473
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 108798
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:49:39.322Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:49:49.373Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:49:49.373Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to repair JSON to meet constraints:\\n>\\n>- Must have at least 2 assessment questions.\\n>- Ensure 6-12 steps. Current has 8 steps. That's okay (eight is between 6 and 12). Must have 6\"}\n{\"ts\":\"2025-09-16T02:49:49.374Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_intermediate/alain-metrics-1757991144638.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.52.24Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 7821,
+          "estimatedReadingTime": 39.1,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 9.224340160746696,
+          "markdownRatio": 0.3383119628011836
+        },
+        "createdUtc": "2025-09-16T02:52:24.638Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 9107,
+          "sections_ms_total": 55606,
+          "section_ms": [
+            9060,
+            11140,
+            8511,
+            9329,
+            9851,
+            7708
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 64720
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:51:29.024Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_advanced/alain-metrics-1757991205315.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/gpt-oss-20b/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.53.25Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.42424242424242425,
+          "estimatedTokens": 10730,
+          "estimatedReadingTime": 53.7,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 35,
+        "markdownCells": 15,
+        "codeCells": 20,
+        "readability": {
+          "fkGrade": 10.512047141497693,
+          "markdownRatio": 0.41742175066313
+        },
+        "createdUtc": "2025-09-16T02:53:25.316Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 9810,
+          "sections_ms_total": 50420,
+          "section_ms": [
+            9134,
+            7977,
+            7803,
+            9244,
+            7126,
+            9128
+          ],
+          "build_ms": 3,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 60241
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:52:34.883Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "Gemini-2.5-pro",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/remix",
+      "metrics": {
+        "error": "no_metrics"
+      },
+      "stats": null,
+      "linkSummary": null,
+      "score": 45,
+      "log": "{\"ts\":\"2025-09-16T02:53:45.939Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token '*', \\\"*Thinking.\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:53:45.939Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"*Thinking...*\\n\\n> **Considering JSON Structure Design**\\n> \\n> I'm currently working on the JSON structure for the notebook outline. I have the user's ELI5 persona in mind. I'm trying to break down GPT-5\"}\n{\"ts\":\"2025-09-16T02:54:05.174Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token '*', \\\"*Thinking.\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:54:05.174Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"*Thinking...*\\n\\n> **Drafting a Structure**\\n> \\n> I'm now working on the JSON structure, remembering to keep it ELI5. I'm visualizing how analogies will work to explain complex concepts. Highlighting the\"}\n{\"ts\":\"2025-09-16T02:54:05.174Z\",\"level\":\"error\",\"msg\":\"error\",\"component\":\"ALAINKit.generateOutline\",\"duration_ms\":37964,\"error\":\"No valid JSON found in outline response\"}\n❌ Generation failed\nGeneration failed: No valid JSON found in outline response\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_beginner/alain-metrics-1757991330279.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.55.30Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.46875,
+          "estimatedTokens": 8797,
+          "estimatedReadingTime": 44,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 34,
+        "markdownCells": 16,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 10.025713896570867,
+          "markdownRatio": 0.4232911392405063
+        },
+        "createdUtc": "2025-09-16T02:55:30.279Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 23223,
+          "sections_ms_total": 61457,
+          "section_ms": [
+            8060,
+            8120,
+            8912,
+            17929,
+            7889,
+            10542
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 3,
+          "total_ms": 84689
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:54:13.537Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:54:28.812Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_intermediate/alain-metrics-1757991480921.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.58.00Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 6540,
+          "estimatedReadingTime": 32.7,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 8.855472458575907,
+          "markdownRatio": 0.3575494357253315
+        },
+        "createdUtc": "2025-09-16T02:58:00.921Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 23685,
+          "sections_ms_total": 126512,
+          "section_ms": [
+            5848,
+            30958,
+            7721,
+            33526,
+            36888,
+            11566
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 3,
+          "total_ms": 150204
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:55:36.411Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:55:54.400Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_advanced/alain-metrics-1757991569868.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-pro/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-02.59.29Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 70,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 70,
+          "stepCount": 6,
+          "markdownRatio": 0.3888888888888889,
+          "estimatedTokens": 10884,
+          "estimatedReadingTime": 54.4,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 38,
+        "markdownCells": 15,
+        "codeCells": 23,
+        "readability": {
+          "fkGrade": 9.63386904761905,
+          "markdownRatio": 0.3838288469264765
+        },
+        "createdUtc": "2025-09-16T02:59:29.868Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 21589,
+          "sections_ms_total": 66930,
+          "section_ms": [
+            22772,
+            6191,
+            10116,
+            8462,
+            10433,
+            8951
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 88528
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T02:58:22.928Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "Gemini-2.5-flash",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/remix",
+      "metrics": {
+        "error": "no_metrics"
+      },
+      "stats": null,
+      "linkSummary": null,
+      "score": 45,
+      "log": "{\"ts\":\"2025-09-16T02:59:42.702Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token '*', \\\"*Thinking.\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T02:59:42.702Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"*Thinking...*\\n\\n> **Considering the Outline**\\n> \\n> I've started fleshing out the JSON outline for the GPT-5 prompting guide. The title is set, and I'm now working on a concise overview to hook the read\"}\n{\"ts\":\"2025-09-16T03:00:03.128Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token '*', \\\"*Thinking.\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:00:03.129Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"*Thinking...*\\n\\n> **Constructing a Prompting Guide**\\n> \\n> \\\\n\\\\n\\n> \\n> I'm currently structuring the JSON outline based on the user's criteria, keeping the ELI5 approach front and center. I'm actively sim\"}\n{\"ts\":\"2025-09-16T03:00:03.129Z\",\"level\":\"error\",\"msg\":\"error\",\"component\":\"ALAINKit.generateOutline\",\"duration_ms\":31898,\"error\":\"No valid JSON found in outline response\"}\n❌ Generation failed\nGeneration failed: No valid JSON found in outline response\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_beginner/alain-metrics-1757991710576.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.01.50Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 8284,
+          "estimatedReadingTime": 41.4,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 31,
+        "markdownCells": 15,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 10.322165069270273,
+          "markdownRatio": 0.4704609448326207
+        },
+        "createdUtc": "2025-09-16T03:01:50.576Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 14454,
+          "sections_ms_total": 92573,
+          "section_ms": [
+            13141,
+            5833,
+            12533,
+            41202,
+            8631,
+            11225
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 2,
+          "total_ms": 107034
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:00:11.510Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:00:17.996Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_intermediate/alain-metrics-1757991768174.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.02.48Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 10679,
+          "estimatedReadingTime": 53.4,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 9.33604166666667,
+          "markdownRatio": 0.3977855850101139
+        },
+        "createdUtc": "2025-09-16T03:02:48.175Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 7893,
+          "sections_ms_total": 49236,
+          "section_ms": [
+            5488,
+            6899,
+            6964,
+            8575,
+            9729,
+            11577
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 57139
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:01:58.927Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_advanced/alain-metrics-1757991838836.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Gemini-2.5-flash/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.03.58Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4857142857142857,
+          "estimatedTokens": 10108,
+          "estimatedReadingTime": 50.5,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 37,
+        "markdownCells": 18,
+        "codeCells": 19,
+        "readability": {
+          "fkGrade": 10.20903785048996,
+          "markdownRatio": 0.416612618254199
+        },
+        "createdUtc": "2025-09-16T03:03:58.836Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 7699,
+          "sections_ms_total": 62497,
+          "section_ms": [
+            6047,
+            9776,
+            10773,
+            9463,
+            10959,
+            15474
+          ],
+          "build_ms": 2,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 70205
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:02:56.329Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "Claude-opus-4.1",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/remix/alain-metrics-1757992389007.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/remix/provider_claude-opus-4.1_beginner_environment-detection_2025.09.16-03.13.09Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "Claude-opus-4.1",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.5531914893617021,
+          "estimatedTokens": 14250,
+          "estimatedReadingTime": 71.3,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 50,
+        "markdownCells": 28,
+        "codeCells": 22,
+        "readability": {
+          "fkGrade": 9.160350327228734,
+          "markdownRatio": 0.4099600619447388
+        },
+        "createdUtc": "2025-09-16T03:13:09.007Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 45302,
+          "sections_ms_total": 501735,
+          "section_ms": [
+            56940,
+            73594,
+            87110,
+            92120,
+            91132,
+            100832
+          ],
+          "build_ms": 2,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 547048
+        }
+      },
+      "stats": {
+        "headings": 47,
+        "links": 1,
+        "fences": 0,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "Section JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_beginner/alain-metrics-1757992457832.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.14.17Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 70,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 70,
+          "stepCount": 5,
+          "markdownRatio": 0.4634146341463415,
+          "estimatedTokens": 11190,
+          "estimatedReadingTime": 56,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 43,
+        "markdownCells": 20,
+        "codeCells": 23,
+        "readability": {
+          "fkGrade": 8.55791592914235,
+          "markdownRatio": 0.42598039215686273
+        },
+        "createdUtc": "2025-09-16T03:14:17.832Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 6073,
+          "sections_ms_total": 62027,
+          "section_ms": [
+            9294,
+            7806,
+            10051,
+            14002,
+            7904,
+            12964
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 1,
+          "total_ms": 68108
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 94,
+      "log": "{\"ts\":\"2025-09-16T03:13:15.796Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_intermediate/alain-metrics-1757992547070.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.15.47Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.5,
+          "estimatedTokens": 10420,
+          "estimatedReadingTime": 52.1,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 36,
+        "markdownCells": 18,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 8.886405430992127,
+          "markdownRatio": 0.48918548790296285
+        },
+        "createdUtc": "2025-09-16T03:15:47.070Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 9724,
+          "sections_ms_total": 79048,
+          "section_ms": [
+            5846,
+            9035,
+            9274,
+            19455,
+            9076,
+            26356
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 88783
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:14:28.010Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_advanced/alain-metrics-1757992651788.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-opus-4.1/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.17.31Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4838709677419355,
+          "estimatedTokens": 7267,
+          "estimatedReadingTime": 36.3,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 16,
+        "codeCells": 17,
+        "readability": {
+          "fkGrade": 10.19304458022177,
+          "markdownRatio": 0.4151232711966326
+        },
+        "createdUtc": "2025-09-16T03:17:31.788Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 13965,
+          "sections_ms_total": 90298,
+          "section_ms": [
+            19366,
+            8684,
+            11859,
+            9459,
+            20815,
+            20112
+          ],
+          "build_ms": 0,
+          "quality_ms": 1,
+          "colab_ms": 1,
+          "total_ms": 104267
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:16:01.486Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "GPT-5-chat",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/remix/alain-metrics-1757992737516.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/remix/provider_gpt-5-chat_beginner_environment-detection_2025.09.16-03.18.57Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "GPT-5-chat",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4666666666666667,
+          "estimatedTokens": 7711,
+          "estimatedReadingTime": 38.6,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 16,
+        "codeCells": 17,
+        "readability": {
+          "fkGrade": 8.618155260420867,
+          "markdownRatio": 0.4793454173532587
+        },
+        "createdUtc": "2025-09-16T03:18:57.516Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 15989,
+          "sections_ms_total": 68602,
+          "section_ms": [
+            9757,
+            10515,
+            12312,
+            12170,
+            10103,
+            13740
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 3,
+          "total_ms": 84600
+        }
+      },
+      "stats": {
+        "headings": 22,
+        "links": 1,
+        "fences": 0,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:17:48.902Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unterminated string in JSON at position 3280\"}\n{\"ts\":\"2025-09-16T03:17:48.904Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"{\\n  \\\"title\\\": \\\"GPT-5 Prompting Guide — ELI5 Remix\\\",\\n  \\\"overview\\\": \\\"This beginner-friendly guide explains how to talk to GPT-5 so it understands you clearly and gives better answers. We’ll use simple an\"}\n{\"ts\":\"2025-09-16T03:17:48.904Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_beginner/alain-metrics-1757992816615.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.20.16Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 6606,
+          "estimatedReadingTime": 33,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 31,
+        "markdownCells": 15,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 9.022182653749248,
+          "markdownRatio": 0.3871892613951064
+        },
+        "createdUtc": "2025-09-16T03:20:16.615Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 6266,
+          "sections_ms_total": 72274,
+          "section_ms": [
+            6683,
+            16977,
+            19448,
+            8661,
+            7134,
+            13367
+          ],
+          "build_ms": 0,
+          "quality_ms": 0,
+          "colab_ms": 2,
+          "total_ms": 78543
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:19:04.337Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_intermediate/alain-metrics-1757992936955.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.22.16Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 6205,
+          "estimatedReadingTime": 31,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 31,
+        "markdownCells": 15,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 9.391620427881296,
+          "markdownRatio": 0.35313178668689027
+        },
+        "createdUtc": "2025-09-16T03:22:16.955Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 24330,
+          "sections_ms_total": 95581,
+          "section_ms": [
+            21492,
+            19762,
+            21226,
+            14082,
+            8611,
+            10403
+          ],
+          "build_ms": 0,
+          "quality_ms": 1,
+          "colab_ms": 1,
+          "total_ms": 119915
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:20:31.772Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:20:41.369Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_advanced/alain-metrics-1757993023220.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/GPT-5-chat/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.23.43Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.5,
+          "estimatedTokens": 9604,
+          "estimatedReadingTime": 48,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 34,
+        "markdownCells": 17,
+        "codeCells": 17,
+        "readability": {
+          "fkGrade": 10.79892692648954,
+          "markdownRatio": 0.42849789424426765
+        },
+        "createdUtc": "2025-09-16T03:23:43.221Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 9726,
+          "sections_ms_total": 76083,
+          "section_ms": [
+            7469,
+            7190,
+            10622,
+            10351,
+            16384,
+            24059
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 85817
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:22:27.128Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "Claude-sonnet-4",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/remix/alain-metrics-1757993271832.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/remix/provider_claude-sonnet-4_beginner_environment-detection_2025.09.16-03.27.51Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "Claude-sonnet-4",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 90,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 90,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 4871,
+          "estimatedReadingTime": 24.4,
+          "hasRequiredSections": true,
+          "meetsStandards": true
+        },
+        "cells": 34,
+        "markdownCells": 16,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 9.933960754429418,
+          "markdownRatio": 0.3027873394341365
+        },
+        "createdUtc": "2025-09-16T03:27:51.832Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 26715,
+          "sections_ms_total": 219523,
+          "section_ms": [
+            35658,
+            37693,
+            35157,
+            36113,
+            36466,
+            38433
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 2,
+          "total_ms": 246246
+        }
+      },
+      "stats": {
+        "headings": 15,
+        "links": 1,
+        "fences": 0,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "Section JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_beginner/alain-metrics-1757993359579.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.29.19Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.46875,
+          "estimatedTokens": 7874,
+          "estimatedReadingTime": 39.4,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 34,
+        "markdownCells": 16,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 8.116661654135342,
+          "markdownRatio": 0.44427344209083025
+        },
+        "createdUtc": "2025-09-16T03:29:19.579Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 15938,
+          "sections_ms_total": 71128,
+          "section_ms": [
+            8650,
+            10857,
+            17464,
+            8603,
+            9125,
+            16426
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 87075
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:28:00.135Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:28:08.441Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:28:08.442Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to return only valid JSON of the repaired outline JSON. Constraints: Must have at least 2 assessment questions. Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objec\"}\n{\"ts\":\"2025-09-16T03:28:08.442Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_intermediate/alain-metrics-1757993460375.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.31.00Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.5,
+          "estimatedTokens": 6965,
+          "estimatedReadingTime": 34.8,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 32,
+        "markdownCells": 16,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 8.845214307483449,
+          "markdownRatio": 0.4230817217716781
+        },
+        "createdUtc": "2025-09-16T03:31:00.375Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 16457,
+          "sections_ms_total": 83877,
+          "section_ms": [
+            8378,
+            27272,
+            23474,
+            6424,
+            11390,
+            6935
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 4,
+          "total_ms": 100345
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:29:36.486Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_advanced/alain-metrics-1757993570063.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Claude-sonnet-4/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.32.50Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4375,
+          "estimatedTokens": 7299,
+          "estimatedReadingTime": 36.5,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 34,
+        "markdownCells": 15,
+        "codeCells": 19,
+        "readability": {
+          "fkGrade": 10.434919004962705,
+          "markdownRatio": 0.4181687310679903
+        },
+        "createdUtc": "2025-09-16T03:32:50.064Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 30214,
+          "sections_ms_total": 79003,
+          "section_ms": [
+            10922,
+            7540,
+            8885,
+            21753,
+            10465,
+            19433
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 2,
+          "total_ms": 109226
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:31:15.714Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:31:31.049Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:31:31.049Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We have to repair the outline JSON. Constraints: At least 2 assessment questions. Ensure 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives. The current outline has 10 steps\"}\n{\"ts\":\"2025-09-16T03:31:31.050Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "Qwen3-next-80b",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/remix/alain-metrics-1757993661756.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/remix/provider_qwen3-next-80b_beginner_environment-detection_2025.09.16-03.34.21Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "Qwen3-next-80b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.4666666666666667,
+          "estimatedTokens": 8101,
+          "estimatedReadingTime": 40.5,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 16,
+        "codeCells": 17,
+        "readability": {
+          "fkGrade": 6.283246366035055,
+          "markdownRatio": 0.4882740232887148
+        },
+        "createdUtc": "2025-09-16T03:34:21.756Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 19284,
+          "sections_ms_total": 70050,
+          "section_ms": [
+            13697,
+            10374,
+            8465,
+            7279,
+            18175,
+            12055
+          ],
+          "build_ms": 2,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 89343
+        }
+      },
+      "stats": {
+        "headings": 14,
+        "links": 1,
+        "fences": 0,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:33:11.697Z\",\"level\":\"info\",\"msg\":\"alain_outline_generated\",\"component\":\"event\",\"model\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":19284}\n{\"ts\":\"2025-09-16T03:33:11.697Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateOutline\",\"duration_ms\":19284}\n{\"ts\":\"2025-09-16T03:33:25.394Z\",\"level\":\"info\",\"msg\":\"alain_section_generated\",\"component\":\"event\",\"section\":1,\"modelReference\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":13696}\n{\"ts\":\"2025-09-16T03:33:25.394Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateSection\",\"duration_ms\":13696}\n{\"ts\":\"2025-09-16T03:33:35.768Z\",\"level\":\"info\",\"msg\":\"alain_section_generated\",\"component\":\"event\",\"section\":2,\"modelReference\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":10373}\n{\"ts\":\"2025-09-16T03:33:35.769Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateSection\",\"duration_ms\":10373}\n{\"ts\":\"2025-09-16T03:33:44.235Z\",\"level\":\"info\",\"msg\":\"alain_section_generated\",\"component\":\"event\",\"section\":3,\"modelReference\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":8465}\n{\"ts\":\"2025-09-16T03:33:44.235Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateSection\",\"duration_ms\":8465}\n{\"ts\":\"2025-09-16T03:33:51.515Z\",\"level\":\"info\",\"msg\":\"alain_section_generated\",\"component\":\"event\",\"section\":4,\"modelReference\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":7279}\n{\"ts\":\"2025-09-16T03:33:51.515Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateSection\",\"duration_ms\":7279}\n{\"ts\":\"2025-09-16T03:34:09.690Z\",\"level\":\"info\",\"msg\":\"alain_section_generated\",\"component\":\"event\",\"section\":5,\"modelReference\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":18175}\n{\"ts\":\"2025-09-16T03:34:09.690Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateSection\",\"duration_ms\":18175}\n{\"ts\":\"2025-09-16T03:34:21.746Z\",\"level\":\"info\",\"msg\":\"alain_section_generated\",\"component\":\"event\",\"section\":6,\"modelReference\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":12055}\n{\"ts\":\"2025-09-16T03:34:21.746Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"ALAINKit.generateSection\",\"duration_ms\":12055}\n{\"ts\":\"2025-09-16T03:34:21.748Z\",\"level\":\"info\",\"msg\":\"alain_notebook_built\",\"component\":\"event\",\"cells\":30,\"sections\":6,\"duration_ms\":1}\n{\"ts\":\"2025-09-16T03:34:21.748Z\",\"level\":\"info\",\"msg\":\"timing\",\"component\":\"NotebookBuilder\",\"op\":\"buildNotebook\",\"duration_ms\":1,\"cells\":30,\"sections\":6}\n{\"ts\":\"2025-09-16T03:34:21.756Z\",\"level\":\"info\",\"msg\":\"alain_pipeline_success\",\"component\":\"event\",\"model\":\"Qwen3-next-80b\",\"difficulty\":\"beginner\",\"duration_ms\":89343,\"sections\":6,\"qualityScore\":80}\n✅ Wrote notebook: /Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/remix/provider_qwen3-next-80b_beginner_environment-detection_2025.09.16-03.34.21Z-ALAIN-remix.ipynb\n📋 Validation: /Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/remix/alain-validation-1757993661756.md\nQuality: 80  Colab: ⚠️\nReadability: FK=6.3  MD Ratio=48.8%\n⏱️ Estimated time: 36–60 minutes (rough)\n📊 Metrics: /Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/remix/alain-metrics-1757993661756.json\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_beginner/alain-metrics-1757993831687.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.37.11Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 90,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 90,
+          "stepCount": 6,
+          "markdownRatio": 0.4827586206896552,
+          "estimatedTokens": 4981,
+          "estimatedReadingTime": 24.9,
+          "hasRequiredSections": true,
+          "meetsStandards": true
+        },
+        "cells": 31,
+        "markdownCells": 15,
+        "codeCells": 16,
+        "readability": {
+          "fkGrade": 7.9310515054730395,
+          "markdownRatio": 0.36684669713336104
+        },
+        "createdUtc": "2025-09-16T03:37:11.687Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 23263,
+          "sections_ms_total": 146024,
+          "section_ms": [
+            35437,
+            33821,
+            30679,
+            16928,
+            15438,
+            13716
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 2,
+          "total_ms": 169296
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:34:30.795Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:34:45.654Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:34:45.654Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to fix the given JSON to satisfy constraints.\\n>\\n>Constraints:\\n>- Must have at least 2 assessment questions.\\n>- Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 object\"}\n{\"ts\":\"2025-09-16T03:34:45.654Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_intermediate/alain-metrics-1757993929450.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.38.49Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45714285714285713,
+          "estimatedTokens": 10121,
+          "estimatedReadingTime": 50.6,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 37,
+        "markdownCells": 17,
+        "codeCells": 20,
+        "readability": {
+          "fkGrade": 9.14782452412172,
+          "markdownRatio": 0.3964236157736896
+        },
+        "createdUtc": "2025-09-16T03:38:49.451Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 13580,
+          "sections_ms_total": 83698,
+          "section_ms": [
+            11154,
+            8083,
+            7335,
+            8670,
+            15269,
+            22221,
+            10477
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 97287
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:37:25.743Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_advanced/alain-metrics-1757994004083.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/Qwen3-next-80b/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.40.04Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 9560,
+          "estimatedReadingTime": 47.8,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 10.22814814814815,
+          "markdownRatio": 0.4035732329031369
+        },
+        "createdUtc": "2025-09-16T03:40:04.083Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 13860,
+          "sections_ms_total": 60296,
+          "section_ms": [
+            8525,
+            6428,
+            7779,
+            9575,
+            7539,
+            20446
+          ],
+          "build_ms": 2,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 74167
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:38:56.517Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:39:03.775Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:39:03.775Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to repair the JSON: Must have at least 2 assessment questions. Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives. The current has exactly 4 objectives, good\"}\n{\"ts\":\"2025-09-16T03:39:03.776Z\",\"level\":\"warn\",\"msg\":\"repair_failed_deterministic_fallback\",\"component\":\"OutlineGenerator\",\"error\":\"No valid JSON found in outline response\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "remix",
+      "model": "kimi-k2",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/remix",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/remix/alain-metrics-1757994586231.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/remix/provider_kimi-k2_beginner_environment-detection_2025.09.16-03.49.46Z-ALAIN-remix.ipynb",
+      "metrics": {
+        "model": "kimi-k2",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 90,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 90,
+          "stepCount": 6,
+          "markdownRatio": 0.48717948717948717,
+          "estimatedTokens": 5791,
+          "estimatedReadingTime": 29,
+          "hasRequiredSections": true,
+          "meetsStandards": true
+        },
+        "cells": 42,
+        "markdownCells": 21,
+        "codeCells": 21,
+        "readability": {
+          "fkGrade": 9.962340219912377,
+          "markdownRatio": 0.362745791483944
+        },
+        "createdUtc": "2025-09-16T03:49:46.231Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 110598,
+          "sections_ms_total": 469432,
+          "section_ms": [
+            37855,
+            42697,
+            32876,
+            51644,
+            40593,
+            76482,
+            56410,
+            69011,
+            58545
+          ],
+          "build_ms": 0,
+          "quality_ms": 1,
+          "colab_ms": 1,
+          "total_ms": 580033
+        }
+      },
+      "stats": {
+        "headings": 14,
+        "links": 1,
+        "fences": 0,
+        "linkList": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "linkSummary": {
+        "total": 1,
+        "ok": 0,
+        "fail": 1,
+        "failed": [
+          "https://www.linkedin.com/in/danielpgreen"
+        ]
+      },
+      "score": 100,
+      "log": "Section JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "beginner",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_beginner",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_beginner/alain-metrics-1757994697448.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_beginner/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.51.37Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "beginner",
+        "maxSections": 6,
+        "qualityScore": 60,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 60,
+          "stepCount": 0,
+          "markdownRatio": 0.4117647058823529,
+          "estimatedTokens": 9942,
+          "estimatedReadingTime": 49.7,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 36,
+        "markdownCells": 15,
+        "codeCells": 21,
+        "readability": {
+          "fkGrade": 8.787233396584444,
+          "markdownRatio": 0.43954430154421253
+        },
+        "createdUtc": "2025-09-16T03:51:37.448Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 20702,
+          "sections_ms_total": 89888,
+          "section_ms": [
+            5367,
+            18651,
+            9012,
+            7937,
+            30520,
+            10298,
+            7568
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 1,
+          "total_ms": 110597
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 86,
+      "log": "{\"ts\":\"2025-09-16T03:50:00.440Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\n{\"ts\":\"2025-09-16T03:50:00.441Z\",\"level\":\"error\",\"msg\":\"outline_json_extract_failed\",\"component\":\"OutlineGenerator\",\"head\":\"Thinking...\\n>We need to produce JSON structure with fields: title, overview, objectives (4), prerequisites, setup (requirements, environment, commands), outline (list of steps with step number, title,\"}\n{\"ts\":\"2025-09-16T03:50:07.551Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "intermediate",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_intermediate",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_intermediate/alain-metrics-1757994826432.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_intermediate/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.53.46Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "intermediate",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 8379,
+          "estimatedReadingTime": 41.9,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 9.190381036448567,
+          "markdownRatio": 0.36157997777660195
+        },
+        "createdUtc": "2025-09-16T03:53:46.432Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 10676,
+          "sections_ms_total": 117845,
+          "section_ms": [
+            13156,
+            14109,
+            10132,
+            24742,
+            17554,
+            38144
+          ],
+          "build_ms": 1,
+          "quality_ms": 2,
+          "colab_ms": 2,
+          "total_ms": 128527
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:51:48.579Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    },
+    {
+      "kind": "generate",
+      "model": "gpt-oss-20b",
+      "difficulty": "advanced",
+      "outDir": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_advanced",
+      "metricsFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_advanced/alain-metrics-1757994943115.json",
+      "notebookFile": "/Users/danielgreen/Downloads/OSS hackathon/alain-ai-learning-platform/benchmark_output/kimi-k2/gen_advanced/provider_gpt-oss-20b_beginner_environment-detection_2025.09.16-03.55.43Z-ALAIN.ipynb",
+      "metrics": {
+        "model": "gpt-oss-20b",
+        "baseUrl": "https://api.poe.com",
+        "difficulty": "advanced",
+        "maxSections": 6,
+        "qualityScore": 80,
+        "colabCompatible": false,
+        "sectionCount": 6,
+        "qualityMetrics": {
+          "qualityScore": 80,
+          "stepCount": 6,
+          "markdownRatio": 0.45161290322580644,
+          "estimatedTokens": 10316,
+          "estimatedReadingTime": 51.6,
+          "hasRequiredSections": true,
+          "meetsStandards": false
+        },
+        "cells": 33,
+        "markdownCells": 15,
+        "codeCells": 18,
+        "readability": {
+          "fkGrade": 11.523730222430405,
+          "markdownRatio": 0.5798001976067625
+        },
+        "createdUtc": "2025-09-16T03:55:43.115Z",
+        "estimatedTimeMinutes": {
+          "min": 36,
+          "max": 60
+        },
+        "phaseTimings": {
+          "outline_ms": 16093,
+          "sections_ms_total": 100124,
+          "section_ms": [
+            4791,
+            31005,
+            11117,
+            17916,
+            16188,
+            19103
+          ],
+          "build_ms": 1,
+          "quality_ms": 3,
+          "colab_ms": 3,
+          "total_ms": 116228
+        }
+      },
+      "linkSummary": {
+        "total": 0,
+        "ok": 0,
+        "fail": 0,
+        "failed": []
+      },
+      "score": 100,
+      "log": "{\"ts\":\"2025-09-16T03:54:02.979Z\",\"level\":\"warn\",\"msg\":\"outline_json_parse_failed\",\"component\":\"OutlineGenerator\",\"error\":\"Unexpected token 'T', \\\"Thinking..\\\"... is not valid JSON\"}\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\nSection JSON parse failed. Attempting bracket-matched extraction.\n"
+    }
+  ]
+}

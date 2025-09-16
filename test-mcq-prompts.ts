@@ -6,8 +6,10 @@ async function testMCQPrompts() {
   console.log('🧪 Testing updated ALAIN-Kit prompts for MCQ generation...\n');
 
   // Read the updated prompts
-  const poePrompt = readFileSync(join(process.cwd(), 'prompts/alain-kit/flattened/poe/research.online.v2025-09-13.txt'), 'utf8');
-  const optimizedPrompt = readFileSync(join(process.cwd(), 'prompts/alain-kit/optimized/research.optimized.v1.txt'), 'utf8');
+  const poePromptRaw = readFileSync(join(process.cwd(), 'resources/prompts/alain-kit/flattened/poe/research.online.v2025-09-13.txt'), 'utf8');
+  const optimizedPromptRaw = readFileSync(join(process.cwd(), 'resources/prompts/alain-kit/optimized/research.optimized.v1.txt'), 'utf8');
+  const poePrompt = poePromptRaw.replace('{{MODEL_REFERENCE_OR_TEXT}}', testModel).replace('{{SUBJECT}}', testModel);
+  const optimizedPrompt = optimizedPromptRaw.replace('{{MODEL_REFERENCE_OR_TEXT}}', testModel).replace('{{SUBJECT}}', testModel);
 
   console.log('📋 Poe Prompt Analysis:');
   console.log('- MCQ requirement present:', poePrompt.includes('multiple choice questions'));

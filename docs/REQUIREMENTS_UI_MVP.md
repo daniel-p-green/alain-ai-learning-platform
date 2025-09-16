@@ -14,7 +14,7 @@ Scope: Web app P0 only. Objective: ship a polished demo path without regressions
 ## Acceptance Criteria
 
 ### New Shell & Navigation
-- App shell exists under `web/app/layout.tsx`.
+- App shell exists under `apps/web/app/layout.tsx`.
 - No feature flags for Home; `/` is the canonical landing page.
 
 ### Generate (HF/Local/Text)
