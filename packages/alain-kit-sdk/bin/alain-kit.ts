@@ -166,9 +166,9 @@ async function main() {
     try {
       const credit = [
         '---\n',
-        '**Remix Note**: This ELI5 version was created with the Applied Learning AI Notebooks (ALAIN) Project on 09.14.2025.\\n',
-        'Created by [Daniel Green](https://www.linkedin.com/in/danielpgreen).\\n',
-        '---\n\n'
+        '**Remix Note**: This ELI5 version was created with the Applied Learning AI Notebooks (ALAIN) Project on 09.14.2025.\n',
+        'Created by [Daniel Green](https://www.linkedin.com/in/danielpgreen).\n',
+        '---\n'
       ];
       res.notebook.cells.unshift({ cell_type: 'markdown', metadata: {}, source: credit });
       res.notebook.metadata = {
