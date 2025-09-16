@@ -30,7 +30,8 @@ packages/alain-kit/
 1. **Outline** – `OutlineGenerator` requests OutlineJSON (title, objectives, steps, references). Strict JSON mode; auto retry on “Thinking…” chatter.
 2. **Sections** – `SectionGenerator` requests StepFillJSON for each outline item, respecting token budgets and structure hints.
 3. **Assembly** – `NotebookBuilder` combines outline + sections, adds environment detection, `%pip` setup cells, `.env` helpers, assessments, and troubleshooting notes.
-4. **Validation** – `QualityValidator` and `ColabValidator` score the notebook, patch issues, and supply a human-readable report.
+4. **QA Gate** – Lightweight structural checks (objectives, section coverage, placeholders) short-circuit obvious failures before validation.
+5. **Validation** – `QualityValidator` and `ColabValidator` score the notebook, patch issues, and supply a human-readable report.
 
 ## Key Features
 
@@ -129,6 +130,7 @@ Set `ALAIN_COLAB_MODEL=<model>` (e.g., `gemini-2.5-pro`) to let `ColabValidator`
 | `OPENAI_BASE_URL` | Base URL (no `/v1`; e.g., `https://api.poe.com`). |
 | `ALAIN_COLAB_MODEL` | Enable Gemini review (`gemini-2.5-pro`, etc.). |
 | `ALAIN_COLAB_BASE` | Override base URL for Gemini (defaults to `OPENAI_BASE_URL` or Poe). |
+| `ALAIN_COLAB_MAX_ISSUES` | Allow up to N critical issues before failing (default `0`). |
 | `ALAIN_CONCURRENCY` | Section fill concurrency (default 1 remote / 2 local). |
 | `ALAIN_CHECKPOINT_DIR` | Persistent checkpoints for section JSON (default `/tmp/alain-kit-<timestamp>`). |
 
@@ -141,6 +143,16 @@ Set `ALAIN_COLAB_MODEL=<model>` (e.g., `gemini-2.5-pro`) to let `ColabValidator`
 * Assessments – `ipywidgets`-based MCQs plus summary and next steps.
 
 ## Validators
+
+### QA Gate
+
+`validation/qa-gate.ts` performs a deterministic, <1ms sanity pass before launching the heavier validators. It checks that:
+
+- the outline has a title, steps, setup details, and at least one exercise;
+- every outline step has a generated section with meaningful markdown (≥800 chars) and at least one code cell; and
+- no TODO/TBD/FIXME placeholders are left in the generated content.
+
+If a requirement is missing the pipeline fails fast; structural warnings (e.g., short markdown) are bubbled back so the caller can regenerate sections before invoking the more expensive quality tooling.
 
 * **Quality** – ensures objectives, prerequisites, setup, 6–12 steps, exercises, summary, references; enforces markdown ratio, readability (Flesch-Kincaid target 14–20), step token limits.
 * **Colab** – pattern-based fixes for `%pip`, `.env` guidance, device mapping; optional Gemini rewrites; reports fix counts and compatibility.

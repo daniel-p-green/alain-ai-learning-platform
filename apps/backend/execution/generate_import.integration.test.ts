@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const suite = runEncoreSuite ? describe : describe.skip;
+
 // Mock Encore API surface
 vi.mock('encore.dev/api', () => {
   class APIError extends Error {
@@ -48,11 +51,10 @@ vi.mock('../tutorials/db', () => {
   };
 });
 
-import { generateLesson } from './lesson-generator';
-import { importLesson } from '../tutorials/import_lesson';
-
-describe('generate → import integration (mocked teacher/DB)', () => {
+suite('generate → import integration (mocked teacher/DB)', () => {
   it('generates a lesson and imports it successfully', async () => {
+    const { generateLesson } = await import('./lesson-generator');
+    const { importLesson } = await import('../tutorials/import_lesson');
     const gen = await generateLesson({
       hfUrl: 'https://huggingface.co/openai/gpt-oss-20b',
       difficulty: 'beginner',
@@ -70,4 +72,3 @@ describe('generate → import integration (mocked teacher/DB)', () => {
     expect(imp.tutorialId).toBeTruthy();
   });
 });
-

@@ -24,8 +24,8 @@ interface ImportResponse { tutorialId: number }
 
 export const importLesson = api<LessonInput, ImportResponse>(
   { expose: true, method: "POST", path: "/tutorials/import" },
-  async (lesson, ctx) => {
-    await requireUserId(ctx);
+  async (lesson) => {
+    await requireUserId();
 
     // Validate via pure validator (throws on error)
     validateLessonLite({

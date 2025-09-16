@@ -21,8 +21,8 @@ interface ReorderStepsResponse {
 // Reorders tutorial steps by updating their step_order values.
 export const reorderSteps = api<ReorderStepsRequest, ReorderStepsResponse>(
   { expose: true, method: "PUT", path: "/tutorials/:tutorialId/steps/reorder" },
-  async (req, ctx) => {
-    await requireUserId(ctx);
+  async (req) => {
+    await requireUserId();
     if (!req.tutorialId || req.tutorialId < 1) {
       throw APIError.invalidArgument("tutorial ID must be a positive integer");
     }

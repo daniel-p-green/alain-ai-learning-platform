@@ -2,19 +2,18 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "files": [],
   "references": [
-    { "path": "./backend" }
+    { "path": "./apps/backend" }
   ],
   "compilerOptions": {
     "composite": true
   },
   "include": [
-    "backend/**/*.ts",
-    "backend/**/*.tsx"
+    "apps/backend/**/*.ts",
+    "apps/backend/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
-    "frontend/**/*",
-    "web/**/*"
+    "apps/backend/frontend/**/*",
+    "apps/web/**/*"
   ]
 }
-

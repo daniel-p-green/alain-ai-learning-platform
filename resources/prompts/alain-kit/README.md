@@ -125,6 +125,7 @@ Each phase defines specific functions for structured output:
 - `emit_research_findings()` - Research phase output
 - `emit_learning_design()` - Design phase output
 - `emit_notebook_implementation()` - Development phase output
+- `emit_quality_gate_report()` - QA gate output
 - `emit_validation_report()` - Validation phase output
 - `emit_workflow_report()` - Orchestrator final output
 

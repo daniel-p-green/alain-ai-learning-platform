@@ -39,10 +39,10 @@ interface ExecuteResponse {
 // Executes LLM requests and returns the complete response.
 export const execute = api<ExecuteRequest, ExecuteResponse>(
   { expose: true, method: "POST", path: "/execute" },
-  withApiLogging('execution.execute', async (req, ctx) => {
+  withApiLogging('execution.execute', async (req) => {
     try {
       validateBackendEnv();
-      const userId = await requireUserId(ctx);
+      const userId = await requireUserId();
       const gate = allowRate(userId, 'execute', Number(process.env.EXECUTE_MAX_RPM || 60), 60_000);
       if (!gate.ok) {
         throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
@@ -64,11 +64,17 @@ export const execute = api<ExecuteRequest, ExecuteResponse>(
   })
 );
 
-// Teacher model router for lesson generation using GPT-OSS models (no auth required for internal use)
+// Teacher model router for lesson generation using GPT-OSS models
 export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
   { expose: true, method: "POST", path: "/teacher/execute" },
-  withApiLogging('execution.teacherExecute', async (req, ctx) => {
+  withApiLogging('execution.teacherExecute', async (req) => {
     try {
+      const userId = await requireUserId();
+      const limit = Number(process.env.TEACHER_MAX_RPM || process.env.EXECUTE_MAX_RPM || 30);
+      const gate = allowRate(userId, 'teacher_execute', limit, 60_000);
+      if (!gate.ok) {
+        throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
+      }
       // Force Poe provider and GPT-OSS models for teacher functionality
       const teacherReq = { ...req, provider: "poe" as const };
 

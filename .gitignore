@@ -37,6 +37,22 @@ alain-kit/**/test/node_modules/
 alain-kit-sdk/output/
 **/.ipynb_checkpoints/
 
+# Ignore generated backend JS test artifacts
+apps/backend/**/*.test.js
+apps/backend/**/*.test.js.map
+apps/backend/**/*.test.d.ts
+# Generated Encore/Bun outputs
+apps/backend/**/*.js
+apps/backend/**/*.cjs
+apps/backend/**/*.js.map
+apps/backend/**/*.d.ts
+
+# Local notes/cache
+hackathon-notes/
+notes/
+scripts/__pycache__/
+resources/examples/**/__pycache__/
+
 # Curate generated content: track only selected samples
 # Ignore dated subfolders under content/notebooks and content/lessons by default
 content/notebooks/**/20*/

@@ -159,14 +159,14 @@ export function trackEvent(name: string, props?: Record<string, any>) {
 }
 
 // Encore API wrapper for request/response logging and timing
-export function withApiLogging<Req, Res>(name: string, handler: (req: Req, ctx: any) => Promise<Res> | Res) {
+export function withApiLogging<Req, Res>(name: string, handler: (req: Req) => Promise<Res> | Res) {
   const log = createLogger(name);
   const slowMs = Number(process.env.SLOW_THRESHOLD_MS || 750);
-  return async (req: Req, ctx: any): Promise<Res> => {
+  return async (req: Req): Promise<Res> => {
     const start = Date.now();
     log.info('request', sanitize({ query: req }));
     try {
-      const result = await handler(req, ctx);
+      const result = await handler(req);
       const dur = Date.now() - start;
       metrics.observe(`${name}_latency_ms`, dur);
       metrics.inc(`${name}_total`, 1);

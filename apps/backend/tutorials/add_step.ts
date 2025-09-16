@@ -27,8 +27,8 @@ interface TutorialStep {
 // Adds a new step to an existing tutorial.
 export const addStep = api<AddStepRequest, TutorialStep>(
   { expose: true, method: "POST", path: "/tutorials/:tutorialId/steps" },
-  async (req, ctx) => {
-    await requireUserId(ctx);
+  async (req) => {
+    await requireUserId();
     // Validate input parameters
     if (!req.title?.trim()) {
       throw APIError.invalidArgument("step title cannot be empty");

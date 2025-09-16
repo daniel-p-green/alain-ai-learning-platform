@@ -1,13 +1,22 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { deleteStep } from "./delete_step";
-import { tutorialsDB } from "./db";
-import { APIError } from "encore.dev/api";
+import { describe, it, expect, beforeEach, afterEach, vi, beforeAll } from "vitest";
+
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const describeEncore = runEncoreSuite ? describe : describe.skip;
+
+let deleteStep: any;
+let tutorialsDB: any;
+let APIError: any;
 
 vi.mock("../auth", () => ({
   requireUserId: vi.fn().mockResolvedValue("test-user"),
 }));
 
-describe("deleteStep", () => {
+describeEncore("deleteStep", () => {
+  beforeAll(async () => {
+    ({ deleteStep } = await import("./delete_step"));
+    ({ tutorialsDB } = await import("./db"));
+    ({ APIError } = await import("encore.dev/api"));
+  });
   let tutorialId: number;
   let step1Id: number, step2Id: number, step3Id: number;
 

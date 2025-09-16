@@ -10,6 +10,7 @@ import { SectionGenerator, GeneratedSection } from '../core/section-generator';
 import { NotebookBuilder } from '../core/notebook-builder';
 import { QualityValidator, QualityMetrics } from './quality-validator';
 import { ColabValidator, ColabValidationResult } from './colab-validator';
+import { QaGate, QaGateReport } from './qa-gate';
 import { metrics, trackEvent } from '../core/obs';
 
 export interface ALAINKitResult {
@@ -21,6 +22,7 @@ export interface ALAINKitResult {
   sections: GeneratedSection[];
   qualityMetrics: QualityMetrics;
   colabValidation: ColabValidationResult;
+  qaReport: QaGateReport;
   validationReport: string;
   phaseTimings?: {
     outline_ms: number;
@@ -39,6 +41,7 @@ export class ALAINKit {
   private notebookBuilder: NotebookBuilder;
   private qualityValidator: QualityValidator;
   private colabValidator: ColabValidator;
+  private qaGate: QaGate;
   private baseUrl?: string;
   private checkpointsDir: string;
 
@@ -49,6 +52,7 @@ export class ALAINKit {
     this.notebookBuilder = new NotebookBuilder();
     this.qualityValidator = new QualityValidator();
     this.colabValidator = new ColabValidator();
+    this.qaGate = new QaGate();
     // Checkpoint directory: allow resume across runs when ALAIN_CHECKPOINT_DIR is set
     const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     this.checkpointsDir = process.env.ALAIN_CHECKPOINT_DIR || `/tmp/alain-kit-${stamp}`;
@@ -166,6 +170,21 @@ export class ALAINKit {
       let notebook = this.notebookBuilder.buildNotebook(outline, resolvedSections);
       const tBuild = Date.now() - tBuildStart;
 
+      // Step 3.5: Run lightweight QA gate before expensive validators
+      const qaReport = await this.qaGate.evaluate({
+        outline,
+        sections: resolvedSections,
+        notebook
+      });
+      trackEvent('alain_qa_gate_result', {
+        status: qaReport.overall_status,
+        warnings: qaReport.warning_issues.length,
+        blocking: qaReport.blocking_issues.length
+      });
+      if (qaReport.overall_status === 'fail') {
+        throw new Error(`QA gate failed: ${qaReport.blocking_issues.join('; ') || qaReport.summary}`);
+      }
+
       // Step 4: Quality validation
       const tempPath = `/tmp/alain-notebook-${Date.now()}.ipynb`;
       require('fs').writeFileSync(tempPath, JSON.stringify(notebook, null, 2));
@@ -195,6 +214,7 @@ export class ALAINKit {
         notebook,
         outline,
         sections: resolvedSections,
+        qaReport,
         qualityMetrics,
         colabValidation,
         validationReport,
@@ -211,8 +231,9 @@ export class ALAINKit {
 
     } catch (error) {
       const duration = Date.now() - pipelineStart;
+      const errMessage = error instanceof Error ? error.message : String(error);
       metrics.inc('alain_pipeline_failures_total', 1, { model: config.modelReference, difficulty: config.difficulty || 'beginner' });
-      trackEvent('alain_pipeline_failure', { model: config.modelReference, difficulty: config.difficulty || 'beginner', duration_ms: duration, error: (error as any)?.message });
+      trackEvent('alain_pipeline_failure', { model: config.modelReference, difficulty: config.difficulty || 'beginner', duration_ms: duration, error: errMessage });
       return {
         success: false,
         qualityScore: 0,
@@ -220,9 +241,43 @@ export class ALAINKit {
         notebook: null,
         outline: {} as NotebookOutline,
         sections: [],
+        qaReport: {
+          notebook_title: config.customPrompt?.title || 'Unknown Notebook',
+          qa_timestamp: new Date().toISOString(),
+          overall_status: 'fail',
+          summary: errMessage || 'QA gate unavailable',
+          metrics: {
+            outline_steps: 0,
+            sections_expected: 0,
+            sections_received: 0,
+            objectives_in_outline: 0,
+            exercises_count: 0,
+            assessments_count: 0,
+            avg_section_length_chars: 0,
+            markdown_ratio_estimate: 0
+          },
+          quality_gates: {
+            outline_completeness: { status: 'fail', notes: ['Pipeline aborted before QA gate'] },
+            section_alignment: { status: 'fail', notes: [] },
+            placeholder_scan: { status: 'fail', notes: [] }
+          },
+          blocking_issues: [errMessage || 'Pipeline failed before QA.'],
+          warning_issues: [],
+          recommended_actions: {
+            must_fix: [errMessage || 'Investigate failure'],
+            should_fix: []
+          },
+          automation_hooks: {
+            regex_checks: []
+          },
+          source_trace: {
+            outline_reference: 'qa.unavailable',
+            section_ids: []
+          }
+        } as QaGateReport,
         qualityMetrics: {} as QualityMetrics,
         colabValidation: {} as ColabValidationResult,
-        validationReport: `Generation failed: ${error.message}`
+        validationReport: `Generation failed: ${errMessage}`
       };
     }
   }

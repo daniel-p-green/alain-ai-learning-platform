@@ -27,8 +27,8 @@ import { requireUserId } from "../auth";
 
 export const updateStep = api<UpdateStepRequest, TutorialStep>(
   { expose: true, method: "PUT", path: "/tutorials/steps/:stepId" },
-  async (req, ctx) => {
-    await requireUserId(ctx);
+  async (req) => {
+    await requireUserId();
     if (!req.stepId || req.stepId < 1) {
       throw APIError.invalidArgument("step ID must be a positive integer");
     }

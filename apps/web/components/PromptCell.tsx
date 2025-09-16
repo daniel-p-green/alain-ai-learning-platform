@@ -53,7 +53,7 @@ export function PromptCell({ codeTemplate, onChange, onExecute, disabled }: Prop
         editorRef.current = null;
       }
     };
-  }, [onChange]);
+  }, [codeTemplate, onChange]);
 
   // Keep editor content in sync when parent changes codeTemplate
   useEffect(() => {

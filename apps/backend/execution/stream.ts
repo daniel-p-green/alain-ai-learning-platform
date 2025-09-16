@@ -30,8 +30,8 @@ function incrementRate(userId: string): boolean {
 
 export const executeStream = api<ExecuteRequest, { success: false; error: { code: string; message: string } }>(
   { expose: true, method: "POST", path: "/execute/stream" },
-  async (req, ctx) => {
-    await requireUserId(ctx);
+  async (req) => {
+    await requireUserId();
     // Streaming via raw endpoints is not available with current Encore TS config.
     // Use the Next.js App Router SSE at /api/execute instead.
     return {

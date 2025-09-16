@@ -23,7 +23,7 @@ interface RunResearchResponse {
 
 export const runResearch = api<RunResearchRequest, RunResearchResponse>(
   { expose: true, method: "POST", path: "/research/run" },
-  async (req, _ctx) => {
+  async (req) => {
     try {
       const model = (req.model || '').trim();
       const provider = (req.provider || '').trim();

@@ -1,12 +1,28 @@
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'node:path';
 
-const excludeRuntime = !process.env.ENCORE_RUNTIME_LIB;
+const runtimeStub = resolve(__dirname, 'test-shims/encore-runtime-stub.ts');
+const runtimeModule = 'encore.dev/dist/internal/runtime/napi/napi.cjs';
+
+const runEncoreSuites = process.env.RUN_ENCORE_TESTS === '1';
+const encoreExclusivePatterns = [
+  'execution/**/*.test.ts',
+  'execution/**/*.integration.test.ts',
+  'tutorials/**/*.test.ts',
+  'progress/**/*.test.ts',
+];
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      'encore-runtime-stub': runtimeStub,
+      [runtimeModule]: runtimeStub,
+    },
+  },
   test: {
     setupFiles: ['./vitest.setup.ts'],
     exclude: [
-      ...(excludeRuntime ? ['tutorials/*.test.ts'] : []),
+      ...(runEncoreSuites ? [] : encoreExclusivePatterns),
     ],
   },
   server: {

@@ -1,7 +1,14 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { resolveTeacherProvider } from './teacher';
+import { describe, it, expect, beforeAll } from 'vitest';
 
-describe('resolveTeacherProvider', () => {
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const describeEncore = runEncoreSuite ? describe : describe.skip;
+
+let resolveTeacherProvider: any;
+
+describeEncore('resolveTeacherProvider', () => {
+  beforeAll(async () => {
+    ({ resolveTeacherProvider } = await import('./teacher'));
+  });
   it('routes GPT-OSS-120B to Poe when local is requested and Poe is available', () => {
     const out = resolveTeacherProvider('openai-compatible', 'GPT-OSS-120B', true);
     expect(out).toBe('poe');

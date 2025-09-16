@@ -1,4 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeAll } from 'vitest';
+
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const describeEncore = runEncoreSuite ? describe : describe.skip;
 
 // Mock Encore APIs
 vi.mock('encore.dev/api', () => {
@@ -18,10 +21,12 @@ vi.mock('./teacher', () => ({
   })
 }));
 
-// Import after mocks
-import { repairLesson } from './repair';
+let repairLesson: any;
 
-describe('repairLesson HF URL parsing (centralized)', () => {
+describeEncore('repairLesson HF URL parsing (centralized)', () => {
+  beforeAll(async () => {
+    ({ repairLesson } = await import('./repair'));
+  });
   it('accepts full huggingface URL', async () => {
     const resp = await repairLesson({
       hfUrl: 'https://huggingface.co/meta-llama/Llama-3.1-8B',

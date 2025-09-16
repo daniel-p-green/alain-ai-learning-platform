@@ -22,8 +22,8 @@ interface UserProgress {
 // Updates or creates user progress for a tutorial.
 export const updateProgress = api<UpdateProgressRequest, UserProgress>(
   { expose: true, method: "POST", path: "/progress" },
-  async (req, ctx) => {
-    const uid = await requireUserId(ctx);
+  async (req) => {
+    const uid = await requireUserId();
     if (uid !== req.userId) {
       throw APIError.permissionDenied("Cannot modify another user's progress");
     }

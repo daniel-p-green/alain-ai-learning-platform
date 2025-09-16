@@ -26,8 +26,8 @@ interface Tutorial {
 // Creates a new tutorial.
 export const create = api<CreateTutorialRequest, Tutorial>(
   { expose: true, method: "POST", path: "/tutorials" },
-  async (req, ctx) => {
-    await requireUserId(ctx);
+  async (req) => {
+    await requireUserId();
     const tutorial = await tutorialsDB.queryRow<Tutorial>`
       INSERT INTO tutorials (title, description, model, provider, difficulty, tags)
       VALUES (${req.title}, ${req.description}, ${req.model}, ${req.provider}, ${req.difficulty}, ${req.tags})
