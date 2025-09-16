@@ -35,6 +35,10 @@ jobs:
       - name: Install dependencies (workspaces)
         run: npm ci
 
+      - name: Workaround rollup optional dependency (Linux)
+        if: runner.os == 'Linux'
+        run: npm --workspace apps/backend install --no-save @rollup/rollup-linux-x64-gnu
+
       - name: Run unit tests (Vitest)
         run: npm --workspace apps/web run test
 
