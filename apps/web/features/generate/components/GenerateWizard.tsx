@@ -55,6 +55,8 @@ export function GenerateWizard({ open, onClose, viewModel }: Props) {
     researchCopy,
     submitForm,
     loading,
+    SHOW_FALLBACK_UI,
+    ALLOW_120B,
   } = viewModel;
 
   const [step, setStep] = useState(0);
@@ -119,6 +121,8 @@ export function GenerateWizard({ open, onClose, viewModel }: Props) {
               providers={providers}
               researchCopy={researchCopy}
               requirement={selectedPreset ? presetRequirements[selectedPreset] : null}
+              showFallbackUI={SHOW_FALLBACK_UI}
+              allow120B={ALLOW_120B}
             />
           )}
           {step === 2 && (
@@ -206,9 +210,19 @@ type StepTwoProps = {
   providers: UseGenerateLessonResult['providers'];
   researchCopy: UseGenerateLessonResult['researchCopy'];
   requirement: { requirement: string; detail: string; } | null;
+  showFallbackUI: boolean;
+  allow120B: boolean;
 };
 
-function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, researchCopy, requirement }: StepTwoProps) {
+function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, researchCopy, requirement, showFallbackUI, allow120B }: StepTwoProps) {
+  const researchModes = (Object.keys(researchCopy) as Array<ResearchMode>).filter((mode) => showFallbackUI || mode !== 'fallback');
+
+  useEffect(() => {
+    if (!showFallbackUI && draft.researchMode === 'fallback') {
+      setDraft((prev) => ({ ...prev, researchMode: 'standard', forceFallback: false }));
+    }
+  }, [showFallbackUI, draft.researchMode, setDraft]);
+
   return (
     <div className="space-y-6">
       {requirement && (
@@ -234,7 +248,11 @@ function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, re
             <SelectionPill
               label="From text"
               active={draft.source === 'text'}
-              onClick={() => setDraft((prev) => ({ ...prev, source: 'text', forceFallback: prev.researchMode === 'fallback' }))}
+              onClick={() => setDraft((prev) => ({
+                ...prev,
+                source: 'text',
+                forceFallback: showFallbackUI && prev.researchMode === 'fallback',
+              }))}
             />
           </div>
         </div>
@@ -292,11 +310,15 @@ function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, re
         <div className="space-y-2">
           <div className="text-sm font-medium text-ink-900">Research depth</div>
           <div className="flex flex-wrap gap-2 text-xs">
-            {(Object.keys(researchCopy) as Array<ResearchMode>).map((mode) => (
+            {researchModes.map((mode) => (
               <button
                 key={mode}
                 type="button"
-                onClick={() => setDraft((prev) => ({ ...prev, researchMode: mode, forceFallback: mode === 'fallback' && prev.source === 'text' }))}
+                onClick={() => setDraft((prev) => ({
+                  ...prev,
+                  researchMode: mode,
+                  forceFallback: mode === 'fallback' && showFallbackUI && prev.source === 'text',
+                }))}
                 className={`rounded-full border px-3 py-1 font-medium transition ${draft.researchMode === mode ? 'border-alain-blue bg-alain-blue/10 text-alain-blue' : 'border-ink-100 bg-white text-ink-700 hover:border-alain-blue/40'}`}
               >
                 {researchCopy[mode].label}
@@ -340,7 +362,7 @@ function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, re
               onChange={(event) => setDraft((prev) => ({ ...prev, teacherModel: event.target.value as any }))}
             >
               <option value="GPT-OSS-20B">GPT-OSS-20B</option>
-              <option value="GPT-OSS-120B">GPT-OSS-120B</option>
+              {allow120B && <option value="GPT-OSS-120B">GPT-OSS-120B</option>}
             </select>
           </div>
           <div className="space-y-1">
@@ -420,6 +442,15 @@ function SelectionPill({ label, active, onClick }: SelectionPillProps) {
 }
 
 function createDraftFromViewModel(viewModel: UseGenerateLessonResult): DraftState {
+  const allowFallback = viewModel.SHOW_FALLBACK_UI;
+  const allow120B = viewModel.ALLOW_120B;
+  const normalizedResearchMode = allowFallback
+    ? viewModel.researchMode
+    : viewModel.researchMode === 'fallback'
+      ? 'standard'
+      : viewModel.researchMode;
+  const normalizedForceFallback = allowFallback ? viewModel.forceFallback : false;
+  const normalizedTeacherModel = allow120B ? viewModel.teacherModel : 'GPT-OSS-20B';
   return {
     source: viewModel.source,
     hfUrl: viewModel.hfUrl,
@@ -427,10 +458,10 @@ function createDraftFromViewModel(viewModel: UseGenerateLessonResult): DraftStat
     targetModel: viewModel.targetModel,
     targetProvider: viewModel.targetProvider,
     teacherProvider: viewModel.teacherProvider,
-    teacherModel: viewModel.teacherModel,
-    researchMode: viewModel.researchMode,
+    teacherModel: normalizedTeacherModel,
+    researchMode: normalizedResearchMode,
     difficulty: viewModel.difficulty,
-    forceFallback: viewModel.forceFallback,
+    forceFallback: normalizedForceFallback,
   };
 }
 
@@ -485,14 +516,24 @@ function commitDraftToViewModel(draft: DraftState, viewModel: UseGenerateLessonR
     setForceFallback,
   } = viewModel;
 
+  const allowFallback = viewModel.SHOW_FALLBACK_UI;
+  const allow120B = viewModel.ALLOW_120B;
+  const normalizedResearchMode = allowFallback
+    ? draft.researchMode
+    : draft.researchMode === 'fallback'
+      ? 'standard'
+      : draft.researchMode;
+  const normalizedForceFallback = allowFallback ? draft.forceFallback : false;
+  const normalizedTeacherModel = allow120B ? draft.teacherModel : 'GPT-OSS-20B';
+
   setSource(draft.source);
   setHfUrl(draft.hfUrl);
   setRawTextInput(draft.rawTextInput);
   setTargetModel(draft.targetModel);
   setTargetProvider(draft.targetProvider);
   setTeacherProvider(draft.teacherProvider);
-  setTeacherModel(draft.teacherModel);
-  setResearchMode(draft.researchMode);
+  setTeacherModel(normalizedTeacherModel);
+  setResearchMode(normalizedResearchMode);
   setDifficulty(draft.difficulty);
-  setForceFallback(draft.forceFallback);
+  setForceFallback(normalizedForceFallback);
 }

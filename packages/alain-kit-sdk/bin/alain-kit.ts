@@ -254,9 +254,10 @@ async function main() {
     maxSections,
     qualityScore: res.qualityScore,
     colabCompatible: res.colabCompatible,
+    semanticStatus: res.semanticReport?.status,
+    semanticIssues: res.semanticReport?.issues || [],
     sectionCount: sectionCount ?? 0,
     qualityMetrics: res.qualityMetrics,
-    sectionCount: sectionCount ?? 0,
     cells: res.notebook?.cells?.length ?? 0,
     markdownCells: res.notebook?.cells?.filter((c: any)=>c.cell_type==='markdown').length ?? 0,
     codeCells: res.notebook?.cells?.filter((c: any)=>c.cell_type==='code').length ?? 0,
@@ -269,6 +270,9 @@ async function main() {
   fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2));
 
   console.log(`Quality: ${res.qualityScore}  Colab: ${res.colabCompatible ? '✅' : '⚠️'}`);
+  if (res.semanticReport?.status === 'warn') {
+    console.log('⚠️ Semantic QA:', (res.semanticReport?.issues || []).join(' | ') || 'Review recommended.');
+  }
   console.log(`Readability: FK=${fkGrade.toFixed(1)}  MD Ratio=${(markdownRatio*100).toFixed(1)}%`);
   try {
     const est = (res.notebook?.metadata as any)?.estimated_time_minutes;
