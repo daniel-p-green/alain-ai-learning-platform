@@ -5,5 +5,5 @@ CI Migration Notes
 
 2025-09 Tightening
 - Lint job now fails the pipeline on ESLint errors (root, web, backend if configured).
-- TypeScript checks (tsc) now fail the pipeline on type errors across root/web/backend.
-- Web build is required (no allow_failure) when `web/package.json` exists.
+- TypeScript checks (tsc) now fail the pipeline on type errors across root/apps/web/backend.
+- Web build is required (no allow_failure) when `apps/web/package.json` exists.

@@ -109,7 +109,7 @@ function main() {
   out += 'Each entry is a file path relative to the repository root, annotated with a brief type description.\n\n';
   out += files.sort().map(p => `- ${p} — ${describeFile(p)}`).join('\n') + '\n';
 
-  const outPath = `hackathon-notes/alain-file-structure.md`;
+  const outPath = `notes/hackathon/alain-file-structure.md`;
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, out, 'utf8');
   console.log(`Wrote ${outPath}`);

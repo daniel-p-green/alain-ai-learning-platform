@@ -1,0 +1,46 @@
+{
+  "model": "gpt-oss-20b",
+  "baseUrl": "https://api.poe.com",
+  "difficulty": "intermediate",
+  "maxSections": 6,
+  "qualityScore": 80,
+  "colabCompatible": false,
+  "sectionCount": 6,
+  "qualityMetrics": {
+    "qualityScore": 80,
+    "stepCount": 6,
+    "markdownRatio": 0.5,
+    "estimatedTokens": 10420,
+    "estimatedReadingTime": 52.1,
+    "hasRequiredSections": true,
+    "meetsStandards": false
+  },
+  "cells": 36,
+  "markdownCells": 18,
+  "codeCells": 18,
+  "readability": {
+    "fkGrade": 8.886405430992127,
+    "markdownRatio": 0.48918548790296285
+  },
+  "createdUtc": "2025-09-16T03:15:47.070Z",
+  "estimatedTimeMinutes": {
+    "min": 36,
+    "max": 60
+  },
+  "phaseTimings": {
+    "outline_ms": 9724,
+    "sections_ms_total": 79048,
+    "section_ms": [
+      5846,
+      9035,
+      9274,
+      19455,
+      9076,
+      26356
+    ],
+    "build_ms": 1,
+    "quality_ms": 3,
+    "colab_ms": 3,
+    "total_ms": 88783
+  }
+}

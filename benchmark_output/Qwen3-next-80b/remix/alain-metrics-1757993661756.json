@@ -1,0 +1,46 @@
+{
+  "model": "Qwen3-next-80b",
+  "baseUrl": "https://api.poe.com",
+  "difficulty": "beginner",
+  "maxSections": 6,
+  "qualityScore": 80,
+  "colabCompatible": false,
+  "sectionCount": 6,
+  "qualityMetrics": {
+    "qualityScore": 80,
+    "stepCount": 6,
+    "markdownRatio": 0.4666666666666667,
+    "estimatedTokens": 8101,
+    "estimatedReadingTime": 40.5,
+    "hasRequiredSections": true,
+    "meetsStandards": false
+  },
+  "cells": 33,
+  "markdownCells": 16,
+  "codeCells": 17,
+  "readability": {
+    "fkGrade": 6.283246366035055,
+    "markdownRatio": 0.4882740232887148
+  },
+  "createdUtc": "2025-09-16T03:34:21.756Z",
+  "estimatedTimeMinutes": {
+    "min": 36,
+    "max": 60
+  },
+  "phaseTimings": {
+    "outline_ms": 19284,
+    "sections_ms_total": 70050,
+    "section_ms": [
+      13697,
+      10374,
+      8465,
+      7279,
+      18175,
+      12055
+    ],
+    "build_ms": 2,
+    "quality_ms": 3,
+    "colab_ms": 3,
+    "total_ms": 89343
+  }
+}

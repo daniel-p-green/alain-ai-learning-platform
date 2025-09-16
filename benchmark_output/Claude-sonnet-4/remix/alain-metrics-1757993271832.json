@@ -1,0 +1,46 @@
+{
+  "model": "Claude-sonnet-4",
+  "baseUrl": "https://api.poe.com",
+  "difficulty": "beginner",
+  "maxSections": 6,
+  "qualityScore": 90,
+  "colabCompatible": false,
+  "sectionCount": 6,
+  "qualityMetrics": {
+    "qualityScore": 90,
+    "stepCount": 6,
+    "markdownRatio": 0.45161290322580644,
+    "estimatedTokens": 4871,
+    "estimatedReadingTime": 24.4,
+    "hasRequiredSections": true,
+    "meetsStandards": true
+  },
+  "cells": 34,
+  "markdownCells": 16,
+  "codeCells": 18,
+  "readability": {
+    "fkGrade": 9.933960754429418,
+    "markdownRatio": 0.3027873394341365
+  },
+  "createdUtc": "2025-09-16T03:27:51.832Z",
+  "estimatedTimeMinutes": {
+    "min": 36,
+    "max": 60
+  },
+  "phaseTimings": {
+    "outline_ms": 26715,
+    "sections_ms_total": 219523,
+    "section_ms": [
+      35658,
+      37693,
+      35157,
+      36113,
+      36466,
+      38433
+    ],
+    "build_ms": 1,
+    "quality_ms": 2,
+    "colab_ms": 2,
+    "total_ms": 246246
+  }
+}

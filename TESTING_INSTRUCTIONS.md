@@ -26,7 +26,7 @@ npx vitest run --reporter=dot
 ```
 - Notes:
   - E2E Playwright specs under `web/e2e/**` are excluded from Vitest.
-  - Backend “tutorials” DB/runtime tests are skipped unless `ENCORE_RUNTIME_LIB` is set (see apps/backend/TESTING.md).
+  - Backend “tutorials” DB/runtime tests are skipped unless `ENCORE_RUNTIME_LIB` is set (see apps/apps/backend/TESTING.md).
   - HF metadata fetch runs in offline mode during tests to avoid network flakiness.
 
 ### Enable Encore-Dependent Backend Tests
@@ -143,7 +143,7 @@ jq '.qualityScore, .sectionCount, .readability' $(ls -t packages/alain-kit/test/
      ```
   3. Confirm the fixed cell now contains the Colab guard with a `%pip` fallback and that `issues` is empty.
 
-Automation: `apps/backend/validation/colab-validator.test.ts` provides unit coverage for both unguarded and guarded code paths.
+Automation: `apps/apps/backend/validation/colab-validator.test.ts` provides unit coverage for both unguarded and guarded code paths.
 
 ## Critical Areas to Focus On
 

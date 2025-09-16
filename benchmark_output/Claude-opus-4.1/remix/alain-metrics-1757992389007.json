@@ -1,0 +1,46 @@
+{
+  "model": "Claude-opus-4.1",
+  "baseUrl": "https://api.poe.com",
+  "difficulty": "beginner",
+  "maxSections": 6,
+  "qualityScore": 80,
+  "colabCompatible": false,
+  "sectionCount": 6,
+  "qualityMetrics": {
+    "qualityScore": 80,
+    "stepCount": 6,
+    "markdownRatio": 0.5531914893617021,
+    "estimatedTokens": 14250,
+    "estimatedReadingTime": 71.3,
+    "hasRequiredSections": true,
+    "meetsStandards": false
+  },
+  "cells": 50,
+  "markdownCells": 28,
+  "codeCells": 22,
+  "readability": {
+    "fkGrade": 9.160350327228734,
+    "markdownRatio": 0.4099600619447388
+  },
+  "createdUtc": "2025-09-16T03:13:09.007Z",
+  "estimatedTimeMinutes": {
+    "min": 36,
+    "max": 60
+  },
+  "phaseTimings": {
+    "outline_ms": 45302,
+    "sections_ms_total": 501735,
+    "section_ms": [
+      56940,
+      73594,
+      87110,
+      92120,
+      91132,
+      100832
+    ],
+    "build_ms": 2,
+    "quality_ms": 3,
+    "colab_ms": 3,
+    "total_ms": 547048
+  }
+}

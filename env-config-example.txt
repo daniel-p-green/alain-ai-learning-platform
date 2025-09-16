@@ -42,4 +42,4 @@ NODE_ENV=development
 
 # Prompt loading (optional overrides)
 # TEACHER_PROMPT_PHASE=research            # or research.offline, design, develop, validate, orchestrator
-# PROMPT_ROOT=/abs/path/to/prompts/alain-kit  # override search root for .harmony.txt files
+# ALAIN_PROMPT_ROOT=/abs/path/to/resources/prompts/alain-kit  # override prompt templates (CLI + backend)
