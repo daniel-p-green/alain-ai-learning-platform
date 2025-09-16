@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="web/public/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
+  <img src="apps/web/public/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
 
   <br/>
   <br/>
@@ -9,244 +9,152 @@
   <a href="https://openai.devpost.com"><img src="https://img.shields.io/badge/Devpost-OpenAI_Hackathon_Submission-0a0?logo=devpost" alt="Devpost: OpenAI Hackathon Submission"></a>
   <a href="https://huggingface.co/openai/gpt-oss-20b"><img src="https://img.shields.io/badge/Teacher-GPT--OSS--20B-4b8" alt="Teacher: GPT-OSS-20B"></a>
   <a href="https://developer.poe.com/server-bots"><img src="https://img.shields.io/badge/Providers-Poe_%7C_OpenAI--compatible-795" alt="Providers: Poe | OpenAI-compatible"></a>
-  <a href="web/docs/OPERATIONS.md#execution"><img src="https://img.shields.io/badge/Mode-Offline_Supported-2aa" alt="Offline Supported"></a>
+  <a href="docs/README.md"><img src="https://img.shields.io/badge/Mode-Offline_Supported-2aa" alt="Offline Supported"></a>
+  <a href="https://leap.new"><img src="https://img.shields.io/badge/Award-3rd%20Place%E2%80%94leap.new%202025-F9A03F.svg" alt="3rd Place – leap.new Open Source Hackathon 2025"></a>
 
   <br/>
   <br/>
-  <p><strong>AI manuals for AI models.</strong></p>
-  <p>Paste any model reference → get a runnable, graded lab.</p>
+
+  <p><strong>AI Manuals for AI Models.</strong></p>
+  <p>Paste a model card and get a runnable, graded manual in minutes—no more guessing at the screws.</p>
 
 </div>
 
-# ALAIN — Applied Learning AI Notebooks
-
-Make every model teach itself.
-
-ALAIN turns a model card or reference into a guided, runnable lesson with clear steps, quick checks, and an export to Colab/Jupyter. Use hosted providers or run fully local with the same request shape.
+> Built for the <strong>OpenAI Open Model Hackathon</strong> (openai.devpost.com) and awarded 🥉 <strong>3rd place</strong> at the <a href="https://leap.new">leap.new Open Source Hackathon 2025</a>.
 
 ---
 
-## Quick Links
+## Why ALAIN
 
-- Live Demo: <https://alain-ruddy.vercel.app>
-- Try Now: <https://alain-ruddy.vercel.app/generate>
- - Developer Guide: `web/docs/DEVELOPER_GUIDE.md`
- - ALAIN‑Kit SDK (CLI + examples): `alain-ai-learning-platform/alain-kit-sdk`
- - One‑command example: `npm run alain:example`
- - One‑command CLI: `npm run alain:cli -- --model gpt-oss-20b --apiKey $POE_API_KEY`
-   - Tip: when using Poe, pass `--baseUrl https://api.poe.com` (no trailing `/v1`). The SDK appends `/v1/chat/completions` automatically.
-- Devpost Write‑Up: `hackathon-notes/DEVPOST-Submission.md`
-- Hackathon: <https://openai.devpost.com>
+New models ship faster than instructions to use them. They’re the IKEA pieces dumped on your floor—full of potential, but unusable without a manual. ALAIN is that manual, born during the OpenAI Open Model Hackathon to make “model release → model running” a matter of minutes.
+
+- **Paste any Hugging Face model reference** and ALAIN builds a guided notebook lesson with pedagogy baked in.
+- **Run it anywhere** — hosted (Poe), BYOK OpenAI-compatible endpoints, or fully local (Ollama / LM Studio) using the same request shape.
+- **Learn by doing** — each lesson includes setup, safe parameterized runs, quick checks, and Colab/Jupyter export.
+
+AI adoption follows instructions. ALAIN provides them for any model.
 
 ---
 
-## What Is ALAIN?
+## Quick Start
 
-ALAIN turns a model reference into an interactive tutorial that teaches setup, safe usage, and best practices. It generates a lesson you can run in‑browser and export to a notebook — no heavy backend required.
+### CLI (ALAIN‑Kit SDK)
 
-### Why ALAIN
+```bash
+# Install dependencies (root)
+npm install
 
-- Paste a model link → get a guided, runnable lesson.
-- Works online or fully local via OpenAI‑compatible endpoints (e.g., Ollama, LM Studio).
-- In‑browser execution for Python (Pyodide) and JS/TS (Web Worker).
-- One‑click export to Jupyter/Colab for sharing and grading.
+# Generate a manual from the CLI
+env POE_API_KEY=your_key \
+npm run alain:cli -- \
+  --model gpt-oss-20b \
+  --baseUrl https://api.poe.com \
+  --difficulty beginner \
+  --maxSections 6 \
+  --outDir output/manuals
+```
 
-### Inspiration
+The CLI writes:
+- `*.ipynb` – runnable notebook manual
+- `alain-validation-*.md` – quality + readability report
+- `alain-metrics-*.json` – structured metrics (sections, FK grade, Markdown ratio, timings)
+- `.env.local.example` – seeded if you haven’t created one yet
 
-Docs are passive, scattered, and often not runnable. New models drop weekly but “hello world” still takes hours. ALAIN makes models learnable in minutes by turning any reference (Hugging Face, local, hosted) into a step‑by‑step, graded lesson you can actually run.
+### Web App
 
----
+```bash
+npm install
+npm run dev:hosted          # or npm run dev:offline for local providers
+```
 
-## Try It In 2 Minutes
+Then visit <http://localhost:3000/generate> and drop in a model URL (e.g., https://huggingface.co/openai/gpt-oss-20b). Toggle “Force fallback (no backend)” for web-only demos.
 
-1) Open the demo and pick “From Text” → <https://alain-ruddy.vercel.app/generate>
-2) Paste a model (e.g., <https://huggingface.co/openai/gpt-oss-20b>) and click Generate
-3) Open the tutorial, run a step, Export to Colab
+### Backend APIs (Encore.dev)
 
-Tip: On Vercel or web‑only use, enable “Force fallback mode (no backend)” on the Generate page.
+```bash
+npm install
+npm --workspace apps/backend run dev
+```
 
----
-
-## Local Setup (Web)
-
-- Requirements: Node.js 18+
-- Steps:
-  - `cd web && npm install && npm run dev`
-  - Create `web/.env.local` with Clerk + GitHub vars (see `env-config-example.txt`)
-  - Open <http://localhost:3000> and head to `/generate`
-
-Optional flags:
-- `NEXT_PUBLIC_TEACHER_ALLOW_120B=1` to show the 120B teacher option in the UI (not recommended). Backend must also set `TEACHER_ALLOW_120B=1` to actually use 120B; otherwise requests are downgraded to 20B.
-
-Optional: Configure Upstash (KV) and GitHub export to open PRs for lessons.
-
----
-
-## Features
-
-- Gallery with search, filters, thumbnails
-- Upload drafts, Request Publish, and admin moderation
-- Notebook viewer + editor (Monaco + Markdown), drag‑reorder, metadata
-- Client‑side runners: Python (Pyodide), JS/TS (Worker)
-- Export to ALAIN JSON and open a GitHub PR
-- Optional caching with Upstash to reduce GitHub reads
+Key endpoints live under `apps/backend/execution/*` (lesson generation, execution router, exports).
 
 ---
 
-## How It Works
+## What You Get
 
-- Teacher: GPT‑OSS‑20B synthesizes lessons under a strict JSON schema with auto‑repair.
-- Providers: Hosted (Poe) and OpenAI‑compatible (local: Ollama/LM Studio) share the same request shape.
-- Execution: Runs client‑side for quick feedback; server execution path stubbed for future sandboxing.
-
-### Streaming Paths
-- Web SSE (default): `web/app/api/execute/route.ts` streams tokens directly from providers to the browser. Set `NEXT_PUBLIC_STREAM_VIA=web`.
-- Backend proxy SSE: proxy through Encore at `POST /execute/stream` if enabled. Set `NEXT_PUBLIC_STREAM_VIA=backend` and `NEXT_PUBLIC_BACKEND_BASE`.
-- Note: Encore TS streaming is currently disabled in `backend/execution/stream.ts`. If backend SSE is unavailable, keep `NEXT_PUBLIC_STREAM_VIA=web`.
-  - For MVP, backend SSE is intentionally disabled; use the web SSE path for streaming.
-
-### Content Layout
-- Auto‑saves and exports live under `content/` (see `content/README.md`).
-- Research writes both structured JSON (`research-data.json`) and human‑readable Markdown summaries (`model-card.md`, `huggingface-info.md`, etc.).
- - Index: `GET /api/content/index` lists provider/model artifacts (add `?flat=1` for a flat array).
-
-### Backfill Teacher Metadata
-- Adds `metadata.teacher_model_used` and `metadata.teacher_downgraded` to existing notebooks.
-- Run locally:
-  - Default (content/notebooks): `node backend/scripts/backfill-teacher-metadata.mjs`
-  - Custom root: `node backend/scripts/backfill-teacher-metadata.mjs --root path/to/notebooks`
-  - Dry run: append `--dry` to see which files would be updated
-
-### Why GPT‑OSS‑20B (Teacher)
-
-- Open weights and local‑first: runs on Ollama/LM Studio with the same API shape as hosted endpoints.
-- Strong instruction following: produces stepwise, teachable content with minimal prompt overhead.
-- Reliable JSON: high schema adherence with fewer repair passes.
-- Practical fit: fast enough for iterative generation and real‑time previews.
-
-#### Teacher Model Defaults
-- Default: GPT‑OSS‑20B for all teacher tasks.
-- Optional (not recommended for most setups): enable GPT‑OSS‑120B by setting `TEACHER_ALLOW_120B=1` in the backend environment. When disabled (default), any request for 120B is automatically downgraded to 20B.
-- Note: `GPT‑OSS‑120B` is not supported via local OpenAI‑compatible endpoints; use hosted provider (Poe) if you explicitly enable it.
+- **Manuals on demand** – Paste URL → get a structured, interactive lab with learning objectives, setup, “Try it yourself” prompts, and troubleshooting.
+- **Safe, parameterized execution** – No arbitrary code; lessons run with explicit inputs and cost/latency visibility.
+- **Colab/Jupyter ready** – Exported notebooks include environment setup helpers, `.env` management, and client/provider smoke tests.
+- **Local-first support** – Identical notebook + CLI workflow whether you’re on Poe, OpenAI, vLLM, Ollama, or LM Studio.
+- **Quality gates** – Strict JSON schema, auto-repair, readability metrics, and Colab compatibility validation (with new subprocess pip guard checks).
 
 ---
 
-## Tech At A Glance
+## Architecture Snapshot
 
-- Frontend: Next.js (App Router), React, Tailwind, Monaco, @uiw/react-md-editor
-- Auth: Clerk (GitHub/Hugging Face via Clerk)
-- Storage: GitHub Contents API
-- Optional Cache: Upstash Redis (lazy‑loaded)
-- Backend: Encore.dev TypeScript services (execution, tutorials, export)
-- Export: nbformat/Jupyter; in‑browser Colab rendering
+| Layer | Highlights |
+| ----- | ---------- |
+| **Teacher** | `gpt-oss-20b` (Harmony prompt) generates outlines and sections; retries + repair for spec compliance |
+| **Pipelines** | `packages/alain-kit` core orchestrates outline → sections → notebook build → validation |
+| **Runners** | Web: Next.js + Monaco + Pyodide/Worker; Backend: Encore.dev TypeScript services |
+| **Providers** | Poe API (default) and any OpenAI-compatible base URL; offline supported |
+| **Observability** | Structured logging, metrics (`GET /execution/metrics`), timing/tracing in ALAIN‑Kit core |
 
----
-
-## Observability (New)
-
-- Health: existing service health endpoints (e.g., `execution/health`) report provider/DB status.
-- Metrics: `GET /execution/metrics` returns JSON with:
-  - uptime, memory, CPU load, event‑loop delay (p50/p95/p99)
-  - in‑process counters and timing summaries for key handlers
-- Logging: structured JSON to stdout with fields: `ts, level, service, component, msg, ...context`
-  - Backend level: set `LOG_LEVEL=debug|info|warn|error` (default `info`)
-  - ALAIN‑Kit level: set `ALAIN_LOG_LEVEL=debug|info|warn|error`
-  - Slow request threshold: `SLOW_THRESHOLD_MS` (default `750` ms)
-
-What’s instrumented now
-- Backend: `POST /execution/execute` and `POST /execution/teacher/execute` are wrapped with timing + error logs; counters emit successes/failures and latencies; process‑wide error handlers capture `unhandledRejection` and `uncaughtException`.
-- ALAIN‑Kit: `OutlineGenerator.generateOutline`, `SectionGenerator.generateSection`, and notebook build emit timing + usage events.
-
-Usage metrics by model and difficulty
-- ALAIN‑Kit counters/timers (library‑local, available via `alain-kit/core/obs`):
-  - Counters:
-    - `alain_outline_generated_total{model,difficulty}`
-    - `alain_section_generated_total{model,difficulty}`
-    - `alain_pipeline_success_total{model,difficulty}`
-    - `alain_pipeline_failures_total{model,difficulty}`
-  - Timers:
-    - `alain_outline_duration_ms{model,difficulty}`
-    - `alain_section_duration_ms{model,difficulty,section}`
-    - `alain_pipeline_duration_ms{model,difficulty}`
-
-How to read ALAIN‑Kit metrics (Node or browser console)
-- Import and snapshot:
-  - Node: `import { metrics as alainMetrics } from './alain-kit/core/obs'; console.log(alainMetrics.snapshot());`
-  - Browser (when bundling ALAIN‑Kit): `window.alainMetrics?.snapshot?.()` if you export it in your app, or add a simple route to dump it.
-
-Backend route metrics
-- Counters (per provider/model):
-  - `execution_requests_total{provider,model}`
-  - `execution_failures_total{provider,model}`
-  - `teacher_execute_requests_total{model}`
-  - `teacher_execute_failures_total{model}`
-- Latency: `execution.execute_latency_ms` and `execution.teacherExecute_latency_ms` in `/execution/metrics` timers section.
+See `docs/architecture/` for the detailed diagrams and the lesson schema in `resources/schemas/alain-lesson.schema.json`.
 
 ---
 
-## Repository Structure
+## Try It Live
 
-- `web/`: Next.js app (UI, editors, in‑browser runners)
-- `backend/`: Encore.dev TypeScript services
-- `prompts/`: ALAIN‑Kit prompt templates
-- `schemas/`: Lesson JSON schema
-- `examples/poe/`: Standalone Poe API examples
-- `hackathon-notes/`: Devpost materials and judging notes
-- `scripts/`: Smoke tests and conversion utilities
-- `test_sandbox/`: Scratch tests and local notes (ignored by git). Put temporary test scripts and outputs here to avoid cluttering the root.
+- **Demo** (alpha): <https://alain-ruddy.vercel.app>
+- **Generate now**: <https://alain-ruddy.vercel.app/generate>
+- **Notebooks gallery**: `/notebooks` within the app
+- **Upcoming**: 🎥 Full demo video (in production)
 
 ---
 
-## Testing Instructions
+## Project Structure
 
-- No login required for core flow.
-- Web‑only fallback:
-  - Open <https://alain-ruddy.vercel.app/generate>
-  - Enable “Force fallback mode (no backend)”
-  - Paste model: <https://huggingface.co/openai/gpt-oss-20b>
-  - Click Generate → open tutorial → run a step → Export to Colab
-- Local quick check:
-  - `cd web && npm install && npm run dev`
-  - Visit <http://localhost:3000/generate>, enable fallback, repeat steps above
-- Optional offline (Ollama):
-  - `ollama pull gpt-oss:20b`
-  - In app, choose Local/OpenAI‑compatible and set model `gpt-oss:20b`
+```
+.
+├── apps
+│   ├── backend        # Encore.dev services, execution router, exports
+│   └── web            # Next.js app (lesson builder, gallery, SSE runners)
+├── packages
+│   └── alain-kit-sdk  # CLI + SDK entry points (ALAIN-Kit)
+├── resources          # Brand assets, schemas, research outputs
+├── tests              # Notebook + validator smoke suites
+└── docs               # Operations, developer guides, prompts
+```
+
+---
+
+## Testing & Validation
+
+- **Unit tests (backend + web)**: `npm run test:pure`
+- **CLI smoke tests**: `npm run alain:example`
+- **Notebook validation**: `npm run validate:lesson path/to/lesson.json`
+- **Colab validator coverage**: `backend/validation/colab-validator.test.ts` ensures subprocess pip installs are guarded automatically. Manual instructions live in `TESTING_INSTRUCTIONS.md` (Section 6).
+
+---
+
+## Roadmap Highlights
+
+- Community lesson hub with remix + quality scoring
+- One-click local agent mode (default Ollama profiles)
+- GPT‑OSS‑120B teacher option (router-ready)
+- Fine-tuning workshops (LoRA/QLoRA) generated automatically
+
+Feedback, ideas, or contributions are welcome—open an issue or ping `@danielgreen`.
 
 ---
 
 ## License
 
-MIT License — see `LICENSE` for full text.
+MIT © 2025 Applied Learning AI Notebooks
 
 ---
 
-## Explore & Tutorials (New)
+## Acknowledgements
 
-- Explore public content
-  - Notebooks: `/explore/notebooks` — lists public/unlisted generated notebooks.
-  - Lessons: `/explore/lessons` — lists public/unlisted generated lessons and tutorials.
-  - Filter by `model`, `provider`, and `difficulty` via query params.
-
-- Tutorial detail
-  - Page: `/tutorials/:id` — renders steps and Model Maker info.
-  - Includes a minimal “Try a prompt” panel that calls the backend `/execute`.
-  - Tracks step progress per user (requires Clerk auth).
-
-- Download endpoint
-  - `GET /api/files/download?path=content/...` — serves files under the repo `content/` directory only.
-  - Use to download `.ipynb` and lesson JSON directly from Explore pages.
-
-## Catalog & Publishing
-
-- Flags (backend)
-  - `CATALOG_INDEX=1` — index notebooks/lessons on save into catalog tables.
-  - `TUTORIALS_INGEST=1` — ingest generated lessons into the tutorials DB (steps + assessments).
-
-- Flags (web)
-  - `NEXT_PUBLIC_BACKEND_BASE` — base URL for backend API.
-  - `NEXT_PUBLIC_GITHUB_REPO` / `NEXT_PUBLIC_GITHUB_BRANCH` — enables “Open in Colab” links.
-  - `NEXT_PUBLIC_ENABLE_LEGACY_STORE=1` — opt‑in legacy `/api/notebooks` (otherwise redirects to catalog).
-
-- Backfill script
-  - `bun backend/scripts/backfill-catalog.ts` — indexes existing artifacts in `content/` into the catalog.
-  - Safe to re‑run. Explore pages will populate after backfill.
+ALAIN started as a leap.new Open Source Hackathon project and continues thanks to contributors exploring better ways to learn AI through practice. Manuals beat guesswork—thanks for helping models teach themselves.
