@@ -1,0 +1,45 @@
+# ALAIN x Poe Benchmark Summary
+
+Duration: 80.3 min
+
+- gpt-5: ❌ preflight_failed: 200
+- gpt-5 • Remix(beginner) → Score 45 | Quality n/a | Colab ⚠️ | FK n/a | MD n/a
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 8.8 | MD 44.9% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 100 | Colab ⚠️ | FK 7.7 | MD 30.6% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 12.2 | MD 52.2% | Difficulty advanced | Links 0/0 ok
+- gpt-oss-120b • Remix(beginner) → Score 100 | Quality 80 | Colab ⚠️ | FK 9.1 | MD 42.3% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 8.5 | MD 42.9% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 94 | Quality 70 | Colab ⚠️ | FK 9.5 | MD 41.3% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.4 | MD 43.3% | Difficulty advanced | Links 0/0 ok
+- gpt-oss-20b • Remix(beginner) → Score 100 | Quality 80 | Colab ⚠️ | FK 8.5 | MD 36.8% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.5 | MD 44.3% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.2 | MD 33.8% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.5 | MD 41.7% | Difficulty advanced | Links 0/0 ok
+- Gemini-2.5-pro • Remix(beginner) → Score 45 | Quality n/a | Colab ⚠️ | FK n/a | MD n/a
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.0 | MD 42.3% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 8.9 | MD 35.8% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 70 | Colab ⚠️ | FK 9.6 | MD 38.4% | Difficulty advanced | Links 0/0 ok
+- Gemini-2.5-flash • Remix(beginner) → Score 45 | Quality n/a | Colab ⚠️ | FK n/a | MD n/a
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.3 | MD 47.0% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.3 | MD 39.8% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.2 | MD 41.7% | Difficulty advanced | Links 0/0 ok
+- Claude-opus-4.1 • Remix(beginner) → Score 100 | Quality 80 | Colab ⚠️ | FK 9.2 | MD 41.0% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 94 | Quality 70 | Colab ⚠️ | FK 8.6 | MD 42.6% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 8.9 | MD 48.9% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.2 | MD 41.5% | Difficulty advanced | Links 0/0 ok
+- GPT-5-chat • Remix(beginner) → Score 100 | Quality 80 | Colab ⚠️ | FK 8.6 | MD 47.9% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.0 | MD 38.7% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.4 | MD 35.3% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.8 | MD 42.8% | Difficulty advanced | Links 0/0 ok
+- Claude-sonnet-4 • Remix(beginner) → Score 100 | Quality 90 | Colab ⚠️ | FK 9.9 | MD 30.3% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 8.1 | MD 44.4% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 8.8 | MD 42.3% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.4 | MD 41.8% | Difficulty advanced | Links 0/0 ok
+- Qwen3-next-80b • Remix(beginner) → Score 100 | Quality 80 | Colab ⚠️ | FK 6.3 | MD 48.8% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 90 | Colab ⚠️ | FK 7.9 | MD 36.7% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.1 | MD 39.6% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 10.2 | MD 40.4% | Difficulty advanced | Links 0/0 ok
+- kimi-k2 • Remix(beginner) → Score 100 | Quality 90 | Colab ⚠️ | FK 10.0 | MD 36.3% | Links 0/1 ok
+- gpt-oss-20b • Gen → Score 86 | Quality 60 | Colab ⚠️ | FK 8.8 | MD 44.0% | Difficulty beginner | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 9.2 | MD 36.2% | Difficulty intermediate | Links 0/0 ok
+- gpt-oss-20b • Gen → Score 100 | Quality 80 | Colab ⚠️ | FK 11.5 | MD 58.0% | Difficulty advanced | Links 0/0 ok

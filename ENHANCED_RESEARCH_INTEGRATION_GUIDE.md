@@ -274,7 +274,7 @@ npm run test:notebook-enhanced
 
 For questions or issues with the Enhanced Research System:
 1. Check the troubleshooting section above
-2. Review test outputs in `/research-outputs/`
+2. Review test outputs in `/resources/research-outputs/`
 3. Examine generated markdown reports
 4. Verify environment configuration
 

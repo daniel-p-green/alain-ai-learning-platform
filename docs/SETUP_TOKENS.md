@@ -54,14 +54,14 @@ Setup (Encore secrets or env):
 cd backend
 encore secret set KAGGLE_USERNAME
 encore secret set KAGGLE_KEY
-# or in backend/.env for local only
-echo "KAGGLE_USERNAME=your_username" >> backend/.env
-echo "KAGGLE_KEY=your_key" >> backend/.env
+# or in apps/backend/.env for local only
+echo "KAGGLE_USERNAME=your_username" >> apps/backend/.env
+echo "KAGGLE_KEY=your_key" >> apps/backend/.env
 ```
 
 Notes:
 - Without credentials, Kaggle is skipped automatically.
-- Outputs are saved under `content/research/<provider>/<model>/kaggle-content.md`.
+- Outputs are saved under `resources/content/research/<provider>/<model>/kaggle-content.md`.
 
 ## Setting Up Secrets
 
@@ -116,11 +116,11 @@ For local development, you can also use environment variables:
 
 ```bash
 # Create .env file in backend directory
-echo "POE_API_KEY=your_poe_key_here" >> backend/.env
-echo "OPENAI_API_KEY=your_openai_key_here" >> backend/.env
-echo "OPENAI_BASE_URL=https://api.openai.com/v1" >> backend/.env
-echo "KAGGLE_USERNAME=your_username" >> backend/.env   # optional
-echo "KAGGLE_KEY=your_key" >> backend/.env            # optional
+echo "POE_API_KEY=your_poe_key_here" >> apps/backend/.env
+echo "OPENAI_API_KEY=your_openai_key_here" >> apps/backend/.env
+echo "OPENAI_BASE_URL=https://api.openai.com/v1" >> apps/backend/.env
+echo "KAGGLE_USERNAME=your_username" >> apps/backend/.env   # optional
+echo "KAGGLE_KEY=your_key" >> apps/backend/.env            # optional
 ```
 
 **Note**: Environment variables are only for local development. Production should use Encore secrets.

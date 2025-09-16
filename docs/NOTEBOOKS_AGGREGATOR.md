@@ -13,7 +13,7 @@ Sources
 
 Implementation notes
 - Authoritative YAML seed: `hackathon-notes/notebooks-index.yml`
-- JSON used by the web API: `web/data/notebooks-index.json`
+- JSON used by the web API: `apps/web/data/notebooks-index.json`
 - API endpoint: `GET /api/aggregator/index` → `{ items: [...] }`
 - Remix and grading are not enabled; notebooks render read‑only in the Notebooks viewer.
 
