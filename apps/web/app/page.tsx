@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export const metadata = {
   title: 'ALAIN · Home',
   description: 'AI Manuals for AI Models — generate step-by-step, runnable guides you can trust.',
@@ -9,7 +11,7 @@ export default function HomePage() {
     <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 space-y-16 text-ink-900">
       {/* Hero */}
       <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-center">
-        <div className="space-y-5">
+        <div className="space-y-6">
           <p className="uppercase tracking-wide text-xs text-ink-700">Applied Learning for AI</p>
           <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">AI Manuals for AI Models</h1>
           <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-prose">
@@ -19,14 +21,25 @@ export default function HomePage() {
             <a href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Generate Manual</a>
             <a href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">Library</a>
           </div>
+          <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card space-y-2">
+            <div className="font-display font-semibold text-[18px] text-ink-900">Why ALAIN</div>
+            <ul className="space-y-2 text-ink-700 text-[15px]">
+              <li>• Build real skills with hands-on steps and checks</li>
+              <li>• Use one request shape across hosted and local providers</li>
+              <li>• Export clean notebooks with no embedded secrets</li>
+            </ul>
+          </div>
         </div>
-        <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card">
-          <div className="font-display font-semibold text-[18px] text-ink-900">Why ALAIN</div>
-          <ul className="mt-3 space-y-2 text-ink-700 text-[15px]">
-            <li>• Build real skills with hands-on steps and checks</li>
-            <li>• Use one request shape across hosted and local providers</li>
-            <li>• Export clean notebooks with no embedded secrets</li>
-          </ul>
+        <div className="flex justify-center lg:justify-end">
+          <Image
+            src="/hero/ALAIN-figure-hero_brand-colors.svg"
+            alt="Illustration of an ALAIN manual guiding AI model usage"
+            priority
+            width={581}
+            height={434}
+            className="w-full h-auto max-w-[520px]"
+            sizes="(max-width: 1024px) 80vw, 520px"
+          />
         </div>
       </section>
 
