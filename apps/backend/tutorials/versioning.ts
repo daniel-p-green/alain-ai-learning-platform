@@ -35,8 +35,8 @@ interface VersionMeta { version: number; created_at: string; author_id: string |
 
 export const createVersion = api<{ tutorialId: number }, { tutorialId: number; version: number }>(
   { expose: true, method: "POST", path: "/tutorials/:tutorialId/versions" },
-  async ({ tutorialId }, ctx) => {
-    const userId = await requireUserId(ctx);
+  async ({ tutorialId }) => {
+    const userId = await requireUserId();
     // Validate tutorial exists
     const tutorial = await tutorialsDB.queryRow`SELECT * FROM tutorials WHERE id = ${tutorialId}`;
     if (!tutorial) throw APIError.notFound("tutorial not found");
@@ -81,8 +81,8 @@ export const listVersions = api<{ tutorialId: number }, { versions: VersionMeta[
 
 export const restoreVersion = api<{ tutorialId: number; version: number }, { restoredVersion: number }>(
   { expose: true, method: "POST", path: "/tutorials/:tutorialId/versions/:version/restore" },
-  async ({ tutorialId, version }, ctx) => {
-    await requireUserId(ctx);
+  async ({ tutorialId, version }) => {
+    await requireUserId();
     const row = await tutorialsDB.queryRow<{ snapshot: any }>`
       SELECT snapshot FROM tutorial_versions
       WHERE tutorial_id = ${tutorialId} AND version = ${version}

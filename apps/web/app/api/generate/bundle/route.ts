@@ -74,8 +74,8 @@ export async function POST(req: Request) {
   })()
   zip.file('README.md', buildReadme(title))
 
-  const blob = await zip.generateAsync({ type: 'nodebuffer' })
-  return new NextResponse(blob as any, {
+  const archiveBuffer = await zip.generateAsync({ type: 'nodebuffer' })
+  return new NextResponse(archiveBuffer as any, {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="alain-bundle-${Date.now()}.zip"`

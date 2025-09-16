@@ -1,3 +1,7 @@
+// Ensure Next's dynamic npm install for SWC binaries runs without workspace errors
+process.env.NPM_CONFIG_WORKSPACES = 'false';
+process.env.npm_config_workspaces = 'false';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {

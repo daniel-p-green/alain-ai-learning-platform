@@ -6,8 +6,8 @@ type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
 export const getProgress = api<{ tutorialId: number }, { tutorialId: number; current_step: number; completed_steps: number[] }>(
   { expose: true, method: 'GET', path: '/tutorials/:tutorialId/progress' },
-  async ({ tutorialId }, ctx) => {
-    const userId = await requireUserId(ctx);
+  async ({ tutorialId }) => {
+    const userId = await requireUserId();
     const row = await tutorialsDB.queryRow<{ current_step: number; completed_steps: number[] }>`
       SELECT current_step, completed_steps FROM user_progress WHERE user_id = ${userId} AND tutorial_id = ${tutorialId}`;
     return { tutorialId, current_step: row?.current_step || 0, completed_steps: row?.completed_steps || [] };
@@ -16,9 +16,9 @@ export const getProgress = api<{ tutorialId: number }, { tutorialId: number; cur
 
 export const completeStep = api<{ tutorialId: number; step_order: number }, { tutorialId: number; current_step: number; completed_steps: number[] }>(
   { expose: true, method: 'POST', path: '/tutorials/:tutorialId/progress/complete' },
-  async ({ tutorialId, step_order }, ctx) => {
+  async ({ tutorialId, step_order }) => {
     if (!step_order || step_order < 1) throw APIError.invalidArgument('step_order must be >= 1');
-    const userId = await requireUserId(ctx);
+    const userId = await requireUserId();
     // Ensure tutorial exists
     const exists = await tutorialsDB.queryRow<{ id: number }>`SELECT id FROM tutorials WHERE id = ${tutorialId}`;
     if (!exists) throw APIError.notFound('tutorial not found');

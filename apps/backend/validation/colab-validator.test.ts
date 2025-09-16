@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ColabValidator, type ColabIssue } from '../../alain-kit/validation/colab-validator';
+import { ColabValidator, type ColabIssue } from '../../../packages/alain-kit/validation/colab-validator';
 
 const NOTEBOOK_WITH_SUBPROCESS = {
   cells: [
@@ -8,8 +8,7 @@ const NOTEBOOK_WITH_SUBPROCESS = {
       metadata: {},
       source: [
         "import subprocess, sys\n",
-        "cmd = [sys.executable, '-m', 'pip', 'install', 'transformers', 'torch']\n",
-        "subprocess.check_call(cmd)\n",
+        "subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'transformers', 'torch'])\n",
       ],
     },
   ],
@@ -23,13 +22,13 @@ const NOTEBOOK_WITH_GUARD = {
       metadata: {},
       source: [
         "import subprocess, sys\n",
+        "IN_COLAB = 'google.colab' in sys.modules\n",
         "cmd = [sys.executable, '-m', 'pip', 'install', 'transformers', 'torch']\n",
-        "try:\n",
+        "if IN_COLAB:\n",
+        "    import subprocess as _subprocess\n",
+        "    _subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + cmd[4:])\n",
+        "else:\n",
         "    subprocess.check_call(cmd)\n",
-        "except Exception:\n",
-        "    if 'google.colab' in sys.modules:\n",
-        "        import subprocess as _subprocess\n",
-        "        _subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'transformers', 'torch'])\n",
       ],
     },
   ],

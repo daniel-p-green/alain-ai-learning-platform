@@ -112,8 +112,11 @@ export class NotebookBuilder {
       outputs: [] as any[]
     } as any);
 
+    const pendingAssessments = Array.isArray(outline.assessments) ? outline.assessments.slice() : [];
+    let assessmentIntroInserted = false;
+
     // Generated sections
-    sections.forEach(section => {
+    sections.forEach((section, index) => {
       section.content.forEach(cell => {
         const obj: any = {
           cell_type: cell.cell_type,
@@ -126,12 +129,38 @@ export class NotebookBuilder {
         }
         cells.push(obj);
       });
+
+      if (pendingAssessments.length) {
+        if (!assessmentIntroInserted) {
+          this.createAssessmentIntroCells().forEach(cell => cells.push(cell));
+          assessmentIntroInserted = true;
+        }
+        const header = this.createAssessmentSectionHeader(section.title || `Step ${index + 1}`);
+        if (header) cells.push(header);
+        const remainingSections = sections.length - index;
+        const perSection = Math.max(1, Math.ceil(pendingAssessments.length / remainingSections));
+        for (let q = 0; q < perSection && pendingAssessments.length; q++) {
+          const nextAssessment = pendingAssessments.shift();
+          if (!nextAssessment) break;
+          const assessmentCell = this.createAssessmentQuestionCell(nextAssessment);
+          if (assessmentCell) cells.push(assessmentCell);
+        }
+      }
     });
 
-    // Assessments (interactive)
-    if (outline.assessments?.length > 0) {
-      const asses = this.createAssessmentsCells(outline.assessments);
-      asses.forEach(c => cells.push(c));
+    if (pendingAssessments.length) {
+      if (!assessmentIntroInserted) {
+        this.createAssessmentIntroCells().forEach(cell => cells.push(cell));
+        assessmentIntroInserted = true;
+      }
+      const header = this.createAssessmentSectionHeader('Bonus Knowledge Checks');
+      if (header) cells.push(header);
+      while (pendingAssessments.length) {
+        const nextAssessment = pendingAssessments.shift();
+        if (!nextAssessment) break;
+        const assessmentCell = this.createAssessmentQuestionCell(nextAssessment);
+        if (assessmentCell) cells.push(assessmentCell);
+      }
     }
 
     // Troubleshooting guide
@@ -451,7 +480,7 @@ export class NotebookBuilder {
           "    import subprocess\n",
           `    subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + ${JSON.stringify(setup.requirements)})\n`,
           "\n",
-          "print('✅ Packages installed!')"
+          "print('✅ Packages installed!')\n"
         ]
       });
     }
@@ -459,64 +488,87 @@ export class NotebookBuilder {
     return cells;
   }
 
-  private createAssessmentsCells(assessments: Assessment[]) {
-    const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [];
-    cells.push({
+  private createAssessmentIntroCells(): Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> {
+    return [
+      {
+        cell_type: 'markdown' as const,
+        metadata: {},
+        source: [
+          '## Knowledge Check (Interactive)\n\n',
+          'Use the widgets below to select an answer and click Grade to see feedback.\n'
+        ]
+      },
+      {
+        cell_type: 'code' as const,
+        metadata: {},
+        source: [
+          "# MCQ helper (ipywidgets)\n",
+          "import ipywidgets as widgets\n",
+          "from IPython.display import display, Markdown\n\n",
+          "def render_mcq(question, options, correct_index, explanation):\n",
+          "    cleaned = []\n",
+          "    for idx, raw in enumerate(options):\n",
+          "        text = str(raw or "").strip()\n",
+          "        prefix = f\"{chr(65+idx)}. \"\n",
+          "        if text.lower().startswith(prefix.lower()):\n",
+          "            cleaned.append(text)\n",
+          "        else:\n",
+          "            cleaned.append(prefix + text)\n",
+          "    rb = widgets.RadioButtons(options=[(label, idx) for idx, label in enumerate(cleaned)], description="")\n",
+          "    grade_btn = widgets.Button(description='Grade', button_style='primary')\n",
+          "    feedback = widgets.HTML(value='')\n",
+          "    def on_grade(_):\n",
+          "        sel = rb.value\n",
+          "        if sel is None:\n",
+          "            feedback.value = '<p>⚠️ Please select an option.</p>'\n",
+          "            return\n",
+          "        if sel == correct_index:\n",
+          "            feedback.value = '<p>✅ Correct!</p>'\n",
+          "        else:\n",
+          "            feedback.value = f'<p>❌ Incorrect. Correct answer is {chr(65+correct_index)}.</p>'\n",
+          "        feedback.value += f'<div><em>Explanation:</em> {explanation}</div>'\n",
+          "    grade_btn.on_click(on_grade)\n",
+          "    display(Markdown('### ' + question))\n",
+          "    display(rb)\n",
+          "    display(grade_btn)\n",
+          "    display(feedback)\n"
+        ],
+        execution_count: null as any,
+        outputs: [] as any[]
+      } as any
+    ];
+  }
+
+  private createAssessmentSectionHeader(title: string) {
+    const clean = title?.trim();
+    if (!clean) return null;
+    return {
       cell_type: 'markdown' as const,
       metadata: {},
-      source: [
-        '## Knowledge Check (Interactive)\n\n',
-        'Use the widgets below to select an answer and click Grade to see feedback.\n'
-      ]
-    });
-    cells.push({
-      cell_type: 'code' as const,
-      metadata: {},
-      source: [
-        '# MCQ helper (ipywidgets)\n',
-        'import ipywidgets as widgets\n',
-        'from IPython.display import display, Markdown\n\n',
-        'def render_mcq(question, options, correct_index, explanation):\n',
-        "    # Use (label, value) so rb.value is the numeric index\n",
-        "    rb = widgets.RadioButtons(options=[(f'{chr(65+i)}. '+opt, i) for i,opt in enumerate(options)], description='')\n",
-        "    grade_btn = widgets.Button(description='Grade', button_style='primary')\n",
-        "    feedback = widgets.HTML(value='')\n",
-        '    def on_grade(_):\n',
-        '        sel = rb.value\n',
-        "        if sel is None:\n            feedback.value = '<p>⚠️ Please select an option.</p>'\n            return\n",
-        '        if sel == correct_index:\n',
-        "            feedback.value = '<p>✅ Correct!</p>'\n",
-        '        else:\n',
-        "            feedback.value = f'<p>❌ Incorrect. Correct answer is {chr(65+correct_index)}.</p>'\n",
-        "        feedback.value += f'<div><em>Explanation:</em> {explanation}</div>'\n",
-        '    grade_btn.on_click(on_grade)\n',
-        "    display(Markdown('### '+question))\n",
-        '    display(rb)\n',
-        '    display(grade_btn)\n',
-        '    display(feedback)\n'
-      ],
-      execution_count: null as any,
-      outputs: [] as any[]
-    } as any);
-    assessments.forEach((mcq, i) => {
-      // Validate MCQ structure
-      if (!mcq.question || !Array.isArray(mcq.options) || typeof mcq.correct_index !== 'number' || !mcq.explanation) {
-        console.warn(`Skipping invalid MCQ at index ${i}:`, mcq);
-        return;
-      }
-      if (mcq.correct_index < 0 || mcq.correct_index >= mcq.options.length) {
-        console.warn(`Skipping MCQ with out-of-range correct_index at ${i}`);
-        return;
-      }
-      
-      try {
-        const call = `render_mcq(${JSON.stringify(mcq.question)}, ${JSON.stringify(mcq.options)}, ${mcq.correct_index}, ${JSON.stringify(mcq.explanation)})\n`;
-        cells.push({ cell_type: 'code' as const, metadata: {}, source: [call], execution_count: null as any, outputs: [] as any[] } as any);
-      } catch (error) {
-        console.warn(`Failed to serialize MCQ at index ${i}:`, error);
-      }
-    });
-    return cells;
+      source: [`### Knowledge Check – ${clean}\n`]
+    };
+  }
+
+  private createAssessmentQuestionCell(mcq: Assessment) {
+    if (!mcq || !mcq.question || !Array.isArray(mcq.options) || typeof mcq.correct_index !== 'number' || !mcq.explanation) {
+      return null;
+    }
+    if (mcq.correct_index < 0 || mcq.correct_index >= mcq.options.length) {
+      return null;
+    }
+    try {
+      const call = `render_mcq(${JSON.stringify(mcq.question)}, ${JSON.stringify(mcq.options)}, ${mcq.correct_index}, ${JSON.stringify(mcq.explanation)})\n`;
+      return {
+        cell_type: 'code' as const,
+        metadata: {},
+        source: [call],
+        execution_count: null as any,
+        outputs: [] as any[]
+      } as any;
+    } catch (error) {
+      console.warn('Failed to serialize MCQ:', error);
+      return null;
+    }
   }
 
   private createTroubleshootingCell() {

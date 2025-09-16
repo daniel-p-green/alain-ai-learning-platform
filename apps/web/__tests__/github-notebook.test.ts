@@ -29,7 +29,15 @@ describe('fetchPublicNotebook', () => {
   const originalFetch = global.fetch;
 
   beforeEach(() => {
-    vi.resetAllMocks();
+    if (typeof vi.resetAllMocks === 'function') {
+      vi.resetAllMocks();
+    } else {
+      vi.restoreAllMocks();
+      vi.clearAllMocks();
+    }
+    // ensure previous stubs do not leak between tests
+    // @ts-ignore
+    global.fetch = originalFetch;
   });
 
   afterEach(() => {
@@ -58,4 +66,3 @@ describe('fetchPublicNotebook', () => {
     await expect(fetchPublicNotebook({ owner: 'o', repo: 'r', ref: 'm', path: 'nb.ipynb' })).rejects.toThrow('invalid_notebook');
   });
 });
-

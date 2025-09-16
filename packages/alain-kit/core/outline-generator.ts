@@ -48,28 +48,26 @@ export interface NotebookOutline {
   target_reading_time: string;
 }
 
-interface CustomPromptConfig {
-  title: string;
-  description: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+interface OutlineCustomPrompt {
+  title?: string;
+  description?: string;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
   topics?: string[];
+  context?: string;
+  systemPrompt?: string;
+  temperature?: number;
+  maxTokens?: number;
 }
 
 interface OutlineGeneratorOptions {
   baseUrl?: string;
 }
 
-interface CustomPromptConfig {
-  systemPrompt?: string;
-  temperature?: number;
-  maxTokens?: number;
-}
-
 interface OutlineGenerationOptions {
   model: string;
   apiKey?: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
-  customPrompt?: CustomPromptConfig;
+  customPrompt?: OutlineCustomPrompt;
 }
 
 export class OutlineGenerator {
@@ -98,16 +96,17 @@ export class OutlineGenerator {
     if (!options.apiKey) {
       throw new Error('API key is required');
     }
-    const { model, apiKey, difficulty, customPrompt } = options;
+    const { model, difficulty, customPrompt } = options;
+    const apiKey = options.apiKey!;
     
     // Use this.baseUrl for local model inference if provided
     const endpoint = this.baseUrl || 'https://api.poe.com';
     // Allow callers to provide a subject/title and optional context (e.g., remix headings) via customPrompt
-    const subject = (customPrompt as any)?.title || model;
-    const context: string | undefined = (customPrompt as any)?.context;
-    
+    const subject = customPrompt?.title?.trim() || model;
+    const context = customPrompt?.context;
+
     const prompt = this.buildOutlinePrompt(subject, difficulty, context);
-    const systemPrompt = this.buildSystemPrompt();
+    const systemPrompt = customPrompt?.systemPrompt ?? this.buildSystemPrompt();
     const providerCaps = capsFor(this.baseUrl);
     const allowTemperature = supportsTemperature(model);
 
@@ -123,10 +122,10 @@ export class OutlineGenerator {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_tokens: (customPrompt as any)?.maxTokens || 2000
+        max_tokens: customPrompt?.maxTokens ?? 2000
       };
       if (allowTemperature) {
-        body.temperature = attempt === 1 ? ((customPrompt as any)?.temperature || 0.1) : 0;
+        body.temperature = attempt === 1 ? (customPrompt?.temperature ?? 0.1) : 0;
       }
       if (providerCaps.allowResponseFormat) {
         body.response_format = { type: 'json_object' } as const;
@@ -148,7 +147,7 @@ export class OutlineGenerator {
     let validation = this.validateOutline(outline);
     if (!validation.isValid) {
       try {
-        outline = await this.repairOutline(outline, validation.issues, { model, apiKey: apiKey || '', difficulty });
+        outline = await this.repairOutline(outline, validation.issues, { model, apiKey, difficulty });
       } catch (error) {
         this.log.warn('repair_failed_deterministic_fallback', { error: (error as any)?.message || String(error) });
       }
@@ -237,8 +236,8 @@ export class OutlineGenerator {
     if (outline.outline && outline.outline.length > this.OPTIMAL_STEP_RANGE[1]) {
       issues.push(`Should not exceed ${this.OPTIMAL_STEP_RANGE[1]} steps`);
     }
-    if (!outline.assessments || outline.assessments.length < 2) {
-      issues.push('Must have at least 2 assessment questions');
+    if (!outline.assessments || outline.assessments.length < 4) {
+      issues.push('Must have at least 4 assessment questions');
     }
     if (outline.estimated_total_tokens > this.TARGET_TOKEN_RANGE[1]) {
       issues.push('Token count exceeds recommended range - consider splitting');
@@ -255,7 +254,7 @@ export class OutlineGenerator {
     const providerCaps = capsFor(this.baseUrl);
     const repairPrompt = `You previously generated a JSON outline for a tutorial. It needs repair to meet constraints.\n`+
       `Return ONLY valid JSON (start with { and end with }). Fix the following issues: ${issues.join('; ')}.\n`+
-      `Ensure: 6-12 steps; at least 2 MCQs in assessments; exactly 4 objectives.\n`+
+      `Ensure: 6-12 steps; at least 4 MCQs in assessments; exactly 4 objectives.\n`+
       `Here is the current outline JSON to repair:\n${JSON.stringify(outline, null, 2)}`;
 
     const reqBody: any = {

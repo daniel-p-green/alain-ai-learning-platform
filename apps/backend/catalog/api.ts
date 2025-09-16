@@ -32,8 +32,8 @@ export const publishNotebookApi = api<{
   file_path: string; visibility: Visibility;
 }, { success: boolean; share_slug?: string | null }>(
   { expose: true, method: 'POST', path: '/catalog/notebooks/publish' },
-  async (req, ctx) => {
-    const userId = await requireUserId(ctx);
+  async (req) => {
+    const userId = await requireUserId();
     if (!req.file_path) throw APIError.invalidArgument('file_path required');
     if (!['private','public','unlisted'].includes(req.visibility)) throw APIError.invalidArgument('invalid visibility');
     const existing = await tutorialsDB.queryRow<{ id: number; created_by: string | null }>`SELECT id, created_by FROM generated_notebooks WHERE file_path = ${req.file_path}`;
@@ -55,8 +55,8 @@ export const importLocalNotebooks = api<{
   root?: string; // defaults to process.env.ALAIN_STORAGE_ROOT || 'resources/content'
 }, { imported: number; updated: number; skipped: number; errors: number }>(
   { expose: true, method: 'POST', path: '/catalog/notebooks/import-local' },
-  async (req, ctx) => {
-    const userId = await requireUserId(ctx);
+  async (req) => {
+    const userId = await requireUserId();
     // Admin‑gate the importer
     const admins = (process.env.ADMIN_USER_IDS || '').split(',').map(s=>s.trim()).filter(Boolean);
     const isAdmin = admins.includes(userId);
@@ -215,8 +215,8 @@ export const publishLessonApi = api<{
   file_path: string; visibility: Visibility;
 }, { success: boolean; share_slug?: string | null }>(
   { expose: true, method: 'POST', path: '/catalog/lessons/publish' },
-  async (req, ctx) => {
-    const userId = await requireUserId(ctx);
+  async (req) => {
+    const userId = await requireUserId();
     if (!req.file_path) throw APIError.invalidArgument('file_path required');
     if (!['private','public','unlisted'].includes(req.visibility)) throw APIError.invalidArgument('invalid visibility');
     const existing = await tutorialsDB.queryRow<{ id: number; created_by: string | null }>`SELECT id, created_by FROM generated_lessons WHERE file_path = ${req.file_path}`;
@@ -233,8 +233,8 @@ export const publishLessonApi = api<{
 
 export const listMyNotebooks = api<{}, { items: any[] }>(
   { expose: true, method: 'GET', path: '/catalog/notebooks/mine' },
-  async (_req, ctx) => {
-    const userId = await requireUserId(ctx);
+  async (_req) => {
+    const userId = await requireUserId();
     const rows = await tutorialsDB.query<any>([
       `SELECT id, file_path, model, provider, difficulty, created_at, visibility, share_slug, tags, size_bytes
        FROM generated_notebooks WHERE created_by = $1 ORDER BY created_at DESC`,

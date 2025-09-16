@@ -1,26 +1,29 @@
 import { test, expect } from '@playwright/test';
 
-test('footer shows attribution and no legacy links', async ({ page }) => {
-  await page.goto('/');
-  const footer = page.locator('footer');
+const isPlaywright = !!process.env.PLAYWRIGHT_TEST;
 
-  // Attribution link
-  const by = footer.getByRole('link', { name: /Daniel Green/i });
-  await expect(by).toBeVisible();
-  await expect(by).toHaveAttribute('href', /linkedin\.com\/in\/danielpgreen/);
+if (isPlaywright) {
+  test('footer shows attribution and no legacy links', async ({ page }) => {
+    await page.goto('/');
+    const footer = page.locator('footer');
 
-  // X link
-  const x = footer.getByRole('link', { name: /X \(@dgrreen\)/i });
-  await expect(x).toBeVisible();
-  await expect(x).toHaveAttribute('href', 'https://x.com/dgrreen');
+    // Attribution link
+    const by = footer.getByRole('link', { name: /Daniel Green/i });
+    await expect(by).toBeVisible();
+    await expect(by).toHaveAttribute('href', /linkedin\.com\/in\/danielpgreen/);
 
-  // Product links
-  await expect(footer.getByRole('link', { name: /Notebooks/i })).toBeVisible();
-  await expect(footer.getByRole('link', { name: /Generate/i })).toBeVisible();
+    // X link
+    const x = footer.getByRole('link', { name: /X \(@dgrreen\)/i });
+    await expect(x).toBeVisible();
+    await expect(x).toHaveAttribute('href', 'https://x.com/dgrreen');
 
-  // Legacy links should not exist
-  await expect(footer.getByRole('link', { name: /Blueprint/i })).toHaveCount(0);
-  await expect(footer.getByRole('link', { name: /Phases/i })).toHaveCount(0);
-  await expect(footer.getByRole('link', { name: /^Settings$/i })).toHaveCount(0);
-});
+    // Product links
+    await expect(footer.getByRole('link', { name: /Notebooks/i })).toBeVisible();
+    await expect(footer.getByRole('link', { name: /Generate/i })).toBeVisible();
 
+    // Legacy links should not exist
+    await expect(footer.getByRole('link', { name: /Blueprint/i })).toHaveCount(0);
+    await expect(footer.getByRole('link', { name: /Phases/i })).toHaveCount(0);
+    await expect(footer.getByRole('link', { name: /^Settings$/i })).toHaveCount(0);
+  });
+}

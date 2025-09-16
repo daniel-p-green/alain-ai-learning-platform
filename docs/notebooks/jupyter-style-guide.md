@@ -2,7 +2,7 @@
 
 - One idea per cell: keep code and explanations small and focused.
 - Clear headings: use H2 for sections, H3 for steps; title case.
-- Outputs: keep them tidy; avoid printing large blobs; truncate when needed.
+- Outputs: keep them tidy; avoid printing large ***REMOVED***s; truncate when needed.
 - Naming: readable snake_case for variables and functions; avoid single letters.
 - Re‑run safety: make cells idempotent; guard network calls; cache expensive steps.
 - Imports: top of the notebook or first code cell; group stdlib/third‑party/local.

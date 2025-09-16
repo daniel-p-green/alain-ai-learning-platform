@@ -8,7 +8,7 @@ NEXT_PUBLIC_TEACHER_ALLOW_120B=0
 
 # === AI API CONFIGURATION ===
 # Poe API Key (get from https://poe.com/api_key)
-POE_API_KEY=qZB4vYDsDMytPrL9t4N4SGi_M56X_b0vst0l1fuJu9s
+POE_API_KEY=***REMOVED***
 
 # OpenAI Compatible API Configuration
 # Note: For ALAIN‑Kit CLI (--baseUrl), pass the provider root WITHOUT /v1
@@ -26,7 +26,7 @@ TEACHER_ALLOW_120B=0
 
 # === BACKEND SECRETS (for Encore.dev) ===
 # These are configured through Encore.dev dashboard
-# POE_API_KEY=qZB4vYDsDMytPrL9t4N4SGi_M56X_b0vst0l1fuJu9s
+# POE_API_KEY=***REMOVED***
 # OPENAI_BASE_URL=https://api.openai.com/v1
 # OPENAI_API_KEY=your_openai_api_key_here
 # TEACHER_PROVIDER=poe # or 'openai-compatible' for local (e.g., Ollama)

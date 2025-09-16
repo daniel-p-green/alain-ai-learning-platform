@@ -53,17 +53,17 @@ These files demonstrate the system's performance on real-world, non-synthetic mo
 
 ## 4. Obsolete & Redundant Research Files
 
-These files are artifacts from the iterative development and debugging process. They are low-quality because they were based on incorrect model paths or executed before the synthesis algorithm was improved.
+These files were artifacts from the iterative development and debugging process. They were low-quality because they were based on incorrect model paths or executed before the synthesis algorithm was improved.
 
-- **Directory:** `/research-outputs/chatgpt-experience-research/`
-- **Directory:** `/research-outputs/enhanced-demo/`
+- **Directory (removed 2025-09-16):** `/research-outputs/chatgpt-experience-research/`
+- **Directory (removed 2025-09-16):** `/research-outputs/enhanced-demo/`
 
-| File Type | Quality | Completeness | Reason for Obsolescence |
+| File Type | Quality | Completeness | Notes |
 | :--- | :--- | :--- | :--- |
-| `enhanced-research-data.json` | **Low** | **Low** | Based on incorrect `gpt-oss-20b` path. Contains no external source data. |
-| `enhanced-research-report.md` | **Low** | **Low** | Report is minimal and reflects the lack of data from the incorrect model path. |
+| `enhanced-research-data.json` | **Low** | **Low** | Removed with directory cleanup; originally based on incorrect `gpt-oss-20b` path. |
+| `enhanced-research-report.md` | **Low** | **Low** | Removed with directory cleanup; previously reflected the lack of source data. |
 
-**Recommendation:** These directories and their contents can be safely **deleted** as they are redundant and do not represent the final, correct output of the system.
+**Action taken:** Both directories have been removed to prevent confusion during future audits.
 
 --- 
 
@@ -71,4 +71,4 @@ These files are artifacts from the iterative development and debugging process. 
 
 - **Final System Quality: Excellent.** The enhanced research system, with its final improvements, correctly identifies models, fetches rich data, and synthesizes high-quality, topic-specific educational content that aligns perfectly with the ALAIN-Kit methodology.
 - **Completeness:** The system's completeness is now primarily dependent on the availability of data on Hugging Face for a given model. For models with detailed cards, the output is comprehensive.
-- **Actionable Item:** The obsolete research files from early tests should be cleaned up to avoid confusion.
+- **Actionable Item:** ✅ Completed — obsolete research files from early tests have been removed.

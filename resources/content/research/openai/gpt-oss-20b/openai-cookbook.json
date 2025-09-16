@@ -41,7 +41,7 @@
       "assignees_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/assignees{/user}",
       "branches_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/branches{/branch}",
       "tags_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/tags",
-      "blobs_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/git/blobs{/sha}",
+      "***REMOVED***s_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/git/***REMOVED***s{/sha}",
       "git_tags_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/git/tags{/sha}",
       "git_refs_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/git/refs{/sha}",
       "trees_url": "https://api.github.com/repos/svngoku/gpt-oss-use-cases/git/trees{/sha}",
@@ -110,14 +110,14 @@
       "sha": "c790e96543f31a89e8ad26625d0c8386c5afcbe5",
       "size": 425,
       "url": "https://api.github.com/repos/openai/openai-cookbook/contents/CONTRIBUTING.md?ref=main",
-      "html_url": "https://github.com/openai/openai-cookbook/blob/main/CONTRIBUTING.md",
-      "git_url": "https://api.github.com/repos/openai/openai-cookbook/git/blobs/c790e96543f31a89e8ad26625d0c8386c5afcbe5",
+      "html_url": "https://github.com/openai/openai-cookbook/***REMOVED***/main/CONTRIBUTING.md",
+      "git_url": "https://api.github.com/repos/openai/openai-cookbook/git/***REMOVED***s/c790e96543f31a89e8ad26625d0c8386c5afcbe5",
       "download_url": "https://raw.githubusercontent.com/openai/openai-cookbook/main/CONTRIBUTING.md",
       "type": "file",
       "_links": {
         "self": "https://api.github.com/repos/openai/openai-cookbook/contents/CONTRIBUTING.md?ref=main",
-        "git": "https://api.github.com/repos/openai/openai-cookbook/git/blobs/c790e96543f31a89e8ad26625d0c8386c5afcbe5",
-        "html": "https://github.com/openai/openai-cookbook/blob/main/CONTRIBUTING.md"
+        "git": "https://api.github.com/repos/openai/openai-cookbook/git/***REMOVED***s/c790e96543f31a89e8ad26625d0c8386c5afcbe5",
+        "html": "https://github.com/openai/openai-cookbook/***REMOVED***/main/CONTRIBUTING.md"
       }
     },
     {
@@ -126,14 +126,14 @@
       "sha": "b48159e10216fa20260955d7316b98df32d735b9",
       "size": 1211,
       "url": "https://api.github.com/repos/openai/openai-cookbook/contents/README.md?ref=main",
-      "html_url": "https://github.com/openai/openai-cookbook/blob/main/README.md",
-      "git_url": "https://api.github.com/repos/openai/openai-cookbook/git/blobs/b48159e10216fa20260955d7316b98df32d735b9",
+      "html_url": "https://github.com/openai/openai-cookbook/***REMOVED***/main/README.md",
+      "git_url": "https://api.github.com/repos/openai/openai-cookbook/git/***REMOVED***s/b48159e10216fa20260955d7316b98df32d735b9",
       "download_url": "https://raw.githubusercontent.com/openai/openai-cookbook/main/README.md",
       "type": "file",
       "_links": {
         "self": "https://api.github.com/repos/openai/openai-cookbook/contents/README.md?ref=main",
-        "git": "https://api.github.com/repos/openai/openai-cookbook/git/blobs/b48159e10216fa20260955d7316b98df32d735b9",
-        "html": "https://github.com/openai/openai-cookbook/blob/main/README.md"
+        "git": "https://api.github.com/repos/openai/openai-cookbook/git/***REMOVED***s/b48159e10216fa20260955d7316b98df32d735b9",
+        "html": "https://github.com/openai/openai-cookbook/***REMOVED***/main/README.md"
       }
     }
   ],
@@ -178,7 +178,7 @@
     "assignees_url": "https://api.github.com/repos/openai/openai-cookbook/assignees{/user}",
     "branches_url": "https://api.github.com/repos/openai/openai-cookbook/branches{/branch}",
     "tags_url": "https://api.github.com/repos/openai/openai-cookbook/tags",
-    "blobs_url": "https://api.github.com/repos/openai/openai-cookbook/git/blobs{/sha}",
+    "***REMOVED***s_url": "https://api.github.com/repos/openai/openai-cookbook/git/***REMOVED***s{/sha}",
     "git_tags_url": "https://api.github.com/repos/openai/openai-cookbook/git/tags{/sha}",
     "git_refs_url": "https://api.github.com/repos/openai/openai-cookbook/git/refs{/sha}",
     "trees_url": "https://api.github.com/repos/openai/openai-cookbook/git/trees{/sha}",

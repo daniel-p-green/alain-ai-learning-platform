@@ -4,6 +4,7 @@ import { useSettings } from "../../features/onboarding-settings/useSettings";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Button } from "../../components/Button";
 import { StreamingOutput } from "../../components/StreamingOutput";
+import { hasClerk } from "../../lib/env";
 
 export default function StreamDemo() {
   const { promptMode } = useSettings();
@@ -67,31 +68,46 @@ export default function StreamDemo() {
     }
   }
 
+  const streamPanel = (
+    <>
+      <div className="flex items-center gap-2">
+        <Button disabled={loading} onClick={run}>{loading ? "Running…" : "Run"}</Button>
+        <Button variant="secondary" disabled={loading || !out} onClick={()=> setOut("")}>Clear</Button>
+      </div>
+      <StreamingOutput
+        output={out}
+        isStreaming={loading}
+        error={error ? { code: "request", message: error } : null}
+        elapsedSeconds={elapsed}
+        tokenCount={undefined}
+        status={error ? 'error' : (loading ? 'info' : (out ? 'success' : 'idle'))}
+      />
+    </>
+  );
+
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-4">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">Streaming Demo</h1>
         <p className="text-ink-700 text-sm">Runs a small prompt and streams the model output in real time.</p>
       </div>
-      <SignedOut>
-        <div className="text-ink-700">
-          Please sign in to run the demo. <SignInButton />
-        </div>
-      </SignedOut>
-      <SignedIn>
-        <div className="flex items-center gap-2">
-          <Button disabled={loading} onClick={run}>{loading ? "Running…" : "Run"}</Button>
-          <Button variant="secondary" disabled={loading || !out} onClick={()=> setOut("")}>Clear</Button>
-        </div>
-        <StreamingOutput
-          output={out}
-          isStreaming={loading}
-          error={error ? { code: "request", message: error } : null}
-          elapsedSeconds={elapsed}
-          tokenCount={undefined}
-          status={error ? 'error' : (loading ? 'info' : (out ? 'success' : 'idle'))}
-        />
-      </SignedIn>
+      {hasClerk ? (
+        <>
+          <SignedOut>
+            <div className="text-ink-700">
+              Please sign in to run the demo. <SignInButton />
+            </div>
+          </SignedOut>
+          <SignedIn>{streamPanel}</SignedIn>
+        </>
+      ) : (
+        <>
+          <div className="text-sm text-ink-700 bg-white/70 border border-ink-100 rounded-card p-4">
+            Clerk is not configured. Set <code>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code> to enable sign-in gated streaming.
+          </div>
+          {streamPanel}
+        </>
+      )}
     </div>
   );
 }

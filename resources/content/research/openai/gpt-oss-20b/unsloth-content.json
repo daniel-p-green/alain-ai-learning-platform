@@ -42,7 +42,7 @@
     "assignees_url": "https://api.github.com/repos/unslothai/unsloth/assignees{/user}",
     "branches_url": "https://api.github.com/repos/unslothai/unsloth/branches{/branch}",
     "tags_url": "https://api.github.com/repos/unslothai/unsloth/tags",
-    "blobs_url": "https://api.github.com/repos/unslothai/unsloth/git/blobs{/sha}",
+    "***REMOVED***s_url": "https://api.github.com/repos/unslothai/unsloth/git/***REMOVED***s{/sha}",
     "git_tags_url": "https://api.github.com/repos/unslothai/unsloth/git/tags{/sha}",
     "git_refs_url": "https://api.github.com/repos/unslothai/unsloth/git/refs{/sha}",
     "trees_url": "https://api.github.com/repos/unslothai/unsloth/git/trees{/sha}",

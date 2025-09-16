@@ -112,9 +112,10 @@ else:
     const notebookData = JSON.parse(notebook);
     
     const issues = this.detectIssues(notebookData);
-    const hasCritical = issues.some(issue => issue.severity === 'critical');
+    const tolerance = Number(process.env.ALAIN_COLAB_MAX_ISSUES || '0');
+    const criticalCount = issues.filter(issue => issue.severity === 'critical').length;
 
-    if (!hasCritical) {
+    if (criticalCount <= tolerance) {
       return {
         isCompatible: true,
         issues,
@@ -124,7 +125,8 @@ else:
 
     const fixedNotebook = await this.applyFixes(notebookData, issues);
     const postIssues = this.detectIssues(fixedNotebook);
-    const compatibleAfterFix = postIssues.length === 0;
+    const postCritical = postIssues.filter(issue => issue.severity === 'critical').length;
+    const compatibleAfterFix = postCritical <= tolerance;
     return {
       isCompatible: compatibleAfterFix,
       issues: compatibleAfterFix ? [] : postIssues,

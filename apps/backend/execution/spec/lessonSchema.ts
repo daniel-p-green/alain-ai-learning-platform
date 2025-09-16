@@ -97,7 +97,7 @@ export function applyDefaults(
 ): Lesson {
   const out: Lesson = { ...lessonData };
   out.model = modelInfo?.name || out.model || "gpt-oss-20b";
-  out.provider = (out.provider as any) || "poe";
+  out.provider = inferLessonProvider(out.provider, modelInfo);
   out.difficulty = (out.difficulty as any) || difficulty || "beginner";
   out.tags = Array.isArray(out.tags) ? out.tags : [];
   if (modelInfo?.org) out.tags = Array.from(new Set([`${modelInfo.org}`, out.difficulty, ...out.tags]));
@@ -116,4 +116,22 @@ export function applyDefaults(
 export function synthesizePromptFallback(title: string, content: string) {
   const snippet = (content || "").replace(/\s+/g, " ").slice(0, 180);
   return `You are a helpful assistant. For the lesson step "${title}", provide a concise response based on this context: ${snippet}`;
+}
+
+function inferLessonProvider(provider: unknown, modelInfo: any): string {
+  if (typeof provider === 'string' && provider.trim()) {
+    return provider.trim();
+  }
+  const url = String(modelInfo?.url || '').toLowerCase();
+  if (url.includes('huggingface.co')) {
+    return 'huggingface';
+  }
+  if (/localhost|127\.0\.0\.1|\[::1\]/.test(url)) {
+    return 'openai-compatible';
+  }
+  const declared = typeof modelInfo?.provider === 'string' ? modelInfo.provider.trim() : '';
+  if (declared) {
+    return declared;
+  }
+  return 'poe';
 }

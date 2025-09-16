@@ -25,8 +25,8 @@ export const listPublicTutorials = api<{
 
 export const publishTutorial = api<{ id: number; visibility: Visibility }, { success: boolean; share_slug?: string | null }>(
   { expose: true, method: 'POST', path: '/tutorials/:id/publish' },
-  async (req, ctx) => {
-    const userId = await requireUserId(ctx);
+  async (req) => {
+    const userId = await requireUserId();
     if (!req.id) throw APIError.invalidArgument('id required');
     if (!['private','public','unlisted'].includes(req.visibility)) throw APIError.invalidArgument('invalid visibility');
     const exists = await tutorialsDB.queryRow<{ id: number; author_id: string | null }>`SELECT id, author_id FROM tutorials WHERE id = ${req.id}`;

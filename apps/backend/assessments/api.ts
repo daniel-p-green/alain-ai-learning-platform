@@ -18,13 +18,21 @@ export const listByTutorial = api<{ tutorialId: number; stepOrder?: number }, { 
   { expose: true, method: "GET", path: "/assessments/:tutorialId" },
   async ({ tutorialId, stepOrder }) => {
     if (!tutorialId || tutorialId < 1) throw APIError.invalidArgument("tutorialId required");
-    const rows = tutorialsDB.query<Assessment>`
-      SELECT id, tutorial_id, step_order, question, options, correct_index, explanation, difficulty, tags
-      FROM assessments
-      WHERE tutorial_id = ${tutorialId}
-      ${stepOrder ? tutorialsDB.sql`AND step_order = ${stepOrder}` : tutorialsDB.sql``}
-      ORDER BY step_order ASC, id ASC
-    ` as any;
+    const query = stepOrder != null
+      ? tutorialsDB.sql<Assessment>`
+          SELECT id, tutorial_id, step_order, question, options, correct_index, explanation, difficulty, tags
+          FROM assessments
+          WHERE tutorial_id = ${tutorialId}
+            AND step_order = ${stepOrder}
+          ORDER BY step_order ASC, id ASC
+        `
+      : tutorialsDB.sql<Assessment>`
+          SELECT id, tutorial_id, step_order, question, options, correct_index, explanation, difficulty, tags
+          FROM assessments
+          WHERE tutorial_id = ${tutorialId}
+          ORDER BY step_order ASC, id ASC
+        `;
+    const rows = tutorialsDB.query<Assessment>(query) as any;
     const assessments: Assessment[] = [];
     for await (const r of rows) assessments.push(r);
     return { assessments };
@@ -33,8 +41,8 @@ export const listByTutorial = api<{ tutorialId: number; stepOrder?: number }, { 
 
 export const validate = api<{ assessmentId: number; choice: number }, { correct: boolean; explanation?: string }>(
   { expose: true, method: "POST", path: "/assessments/validate" },
-  async ({ assessmentId, choice }, ctx) => {
-    const userId = await requireUserId(ctx);
+  async ({ assessmentId, choice }) => {
+    const userId = await requireUserId();
     if (!assessmentId || assessmentId < 1) throw APIError.invalidArgument("assessmentId required");
     const a = await tutorialsDB.queryRow<Assessment>`
       SELECT id, tutorial_id, step_order, question, options, correct_index, explanation, difficulty, tags
@@ -51,4 +59,3 @@ export const validate = api<{ assessmentId: number; choice: number }, { correct:
     return { correct, explanation: a.explanation || undefined };
   }
 );
-

@@ -6,7 +6,7 @@
 import { researchModel } from './utils/research';
 import { join } from 'path';
 
-const POE_API_KEY = 'qZB4vYDsDMytPrL9t4N4SGi_M56X_b0vst0l1fuJu9s';
+const POE_API_KEY = '***REMOVED***';
 
 async function testAlainPhases() {
   console.log('🧪 Testing ALAIN-kit phases with topic specification...\n');

@@ -57,4 +57,3 @@ export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolea
     </form>
   );
 }
-

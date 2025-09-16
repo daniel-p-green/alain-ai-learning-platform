@@ -88,8 +88,8 @@ export default function OutlineFirstGeneratorPage() {
 
   function downloadNotebook() {
     if (!notebook) return;
-    const blob = new Blob([JSON.stringify(notebook, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    const notebookBlob = new Blob([JSON.stringify(notebook, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(notebookBlob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `alain-notebook-${Date.now()}.ipynb`;
@@ -111,8 +111,8 @@ export default function OutlineFirstGeneratorPage() {
         append('error', `Bundle failed: ${resp.status}`)
         return
       }
-      const blob = await resp.blob()
-      const url = URL.createObjectURL(blob)
+      const bundleBlob = await resp.blob()
+      const url = URL.createObjectURL(bundleBlob)
       const a = document.createElement('a')
       a.href = url
       a.download = `alain-bundle-${Date.now()}.zip`

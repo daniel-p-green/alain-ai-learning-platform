@@ -1,13 +1,17 @@
 import { api, APIError } from "encore.dev/api";
-import { teacherGenerate } from "./teacher";
 import { inferModelInfo } from "./models";
 import { requireUserId } from "../auth";
 import { allowRate } from "../utils/ratelimit";
 import { validateBackendEnv } from "../config/env";
-import { validateLesson, applyDefaults } from "./spec/lessonSchema";
 import { parseHfUrl } from "../utils/hf";
-import { fileSystemStorage } from "../storage/filesystem";
-import { buildNotebook } from "../export/notebook";
+import {
+  LessonValidationError,
+  buildLessonGenerationPrompt,
+  buildLessonFromTextPrompt,
+  generateLessonContent,
+  mapLessonGenerationError,
+  persistLessonArtifacts,
+} from "./lesson-service";
 
 interface LessonGenerationRequest {
   hfUrl: string;
@@ -65,9 +69,9 @@ interface LessonGenerationResponse {
 // Generate structured lessons from HF URLs using GPT-OSS teacher models
 export const generateLesson = api(
   { expose: true, method: "POST", path: "/lessons/generate" },
-  async (req: LessonGenerationRequest, ctx: any): Promise<LessonGenerationResponse> => {
+  async (req: LessonGenerationRequest): Promise<LessonGenerationResponse> => {
     validateBackendEnv();
-    const userId = await requireUserId(ctx);
+    const userId = await requireUserId();
     const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
@@ -85,156 +89,52 @@ export const generateLesson = api(
     userConcurrency.set(userId, current + 1);
     const task = (async (): Promise<LessonGenerationResponse> => {
       try {
-      // Extract model information from HF URL
-      const modelInfo = await extractHFModelInfo(req.hfUrl);
+        const modelInfo = await extractHFModelInfo(req.hfUrl);
+        const lessonPrompt = buildLessonGenerationPrompt(
+          modelInfo,
+          req.difficulty,
+          req.includeAssessment,
+          req.includeReasoning,
+        );
+        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as 'poe' | 'openai-compatible';
+        const generation = await generateLessonContent({
+          prompt: lessonPrompt,
+          teacherModel: req.teacherModel,
+          provider: selectedProvider,
+          modelInfo,
+          difficulty: req.difficulty,
+        });
 
-      // Generate lesson content using teacher model
-      const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
-
-      const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any;
-      const teacherResponse = await teacherGenerateWithRetry({
-        model: req.teacherModel,
-        messages: [
-          {
-            role: "user",
-            content: lessonPrompt
-          }
-        ],
-        task: "lesson_generation",
-        provider: selectedProvider,
-        max_tokens: TEACHER_MAX_TOKENS,
-        temperature: 0.2,
-      });
-
-      if (!teacherResponse.success || !teacherResponse.content) {
-        console.warn('[generateLesson] teacher failure', { code: teacherResponse.error?.code, message: teacherResponse.error?.message });
-        throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
-      }
-
-      // Parse → fill defaults → validate. If invalid, attempt a single repair pass.
-      let raw = teacherResponse.content;
-
-      // Extract optional reasoning_summary before sanitization
-      const extractReasoning = (jsonText: string): string | undefined => {
-        try {
-          let t = jsonText.trim();
-          if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
-          const o = JSON.parse(t);
-          const r = o?.reasoning_summary;
-          return typeof r === 'string' && r.trim() ? r.trim() : undefined;
-        } catch { return undefined; }
-      };
-      let reasoningSummary = extractReasoning(raw);
-
-      let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
-      let v1 = validateLesson(lesson);
-      let usedRepair = false;
-      if (!v1.valid) {
-        const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
-        if (!repaired) {
-          console.warn('[generateLesson] validation_error', { errors: v1.errors?.slice?.(0, 3) });
-          return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
-        }
-        lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
-        usedRepair = true;
-        // Try to re-extract reasoning if not present
-        if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
-        const v2 = validateLesson(lesson);
-        if (!v2.valid) {
-          console.warn('[generateLesson] validation_error_after_repair', { errors: v2.errors?.slice?.(0, 3) });
-          return { success: false, error: { code: "validation_error", message: "Lesson invalid after repair", details: v2.errors } } as any;
-        }
-      }
-
-      // Auto-save the generated lesson in both JSON and .ipynb formats
-      try {
-        const modelId = modelInfo.name || 'unknown-model';
-        
-        // Save raw lesson JSON (resources/content/lessons/<provider>/<model>/<date>/lesson_<id>.json)
-        const lessonSave = await fileSystemStorage.saveLesson(modelId, lesson, lesson.provider || 'openai-compatible');
-        // Index with author if enabled
-        try {
-          if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
-            const { indexGeneratedLesson } = await import('../catalog/store');
-            await indexGeneratedLesson({
-              file_path: lessonSave.filePath,
-              model: modelId,
-              provider: (lesson.provider || 'openai-compatible'),
-              difficulty: req.difficulty,
-              created_by: userId,
-              visibility: 'private',
-              tags: [],
-              size_bytes: lessonSave.metadata.size_bytes,
-              checksum: lessonSave.metadata.checksum,
-            });
-          }
-        } catch {}
-        
-        // Convert to proper Jupyter notebook format and save
-        const notebookMeta = {
-          title: lesson.title || 'Generated Lesson',
-          description: lesson.description || '',
-          provider: lesson.provider || 'openai-compatible',
-          model: lesson.model || modelId
-        };
-        
-        const steps = (lesson.steps || []).map(step => ({
-          step_order: step.step_order || 1,
-          title: step.title || '',
-          content: step.content || '',
-          code_template: step.code_template || null,
-          model_params: step.model_params || { temperature: 0.7 }
-        }));
-        
-        const assessments = (lesson.assessments || []).map((assessment, index) => ({
-          step_order: index + 1,
-          question: assessment.question || '',
-          options: assessment.options || [],
-          correct_index: assessment.correct_index || 0,
-          explanation: assessment.explanation || null
-        }));
-        
+        const { lesson, usedRepair, reasoningSummary, teacherResponse } = generation;
         const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
         const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
-        const notebook = buildNotebook(notebookMeta, steps, assessments, lesson.model_maker, teacherUsed as any, teacherDowngraded);
-        const nbMeta = await fileSystemStorage.saveNotebook(modelId, req.difficulty, notebook, 'ipynb', lesson.provider || 'openai-compatible');
-        
-        console.log(`[generateLesson] success`, { model: modelId, difficulty: req.difficulty, repaired: usedRepair });
-        // Optional: index notebook to catalog with author
-        try {
-          if ((process.env.CATALOG_INDEX || '').toLowerCase() === '1') {
-            const { indexGeneratedNotebook } = await import('../catalog/store');
-            await indexGeneratedNotebook({
-              file_path: nbMeta.filePath,
-              model: modelId,
-              provider: (lesson.provider || 'openai-compatible'),
-              difficulty: req.difficulty,
-              created_by: userId,
-              visibility: 'private',
-              tags: [],
-              size_bytes: nbMeta.metadata.size_bytes,
-              checksum: nbMeta.metadata.checksum,
-            });
-          }
-        } catch {}
-        // Optional: ingest into Tutorials DB
-        try {
-          if ((process.env.TUTORIALS_INGEST || '').toLowerCase() === '1') {
-            const { ingestTutorialFromLesson } = await import('../tutorials/ingest');
-            const prov = (selectedProvider as any) || 'poe';
-            const tid = await ingestTutorialFromLesson(lesson as any, req.difficulty, modelId, prov, userId);
-            console.log(`[ingest] Tutorial created with id=${tid}`);
-          }
-        } catch (e) {
-          console.warn('Ingest to tutorials failed:', e);
-        }
-      } catch (saveError) {
-        console.warn('Failed to auto-save lesson:', saveError);
-        // Don't fail the request if save fails
-      }
+        const modelId = modelInfo.name || 'unknown-model';
 
-      return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
+        await persistLessonArtifacts({
+          lesson,
+          modelId,
+          difficulty: req.difficulty,
+          userId,
+          requestProvider: selectedProvider,
+          teacherUsed,
+          teacherDowngraded,
+          enableCatalogIndex: (process.env.CATALOG_INDEX || '').toLowerCase() === '1',
+          enableTutorialIngest: (process.env.TUTORIALS_INGEST || '').toLowerCase() === '1',
+          tutorialProvider: selectedProvider,
+          context: 'generateLesson',
+        });
+
+        console.log('[generateLesson] success', { model: modelId, difficulty: req.difficulty, repaired: usedRepair });
+
+        return {
+          success: true,
+          lesson,
+          meta: { repaired: usedRepair, reasoning_summary: reasoningSummary },
+        } as any;
       } catch (error) {
+        if (error instanceof LessonValidationError) {
+          return { success: false, error: { code: 'validation_error', message: error.message, details: error.details } } as any;
+        }
         const errorData = mapLessonGenerationError(error);
         return { success: false, error: errorData } as any;
       }
@@ -258,9 +158,9 @@ export const generateLocalLesson = api<{
   includeReasoning?: boolean;
 }, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate-local" },
-  async (req, ctx) => {
+  async (req) => {
     validateBackendEnv();
-    const userId = await requireUserId(ctx);
+    const userId = await requireUserId();
     const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
@@ -286,81 +186,47 @@ export const generateLocalLesson = api<{
           toolUse: inferred.toolUse,
           family: inferred.family,
         } as any;
-        const lessonPrompt = buildLessonGenerationPrompt(modelInfo, req.difficulty, req.includeAssessment, req.includeReasoning);
-        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any;
-        const teacherResponse = await teacherGenerateWithRetry({
-          model: req.teacherModel,
-          messages: [ { role: "user", content: lessonPrompt } ],
-          task: "lesson_generation",
+        const lessonPrompt = buildLessonGenerationPrompt(
+          modelInfo,
+          req.difficulty,
+          req.includeAssessment,
+          req.includeReasoning,
+        );
+        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as 'poe' | 'openai-compatible';
+        const generation = await generateLessonContent({
+          prompt: lessonPrompt,
+          teacherModel: req.teacherModel,
           provider: selectedProvider,
-          max_tokens: TEACHER_MAX_TOKENS,
-          temperature: 0.2,
+          modelInfo,
+          difficulty: req.difficulty,
         });
-        if (!teacherResponse.success || !teacherResponse.content) {
-          throw new Error(teacherResponse.error?.message || "Teacher model failed to generate lesson");
-        }
-        let raw = teacherResponse.content;
-        const extractReasoning = (jsonText: string): string | undefined => {
-          try {
-            let t = jsonText.trim();
-            if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
-            const o = JSON.parse(t);
-            const r = o?.reasoning_summary;
-            return typeof r === 'string' && r.trim() ? r.trim() : undefined;
-          } catch { return undefined; }
-        };
-        let reasoningSummary = extractReasoning(raw);
-        let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
-        let v1 = validateLesson(lesson);
-        let usedRepair = false;
-        if (!v1.valid) {
-          const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
-          if (!repaired) {
-            return { success: false, error: { code: "validation_error", message: "Generated lesson failed validation", details: v1.errors } } as any;
-          }
-          lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
-          usedRepair = true;
-          if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
-          const v2 = validateLesson(lesson);
-        if (!v2.valid) {
-          return { success: false, error: { code: "validation_error", message: "Repaired lesson failed validation", details: v2.errors } } as any;
-        }
-      }
-        // Auto-save JSON and .ipynb for local generation, mirroring generateLesson
-        try {
-          const modelId = req.modelId || 'local-model';
-          const prov = (selectedProvider as any) || 'openai-compatible';
-          // Save raw lesson JSON
-          await fileSystemStorage.saveLesson(modelId, lesson, prov);
-          // Convert to notebook and save
-          const notebookMeta = {
-            title: lesson.title || 'Generated Lesson',
-            description: lesson.description || '',
-            provider: lesson.provider || prov,
-            model: lesson.model || modelId,
-          };
-          const steps = (lesson.steps || []).map((step, idx) => ({
-            step_order: step.step_order || (idx + 1),
-            title: step.title || '',
-            content: step.content || '',
-            code_template: step.code_template || null,
-            model_params: step.model_params || { temperature: 0.7 },
-          }));
-          const assessments = (lesson.assessments || []).map((a, index) => ({
-            step_order: (a as any).step_order || (index + 1),
-            question: a.question || '',
-            options: a.options || [],
-            correct_index: a.correct_index || 0,
-            explanation: a.explanation || null,
-          }));
-          const teacherUsed = req.teacherModel || 'GPT-OSS-20B';
-          const nb = buildNotebook(notebookMeta, steps as any, assessments as any, lesson.model_maker, teacherUsed as any, false);
-          await fileSystemStorage.saveNotebook(modelId, req.difficulty, nb, 'ipynb', prov);
-        } catch (saveErr) {
-          console.warn('[generateLocalLesson] save_error', saveErr);
-        }
-        return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
+
+        const { lesson, usedRepair, reasoningSummary, teacherResponse } = generation;
+        const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
+        const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
+
+        await persistLessonArtifacts({
+          lesson,
+          modelId: req.modelId || 'local-model',
+          difficulty: req.difficulty,
+          userId,
+          requestProvider: selectedProvider,
+          teacherUsed,
+          teacherDowngraded,
+          enableCatalogIndex: false,
+          enableTutorialIngest: false,
+          context: 'generateLocalLesson',
+        });
+
+        return {
+          success: true,
+          lesson,
+          meta: { repaired: usedRepair, reasoning_summary: reasoningSummary },
+        } as any;
       } catch (error: any) {
+        if (error instanceof LessonValidationError) {
+          return { success: false, error: { code: 'validation_error', message: error.message, details: error.details } } as any;
+        }
         return { success: false, error: { code: 'generation_error', message: error?.message || 'Failed to generate' } } as any;
       }
     })();
@@ -376,26 +242,6 @@ export const generateLocalLesson = api<{
 const inflight = new Map<string, Promise<LessonGenerationResponse>>();
 // Simple per-user in-process concurrency tracker for generation
 const userConcurrency: Map<string, number> = new Map();
-// Hard ceiling for teacher response tokens
-const TEACHER_MAX_TOKENS = Number(process.env.TEACHER_MAX_TOKENS || 4096);
-
-// Minimal retry wrapper to smooth over transient hiccups
-async function teacherGenerateWithRetry(args: Parameters<typeof teacherGenerate>[0], maxAttempts = 2) {
-  let attempt = 0;
-  let lastErr: any;
-  while (attempt < maxAttempts) {
-    try {
-      return await teacherGenerate(args as any);
-    } catch (err) {
-      lastErr = err;
-      attempt++;
-      if (attempt >= maxAttempts) break;
-      const jitter = 200 + Math.floor(Math.random() * 200);
-      await new Promise(r => setTimeout(r, jitter));
-    }
-  }
-  throw lastErr;
-}
 
 // Extract model information from Hugging Face URL
 export async function extractHFModelInfo(hfUrl: string) {
@@ -449,204 +295,6 @@ export async function extractHFModelInfo(hfUrl: string) {
   }
 }
 
-// Build comprehensive lesson generation prompt
-function buildLessonGenerationPrompt(modelInfo: any, difficulty: string, includeAssessment?: boolean, includeReasoning?: boolean): string {
-  const wantReasoning = includeReasoning === true; // opt-in only
-  const basePrompt = `Generate a comprehensive, structured lesson for the AI model: ${modelInfo.name}
-
-Model Information:
-- Organization: ${modelInfo.org}
-- URL: ${modelInfo.url}
-- Difficulty Level: ${difficulty}
-${modelInfo.family ? `- Family: ${modelInfo.family}` : ''}
-${modelInfo.toolUse ? `- Tool Use: ${modelInfo.toolUse}` : ''}
-
-Requirements:
-1. Create 3-5 progressive lesson steps
-2. Include practical examples and code snippets
-3. Focus on real-world applications
-4. Provide clear learning objectives
-5. Include model maker information when available
-${modelInfo.toolUse === 'native' ? '6. Include one short step demonstrating Tool Use via OpenAI-compatible "tools" with a simple function (e.g., get_current_time). Keep it safe and local.' : ''}
-
-${includeAssessment ? '6. Generate 3-5 multiple choice questions with explanations' : ''}
-
-Format your response as a JSON object with this structure:
-{
-  "title": "Lesson Title",
-  "description": "Brief description",
-${wantReasoning ? '"reasoning_summary": "2-4 sentences explaining why you chose this teaching approach and step ordering.",' : ''}
-  "learning_objectives": ["Objective 1", "Objective 2"],
-  "steps": [
-    {
-      "step_order": 1,
-      "title": "Step Title",
-      "content": "Step content in markdown",
-      "code_template": "Optional code example",
-      "expected_output": "Expected result",
-      "model_params": {"temperature": 0.7}
-    }
-  ],
-  "model_maker": {
-    "name": "Company/Model Maker Name",
-    "org_type": "company|individual|organization",
-    "homepage": "https://...",
-    "license": "MIT|Apache-2.0|etc",
-    "repo": "https://github.com/..."
-  }${includeAssessment ? `,
-  "assessments": [
-    {
-      "question": "Question text?",
-      "options": ["A", "B", "C", "D"],
-      "correct_index": 0,
-      "explanation": "Why this is correct",
-      "difficulty": "beginner|intermediate|advanced",
-      "tags": ["tag1", "tag2"]
-    }
-  ]` : ''}
-}
-
-Generate high-quality educational content that follows best practices for AI learning.`;
-
-  return basePrompt;
-}
-
-// Build prompt when the source material is raw text pasted by the user
-function buildLessonFromTextPrompt(textContent: string, difficulty: string, includeAssessment?: boolean, includeReasoning?: boolean): string {
-  const snippet = textContent.length > 2000 ? textContent.slice(0, 2000) + "\n..." : textContent;
-  const wantReasoning = includeReasoning === true; // opt-in only
-  const prompt = `You are an expert AI educator. Create a structured, practical lesson from the following source material. Focus on clarity, hands-on steps, and real-world utility. Do not include external links unless they are in the source text.\n\nSOURCE MATERIAL (verbatim excerpt):\n---\n${snippet}\n---\n\nDifficulty Level: ${difficulty}\n${includeAssessment ? 'Include 3-5 multiple choice questions with explanations.' : ''}\n\nOutput a single JSON object with the following structure:\n{
-  "title": "Lesson Title",
-  "description": "Brief description",
-  ${wantReasoning ? '"reasoning_summary": "2-4 sentences explaining your teaching strategy and step ordering.",' : ''}
-  "learning_objectives": ["Objective 1", "Objective 2"],
-  "steps": [
-    { "step_order": 1, "title": "Step Title", "content": "Step content in markdown", "code_template": "Optional code", "expected_output": "Optional", "model_params": {"temperature": 0.7} }
-  ]${includeAssessment ? `,
-  "assessments": [
-    { "question": "Question text?", "options": ["A","B","C","D"], "correct_index": 0, "explanation": "Why this is correct", "difficulty": "${difficulty}", "tags": ["core"] }
-  ]` : ''}
-}`;
-  return prompt;
-}
-
-// Parse and validate generated lesson content
-function parseGeneratedLesson(content: string, modelInfo: any, difficulty: string) {
-  try {
-    // Clean up the content (remove markdown code blocks if present)
-    let cleanContent = content.trim();
-    if (cleanContent.startsWith('```json')) {
-      cleanContent = cleanContent.replace(/^```json\n?/, '').replace(/\n?```$/, '');
-    } else if (cleanContent.startsWith('```')) {
-      cleanContent = cleanContent.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
-    }
-
-    const lessonData = JSON.parse(cleanContent);
-
-    // Basic normalization only; validation and defaults applied later.
-    return lessonData;
-  } catch (error) {
-    throw new Error(`Failed to parse generated lesson: ${error instanceof Error ? error.message : 'Invalid format'}`);
-  }
-}
-
-// Drop unknown fields defensively
-function sanitizeLesson(lessonData: any) {
-  const allowTop = new Set([
-    'title','description','model','provider','difficulty','tags','learning_objectives','steps','assessments','model_maker'
-  ]);
-  const allowStep = new Set(['step_order','title','content','code_template','expected_output','model_params']);
-  const out: any = {};
-  for (const k of Object.keys(lessonData || {})) {
-    if (allowTop.has(k)) out[k] = (lessonData as any)[k];
-  }
-  if (Array.isArray(out.steps)) {
-    out.steps = out.steps.map((s: any) => {
-      const ss: any = {};
-      for (const k of Object.keys(s || {})) if (allowStep.has(k)) ss[k] = s[k];
-      return ss;
-    });
-  }
-  return out;
-}
-
-/**
- * Validate lesson object against a minimal schema (no external deps).
- */
-// moved validate + defaults to ./spec/lessonSchema
-
-/**
- * Attempt a single "repair JSON" pass by asking the teacher to output valid JSON only.
- * Returns a JSON string or null if repair failed.
- */
-async function attemptRepairJSON(
-  teacherModel: "GPT-OSS-20B" | "GPT-OSS-120B",
-  broken: string,
-  provider: 'poe' | 'openai-compatible'
-): Promise<string | null> {
-  try {
-    const prompt = `The following JSON is invalid or incomplete for a lesson package. Repair with valid JSON only. Include: title, description, steps[3-5] with { step_order, title, content, code_template?, expected_output?, model_params? }, optional learning_objectives[], optional assessments[]. Output ONLY JSON.\n\nJSON:\n${broken}`;
-    const resp = await teacherGenerate({
-      model: teacherModel,
-      messages: [{ role: 'user', content: prompt }],
-      task: 'lesson_generation',
-      provider: provider as any,
-      temperature: 0.0,
-      max_tokens: TEACHER_MAX_TOKENS,
-    });
-    if (!resp.success || !resp.content) return null;
-    // Return raw content; caller will parse and validate.
-    return resp.content;
-  } catch {
-    return null;
-  }
-}
-
-function mapLessonGenerationError(error: any): { code: string; message: string; details?: any } {
-  if (error instanceof Error) {
-    const message = error.message.toLowerCase();
-
-    if (message.includes('invalid_argument')) {
-      return {
-        code: "invalid_hf_url",
-        message: "Invalid Hugging Face URL provided"
-      };
-    }
-
-    if (message.includes('teacher model') || message.includes('gpt-oss')) {
-      return {
-        code: "teacher_model_error",
-        message: "Teacher model failed to generate lesson content"
-      };
-    }
-
-    if (message.includes('parse') || message.includes('json')) {
-      return {
-        code: "parsing_error",
-        message: "Failed to parse generated lesson content"
-      };
-    }
-
-    if (message.includes('network') || message.includes('fetch')) {
-      return {
-        code: "network_error",
-        message: "Failed to fetch model information from Hugging Face"
-      };
-    }
-
-    return {
-      code: "generation_error",
-      message: error.message
-    };
-  }
-
-  return {
-    code: "internal_error",
-    message: "Internal lesson generation error"
-  };
-}
-
-// Generate a lesson directly from pasted text input
 export const generateFromText = api<{
   textContent: string;
   difficulty: "beginner" | "intermediate" | "advanced";
@@ -656,9 +304,9 @@ export const generateFromText = api<{
   includeReasoning?: boolean;
 }, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate-from-text" },
-  async (req, ctx) => {
+  async (req) => {
     validateBackendEnv();
-    const userId = await requireUserId(ctx);
+    const userId = await requireUserId();
     const gate = allowRate(userId, 'lessons_generate', Number(process.env.GENERATE_MAX_RPM || 20), 60_000);
     if (!gate.ok) {
       throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
@@ -679,78 +327,48 @@ export const generateFromText = api<{
 
     const task = (async (): Promise<LessonGenerationResponse> => {
       try {
-        const lessonPrompt = buildLessonFromTextPrompt(text, req.difficulty, req.includeAssessment, req.includeReasoning);
-        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as any;
-        const teacherResponse = await teacherGenerateWithRetry({
-          model: req.teacherModel,
-          messages: [ { role: 'user', content: lessonPrompt } ],
-          task: 'lesson_generation',
-          provider: selectedProvider,
-        });
-        if (!teacherResponse.success || !teacherResponse.content) {
-          throw new Error(teacherResponse.error?.message || 'Teacher model failed to generate lesson');
-        }
-        let raw = teacherResponse.content;
-        const extractReasoning = (jsonText: string): string | undefined => {
-          try {
-            let t = jsonText.trim();
-            if (t.startsWith('```')) t = t.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
-            const o = JSON.parse(t);
-            const r = o?.reasoning_summary;
-            return typeof r === 'string' && r.trim() ? r.trim() : undefined;
-          } catch { return undefined; }
-        };
-        let reasoningSummary = extractReasoning(raw);
+        const lessonPrompt = buildLessonFromTextPrompt(
+          text,
+          req.difficulty,
+          req.includeAssessment,
+          req.includeReasoning,
+        );
+        const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as 'poe' | 'openai-compatible';
         const modelInfo = { name: 'Custom Content', org: 'user', url: 'about:blank' } as any;
-        let lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(raw, modelInfo, req.difficulty)), req.difficulty, modelInfo);
-        let v1 = validateLesson(lesson);
-        let usedRepair = false;
-        if (!v1.valid) {
-          const repaired = await attemptRepairJSON(req.teacherModel, raw, selectedProvider);
-          if (!repaired) {
-            return { success: false, error: { code: 'validation_error', message: 'Generated lesson failed validation', details: v1.errors } } as any;
-          }
-          lesson = applyDefaults(sanitizeLesson(parseGeneratedLesson(repaired, modelInfo, req.difficulty)), req.difficulty, modelInfo);
-          usedRepair = true;
-          if (!reasoningSummary) reasoningSummary = extractReasoning(repaired);
-          const v2 = validateLesson(lesson);
-          if (!v2.valid) {
-            return { success: false, error: { code: 'validation_error', message: 'Lesson invalid after repair', details: v2.errors } } as any;
-          }
-        }
-        // Auto-save JSON and .ipynb for text-based generation
-        try {
-          const modelId = 'custom-content';
-          const prov = (selectedProvider as any) || 'poe';
-          await fileSystemStorage.saveLesson(modelId, lesson, prov);
-          const notebookMeta = {
-            title: lesson.title || 'Generated Lesson',
-            description: lesson.description || '',
-            provider: lesson.provider || prov,
-            model: lesson.model || modelId,
-          };
-          const steps = (lesson.steps || []).map((step, idx) => ({
-            step_order: step.step_order || (idx + 1),
-            title: step.title || '',
-            content: step.content || '',
-            code_template: step.code_template || null,
-            model_params: step.model_params || { temperature: 0.7 },
-          }));
-          const assessments = (lesson.assessments || []).map((a, index) => ({
-            step_order: (a as any).step_order || (index + 1),
-            question: a.question || '',
-            options: a.options || [],
-            correct_index: a.correct_index || 0,
-            explanation: a.explanation || null,
-          }));
-          const teacherUsed = req.teacherModel || 'GPT-OSS-20B';
-          const nb = buildNotebook(notebookMeta, steps as any, assessments as any, undefined, teacherUsed as any, false);
-          await fileSystemStorage.saveNotebook(modelId, req.difficulty, nb, 'ipynb', prov);
-        } catch (saveErr) {
-          console.warn('[generateFromText] save_error', saveErr);
-        }
-        return { success: true, lesson, meta: { repaired: usedRepair, reasoning_summary: reasoningSummary } } as any;
+        const generation = await generateLessonContent({
+          prompt: lessonPrompt,
+          teacherModel: req.teacherModel,
+          provider: selectedProvider,
+          modelInfo,
+          difficulty: req.difficulty,
+        });
+
+        const { lesson, usedRepair, reasoningSummary, teacherResponse } = generation;
+        const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
+        const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
+
+        await persistLessonArtifacts({
+          lesson,
+          modelId: 'custom-content',
+          difficulty: req.difficulty,
+          userId,
+          requestProvider: selectedProvider,
+          teacherUsed,
+          teacherDowngraded,
+          enableCatalogIndex: false,
+          enableTutorialIngest: false,
+          context: 'generateFromText',
+        });
+
+        return {
+          success: true,
+          lesson,
+          meta: { repaired: usedRepair, reasoning_summary: reasoningSummary },
+        } as any;
       } catch (error: any) {
+        if (error instanceof LessonValidationError) {
+          return { success: false, error: { code: 'validation_error', message: error.message, details: error.details } } as any;
+        }
         return { success: false, error: { code: 'generation_error', message: error?.message || 'Failed to generate' } } as any;
       }
     })();

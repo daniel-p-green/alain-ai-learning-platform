@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const POE_API_KEY = 'qZB4vYDsDMytPrL9t4N4SGi_M56X_b0vst0l1fuJu9s';
+const POE_API_KEY = '***REMOVED***';
 const POE_API_URL = 'https://api.poe.com/v1/chat/completions';
 
 async function testPoeConnection() {

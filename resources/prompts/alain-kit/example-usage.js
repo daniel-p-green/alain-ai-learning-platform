@@ -43,8 +43,16 @@ async function runALAINKitWorkflow() {
   const developResponse = await callTeacherModel('GPT-OSS-120B', developRequest);
   console.log('✅ Notebook implementation completed\n');
 
-  // Phase 4: Validation
-  console.log('🔍 Phase 4: Validation');
+  // Phase 4: QA Gate
+  console.log('🛡️ Phase 4: QA Gate');
+  const qaPrompt = loadHarmonyPrompt('qa');
+  const qaRequest = `${qaPrompt}\n\nEvaluate the DialoGPT-medium outline, sections, and notebook implementation for structural completeness before validation.`;
+
+  const qaResponse = await callTeacherModel('GPT-OSS-20B', qaRequest);
+  console.log('✅ QA gate completed\n');
+
+  // Phase 5: Validation
+  console.log('🔍 Phase 5: Validation');
   const validatePrompt = loadHarmonyPrompt('validate');
   const validateRequest = `${validatePrompt}\n\nComprehensively test the DialoGPT-medium notebook for technical functionality, educational effectiveness, and user experience quality across Google Colab and Jupyter environments.`;
 
@@ -58,6 +66,7 @@ async function runALAINKitWorkflow() {
     research: researchResponse,
     design: designResponse,
     development: developResponse,
+    qa: qaResponse,
     validation: validateResponse
   };
 }
@@ -74,7 +83,7 @@ async function callTeacherModel(model, prompt) {
   return {
     success: true,
     content: `Mock response from ${model} for prompt type: ${prompt.split('\n')[0]}`,
-    functionCalls: ['emit_research_findings', 'emit_learning_design', 'emit_notebook_implementation', 'emit_validation_report']
+    functionCalls: ['emit_research_findings', 'emit_learning_design', 'emit_notebook_implementation', 'emit_quality_gate_report', 'emit_validation_report']
   };
 }
 
@@ -130,6 +139,8 @@ function buildPhaseRequest(phase: string, context: any): string {
       return \`Create learning design based on research findings\`;
     case 'develop':
       return \`Build notebook implementation from design specs\`;
+    case 'qa':
+      return \`Run structural QA gate before validation\`;
     case 'validate':
       return \`Validate completed notebook implementation\`;
     default:
@@ -187,7 +198,7 @@ export default function ALAINKitPage() {
       <h1>ALAIN-Kit Educational Content Generator</h1>
 
       <div className="phase-buttons">
-        {['research', 'design', 'develop', 'validate'].map(phase => (
+        {['research', 'design', 'develop', 'qa', 'validate'].map(phase => (
           <button
             key={phase}
             onClick={() => runPhase(phase)}
@@ -213,7 +224,7 @@ export default function ALAINKitPage() {
 }
 
 function getNextPhase(currentPhase: string): string {
-  const phases = ['research', 'design', 'develop', 'validate'];
+  const phases = ['research', 'design', 'develop', 'qa', 'validate'];
   const currentIndex = phases.indexOf(currentPhase);
   return phases[Math.min(currentIndex + 1, phases.length - 1)];
 }

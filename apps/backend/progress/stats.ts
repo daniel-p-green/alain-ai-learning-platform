@@ -11,8 +11,8 @@ export const getTutorialStats = api<{ tutorialId: number }, {
   completion_rate: number;
 }>(
   { expose: true, method: "GET", path: "/tutorials/:tutorialId/stats" },
-  async ({ tutorialId }, ctx) => {
-    await requireUserId(ctx);
+  async ({ tutorialId }) => {
+    await requireUserId();
     const t = await tutorialsDB.queryRow`SELECT id FROM tutorials WHERE id = ${tutorialId}`;
     if (!t) throw APIError.notFound("tutorial not found");
 
@@ -47,8 +47,8 @@ export const getStepAnalytics = api<{ tutorialId: number }, {
   steps: Array<{ step_order: number; title: string; users_current: number; users_completed: number }>;
 }>(
   { expose: true, method: "GET", path: "/tutorials/:tutorialId/steps/analytics" },
-  async ({ tutorialId }, ctx) => {
-    await requireUserId(ctx);
+  async ({ tutorialId }) => {
+    await requireUserId();
     const steps: { step_order: number; title: string }[] = [];
     const stepIter = tutorialsDB.query<{ step_order: number; title: string }>`
       SELECT step_order, title FROM tutorial_steps WHERE tutorial_id = ${tutorialId} ORDER BY step_order
@@ -73,8 +73,8 @@ export const getUserLearningPaths = api<{ tutorialId: number; limit?: number }, 
   top_paths: Array<{ path: number[]; users: number }>;
 }>(
   { expose: true, method: "GET", path: "/tutorials/:tutorialId/learning-paths" },
-  async ({ tutorialId, limit = 10 }, ctx) => {
-    await requireUserId(ctx);
+  async ({ tutorialId, limit = 10 }) => {
+    await requireUserId();
     const rowsIter = tutorialsDB.query<{ path: number[]; users: number }>`
       SELECT completed_steps as path, COUNT(*) as users
       FROM user_progress

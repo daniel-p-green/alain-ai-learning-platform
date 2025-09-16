@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 type SearchItem = { id: string; name: string; exact?: boolean; staffPick?: boolean };
@@ -25,7 +25,7 @@ export default function LMStudioExplorerPage() {
   const [fallbackModels, setFallbackModels] = useState<string[]>([]);
   const [labelsByName, setLabelsByName] = useState<Record<string,string>>({});
 
-  async function doSearch() {
+  const doSearch = useCallback(async () => {
     try {
       setLoading(true); setError(null); setResults([]); setSelected(null); setOptions(null); setIdentifier("");
       const params = new URLSearchParams();
@@ -43,7 +43,7 @@ export default function LMStudioExplorerPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [term]);
 
   // When SDK is unavailable (501), try a cloud-friendly fallback: list local models via providers endpoint
   useEffect(() => {
@@ -110,7 +110,7 @@ export default function LMStudioExplorerPage() {
     }
   }
 
-  useEffect(() => { doSearch().catch(()=>{}); }, []);
+  useEffect(() => { doSearch().catch(()=>{}); }, [doSearch]);
 
   return (
     <main className="mx-auto max-w-7xl px-6 md:px-8 py-8 space-y-6 text-ink-900">

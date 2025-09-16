@@ -1,9 +1,26 @@
 import { APIError } from "encore.dev/api";
+import { currentRequest } from "encore.dev";
 import { verifyToken } from "@clerk/backend";
 
-export async function requireUserId(ctx: any): Promise<string> {
-  const authz: string | undefined =
-    ctx?.req?.header?.("Authorization") || ctx?.req?.header?.("authorization");
+function getAuthorizationHeader(): string | undefined {
+  const req = currentRequest();
+  if (!req || req.type !== "api-call") return undefined;
+  const headers = req.headers || {};
+  for (const [key, value] of Object.entries(headers)) {
+    if (key.toLowerCase() === "authorization") {
+      if (typeof value === "string") return value;
+      if (Array.isArray(value)) {
+        const [first] = value;
+        return typeof first === "string" ? first : undefined;
+      }
+      return undefined;
+    }
+  }
+  return undefined;
+}
+
+export async function requireUserId(): Promise<string> {
+  const authz = getAuthorizationHeader();
   if (!authz || typeof authz !== "string") {
     // Local demo bypass: allow unauthenticated access if explicitly enabled
     const bypass = (process.env.DEMO_ALLOW_UNAUTH || '').toLowerCase();

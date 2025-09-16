@@ -33,7 +33,7 @@ interface TeacherResponse {
 // Dedicated teacher model service for GPT-OSS models using harmony format
 export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
   { expose: false, method: "POST", path: "/teacher/generate" },
-  async (req, ctx) => {
+  async (req) => {
     try {
       // Validate teacher model
       if (req.model !== "GPT-OSS-20B" && req.model !== "GPT-OSS-120B") {

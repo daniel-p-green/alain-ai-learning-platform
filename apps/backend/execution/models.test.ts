@@ -1,4 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
+
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const describeEncore = runEncoreSuite ? describe : describe.skip;
 
 // Mock Encore API wrapper to directly expose handlers
 vi.mock('encore.dev/api', () => {
@@ -13,9 +16,13 @@ vi.mock('encore.dev/api', () => {
   };
 });
 
-import { inferModelInfo, listProviderModels } from './models';
+let inferModelInfo: any;
+let listProviderModels: any;
 
-describe('inferModelInfo', () => {
+describeEncore('inferModelInfo', () => {
+  beforeAll(async () => {
+    ({ inferModelInfo } = await import('./models'));
+  });
   it('classifies Qwen correctly', () => {
     const info = inferModelInfo('lmstudio-community/Qwen2.5-7B-Instruct-GGUF');
     expect(info.family).toBe('Qwen');
@@ -41,7 +48,10 @@ describe('inferModelInfo', () => {
   });
 });
 
-describe('listProviderModels (minimal)', () => {
+describeEncore('listProviderModels (minimal)', () => {
+  beforeAll(async () => {
+    ({ listProviderModels } = await import('./models'));
+  });
   const origFetch = global.fetch as any;
   beforeEach(() => {
     vi.resetAllMocks();

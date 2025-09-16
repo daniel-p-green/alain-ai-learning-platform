@@ -20,8 +20,8 @@ interface DeleteStepResponse {
 // Deletes a tutorial step and reorders remaining steps.
 export const deleteStep = api<DeleteStepParams, DeleteStepResponse>(
   { expose: true, method: "DELETE", path: "/tutorials/steps/:stepId" },
-  async ({ stepId }, ctx) => {
-    await requireUserId(ctx);
+  async ({ stepId }) => {
+    await requireUserId();
     if (!stepId || stepId < 1) {
       throw APIError.invalidArgument("step ID must be a positive integer");
     }

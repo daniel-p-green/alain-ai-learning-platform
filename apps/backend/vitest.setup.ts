@@ -1,4 +1,17 @@
 import { vi } from 'vitest';
+import { fileURLToPath } from 'node:url';
+
+// Provide a virtual Encore runtime shim so tests don't try to load the native binary
+const runtimeShimPath = fileURLToPath(new URL('./test-shims/encore-runtime-stub.cjs', import.meta.url));
+process.env.ENCORE_RUNTIME_LIB = runtimeShimPath;
+
+// Some Encore internals import the napi wrapper directly; stub that too
+vi.mock('encore.dev/dist/internal/runtime/napi/napi.cjs', () => ({}), { virtual: true });
+
+// Mock the core Encore runtime helpers used by auth.ts
+vi.mock('encore.dev', () => ({
+  currentRequest: () => ({ type: 'api-call', headers: {} }),
+}));
 
 // Stub Encore API to avoid native runtime during tests
 vi.mock('encore.dev/api', () => {

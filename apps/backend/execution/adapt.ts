@@ -21,10 +21,10 @@ interface AdaptResponse {
 
 export const adaptContent = api<AdaptRequest, AdaptResponse>(
   { expose: true, method: "POST", path: "/adapt" },
-  async (req, ctx) => {
+  async (req) => {
     try {
       validateBackendEnv();
-      const userId = await requireUserId(ctx);
+      const userId = await requireUserId();
       const gate = allowRate(userId, 'adapt', Number(process.env.ADAPT_MAX_RPM || 20), 60_000);
       if (!gate.ok) throw APIError.resourceExhausted(`Rate limited. Try again in ${gate.retryAfter}s`);
 

@@ -129,7 +129,7 @@ If you are using [LM Studio](https://lmstudio.ai/) you can use the following com
 lms get openai/gpt-oss-120b
 ```
 
-Check out our [awesome list](https://github.com/openai/gpt-oss/blob/main/awesome-gpt-oss.md) for a broader collection of gpt-oss resources and inference partners.
+Check out our [awesome list](https://github.com/openai/gpt-oss/***REMOVED***/main/awesome-gpt-oss.md) for a broader collection of gpt-oss resources and inference partners.
 
 ---
 

@@ -4,7 +4,7 @@
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  apiKey: process.env.POE_API_KEY || 'qZB4vYDsDMytPrL9t4N4SGi_M56X_b0vst0l1fuJu9s',
+  apiKey: process.env.POE_API_KEY || '***REMOVED***',
   baseURL: 'https://api.poe.com/v1',
 });
 

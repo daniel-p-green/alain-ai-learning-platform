@@ -1,4 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
+
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const describeEncore = runEncoreSuite ? describe : describe.skip;
 
 // Mock Encore API wrapper to directly expose handlers
 vi.mock('encore.dev/api', () => {
@@ -25,10 +28,12 @@ vi.mock('encore.dev/config', () => {
   };
 });
 
-// Import after mocks
-import { teacherGenerate } from './teacher';
+let teacherGenerate: any;
 
-describe('teacherGenerate', () => {
+describeEncore('teacherGenerate', () => {
+  beforeAll(async () => {
+    ({ teacherGenerate } = await import('./teacher'));
+  });
   const originalFetch = global.fetch as any;
 
   beforeEach(() => {

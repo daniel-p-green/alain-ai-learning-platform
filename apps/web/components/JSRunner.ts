@@ -14,8 +14,8 @@ function createWorker(ts: boolean) {
     " }catch(err){ self.postMessage({type:'err',stderr:String(err&&err.message||err)}) }",
     "}" 
   ].join('\n');
-  const blob = new Blob([lines], { type: 'application/javascript' });
-  return new Worker(URL.createObjectURL(blob));
+  const workerBlob = new Blob([lines], { type: 'application/javascript' });
+  return new Worker(URL.createObjectURL(workerBlob));
 }
 
 export function runJS(code: string, ts = false): Promise<{ stdout: string; stderr?: string }>{
@@ -33,4 +33,3 @@ export function runJS(code: string, ts = false): Promise<{ stdout: string; stder
     w.postMessage(code);
   });
 }
-

@@ -1,4 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
+
+const runEncoreSuite = process.env.RUN_ENCORE_TESTS === '1';
+const describeEncore = runEncoreSuite ? describe : describe.skip;
 
 // Mock Encore API wrapper to avoid requiring real runtime
 vi.mock('encore.dev/api', () => {
@@ -17,9 +20,8 @@ vi.mock('encore.dev/api', () => {
   };
 });
 
-import { extractHFModelInfo } from './lesson-generator';
-
-describe('generateFromText (happy path)', () => {
+let extractHFModelInfo: any;
+describeEncore('generateFromText (happy path)', () => {
   const originalFetch = global.fetch as any;
   beforeEach(() => {
     vi.resetModules();
@@ -51,8 +53,12 @@ describe('generateFromText (happy path)', () => {
   });
 });
 
-describe('extractHFModelInfo error propagation', () => {
+describeEncore('extractHFModelInfo error propagation', () => {
   const originalFetch = global.fetch as any;
+
+  beforeAll(async () => {
+    ({ extractHFModelInfo } = await import('./lesson-generator'));
+  });
 
   beforeEach(() => {
     vi.resetAllMocks();
