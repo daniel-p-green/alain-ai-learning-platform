@@ -11,6 +11,7 @@ import { NotebookBuilder } from '../core/notebook-builder';
 import { QualityValidator, QualityMetrics } from './quality-validator';
 import { ColabValidator, ColabValidationResult } from './colab-validator';
 import { QaGate, QaGateReport } from './qa-gate';
+import { SemanticValidator, SemanticReport } from './semantic-validator';
 import { metrics, trackEvent } from '../core/obs';
 
 export interface ALAINKitResult {
@@ -23,6 +24,7 @@ export interface ALAINKitResult {
   qualityMetrics: QualityMetrics;
   colabValidation: ColabValidationResult;
   qaReport: QaGateReport;
+  semanticReport: SemanticReport;
   validationReport: string;
   phaseTimings?: {
     outline_ms: number;
@@ -42,6 +44,7 @@ export class ALAINKit {
   private qualityValidator: QualityValidator;
   private colabValidator: ColabValidator;
   private qaGate: QaGate;
+  private semanticValidator: SemanticValidator;
   private baseUrl?: string;
   private checkpointsDir: string;
 
@@ -53,6 +56,7 @@ export class ALAINKit {
     this.qualityValidator = new QualityValidator();
     this.colabValidator = new ColabValidator();
     this.qaGate = new QaGate();
+    this.semanticValidator = new SemanticValidator();
     // Checkpoint directory: allow resume across runs when ALAIN_CHECKPOINT_DIR is set
     const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     this.checkpointsDir = process.env.ALAIN_CHECKPOINT_DIR || `/tmp/alain-kit-${stamp}`;
@@ -185,6 +189,18 @@ export class ALAINKit {
         throw new Error(`QA gate failed: ${qaReport.blocking_issues.join('; ') || qaReport.summary}`);
       }
 
+      const semanticReport = await this.semanticValidator.evaluate({
+        outline,
+        sections: resolvedSections,
+        notebook,
+        apiKey: config.apiKey || process.env.POE_API_KEY || process.env.OPENAI_API_KEY,
+        baseUrl: this.baseUrl,
+        model: process.env.ALAIN_QA_MODEL
+      });
+      if (semanticReport.status === 'fail') {
+        throw new Error(`Semantic QA failed: ${semanticReport.issues.join('; ') || 'Review required'}`);
+      }
+
       // Step 4: Quality validation
       const tempPath = `/tmp/alain-notebook-${Date.now()}.ipynb`;
       require('fs').writeFileSync(tempPath, JSON.stringify(notebook, null, 2));
@@ -215,6 +231,7 @@ export class ALAINKit {
         outline,
         sections: resolvedSections,
         qaReport,
+        semanticReport,
         qualityMetrics,
         colabValidation,
         validationReport,
@@ -275,6 +292,13 @@ export class ALAINKit {
             section_ids: []
           }
         } as QaGateReport,
+        semanticReport: {
+          status: 'fail',
+          issues: [errMessage || 'Pipeline aborted before semantic QA.'],
+          fillerSections: [],
+          recommendations: [],
+          rawResponse: ''
+        },
         qualityMetrics: {} as QualityMetrics,
         colabValidation: {} as ColabValidationResult,
         validationReport: `Generation failed: ${errMessage}`
