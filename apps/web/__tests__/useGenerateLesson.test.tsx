@@ -123,7 +123,11 @@ if (!canMock) {
       current.formRef.current = { requestSubmit: submitSpy } as any;
 
       act(() => {
-        current.prefillExample('hosted');
+        current.triggerExampleHosted();
+      });
+
+      await act(async () => {
+        vi.runAllTimers();
       });
 
       expect(parseGenerateResponseMock).toHaveBeenCalled();
