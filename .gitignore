@@ -47,6 +47,10 @@ apps/backend/**/*.cjs
 apps/backend/**/*.js.map
 apps/backend/**/*.d.ts
 
+# Keep custom backend type shims
+!apps/backend/types/
+!apps/backend/types/**/*.d.ts
+
 # Local notes/cache
 hackathon-notes/
 notes/
