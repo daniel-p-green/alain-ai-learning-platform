@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { Button } from '../../../components/Button';
-import type { UseGenerateLessonResult } from '../hooks/useGenerateLesson';
+import type { UseGenerateLessonResult, ResearchMode } from '../hooks/useGenerateLesson';
 
 const presetRequirements: Record<PresetId, { title: string; description: string; requirement: string; detail: string; }> = {
   hosted: {
@@ -27,6 +28,19 @@ const presetRequirements: Record<PresetId, { title: string; description: string;
 
 type PresetId = 'hosted' | 'local' | 'colab';
 
+type DraftState = {
+  source: UseGenerateLessonResult['source'];
+  hfUrl: string;
+  rawTextInput: string;
+  targetModel: string;
+  targetProvider: string;
+  teacherProvider: UseGenerateLessonResult['teacherProvider'];
+  teacherModel: UseGenerateLessonResult['teacherModel'];
+  researchMode: ResearchMode;
+  difficulty: string;
+  forceFallback: boolean;
+};
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -35,40 +49,25 @@ type Props = {
 
 export function GenerateWizard({ open, onClose, viewModel }: Props) {
   const {
-    source,
-    setSource,
-    hfUrl,
-    setHfUrl,
-    rawTextInput,
-    setRawTextInput,
-    targetModel,
-    setTargetModel,
     availableModels,
     labelsByName,
     providers,
-    targetProvider,
-    setTargetProvider,
-    teacherProvider,
-    setTeacherProvider,
-    teacherModel,
-    setTeacherModel,
-    researchMode,
-    setResearchMode,
     researchCopy,
-    difficulty,
-    setDifficulty,
     submitForm,
     loading,
-    setForceFallback,
   } = viewModel;
+
   const [step, setStep] = useState(0);
   const [selectedPreset, setSelectedPreset] = useState<PresetId | null>(null);
+  const [draft, setDraft] = useState<DraftState>(() => createDraftFromViewModel(viewModel));
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
       setStep(0);
       setSelectedPreset(null);
+      setDraft(createDraftFromViewModel(viewModel));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   if (!open) return null;
@@ -107,19 +106,25 @@ export function GenerateWizard({ open, onClose, viewModel }: Props) {
               selected={selectedPreset}
               onSelect={(preset) => {
                 setSelectedPreset(preset);
-                applyPreset(preset, viewModel);
+                setDraft((prev) => applyPresetToDraft(preset, prev));
               }}
             />
           )}
-          {step === 1 && selectedPreset && (
+          {step === 1 && (
             <StepTwo
-              viewModel={viewModel}
-              requirement={presetRequirements[selectedPreset]}
+              draft={draft}
+              setDraft={setDraft}
+              availableModels={availableModels}
+              labelsByName={labelsByName}
+              providers={providers}
+              researchCopy={researchCopy}
+              requirement={selectedPreset ? presetRequirements[selectedPreset] : null}
             />
           )}
           {step === 2 && (
             <StepThree
-              viewModel={viewModel}
+              draft={draft}
+              researchCopy={researchCopy}
               requirement={requirement}
             />
           )}
@@ -144,6 +149,7 @@ export function GenerateWizard({ open, onClose, viewModel }: Props) {
               <Button
                 disabled={loading}
                 onClick={() => {
+                  commitDraftToViewModel(draft, viewModel);
                   submitForm();
                   onClose();
                 }}
@@ -193,85 +199,77 @@ function StepOne({ selected, onSelect }: StepOneProps) {
 }
 
 type StepTwoProps = {
-  viewModel: UseGenerateLessonResult;
-  requirement: { requirement: string; detail: string; };
+  draft: DraftState;
+  setDraft: Dispatch<SetStateAction<DraftState>>;
+  availableModels: string[];
+  labelsByName: Record<string, string>;
+  providers: UseGenerateLessonResult['providers'];
+  researchCopy: UseGenerateLessonResult['researchCopy'];
+  requirement: { requirement: string; detail: string; } | null;
 };
 
-function StepTwo({ viewModel, requirement }: StepTwoProps) {
-  const {
-    source,
-    setSource,
-    hfUrl,
-    setHfUrl,
-    rawTextInput,
-    setRawTextInput,
-    availableModels,
-    labelsByName,
-    targetModel,
-    setTargetModel,
-    researchMode,
-    setResearchMode,
-    researchCopy,
-    difficulty,
-    setDifficulty,
-    teacherProvider,
-    setTeacherProvider,
-    teacherModel,
-    setTeacherModel,
-    targetProvider,
-    setTargetProvider,
-    providers,
-  } = viewModel;
-
-  const requirementDetail = requirement.detail;
-
+function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, researchCopy, requirement }: StepTwoProps) {
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-ink-100 bg-paper-50 p-3 text-xs text-ink-700">
-        {requirementDetail}
-      </div>
+      {requirement && (
+        <div className="rounded-lg border border-ink-100 bg-paper-50 p-3 text-xs text-ink-700">
+          {requirement.detail}
+        </div>
+      )}
 
       <div className="space-y-4">
         <div className="space-y-2">
           <div className="text-sm font-medium text-ink-900">Where is your source?</div>
           <div className="flex flex-wrap gap-2 text-sm">
-            <SelectionPill label="Hugging Face" active={source === 'hf'} onClick={() => setSource('hf')} />
-            <SelectionPill label="Local runtime" active={source === 'local'} onClick={() => setSource('local')} />
-            <SelectionPill label="From text" active={source === 'text'} onClick={() => setSource('text')} />
+            <SelectionPill
+              label="Hugging Face"
+              active={draft.source === 'hf'}
+              onClick={() => setDraft((prev) => ({ ...prev, source: 'hf', forceFallback: false }))}
+            />
+            <SelectionPill
+              label="Local runtime"
+              active={draft.source === 'local'}
+              onClick={() => setDraft((prev) => ({ ...prev, source: 'local', forceFallback: false }))}
+            />
+            <SelectionPill
+              label="From text"
+              active={draft.source === 'text'}
+              onClick={() => setDraft((prev) => ({ ...prev, source: 'text', forceFallback: prev.researchMode === 'fallback' }))}
+            />
           </div>
         </div>
 
-        {source === 'hf' && (
+        {draft.source === 'hf' && (
           <div className="space-y-2">
             <label className="text-xs text-ink-600">Hugging Face model URL or owner/repo</label>
             <input
               className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
               placeholder="https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct"
-              value={hfUrl}
-              onChange={(event) => setHfUrl(event.target.value)}
+              value={draft.hfUrl}
+              onChange={(event) => setDraft((prev) => ({ ...prev, hfUrl: event.target.value }))}
             />
           </div>
         )}
-        {source === 'text' && (
+        {draft.source === 'text' && (
           <div className="space-y-2">
             <label className="text-xs text-ink-600">Paste raw text</label>
             <textarea
               className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
               rows={4}
               placeholder="Paste docs, articles, or notes to turn into a lesson."
-              value={rawTextInput}
-              onChange={(event) => setRawTextInput(event.target.value)}
+              value={draft.rawTextInput}
+              onChange={(event) => setDraft((prev) => ({ ...prev, rawTextInput: event.target.value }))}
             />
           </div>
         )}
-        {source === 'local' && (
+        {draft.source === 'local' && (
           <div className="space-y-2">
             <label className="text-xs text-ink-600">Local model identifier</label>
             {availableModels.length > 0 ? (
               <select
                 className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-                value={targetModel}
-                onChange={(event) => setTargetModel(event.target.value)}
+                value={draft.targetModel}
+                onChange={(event) => setDraft((prev) => ({ ...prev, targetModel: event.target.value }))}
               >
                 <option value="">Select a detected model…</option>
                 {availableModels.map((model) => (
@@ -282,8 +280,8 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
               <input
                 className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
                 placeholder="gpt-oss-20b"
-                value={targetModel}
-                onChange={(event) => setTargetModel(event.target.value)}
+                value={draft.targetModel}
+                onChange={(event) => setDraft((prev) => ({ ...prev, targetModel: event.target.value }))}
               />
             )}
           </div>
@@ -294,18 +292,18 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
         <div className="space-y-2">
           <div className="text-sm font-medium text-ink-900">Research depth</div>
           <div className="flex flex-wrap gap-2 text-xs">
-            {(Object.keys(researchCopy) as Array<typeof researchMode>).map((mode) => (
+            {(Object.keys(researchCopy) as Array<ResearchMode>).map((mode) => (
               <button
                 key={mode}
                 type="button"
-                onClick={() => setResearchMode(mode)}
-                className={`rounded-full border px-3 py-1 font-medium transition ${researchMode === mode ? 'border-alain-blue bg-alain-blue/10 text-alain-blue' : 'border-ink-100 bg-white text-ink-700 hover:border-alain-blue/40'}`}
+                onClick={() => setDraft((prev) => ({ ...prev, researchMode: mode, forceFallback: mode === 'fallback' && prev.source === 'text' }))}
+                className={`rounded-full border px-3 py-1 font-medium transition ${draft.researchMode === mode ? 'border-alain-blue bg-alain-blue/10 text-alain-blue' : 'border-ink-100 bg-white text-ink-700 hover:border-alain-blue/40'}`}
               >
                 {researchCopy[mode].label}
               </button>
             ))}
           </div>
-          <div className="text-xs text-ink-600">{researchCopy[researchMode].note}</div>
+          <div className="text-xs text-ink-600">{researchCopy[draft.researchMode].note}</div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -313,8 +311,8 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
             <label className="text-xs font-medium text-ink-600">Difficulty</label>
             <select
               className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={difficulty}
-              onChange={(event) => setDifficulty(event.target.value)}
+              value={draft.difficulty}
+              onChange={(event) => setDraft((prev) => ({ ...prev, difficulty: event.target.value }))}
             >
               {['beginner', 'intermediate', 'advanced'].map((level) => (
                 <option key={level} value={level}>{level}</option>
@@ -325,8 +323,8 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
             <label className="text-xs font-medium text-ink-600">Teacher provider</label>
             <select
               className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={teacherProvider}
-              onChange={(event) => setTeacherProvider(event.target.value as any)}
+              value={draft.teacherProvider}
+              onChange={(event) => setDraft((prev) => ({ ...prev, teacherProvider: event.target.value as any }))}
             >
               <option value="poe">Poe (hosted)</option>
               <option value="openai-compatible">OpenAI-compatible</option>
@@ -338,8 +336,8 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
             <label className="text-xs font-medium text-ink-600">Teacher model</label>
             <select
               className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={teacherModel}
-              onChange={(event) => setTeacherModel(event.target.value as any)}
+              value={draft.teacherModel}
+              onChange={(event) => setDraft((prev) => ({ ...prev, teacherModel: event.target.value as any }))}
             >
               <option value="GPT-OSS-20B">GPT-OSS-20B</option>
               <option value="GPT-OSS-120B">GPT-OSS-120B</option>
@@ -349,8 +347,8 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
             <label className="text-xs font-medium text-ink-600">Target provider</label>
             <select
               className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={targetProvider}
-              onChange={(event) => setTargetProvider(event.target.value)}
+              value={draft.targetProvider}
+              onChange={(event) => setDraft((prev) => ({ ...prev, targetProvider: event.target.value }))}
             >
               {providers.map((provider) => (
                 <option key={provider.name} value={provider.name}>{provider.name}</option>
@@ -364,30 +362,19 @@ function StepTwo({ viewModel, requirement }: StepTwoProps) {
 }
 
 type StepThreeProps = {
-  viewModel: UseGenerateLessonResult;
+  draft: DraftState;
+  researchCopy: UseGenerateLessonResult['researchCopy'];
   requirement: { title: string; requirement: string; detail: string; } | null;
 };
 
-function StepThree({ viewModel, requirement }: StepThreeProps) {
-  const {
-    source,
-    hfUrl,
-    targetModel,
-    researchMode,
-    researchCopy,
-    difficulty,
-    teacherProvider,
-    teacherModel,
-    targetProvider,
-  } = viewModel;
-
+function StepThree({ draft, researchCopy, requirement }: StepThreeProps) {
   const summary = useMemo(() => [
-    { label: 'Source', value: source === 'hf' ? `Hugging Face (${hfUrl || 'model not set'})` : source === 'local' ? `Local runtime (${targetModel || 'model pending'})` : 'Text input' },
-    { label: 'Target provider / model', value: source === 'local' ? `${targetProvider} · ${targetModel || 'model pending'}` : targetProvider },
-    { label: 'Research mode', value: researchCopy[researchMode].label },
-    { label: 'Difficulty', value: difficulty },
-    { label: 'Teacher', value: `${teacherProvider} · ${teacherModel}` },
-  ], [source, hfUrl, targetModel, researchMode, researchCopy, difficulty, teacherProvider, teacherModel, targetProvider]);
+    { label: 'Source', value: draft.source === 'hf' ? `Hugging Face (${draft.hfUrl || 'model not set'})` : draft.source === 'local' ? `Local runtime (${draft.targetModel || 'model pending'})` : 'Text input' },
+    { label: 'Target provider / model', value: draft.source === 'local' ? `${draft.targetProvider} · ${draft.targetModel || 'model pending'}` : draft.targetProvider },
+    { label: 'Research mode', value: researchCopy[draft.researchMode].label },
+    { label: 'Difficulty', value: draft.difficulty },
+    { label: 'Teacher', value: `${draft.teacherProvider} · ${draft.teacherModel}` },
+  ], [draft, researchCopy]);
 
   return (
     <div className="space-y-4">
@@ -432,43 +419,80 @@ function SelectionPill({ label, active, onClick }: SelectionPillProps) {
   );
 }
 
-function applyPreset(preset: PresetId, viewModel: UseGenerateLessonResult) {
+function createDraftFromViewModel(viewModel: UseGenerateLessonResult): DraftState {
+  return {
+    source: viewModel.source,
+    hfUrl: viewModel.hfUrl,
+    rawTextInput: viewModel.rawTextInput,
+    targetModel: viewModel.targetModel,
+    targetProvider: viewModel.targetProvider,
+    teacherProvider: viewModel.teacherProvider,
+    teacherModel: viewModel.teacherModel,
+    researchMode: viewModel.researchMode,
+    difficulty: viewModel.difficulty,
+    forceFallback: viewModel.forceFallback,
+  };
+}
+
+function applyPresetToDraft(preset: PresetId, draft: DraftState): DraftState {
+  if (preset === 'hosted') {
+    return {
+      ...draft,
+      source: 'hf',
+      teacherProvider: 'poe',
+      targetProvider: 'poe',
+      targetModel: '',
+      researchMode: 'standard',
+      difficulty: 'beginner',
+      teacherModel: 'GPT-OSS-20B',
+      forceFallback: false,
+    };
+  }
+  if (preset === 'local') {
+    return {
+      ...draft,
+      source: 'local',
+      teacherProvider: 'openai-compatible',
+      targetProvider: 'openai-compatible',
+      researchMode: 'standard',
+      teacherModel: 'GPT-OSS-20B',
+      forceFallback: false,
+    };
+  }
+  return {
+    ...draft,
+    source: 'hf',
+    teacherProvider: 'poe',
+    targetProvider: 'poe',
+    researchMode: 'thorough',
+    difficulty: 'beginner',
+    teacherModel: 'GPT-OSS-20B',
+    forceFallback: false,
+  };
+}
+
+function commitDraftToViewModel(draft: DraftState, viewModel: UseGenerateLessonResult) {
   const {
     setSource,
-    setTeacherProvider,
-    setTargetProvider,
+    setHfUrl,
+    setRawTextInput,
     setTargetModel,
-    setResearchMode,
+    setTargetProvider,
+    setTeacherProvider,
     setTeacherModel,
+    setResearchMode,
     setDifficulty,
     setForceFallback,
   } = viewModel;
 
-  if (preset === 'hosted') {
-    setSource('hf');
-    setTeacherProvider('poe');
-    setTargetProvider('poe');
-    setTargetModel('');
-    setResearchMode('standard');
-    setTeacherModel('GPT-OSS-20B');
-    setDifficulty('beginner');
-    setForceFallback(false);
-  }
-  if (preset === 'local') {
-    setSource('local');
-    setTeacherProvider('openai-compatible');
-    setTargetProvider('openai-compatible');
-    setResearchMode('standard');
-    setTeacherModel('GPT-OSS-20B');
-    setForceFallback(false);
-  }
-  if (preset === 'colab') {
-    setSource('hf');
-    setTeacherProvider('poe');
-    setTargetProvider('poe');
-    setResearchMode('thorough');
-    setTeacherModel('GPT-OSS-20B');
-    setDifficulty('beginner');
-    setForceFallback(false);
-  }
+  setSource(draft.source);
+  setHfUrl(draft.hfUrl);
+  setRawTextInput(draft.rawTextInput);
+  setTargetModel(draft.targetModel);
+  setTargetProvider(draft.targetProvider);
+  setTeacherProvider(draft.teacherProvider);
+  setTeacherModel(draft.teacherModel);
+  setResearchMode(draft.researchMode);
+  setDifficulty(draft.difficulty);
+  setForceFallback(draft.forceFallback);
 }
