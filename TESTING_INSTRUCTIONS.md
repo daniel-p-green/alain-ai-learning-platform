@@ -26,7 +26,7 @@ npx vitest run --reporter=dot
 ```
 - Notes:
   - E2E Playwright specs under `web/e2e/**` are excluded from Vitest.
-  - Backend “tutorials” DB/runtime tests are skipped unless `ENCORE_RUNTIME_LIB` is set (see backend/TESTING.md).
+  - Backend “tutorials” DB/runtime tests are skipped unless `ENCORE_RUNTIME_LIB` is set (see apps/backend/TESTING.md).
   - HF metadata fetch runs in offline mode during tests to avoid network flakiness.
 
 ### Enable Encore-Dependent Backend Tests
@@ -52,7 +52,7 @@ npm run alain:cli -- \
   --baseUrl https://api.poe.com \
   --difficulty beginner \
   --maxSections 6 \
-  --outDir alain-ai-learning-platform/alain-kit/test/output/outline-first
+  --outDir packages/alain-kit/test/output/outline-first
 ```
 
 **Expected Outcomes:**
@@ -68,7 +68,7 @@ npm run alain:cli -- \
 ### 2. Artifacts Verification
 After running, list the output directory:
 ```bash
-ls -la alain-ai-learning-platform/alain-kit/test/output/outline-first
+ls -la packages/alain-kit/test/output/outline-first
 ```
 
 **Expected Files:**
@@ -79,10 +79,10 @@ ls -la alain-ai-learning-platform/alain-kit/test/output/outline-first
 **Validation Steps:**
 ```bash
 # Inspect report key lines
-grep -E "Score:|FK Grade|Markdown Ratio" $(ls -t alain-ai-learning-platform/alain-kit/test/output/outline-first/alain-validation-*.md | head -n1)
+grep -E "Score:|FK Grade|Markdown Ratio" $(ls -t packages/alain-kit/test/output/outline-first/alain-validation-*.md | head -n1)
 
 # Inspect metrics
-jq '.qualityScore, .sectionCount, .readability' $(ls -t alain-ai-learning-platform/alain-kit/test/output/outline-first/alain-metrics-*.json | head -n1)
+jq '.qualityScore, .sectionCount, .readability' $(ls -t packages/alain-kit/test/output/outline-first/alain-metrics-*.json | head -n1)
 ```
 
 ### 3. Error Handling Test
@@ -93,7 +93,7 @@ POE_API_KEY=invalid npm run alain:cli -- \
   --baseUrl https://api.poe.com \
   --difficulty beginner \
   --maxSections 6 \
-  --outDir alain-ai-learning-platform/alain-kit/test/output/outline-first
+  --outDir packages/alain-kit/test/output/outline-first
 ```
 
 **Expected Behavior:**
@@ -103,7 +103,7 @@ POE_API_KEY=invalid npm run alain:cli -- \
 ### 4. Schema Validation Test
 Verify the Jupyter notebook structure:
 ```bash
-cat alain-ai-learning-platform/alain-kit/test/output/outline-first/alain-notebook-*.ipynb | jq '.nbformat, .nbformat_minor, .cells[0].cell_type'
+cat packages/alain-kit/test/output/outline-first/alain-notebook-*.ipynb | jq '.nbformat, .nbformat_minor, .cells[0].cell_type'
 ```
 
 **Verify Structure Includes:**
@@ -113,7 +113,7 @@ cat alain-ai-learning-platform/alain-kit/test/output/outline-first/alain-noteboo
 ### 5. Quality Gates Test
 Use the metrics JSON and report to confirm quality thresholds:
 ```bash
-jq '.qualityScore, .sectionCount, .readability' $(ls -t alain-ai-learning-platform/alain-kit/test/output/outline-first/alain-metrics-*.json | head -n1)
+jq '.qualityScore, .sectionCount, .readability' $(ls -t packages/alain-kit/test/output/outline-first/alain-metrics-*.json | head -n1)
 ```
 
 **Expected Quality Checks:**
@@ -133,7 +133,7 @@ jq '.qualityScore, .sectionCount, .readability' $(ls -t alain-ai-learning-platfo
   2. Run a short Node script:
      ```bash
      node - <<'JS'
-     const { ColabValidator } = require('./alain-kit/validation/colab-validator');
+     const { ColabValidator } = require('./packages/alain-kit/validation/colab-validator');
      const res = new ColabValidator().validateNotebook('tmp-colab.ipynb');
      res.then((out) => {
        console.log('issues:', out.issues);
@@ -143,7 +143,7 @@ jq '.qualityScore, .sectionCount, .readability' $(ls -t alain-ai-learning-platfo
      ```
   3. Confirm the fixed cell now contains the Colab guard with a `%pip` fallback and that `issues` is empty.
 
-Automation: `backend/validation/colab-validator.test.ts` provides unit coverage for both unguarded and guarded code paths.
+Automation: `apps/backend/validation/colab-validator.test.ts` provides unit coverage for both unguarded and guarded code paths.
 
 ## Critical Areas to Focus On
 
@@ -159,7 +159,7 @@ Automation: `backend/validation/colab-validator.test.ts` provides unit coverage 
 
 ### 3. Notebook Assembly
 - Issue: Consistent Jupyter structure and Colab compatibility
-- Fix Applied: Centralized builder in `alain-kit/core/notebook-builder.ts`
+- Fix Applied: Centralized builder in `packages/alain-kit/core/notebook-builder.ts`
 - Test: Verify `.ipynb` opens in Jupyter/Colab; check setup and troubleshooting cells
 
 ### 4. Validation & Reporting
