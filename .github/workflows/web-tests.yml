@@ -4,11 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'alain-ai-learning-platform/web/**'
+      - 'alain-ai-learning-platform/apps/web/**'
       - 'alain-ai-learning-platform/.github/workflows/web-tests.yml'
   pull_request:
     paths:
-      - 'alain-ai-learning-platform/web/**'
+      - 'alain-ai-learning-platform/apps/web/**'
       - 'alain-ai-learning-platform/.github/workflows/web-tests.yml'
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
         run: npm ci
 
       - name: Run unit tests (Vitest)
-        run: npm --workspace web run test
+        run: npm --workspace apps/web run test
 
   e2e-smoke:
     name: E2E Smoke (PRs)
@@ -64,11 +64,11 @@ jobs:
         run: npm ci
 
       - name: Install Playwright Browsers
-        working-directory: alain-ai-learning-platform/web
+        working-directory: alain-ai-learning-platform/apps/web
         run: npx playwright install --with-deps
 
       - name: Run smoke tests (home + footer)
-        working-directory: alain-ai-learning-platform/web
+        working-directory: alain-ai-learning-platform/apps/web
         run: npx playwright test e2e/home.spec.ts e2e/footer.spec.ts --reporter=line,html
 
       - name: Upload Playwright report (smoke)
@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-smoke
-          path: alain-ai-learning-platform/web/playwright-report
+          path: alain-ai-learning-platform/apps/web/playwright-report
           retention-days: 7
 
   e2e-full:
@@ -105,11 +105,11 @@ jobs:
         run: npm ci
 
       - name: Install Playwright Browsers
-        working-directory: alain-ai-learning-platform/web
+        working-directory: alain-ai-learning-platform/apps/web
         run: npx playwright install --with-deps
 
       - name: Run full E2E suite
-        working-directory: alain-ai-learning-platform/web
+        working-directory: alain-ai-learning-platform/apps/web
         run: npx playwright test --reporter=line,html
 
       - name: Upload Playwright report (full)
@@ -117,5 +117,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-full
-          path: alain-ai-learning-platform/web/playwright-report
+          path: alain-ai-learning-platform/apps/web/playwright-report
           retention-days: 7
