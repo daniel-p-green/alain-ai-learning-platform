@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="apps/web/public/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
+  <img src="web/public/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN logo" width="420" />
 
   <br/>
   <br/>
