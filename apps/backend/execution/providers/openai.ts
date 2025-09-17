@@ -6,9 +6,18 @@ import { secret } from "encore.dev/config";
 const openaiBaseUrl = secret("OPENAI_BASE_URL");
 const openaiApiKey = secret("OPENAI_API_KEY");
 
+function resolveSecret(secretFn: () => string | undefined, envKey: string): string | undefined {
+  try {
+    const value = secretFn();
+    if (value) return value;
+  } catch {}
+  const envValue = process.env[envKey];
+  return envValue && envValue.length > 0 ? envValue : undefined;
+}
+
 async function complete(body: ExecuteRequest): Promise<string> {
-  const baseUrl = openaiBaseUrl();
-  const apiKey = openaiApiKey();
+  const baseUrl = resolveSecret(openaiBaseUrl, 'OPENAI_BASE_URL');
+  const apiKey = resolveSecret(openaiApiKey, 'OPENAI_API_KEY');
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), 30_000);
@@ -32,8 +41,8 @@ async function complete(body: ExecuteRequest): Promise<string> {
 }
 
 async function stream(body: ExecuteRequest, onData: (data: any) => void, signal?: AbortSignal) {
-  const baseUrl = openaiBaseUrl();
-  const apiKey = openaiApiKey();
+  const baseUrl = resolveSecret(openaiBaseUrl, 'OPENAI_BASE_URL');
+  const apiKey = resolveSecret(openaiApiKey, 'OPENAI_API_KEY');
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
   // Combine external abort with a 30s internal timeout
   const ac = new AbortController();
