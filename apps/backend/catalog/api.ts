@@ -19,9 +19,13 @@ export const listPublicNotebooks = api<{
     const where = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
     const limit = Math.max(1, Math.min(100, Number(req.limit || 20)));
     const offset = Math.max(0, Number(req.offset || 0));
-    const rows = await tutorialsDB.query<any> ([
-      `SELECT id, file_path, model, provider, difficulty, created_at, visibility, share_slug, tags, size_bytes
-       FROM generated_notebooks ${where} ORDER BY created_at DESC LIMIT $${args.length+1} OFFSET $${args.length+2}`,
+    const rows = await tutorialsDB.query<any>([
+      `SELECT id, file_path, model, provider, difficulty,
+              title, overview, maker, quality_score, colab_compatible, section_count,
+              created_by, created_at, visibility, share_slug, tags, size_bytes, checksum, last_generated
+       FROM generated_notebooks ${where}
+       ORDER BY COALESCE(last_generated, created_at) DESC
+       LIMIT $${args.length+1} OFFSET $${args.length+2}`,
       ...args, limit, offset
     ]);
     return { items: rows } as any;
