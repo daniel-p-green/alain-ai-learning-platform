@@ -285,9 +285,9 @@ export class OutlineGenerator {
   // Deterministic minimal repair to satisfy hard outline gates (non-generative)
   private repairOutlineDeterministic(outline: NotebookOutline): NotebookOutline {
     const fixed: NotebookOutline = JSON.parse(JSON.stringify(outline || {}));
-    // Ensure assessments >= 2
+    // Ensure assessments >= 4 (matches validator expectations)
     if (!Array.isArray(fixed.assessments)) fixed.assessments = [] as any;
-    while (fixed.assessments.length < 2) {
+    while (fixed.assessments.length < 4) {
       const idx = fixed.assessments.length + 1;
       fixed.assessments.push({
         question: `Quick check ${idx}: Basic understanding`,

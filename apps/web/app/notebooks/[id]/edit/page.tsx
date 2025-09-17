@@ -43,7 +43,7 @@ export default function EditNotebookPage() {
       }
     })();
     return () => { cancelled = true; };
-  }, [id]);
+  }, [encodedId]);
 
   function moveCell(from: number, to: number) {
     setCells((prev) => {

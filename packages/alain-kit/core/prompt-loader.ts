@@ -8,10 +8,16 @@ const cache = new Map<string, string>();
 
 function resolvePromptPath(fileName: string): string | undefined {
   const customRoot = (process.env.ALAIN_PROMPT_ROOT || '').trim();
+  const candidateBases = [
+    moduleDir,
+    path.resolve(moduleDir, '..'),
+    path.resolve(moduleDir, '..', '..'),
+    path.resolve(moduleDir, '..', '..', '..'),
+    process.cwd()
+  ];
   const searchRoots = [
     customRoot || undefined,
-    path.resolve(moduleDir, '../../../resources/prompts/alain-kit'),
-    path.resolve(process.cwd(), 'resources/prompts/alain-kit')
+    ...candidateBases.map(base => path.resolve(base, 'resources/prompts/alain-kit'))
   ].filter(Boolean) as string[];
 
   for (const root of searchRoots) {
