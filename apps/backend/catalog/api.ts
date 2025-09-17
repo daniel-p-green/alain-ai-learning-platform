@@ -6,6 +6,21 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { createHash } from 'crypto';
 
+function safeParse<T = any>(input: string | null | undefined): T | null {
+  if (!input) return null;
+  try {
+    return JSON.parse(input) as T;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeMaker(input: any) {
+  if (!input) return null;
+  if (typeof input === 'string') return safeParse(input);
+  return input;
+}
+
 export const listPublicNotebooks = api<{
   model?: string; provider?: string; difficulty?: 'beginner'|'intermediate'|'advanced'; tag?: string; limit?: number; offset?: number;
 }, { items: any[] }>(
@@ -28,7 +43,12 @@ export const listPublicNotebooks = api<{
        LIMIT $${args.length+1} OFFSET $${args.length+2}`,
       ...args, limit, offset
     ]);
-    return { items: rows } as any;
+    const items = rows.map((row: any) => ({
+      ...row,
+      maker: normalizeMaker(row.maker),
+      tags: Array.isArray(row.tags) ? row.tags : [],
+    }));
+    return { items } as any;
   }
 );
 
@@ -135,9 +155,11 @@ export const importLocalNotebooks = api<{
         const { provider, model, difficulty } = deriveFromPath(abs);
 
         // Stats and checksum
+        const stats = await fs.stat(abs);
         const data = await fs.readFile(abs);
         const size_bytes = data.byteLength;
         const checksum = sha256(data);
+        const lastGenerated = stats.mtime.toISOString();
 
         // Derive difficulty and tags from metadata files if missing
         let diff = difficulty as any;
@@ -165,25 +187,35 @@ export const importLocalNotebooks = api<{
         const existing = await tutorialsDB.queryRow<{ id: number; checksum?: string }>`
           SELECT id, checksum FROM generated_notebooks WHERE file_path = ${dbPath}
         `;
-        const vis = defaultVis;
-        const res = await tutorialsDB.exec`
-          INSERT INTO generated_notebooks (file_path, model, provider, difficulty, created_by, visibility, tags, size_bytes, checksum)
-          VALUES (${dbPath}, ${model}, ${provider}, ${diff}, ${userId}, ${vis}, ${tags}, ${size_bytes}, ${checksum})
+        await tutorialsDB.exec`
+          INSERT INTO generated_notebooks (
+            file_path, model, provider, difficulty,
+            title, overview, maker, quality_score, colab_compatible, section_count,
+            created_by, visibility, tags, size_bytes, checksum, last_generated
+          )
+          VALUES (
+            ${dbPath}, ${model}, ${provider}, ${diff},
+            ${path.basename(abs, '.ipynb')}, NULL, NULL, NULL, NULL, NULL,
+            ${userId}, ${defaultVis}, ${tags}, ${size_bytes}, ${checksum}, ${lastGenerated}
+          )
           ON CONFLICT (file_path) DO UPDATE SET
             model = EXCLUDED.model,
             provider = EXCLUDED.provider,
             difficulty = EXCLUDED.difficulty,
             created_by = COALESCE(generated_notebooks.created_by, EXCLUDED.created_by),
+            title = COALESCE(EXCLUDED.title, generated_notebooks.title),
+            overview = COALESCE(EXCLUDED.overview, generated_notebooks.overview),
+            maker = COALESCE(EXCLUDED.maker, generated_notebooks.maker),
+            quality_score = COALESCE(EXCLUDED.quality_score, generated_notebooks.quality_score),
+            colab_compatible = COALESCE(EXCLUDED.colab_compatible, generated_notebooks.colab_compatible),
+            section_count = COALESCE(EXCLUDED.section_count, generated_notebooks.section_count),
             visibility = COALESCE(generated_notebooks.visibility, EXCLUDED.visibility),
             tags = EXCLUDED.tags,
             size_bytes = EXCLUDED.size_bytes,
-            checksum = EXCLUDED.checksum
+            checksum = EXCLUDED.checksum,
+            last_generated = COALESCE(EXCLUDED.last_generated, generated_notebooks.last_generated)
         `;
-        if (existing) {
-          updated++;
-        } else {
-          imported++;
-        }
+        if (existing) updated++; else imported++;
       } catch (e) {
         errors++;
       }
@@ -207,11 +239,20 @@ export const listPublicLessons = api<{
     const limit = Math.max(1, Math.min(100, Number(req.limit || 20)));
     const offset = Math.max(0, Number(req.offset || 0));
     const rows = await tutorialsDB.query<any>([
-      `SELECT id, file_path, model, provider, difficulty, created_at, visibility, share_slug, tags, size_bytes
-       FROM generated_lessons ${where} ORDER BY created_at DESC LIMIT $${args.length+1} OFFSET $${args.length+2}`,
+      `SELECT id, file_path, model, provider, difficulty,
+              title, overview, maker, quality_score, section_count,
+              created_by, created_at, visibility, share_slug, tags, size_bytes, checksum, last_generated
+       FROM generated_lessons ${where}
+       ORDER BY COALESCE(last_generated, created_at) DESC
+       LIMIT $${args.length+1} OFFSET $${args.length+2}`,
       ...args, limit, offset
     ]);
-    return { items: rows } as any;
+    const items = rows.map((row: any) => ({
+      ...row,
+      maker: normalizeMaker(row.maker),
+      tags: Array.isArray(row.tags) ? row.tags : [],
+    }));
+    return { items } as any;
   }
 );
 
@@ -240,10 +281,17 @@ export const listMyNotebooks = api<{}, { items: any[] }>(
   async (_req) => {
     const userId = await requireUserId();
     const rows = await tutorialsDB.query<any>([
-      `SELECT id, file_path, model, provider, difficulty, created_at, visibility, share_slug, tags, size_bytes
-       FROM generated_notebooks WHERE created_by = $1 ORDER BY created_at DESC`,
+      `SELECT id, file_path, model, provider, difficulty,
+              title, overview, maker, quality_score, colab_compatible, section_count,
+              created_by, created_at, visibility, share_slug, tags, size_bytes, checksum, last_generated
+       FROM generated_notebooks WHERE created_by = $1 ORDER BY COALESCE(last_generated, created_at) DESC`,
       userId
     ]);
-    return { items: rows } as any;
+    const items = rows.map((row: any) => ({
+      ...row,
+      maker: normalizeMaker(row.maker),
+      tags: Array.isArray(row.tags) ? row.tags : [],
+    }));
+    return { items } as any;
   }
 );
