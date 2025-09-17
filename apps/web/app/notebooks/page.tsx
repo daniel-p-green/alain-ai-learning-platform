@@ -1,12 +1,15 @@
+import { appBaseUrl } from '@/lib/requestBase';
+
 export const metadata = {
   title: 'ALAIN · Notebooks',
   description: 'Browse generated manuals with filters; open featured notebooks.',
 };
 
 async function fetchCatalog(qs: URLSearchParams) {
-  const u = new URL(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/catalog/notebooks/public`);
-  qs.forEach((v, k) => u.searchParams.set(k, v));
-  const res = await fetch(u.toString(), { cache: 'no-store' });
+  const search = qs.toString();
+  const base = appBaseUrl();
+  const path = `/api/catalog/notebooks/public${search ? `?${search}` : ''}`;
+  const res = await fetch(`${base}${path}`, { cache: 'no-store' });
   if (!res.ok) return { items: [] } as any;
   return await res.json();
 }

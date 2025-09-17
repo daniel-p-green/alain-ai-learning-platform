@@ -67,13 +67,17 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     SHOW_FALLBACK_UI,
     ALLOW_120B,
     researchCopy,
-    onSubmit,
-    onAutoFix,
-    triggerExampleHosted,
-    triggerExampleLocal,
-    exportNotebook,
-  } = props;
+  onSubmit,
+  onAutoFix,
+  triggerExampleHosted,
+  triggerExampleLocal,
+  triggerDemoMode,
+  exportNotebook,
+  exportState,
+  clearExportState,
+} = props;
   const [showAdvancedProviders, setShowAdvancedProviders] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const readyHosted = !!envBanner && envBanner.teacherProvider === 'poe' && !!envBanner.poeConfigured;
   const readyLocal = !!envBanner && !!envBanner.offlineMode && !!envBanner.openaiBaseUrl;
@@ -154,6 +158,32 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
       setShowAdvancedProviders(true);
     }
   }, [showAdvancedProviders, teacherModel, teacherProvider, targetModel, targetProvider, source]);
+
+  useEffect(() => {
+    if (exportState.status !== 'success') {
+      setCopyStatus('idle');
+    }
+  }, [exportState.status]);
+
+  const progressLabels: Record<typeof progress, string> = {
+    idle: '',
+    parsing: 'Preparing your model details…',
+    asking: 'Generating lesson plan with GPT-OSS-20B…',
+    importing: 'Saving and formatting the manual…',
+    done: 'Manual ready! Review the preview or export below.',
+  };
+  const isActiveProgress = progress === 'parsing' || progress === 'asking' || progress === 'importing';
+
+  async function handleCopyExportLink() {
+    if (exportState.status !== 'success') return;
+    try {
+      await navigator.clipboard.writeText(exportState.url);
+      setCopyStatus('success');
+    } catch (err) {
+      console.error('Copy failed', err);
+      setCopyStatus('error');
+    }
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">

@@ -1,10 +1,12 @@
 import NotebookViewer from "@/components/NotebookViewer";
 import NotebookActions from "@/components/NotebookActions";
+import { appBaseUrl } from "@/lib/requestBase";
 
 export const dynamic = "force-dynamic";
 
 async function fetchNotebook(id: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/notebooks/${id}`, { cache: "no-store" });
+  const base = appBaseUrl();
+  const res = await fetch(`${base}/api/notebooks/${id}`, { cache: "no-store" });
   if (!res.ok) return null;
   return res.json();
 }
