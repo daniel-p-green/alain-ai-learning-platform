@@ -152,7 +152,7 @@ export class ALAINKit {
             // Save checkpoint
             try { writeFileSync(path.join(sectionsDir, `${sectionNumber}.json`), JSON.stringify(section, null, 2)); } catch {}
           };
-          await this.attemptWithBackoff(fn, 3);
+          await this.attemptWithBackoff(fn, 5);
         });
       }
       const tSectionsStart = Date.now();

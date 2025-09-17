@@ -5,19 +5,19 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
 ## Home (`/`)
 
 - **Primary copy**
-  - Hero badges: `OpenAI Open Model Hackathon Project`, `leap.new Top 3`
+  - Hero badge: `OpenAI Open Model Hackathon Project`
   - Hero headline: `AI Manuals for AI Models`
-  - Subhead: `Paste any Hugging Face model link and get an interactive notebook you can run locally or in Colab—with runnable code, checks, and clean exports.`
+  - Subhead: `Paste a Hugging Face link (or pick a local model) and get a runnable lesson with code, checks, and clean exports. No guesswork—just the steps you need.`
   - Primary CTA: `Generate Manual` → `/generate`
-  - Secondary CTA: `Explore Library` → `/notebooks`
+  - Secondary CTA: `Browse Library` → `/notebooks`
 - **Supporting copy**
-  - Promo card heading: `Why ALAIN`
-  - Value bullets: `• AI adoption follows instructions. ALAIN writes them for every model.`, `• Build real skills with hands-on steps and checks.`, `• Use one request shape across hosted and local providers.`, `• Export clean notebooks with no embedded secrets.`
-  - Teacher callout: `Teacher model` → `gpt-oss-20b`, `Delivered via Poe API`
-  - “How it works” timeline: `1. Paste a model`, `2. Generate a manual`, `3. Run, remix, export`
-  - Audience tabs: `Teams`, `Educators`, `Builders` with tailored headlines/bullets.
-- **Experience overview**: Hero split showcases credibility badges, refreshed copy, and a Try Prompt preview mock. Timeline and tabbed personas add motion and richer storytelling for each audience.
-- **Implementation note (2025-09-16)**: Reverted earlier experiment that added extra credibility chips and global CTA utilities to keep the hero lean and avoid unused component helpers. CTA buttons continue to rely on local Tailwind classes for clarity.
+  - Promo card heading: `Why teams use ALAIN`
+  - Value bullets: `• Step-by-step guidance with runnable notebooks`, `• One workflow across hosted and local providers`, `• Exports stay clean—no embedded secrets`
+  - “How it works” cards: `1 · Paste a model`, `2 · Generate`, `3 · Run & export`
+  - Highlights cards: `Notebook viewer`, `Share instantly`, `Local-friendly`
+  - Audience cards: `For teams`, `For educators`, `For builders`
+- **Experience overview**: Hero returns to the cartoon illustration paired with simplified copy and two direct CTAs. Alternating background rows (paper-50, white, gradient) break up the scroll while keeping all information visible without extra clicks.
+- **Implementation note (2025-09-17)**: Reverted interactive tabs in favor of static cards and revived the illustrated hero. Background rows use existing Tailwind tokens—no new utilities required.
 
 ## Generate (`/generate`)
 

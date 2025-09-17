@@ -91,6 +91,8 @@ export class NotebookBuilder {
     cells.push(this.createProviderSetupCell());
     // Quick provider smoke test
     cells.push(this.createProviderSmokeCell());
+    // Surface a concise runtime checklist so exported notebooks stand on their own.
+    cells.push(this.createTransformerRuntimeCell());
 
     // Title and overview
     cells.push(this.createTitleCell(outline.title, outline.overview));
@@ -443,6 +445,24 @@ export class NotebookBuilder {
       ],
       execution_count: null,
       outputs: [],
+    };
+  }
+
+  /**
+   * Adds a light-touch runtime recap so learners see the same checklist that lives in the UI/README.
+   */
+  private createTransformerRuntimeCell(): MarkdownCell {
+    return {
+      cell_type: 'markdown',
+      metadata: {},
+      source: [
+        "## Local Transformer Runtime Tips\n\n",
+        "- Install the optimized stack with `pip install -U transformers kernels accelerate triton` (PyTorch >= 2.8 already bundles Triton 3.4).\n",
+        "- Load GPT-OSS with downloadable kernels to compare bf16 vs MXFP4 memory usage:\n",
+        "```python\nfrom transformers import AutoModelForCausalLM\n\nmodel = AutoModelForCausalLM.from_pretrained(\n    \"openai/gpt-oss-20b\",\n    dtype=\"auto\",\n    device_map=\"auto\",\n    use_kernels=True,\n)\n```\n",
+        "- Hopper GPUs can enable Flash Attention 3 sinks via `attn_implementation=\"kernels-community/vllm-flash-attn3\"`.\n",
+        "- If MXFP4 kernels are unavailable, Transformers automatically falls back to bf16; monitor VRAM and throughput to pick the best mode.\n"
+      ]
     };
   }
 

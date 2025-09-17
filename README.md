@@ -77,6 +77,13 @@ Then visit <http://localhost:3000/generate> and drop in a model URL (e.g., https
 - **Teacher (outline/section generation)** — set `--baseUrl` (or `ALAIN_BASE_URL`) to any OpenAI-compatible endpoint. Leave it blank for Poe or point it at `http://localhost:11434` for Ollama/vLLM. Local runs can skip `--apiKey`.
 - **Notebook runtime** — notebooks include a provider setup cell. Set `OPENAI_BASE_URL`/`OPENAI_API_KEY` (or `POE_API_KEY`) in your `.env` to swap between Poe, local vLLM, or other APIs with no code edits.
 
+#### Local GPT-OSS teacher checklist
+
+- Install the refreshed stack: `pip install -U transformers kernels accelerate triton` (PyTorch >= 2.8 already bundles Triton 3.4).
+- When loading `openai/gpt-oss-20b`, pass `use_kernels=True` to fetch the Hub-hosted Liger RMSNorm and MegaBlocks MoE kernels. Compare this bf16 path with the default MXFP4 run to match your VRAM budget.
+- Hopper-class GPUs can enable Flash Attention 3 sinks by setting `attn_implementation="kernels-community/vllm-flash-attn3"`.
+- MXFP4 kernels load automatically when supported; Transformers falls back to bf16 if Triton kernels aren’t available.
+
 ### Backend APIs (Encore.dev)
 
 ```bash
