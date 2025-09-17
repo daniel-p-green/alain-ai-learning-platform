@@ -502,36 +502,37 @@ export class NotebookBuilder {
         cell_type: 'code' as const,
         metadata: {},
         source: [
-          "# MCQ helper (ipywidgets)\n",
-          "import ipywidgets as widgets\n",
-          "from IPython.display import display, Markdown\n\n",
-          "def render_mcq(question, options, correct_index, explanation):\n",
-          "    cleaned = []\n",
-          "    for idx, raw in enumerate(options):\n",
-          "        text = str(raw or "").strip()\n",
-          "        prefix = f\"{chr(65+idx)}. \"\n",
-          "        if text.lower().startswith(prefix.lower()):\n",
-          "            cleaned.append(text)\n",
-          "        else:\n",
-          "            cleaned.append(prefix + text)\n",
-          "    rb = widgets.RadioButtons(options=[(label, idx) for idx, label in enumerate(cleaned)], description="")\n",
-          "    grade_btn = widgets.Button(description='Grade', button_style='primary')\n",
-          "    feedback = widgets.HTML(value='')\n",
-          "    def on_grade(_):\n",
-          "        sel = rb.value\n",
-          "        if sel is None:\n",
-          "            feedback.value = '<p>⚠️ Please select an option.</p>'\n",
-          "            return\n",
-          "        if sel == correct_index:\n",
-          "            feedback.value = '<p>✅ Correct!</p>'\n",
-          "        else:\n",
-          "            feedback.value = f'<p>❌ Incorrect. Correct answer is {chr(65+correct_index)}.</p>'\n",
-          "        feedback.value += f'<div><em>Explanation:</em> {explanation}</div>'\n",
-          "    grade_btn.on_click(on_grade)\n",
-          "    display(Markdown('### ' + question))\n",
-          "    display(rb)\n",
-          "    display(grade_btn)\n",
-          "    display(feedback)\n"
+          String.raw`# MCQ helper (ipywidgets)
+import ipywidgets as widgets
+from IPython.display import display, Markdown
+
+def render_mcq(question, options, correct_index, explanation):
+    cleaned = []
+    for idx, raw in enumerate(options):
+        text = str(raw or "").strip()
+        prefix = f"{chr(65+idx)}. "
+        if not text.lower().startswith(prefix.lower()):
+            text = prefix + text
+        cleaned.append(text)
+    rb = widgets.RadioButtons(options=[(label, idx) for idx, label in enumerate(cleaned)], description="")
+    grade_btn = widgets.Button(description='Grade', button_style='primary')
+    feedback = widgets.HTML(value='')
+    def on_grade(_):
+        sel = rb.value
+        if sel is None:
+            feedback.value = '<p>⚠️ Please select an option.</p>'
+            return
+        if sel == correct_index:
+            feedback.value = '<p>✅ Correct!</p>'
+        else:
+            feedback.value = f'<p>❌ Incorrect. Correct answer is {chr(65+correct_index)}.</p>'
+        feedback.value += f'<div><em>Explanation:</em> {explanation}</div>'
+    grade_btn.on_click(on_grade)
+    display(Markdown('### ' + question))
+    display(rb)
+    display(grade_btn)
+    display(feedback)
+`
         ],
         execution_count: null as any,
         outputs: [] as any[]

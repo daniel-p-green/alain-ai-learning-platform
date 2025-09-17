@@ -23,6 +23,26 @@ export default function ResearchPage() {
   const [activeFile, setActiveFile] = React.useState<string | null>(null);
   const [fileContent, setFileContent] = React.useState<string | null>(null);
 
+  function formatErrorMessage(status: number, raw?: string | null) {
+    const normalized = (raw || '').toLowerCase();
+    if (status === 401 || normalized.includes('unauthorized') || normalized.includes('authentication')) {
+      return 'Authentication failed. Update your provider credentials in Settings -> Environment Status and try again.';
+    }
+    if (status === 404 || normalized.includes('not found')) {
+      return 'Model information not found. Confirm the owner/repo is public and spelled correctly.';
+    }
+    if (status === 429 || normalized.includes('rate')) {
+      return 'Rate limit reached. Wait a minute before running research again.';
+    }
+    if (normalized.includes('poe api key')) {
+      return 'Poe API key missing or invalid. Set POE_API_KEY in your environment before running research.';
+    }
+    if (status >= 500) {
+      return raw ? `${raw} -- check backend logs for more detail.` : 'Server error while running research. Check backend logs and retry.';
+    }
+    return raw ? `${raw} (HTTP ${status}).` : `Request failed (HTTP ${status}).`;
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +63,9 @@ export default function ResearchPage() {
       });
       const data = await resp.json().catch(() => null);
       if (!resp.ok || !data?.success) {
-        setError(data?.error?.message || `Request failed (HTTP ${resp.status})`);
+        const rawError = data?.error;
+        const raw = typeof rawError === 'string' ? rawError : rawError?.message;
+        setError(formatErrorMessage(resp.status, raw));
         setLoading(false);
         return;
       }
@@ -62,7 +84,8 @@ export default function ResearchPage() {
         }
       } catch {}
     } catch (e: any) {
-      setError(e?.message || 'Request failed');
+      const message = e?.message || 'Request failed';
+      setError(`${message}. Check network connectivity or backend logs.`);
     } finally {
       setLoading(false);
     }
@@ -71,7 +94,15 @@ export default function ResearchPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold mb-4">Research Models</h1>
-      <p className="text-sm text-ink-700 mb-6">Run research-only analysis and save findings under resources/content/research/&lt;provider&gt;/&lt;model&gt;/</p>
+      <p className="text-sm text-ink-700 mb-2">Run research-only analysis and save findings under resources/content/research/&lt;provider&gt;/&lt;model&gt;/</p>
+      <div className="rounded border border-ink-100 bg-paper-50 p-3 text-xs text-ink-700 mb-6">
+        <div className="font-medium text-ink-900 mb-1">How to get a good report</div>
+        <ul className="list-disc pl-4 space-y-1">
+          <li>Use owner/repo from Hugging Face (e.g. openai/gpt-oss-20b). Private repos require a token configured in Settings.</li>
+          <li>Pick "Intermediate" depth for balanced coverage; "Advanced" may take longer.</li>
+          <li>Enable offline cache only when you need local copies--it can take several minutes.</li>
+        </ul>
+      </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
@@ -86,11 +117,13 @@ export default function ResearchPage() {
               <option value="intermediate">Intermediate</option>
               <option value="advanced">Advanced</option>
             </select>
+            <p className="text-xs text-ink-600 mt-1">Basic is quick, Intermediate adds benchmarks, and Advanced runs the most thorough research.</p>
           </div>
           <label className="inline-flex items-center gap-2 mt-6">
             <input type="checkbox" checked={offlineCache} onChange={e => setOfflineCache(e.target.checked)} />
             <span className="text-sm">Download offline cache (HF/Unsloth/Cookbook)</span>
           </label>
+          <p className="text-xs text-ink-600">Enable only if you need local copies of the source files; it can add several minutes.</p>
         </div>
         <div>
           <button className="inline-flex items-center h-10 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50" disabled={loading}>
@@ -107,10 +140,10 @@ export default function ResearchPage() {
         <div className="mt-8 space-y-3">
           <h2 className="text-xl font-semibold">Summary</h2>
           <div className="rounded-[12px] border border-ink-100 bg-paper-0 p-4 space-y-2">
-            <p className="text-sm"><strong>Parameters:</strong> {summary?.architecture?.parameter_scale || '—'}</p>
-            <p className="text-sm"><strong>Context:</strong> {summary?.architecture?.context_length ?? '—'}</p>
-            <p className="text-sm"><strong>Quantization:</strong> {(summary?.quantization || []).join(', ') || '—'}</p>
-            <p className="text-sm"><strong>Tasks:</strong> {(summary?.capabilities?.tasks || []).slice(0, 8).join(', ') || '—'}</p>
+            <p className="text-sm"><strong>Parameters:</strong> {summary?.architecture?.parameter_scale || '--'}</p>
+            <p className="text-sm"><strong>Context:</strong> {summary?.architecture?.context_length ?? '--'}</p>
+            <p className="text-sm"><strong>Quantization:</strong> {(summary?.quantization || []).join(', ') || '--'}</p>
+            <p className="text-sm"><strong>Tasks:</strong> {(summary?.capabilities?.tasks || []).slice(0, 8).join(', ') || '--'}</p>
             {summary?.benchmarks && summary.benchmarks.length > 0 && (
               <p className="text-sm"><strong>Benchmarks:</strong> {summary.benchmarks.slice(0,3).map((b: any) => `${b.dataset} ${b.value}`).join('; ')}</p>
             )}

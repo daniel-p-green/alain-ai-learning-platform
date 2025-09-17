@@ -7,6 +7,25 @@ import api, { parseHfRef } from '../../../lib/api';
 import type { UseGenerateLessonResult } from '../hooks/useGenerateLesson';
 import { GenerateWizard } from './GenerateWizard';
 
+const providerExplainers: Record<string, { title: string; helper: string }> = {
+  poe: {
+    title: 'Hosted Poe (recommended)',
+    helper: 'Runs in Poe\'s managed environment. Fastest way to generate manuals with no local setup.'
+  },
+  'openai-compatible': {
+    title: 'OpenAI-compatible / local runtime',
+    helper: 'Uses your configured base URL (Ollama, LM Studio, vLLM). Requires your own keys or a running server.'
+  },
+  lmstudio: {
+    title: 'LM Studio runtime',
+    helper: 'Targets the LM Studio local server. Download the model and ensure the server is running on port 1234.'
+  },
+  ollama: {
+    title: 'Ollama runtime',
+    helper: 'Connects to an Ollama host (default http://localhost:11434). Pull the model before starting.'
+  },
+};
+
 export function GenerateLessonView(props: UseGenerateLessonResult) {
   const {
     formRef,
@@ -52,10 +71,22 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     exportNotebook,
   } = props;
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [showAdvancedProviders, setShowAdvancedProviders] = useState(false);
 
   const readyHosted = !!envBanner && envBanner.teacherProvider === 'poe' && !!envBanner.poeConfigured;
   const readyLocal = !!envBanner && !!envBanner.offlineMode && !!envBanner.openaiBaseUrl;
   const hfInfo = parseHfRef(hfUrl);
+  const teacherProviderHelper = providerExplainers[teacherProvider]?.helper;
+  const targetProviderHelper = providers.find((provider) => provider.name === targetProvider)?.description || providerExplainers[targetProvider]?.helper;
+
+  useEffect(() => {
+    if (
+      !showAdvancedProviders &&
+      (teacherProvider !== 'poe' || teacherModel !== 'GPT-OSS-20B' || targetProvider !== 'poe' || targetModel.trim() || source === 'local')
+    ) {
+      setShowAdvancedProviders(true);
+    }
+  }, [showAdvancedProviders, teacherModel, teacherProvider, targetModel, targetProvider, source]);
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
@@ -185,50 +216,70 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
                 onChange={(e) => setTargetModel(e.target.value)}
               />
             )}
-            <div className="rounded-card border border-ink-100 bg-paper-50 p-3">
-              <div className="text-sm font-medium text-ink-900">Target provider/model</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                <select
-                  className="p-2 rounded-card bg-paper-0 border border-ink-100"
-                  value={targetProvider}
-                  onChange={(e) => setTargetProvider(e.target.value)}
-                >
-                  {providers.map((provider) => (
-                    <option key={provider.name} value={provider.name}>{provider.name}</option>
-                  ))}
-                </select>
-                <input
-                  className="p-2 rounded-card bg-paper-0 border border-ink-100"
-                  placeholder="Optional override"
-                  value={targetModel}
-                  onChange={(e) => setTargetModel(e.target.value)}
-                />
-              </div>
-              {providersError && <div className="text-xs text-red-700 mt-1">{providersError}</div>}
-            </div>
+            <p className="text-xs text-ink-600">Select from detected models or paste a runtime identifier.</p>
+            {providersError && <div className="text-xs text-red-700">{providersError}</div>}
           </div>
         )}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="space-y-2">
           <label className="text-sm text-ink-700">Difficulty</label>
           <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
             {['beginner', 'intermediate', 'advanced'].map((level) => (
               <option key={level} value={level}>{level}</option>
             ))}
           </select>
-          <label className="text-sm text-ink-700">Teacher</label>
-          <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={teacherProvider} onChange={(e) => setTeacherProvider(e.target.value as any)}>
-            <option value="poe">Poe (hosted)</option>
-            <option value="openai-compatible">OpenAI-compatible</option>
-          </select>
-          <label className="text-sm text-ink-700">Teacher model</label>
-          <select
-            className="p-2 rounded-card bg-paper-0 border border-ink-100"
-            value={teacherModel}
-            onChange={(e) => setTeacherModel(e.target.value as any)}
+          <p className="text-xs text-ink-600">Select the skill level you want ALAIN to target.</p>
+        </div>
+        <div className="rounded-card border border-ink-100 bg-paper-50 p-3">
+          <button
+            type="button"
+            className="flex w-full items-center justify-between text-sm font-medium text-ink-900"
+            onClick={() => setShowAdvancedProviders((prev) => !prev)}
           >
-            <option value="GPT-OSS-20B">GPT-OSS-20B (default)</option>
-            {ALLOW_120B && <option value="GPT-OSS-120B">GPT-OSS-120B (not recommended)</option>}
-          </select>
+            Advanced provider settings
+            <span className="text-xs text-ink-600">{showAdvancedProviders ? 'Hide' : 'Show'}</span>
+          </button>
+          {showAdvancedProviders && (
+            <div className="mt-3 space-y-3">
+              <div className="space-y-1">
+                <label className="text-sm text-ink-700">Teacher provider</label>
+                <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={teacherProvider} onChange={(e) => setTeacherProvider(e.target.value as any)}>
+                  <option value="poe">{providerExplainers.poe.title}</option>
+                  <option value="openai-compatible">{providerExplainers['openai-compatible'].title}</option>
+                </select>
+                <p className="text-xs text-ink-600">{teacherProviderHelper || 'Choose where the teacher model will run.'}</p>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ink-700">Teacher model</label>
+                <select
+                  className="p-2 rounded-card bg-paper-0 border border-ink-100"
+                  value={teacherModel}
+                  onChange={(e) => setTeacherModel(e.target.value as any)}
+                >
+                  <option value="GPT-OSS-20B">GPT-OSS-20B (default)</option>
+                  {ALLOW_120B && <option value="GPT-OSS-120B">GPT-OSS-120B (not recommended)</option>}
+                </select>
+                <p className="text-xs text-ink-600">Stay on GPT-OSS-20B for the most reliable JSON output.</p>
+              </div>
+              <div className="space-y-1">
+                <label className="text-sm text-ink-700">Target provider</label>
+                <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={targetProvider} onChange={(e) => setTargetProvider(e.target.value)}>
+                  {providers.map((provider) => (
+                    <option key={provider.name} value={provider.name}>
+                      {providerExplainers[provider.name]?.title || provider.name}
+                    </option>
+                  ))}
+                </select>
+                {targetProviderHelper && <p className="text-xs text-ink-600">{targetProviderHelper}</p>}
+                <input
+                  className="p-2 rounded-card bg-paper-0 border border-ink-100"
+                  placeholder="Optional model override (e.g. gpt-oss-20b)"
+                  value={targetModel}
+                  onChange={(e) => setTargetModel(e.target.value)}
+                />
+                <p className="text-xs text-ink-600">Leave blank to use the provider\'s default deployment.</p>
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <Button type="submit" disabled={loading}>
