@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { SignedIn } from "@clerk/nextjs";
 import { useEffect, useId, useRef, useState } from "react";
 
 export default function MobileNav() {
@@ -102,6 +103,9 @@ export default function MobileNav() {
               <nav className="px-2 py-3">
                 <div className="px-2 py-2 text-xs uppercase tracking-wide text-ink-500">Navigate</div>
                 <Link href="/notebooks" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Library</Link>
+                <SignedIn>
+                  <Link href="/settings" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Settings</Link>
+                </SignedIn>
                 {/** Labs hidden from mobile nav for demo simplicity */}
               </nav>
             </div>

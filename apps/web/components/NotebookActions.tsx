@@ -17,11 +17,12 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
   const [model, setModel] = useState<string>('openai/gpt-oss-20b');
   const [maxSections, setMaxSections] = useState<number>(8);
   const router = useRouter();
+  const encodedId = encodeURIComponent(id);
   const isGh = id.startsWith('gh:');
   async function exportPR() {
     try {
       setToast('Exporting ALAIN (PR)…');
-      const res = await fetch(`/api/notebooks/${id}/export/alain`, { method: 'POST' });
+      const res = await fetch(`/api/notebooks/${encodedId}/export/alain`, { method: 'POST' });
       const j = await res.json().catch(()=>({}));
       if (!res.ok) throw new Error(j?.error || `HTTP ${res.status}`);
       const url = j?.prUrl || j?.html_url || j?.url;
@@ -34,11 +35,11 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
   }
   return (
     <div className="flex flex-wrap gap-2 items-center justify-end">
-      <a href={`/notebooks/${id}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium whitespace-nowrap w-full sm:w-auto">Edit</a>
+      <a href={`/notebooks/${encodedId}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium whitespace-nowrap w-full sm:w-auto">Edit</a>
       <button onClick={() => setShowRemix(true)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold whitespace-nowrap w-full sm:w-auto">Remix</button>
       <button onClick={() => setShowAlainRemix(true)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue/10 text-alain-blue font-semibold whitespace-nowrap w-full sm:w-auto">Remix (Full ALAIN)</button>
       <button onClick={exportPR} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-900 text-white font-medium whitespace-nowrap w-full sm:w-auto">Export ALAIN (PR)</button>
-      <form action={`/api/notebooks/${id}/publish-request`} method="post">
+      <form action={`/api/notebooks/${encodedId}/publish-request`} method="post">
         <button className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-medium whitespace-nowrap w-full sm:w-auto">Request Publish</button>
       </form>
       {isGh && (
