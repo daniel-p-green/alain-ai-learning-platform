@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { extractJsonLoose } from './json-utils.js';
 import { createLogger, timeIt, trackEvent, metrics } from './obs.js';
 import { capsFor, buildChatCompletionsUrl } from './providers.js';
@@ -189,17 +191,31 @@ export class OutlineGenerator {
   }
 
   private parseOutlineResponse(raw: string): NotebookOutline {
+    const trimmed = this.trimToJson(raw);
+    if (!trimmed) {
+      this.log.error('outline_json_extract_failed', { head: raw.slice(0, 200) });
+      this.recordHumanReview('outline', raw, 'no_json_object');
+      throw new Error('No valid JSON found in outline response');
+    }
     try {
-      return JSON.parse(raw);
+      return JSON.parse(trimmed);
     } catch (err) {
       this.log.warn('outline_json_parse_failed', { error: (err as Error)?.message || String(err) });
     }
-    const loose = extractJsonLoose(raw);
+    const loose = extractJsonLoose(trimmed);
     if (loose) {
       return loose as NotebookOutline;
     }
-    this.log.error('outline_json_extract_failed', { head: raw.slice(0, 200) });
+    this.log.error('outline_json_extract_failed', { head: trimmed.slice(0, 200) });
+    this.recordHumanReview('outline', trimmed, 'json_extraction_failed');
     throw new Error('No valid JSON found in outline response');
+  }
+
+  private trimToJson(raw: string): string {
+    if (!raw) return '';
+    const firstBrace = raw.indexOf('{');
+    if (firstBrace === -1) return '';
+    return raw.slice(firstBrace);
   }
 
   private describeAudience(difficulty: string): string {
@@ -334,7 +350,8 @@ export class OutlineGenerator {
     let attempt = 0;
     let delay = 500;
     
-    while (attempt < 3) {
+    const maxAttempts = 5;
+    while (attempt < maxAttempts) {
       try {
         const started = Date.now();
         const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -353,12 +370,14 @@ export class OutlineGenerator {
         
         const data = await response.json();
         const content = data.choices?.[0]?.message?.content;
-        if (!content) throw new Error('Empty content');
+        if (!content || !String(content).trim()) {
+          throw new Error('Empty content');
+        }
         this.log.debug('outline_request_success', { attempt: attempt + 1, duration_ms: Date.now() - started });
         return content as string;
       } catch (e) {
         attempt++;
-        if (attempt >= 3) throw e;
+        if (attempt >= maxAttempts) throw e;
         const jitter = Math.round(delay * (0.8 + Math.random() * 0.4));
         this.log.warn('outline_request_retry', { attempt, delay_ms: jitter });
         await new Promise(r => setTimeout(r, jitter));
@@ -368,4 +387,19 @@ export class OutlineGenerator {
     throw new Error('Max retries exceeded');
   }
 
+  private recordHumanReview(kind: 'outline' | 'repair', payload: string, reason: string): void {
+    const reviewRoot = (process.env.ALAIN_HUMAN_REVIEW_DIR || '').trim();
+    if (!reviewRoot) return;
+    try {
+      const scenario = (process.env.ALAIN_SCENARIO_SLUG || 'unknown').replace(/[^a-zA-Z0-9-_]/g, '_');
+      const dir = path.resolve(reviewRoot, scenario || 'unknown');
+      fs.mkdirSync(dir, { recursive: true });
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const file = path.join(dir, `${kind}-${reason}-${stamp}.txt`);
+      const header = `# Human Review Artifact\nScenario: ${scenario}\nType: ${kind}\nReason: ${reason}\nTimestamp: ${new Date().toISOString()}\n\n`;
+      fs.writeFileSync(file, header + payload, 'utf8');
+    } catch (error) {
+      this.log.warn('human_review_write_failed', { error: (error as Error)?.message || String(error) });
+    }
+  }
 }

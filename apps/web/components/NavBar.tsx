@@ -12,7 +12,7 @@ export default function NavBar() {
       <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="h-12 flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded" aria-label="ALAIN Home">
-            <BrandLogo variant="blue" className="h-11 w-auto" />
+            <BrandLogo variant="blue" className="h-12 w-auto" />
           </Link>
           <div className="hidden md:flex items-center gap-5">
             <Link href="/notebooks" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Library</Link>
@@ -35,7 +35,12 @@ export default function NavBar() {
           <SignedIn>
             <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} afterSignOutUrl="/" />
           </SignedIn>
-          <Link href={'/generate'} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">Generate Manual</Link>
+          <Link
+            href={'/generate'}
+            className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-white/70 bg-transparent text-white font-semibold hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+          >
+            Generate Manual
+          </Link>
           {/* Labs hidden from main nav for demo simplicity */}
         </div>
         <div className="md:hidden">

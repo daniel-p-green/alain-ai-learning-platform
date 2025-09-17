@@ -4,6 +4,8 @@
  * Generates individual notebook sections with 800-1,500 token limit per section.
  * Ensures beginner-friendly content with executable code and proper structure.
  */
+import fs from 'fs';
+import path from 'path';
 import { createLogger, timeIt, trackEvent, metrics } from './obs.js';
 import { capsFor, buildChatCompletionsUrl } from './providers.js';
 import { supportsTemperature } from './model-caps.js';
@@ -123,11 +125,17 @@ export class SectionGenerator {
       throw new Error(`Failed to generate section: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
     
-    const content = data.choices?.[0]?.message?.content || '';
-    if (!content) {
+    const content = data.choices?.[0]?.message?.content ?? '';
+    if (!content.trim()) {
+      this.logTrace(sectionNumber, 'empty', content);
       throw new Error('Empty response from API');
     }
-    const result = this.parseSectionResponse(content, sectionNumber);
+    const sanitized = this.sanitizeJsonResponse(content);
+    if (!sanitized) {
+      this.logTrace(sectionNumber, 'no_json_object', content);
+      throw new Error('Section generation returned no JSON object');
+    }
+    const result = this.parseSectionResponse(sanitized, sectionNumber);
     const dur = Date.now() - started;
     const difficulty = options.difficulty || 'unknown';
     metrics.inc('alain_section_generated_total', 1, { model: modelReference, difficulty });
@@ -164,14 +172,39 @@ export class SectionGenerator {
     const extracted = this.extractFirstJsonObject(content);
     if (!extracted) {
       this.log.warn('section_json_missing', { section: sectionNumber, head: content.slice(0, 120) });
+      this.recordHumanReview(sectionNumber, content, 'json_extraction_failed');
       throw new Error('Section generation returned no JSON object');
     }
     try {
       return JSON.parse(extracted);
     } catch (error) {
       this.log.warn('section_json_parse_failed', { section: sectionNumber, head: extracted.slice(0, 120), error: (error as Error)?.message });
+      this.recordHumanReview(sectionNumber, extracted, 'json_parse_failed');
       throw new Error(`Invalid JSON returned for section ${sectionNumber}`);
     }
+  }
+
+  private trimToJson(text: string): string {
+    const firstBrace = text.indexOf('{');
+    if (firstBrace === -1) return '';
+    return text.slice(firstBrace);
+  }
+
+  private sanitizeJsonResponse(text: string): string {
+    const trimmed = this.trimToJson(text);
+    if (!trimmed) return '';
+    let depth = 0;
+    for (let i = 0; i < trimmed.length; i++) {
+      const ch = trimmed[i];
+      if (ch === '{') depth++;
+      if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          return trimmed.slice(0, i + 1);
+        }
+      }
+    }
+    return '';
   }
 
   private extractFirstJsonObject(text: string): string | null {
@@ -191,6 +224,22 @@ export class SectionGenerator {
       }
     }
     return null;
+  }
+
+  private recordHumanReview(sectionNumber: number, payload: string, reason: string): void {
+    const reviewRoot = (process.env.ALAIN_HUMAN_REVIEW_DIR || '').trim();
+    if (!reviewRoot) return;
+    try {
+      const scenario = (process.env.ALAIN_SCENARIO_SLUG || 'unknown').replace(/[^a-zA-Z0-9-_]/g, '_');
+      const dir = path.resolve(reviewRoot, scenario || 'unknown');
+      fs.mkdirSync(dir, { recursive: true });
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const file = path.join(dir, `section-${String(sectionNumber).padStart(2, '0')}-${reason}-${stamp}.txt`);
+      const header = `# Human Review Artifact\nScenario: ${scenario}\nSection: ${sectionNumber}\nReason: ${reason}\nTimestamp: ${new Date().toISOString()}\n\n`;
+      fs.writeFileSync(file, header + payload, 'utf8');
+    } catch (error) {
+      this.log.warn('human_review_write_failed', { error: (error as Error)?.message || String(error) });
+    }
   }
 
   private createFallbackSection(sectionNumber: number, content: string): GeneratedSection {
@@ -237,12 +286,15 @@ export class SectionGenerator {
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
         const content = data.choices?.[0]?.message?.content;
-        if (!content) throw new Error('Empty content');
+        if (!content || !String(content).trim()) throw new Error('Empty content');
+        const sanitized = this.sanitizeJsonResponse(String(content));
+        if (!sanitized) throw new Error('No JSON detected');
         this.log.debug('section_request_success', { attempt: attempt + 1, duration_ms: Date.now() - started });
+        data.choices[0].message.content = sanitized;
         return data;
       } catch (e) {
         attempt++;
-        if (attempt > 3) throw e;
+        if (attempt > 5) throw e;
         const jitter = Math.round(delay * (0.8 + Math.random() * 0.4));
         this.log.warn('section_request_retry', { attempt, delay_ms: jitter });
         await new Promise(r => setTimeout(r, jitter));
