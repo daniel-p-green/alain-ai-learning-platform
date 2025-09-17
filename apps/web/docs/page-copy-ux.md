@@ -5,17 +5,18 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
 ## Home (`/`)
 
 - **Primary copy**
-  - Eyebrow: `OpenAI Open Model Hackathon Project`
+  - Hero badges: `OpenAI Open Model Hackathon Project`, `leap.new Top 3`
   - Hero headline: `AI Manuals for AI Models`
-  - Subhead: `Paste a Hugging Face link and generate a step‑by‑step manual with runnable code, checks, and clean exports.`
+  - Subhead: `Paste any Hugging Face model link and get an interactive notebook you can run locally or in Colab—with runnable code, checks, and clean exports.`
   - Primary CTA: `Generate Manual` → `/generate`
-  - Secondary CTA: `Library` → `/notebooks`
+  - Secondary CTA: `Explore Library` → `/notebooks`
 - **Supporting copy**
   - Promo card heading: `Why ALAIN`
-  - Value bullets: `• AI adoption follows instructions. ALAIN writes them for every model.`, `• Build real skills with hands-on steps and checks`, `• Use one request shape across hosted and local providers`, `• Export clean notebooks with no embedded secrets`
-  - “How it works” steps: `1. Paste a model link`, `2. Generate a manual`, `3. Run and export`
-  - Audience cards: `For teams`, `For educators`, `For builders`
-- **Experience overview**: Visitors land on a lightweight hero focused on the value promise, see two clear CTAs, then scroll through three-step onboarding guidance and persona-specific cards that explain fit. No forms, just static marketing copy.
+  - Value bullets: `• AI adoption follows instructions. ALAIN writes them for every model.`, `• Build real skills with hands-on steps and checks.`, `• Use one request shape across hosted and local providers.`, `• Export clean notebooks with no embedded secrets.`
+  - Teacher callout: `Teacher model` → `gpt-oss-20b`, `Delivered via Poe API`
+  - “How it works” timeline: `1. Paste a model`, `2. Generate a manual`, `3. Run, remix, export`
+  - Audience tabs: `Teams`, `Educators`, `Builders` with tailored headlines/bullets.
+- **Experience overview**: Hero split showcases credibility badges, refreshed copy, and a Try Prompt preview mock. Timeline and tabbed personas add motion and richer storytelling for each audience.
 - **Implementation note (2025-09-16)**: Reverted earlier experiment that added extra credibility chips and global CTA utilities to keep the hero lean and avoid unused component helpers. CTA buttons continue to rely on local Tailwind classes for clarity.
 
 ## Generate (`/generate`)
