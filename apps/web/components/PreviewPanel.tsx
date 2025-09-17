@@ -10,9 +10,10 @@ type Props = {
   preview?: Preview;
   repaired?: boolean;
   onExport: (suggestedName: string) => Promise<void> | void;
+  exporting?: boolean;
 };
 
-export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props) {
+export function PreviewPanel({ tutorialId, preview, repaired, onExport, exporting = false }: Props) {
   if (!preview) return null;
   return (
     <div className="mt-4 border border-ink-100 rounded-card p-4 bg-paper-0 space-y-3 shadow-alain-sm">
@@ -53,11 +54,12 @@ export function PreviewPanel({ tutorialId, preview, repaired, onExport }: Props)
         <Button variant="primary" onClick={() => { window.location.href = `/tutorial/${tutorialId}`; }}>Open Manual</Button>
         <Button
           variant="secondary"
+          disabled={exporting}
           onClick={async () => {
             const suggested = (preview.title || 'lesson').replace(/\s+/g,'_');
             await onExport(suggested);
           }}
-        >Export Notebook</Button>
+        >{exporting ? 'Exporting…' : 'Export Notebook'}</Button>
         <Button variant="secondary" onClick={async () => {
           try {
             const id = String(tutorialId);
