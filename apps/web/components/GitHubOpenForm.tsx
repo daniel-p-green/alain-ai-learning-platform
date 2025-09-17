@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { toGhId } from "@/lib/githubNotebook";
+import { encodeNotebookId } from "@/lib/notebookId";
 
 export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolean }) {
   const [url, setUrl] = useState('');
@@ -11,7 +12,7 @@ export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolea
       setErr(null);
       const id = toGhId(url);
       if (!id) { setErr('Enter a valid GitHub .ipynb URL'); return; }
-      const target = `/notebooks/${encodeURIComponent(id)}${defaultRemix ? '?remix=1' : ''}`;
+      const target = `/notebooks/${encodeNotebookId(id)}${defaultRemix ? '?remix=1' : ''}`;
       window.location.assign(target);
     }}>
       <div className="grow min-w-[260px]">
@@ -20,7 +21,7 @@ export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolea
         {err && <div className="text-xs text-red-600 mt-1">{err}</div>}
       </div>
       <button type="submit" className="inline-flex items-center h-9 px-3 rounded bg-ink-900 text-white">Open</button>
-      <button type="button" onClick={() => { const id = toGhId(url); if (!id) { setErr('Enter a valid GitHub .ipynb URL'); return; } const target = `/notebooks/${encodeURIComponent(id)}?remix=1`; window.location.assign(target); }} className="inline-flex items-center h-9 px-3 rounded bg-alain-yellow text-alain-blue font-semibold">Remix</button>
+      <button type="button" onClick={() => { const id = toGhId(url); if (!id) { setErr('Enter a valid GitHub .ipynb URL'); return; } const target = `/notebooks/${encodeNotebookId(id)}?remix=1`; window.location.assign(target); }} className="inline-flex items-center h-9 px-3 rounded bg-alain-yellow text-alain-blue font-semibold">Remix</button>
     </form>
   );
 }

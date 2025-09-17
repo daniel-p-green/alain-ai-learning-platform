@@ -78,22 +78,25 @@ export const list = api<ListQuery, ListTutorialsResponse>(
     // Get total count for pagination
     const totalResult = await tutorialsDB.queryRow<{ count: number }>([
       `SELECT COUNT(*)::int as count FROM tutorials ${whereSql}`,
-      ...params.slice(0, -2) // Remove search params for count query
+      ...params,
     ] as any);
     const total = totalResult?.count || 0;
     const totalPages = Math.ceil(total / pageSize);
 
     // Get tutorials with pagination
     const tutorials: Tutorial[] = [];
-    const tutorialRows = tutorialsDB.query<Tutorial>([
-      `SELECT t.id, t.title, t.description, t.model, t.provider, t.difficulty, t.tags, t.created_at, t.updated_at,
+    const paramCount = params.length;
+    const dataSql = `SELECT t.id, t.title, t.description, t.model, t.provider, t.difficulty, t.tags, t.created_at, t.updated_at,
               mm.name as model_maker_name
        FROM tutorials t
        LEFT JOIN model_makers mm ON mm.id = t.model_maker_id
        ${whereSql}
        ORDER BY t.created_at DESC
-       LIMIT $${params.push(pageSize)} OFFSET $${params.push(offset)}`,
-      ...params,
+       LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
+    const dataParams = [...params, pageSize, offset];
+    const tutorialRows = tutorialsDB.query<Tutorial>([
+      dataSql,
+      ...dataParams,
     ] as any);
 
     for await (const row of tutorialRows) {

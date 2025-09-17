@@ -17,20 +17,38 @@ function createWorker() {
     "}" 
   ].join('\n');
   const workerBlob = new Blob([lines], { type: 'application/javascript' });
-  return new Worker(URL.createObjectURL(workerBlob));
+  const url = URL.createObjectURL(workerBlob);
+  const worker = new Worker(url);
+  return { worker, url };
 }
 
 export function runJS(code: string, ts = false): Promise<{ stdout: string; stderr?: string }>{
   return new Promise((resolve) => {
-    const w = createWorker();
+    const { worker: w, url } = createWorker();
     let stdout = '';
     let stderr = '';
-    const timer = setTimeout(() => { stderr = 'Timeout'; try{w.terminate();}catch{} resolve({ stdout, stderr }); }, 8000);
+    const cleanup = () => {
+      try { w.terminate(); } catch {}
+      URL.revokeObjectURL(url);
+    };
+    const timer = setTimeout(() => {
+      stderr = 'Timeout';
+      cleanup();
+      resolve({ stdout, stderr });
+    }, 8000);
     w.onmessage = (ev: MessageEvent) => {
       const m: any = ev.data;
       if (m.type === 'log') stdout += (stdout? '\n':'') + String(m.data || '');
-      if (m.type === 'done') { clearTimeout(timer); resolve({ stdout: stdout || m.stdout || '' }); try{w.terminate();}catch{} }
-      if (m.type === 'err') { clearTimeout(timer); resolve({ stdout, stderr: m.stderr || 'Error' }); try{w.terminate();}catch{} }
+      if (m.type === 'done') {
+        clearTimeout(timer);
+        cleanup();
+        resolve({ stdout: stdout || m.stdout || '' });
+      }
+      if (m.type === 'err') {
+        clearTimeout(timer);
+        cleanup();
+        resolve({ stdout, stderr: m.stderr || 'Error' });
+      }
     };
     w.postMessage({ code, lang: ts ? 'ts' : 'js' });
   });

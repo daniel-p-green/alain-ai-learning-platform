@@ -1,19 +1,19 @@
 import NotebookViewer from "@/components/NotebookViewer";
 import NotebookActions from "@/components/NotebookActions";
 import { appBaseUrl } from "@/lib/requestBase";
+import { decodeNotebookParam, encodeNotebookId } from "@/lib/notebookId";
 
 export const dynamic = "force-dynamic";
 
 async function fetchNotebook(id: string) {
   const base = appBaseUrl();
-  const res = await fetch(`${base}/api/notebooks/${encodeURIComponent(id)}`, { cache: "no-store" });
+  const res = await fetch(`${base}/api/notebooks/${encodeNotebookId(id)}`, { cache: "no-store" });
   if (!res.ok) return null;
   return res.json();
 }
 
 export default async function NotebookPage({ params, searchParams }: { params: { id: string }, searchParams?: { [k: string]: string | string[] | undefined } }) {
-  let decodedId: string;
-  try { decodedId = decodeURIComponent(params.id); } catch { decodedId = params.id; }
+  const decodedId = decodeNotebookParam(params.id);
   const rec = await fetchNotebook(decodedId);
   if (!rec) {
     return <div className="mx-auto max-w-3xl p-6">Notebook not found.</div>;

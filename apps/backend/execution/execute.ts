@@ -202,9 +202,21 @@ class OpenAICompatibleProvider implements Provider {
   async execute(req: ExecuteRequest): Promise<string> {
     const baseUrl = openaiBaseUrl();
     const apiKey = openaiApiKey();
-    
-    if (!baseUrl || !apiKey) {
-      throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required");
+
+    const trimmedBase = baseUrl?.trim();
+    if (!trimmedBase) {
+      throw APIError.failedPrecondition("OPENAI_BASE_URL required (e.g., http://localhost:11434/v1)");
+    }
+    const isLocalEndpoint = (() => {
+      try {
+        const url = new URL(trimmedBase);
+        return url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname === '[::1]';
+      } catch {
+        return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/.test(trimmedBase);
+      }
+    })();
+    if (!apiKey && !isLocalEndpoint) {
+      throw APIError.failedPrecondition("OPENAI_API_KEY required for non-local OpenAI-compatible endpoints");
     }
 
     // Map model aliases using the shared helper (single source of truth)
@@ -221,10 +233,10 @@ class OpenAICompatibleProvider implements Provider {
       // Add a 30s timeout via AbortController
       const ac = new AbortController();
       const timer = setTimeout(() => ac.abort(), 30_000);
-      const response = await fetch(`${baseUrl.replace(/\/$/, '')}/chat/completions`, {
+      const response = await fetch(`${trimmedBase.replace(/\/$/, '')}/chat/completions`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
+          ...(apiKey ? { "Authorization": `Bearer ${apiKey}` } : {}),
           "Content-Type": "application/json",
           "User-Agent": "ALAIN-Tutorial-Platform/1.0",
         },

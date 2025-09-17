@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { encodeNotebookId } from "@/lib/notebookId";
 
 export default function NotebookActions({ id, promptRemix }: { id: string; promptRemix?: boolean }) {
   const [toast, setToast] = useState<string | null>(null);
@@ -17,7 +18,7 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
   const [model, setModel] = useState<string>('openai/gpt-oss-20b');
   const [maxSections, setMaxSections] = useState<number>(8);
   const router = useRouter();
-  const encodedId = encodeURIComponent(id);
+  const encodedId = encodeNotebookId(id);
   const isGh = id.startsWith('gh:');
   async function exportPR() {
     try {
@@ -97,8 +98,7 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
                     setShowRemix(false);
                     setToast('Remix ready');
                     if (newId) {
-                      // Use encodeURIComponent to keep gh:/slashes safe
-                      router.push(`/notebooks/${encodeURIComponent(newId)}`);
+                      router.push(`/notebooks/${encodeNotebookId(newId)}`);
                     }
                   } catch (e: any) {
                     setToast(e?.message || 'Remix failed');
@@ -146,7 +146,7 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
                     const newId = j?.id;
                     setShowAlainRemix(false);
                     setToast('Remix ready');
-                    if (newId) router.push(`/notebooks/${encodeURIComponent(newId)}`);
+                    if (newId) router.push(`/notebooks/${encodeNotebookId(newId)}`);
                   } catch (e: any) {
                     setToast(e?.message || 'Remix failed');
                   } finally {

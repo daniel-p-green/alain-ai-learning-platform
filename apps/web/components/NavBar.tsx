@@ -2,8 +2,7 @@
 import Link from "next/link";
 import BrandLogo from "./BrandLogo";
 import MobileNav from "./MobileNav";
-import { useUser } from "@clerk/nextjs";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 
 export default function NavBar() {
   const { user } = useUser();
