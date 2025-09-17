@@ -14,13 +14,13 @@ echo "[dev_offline] OPENAI_API_KEY=$OPENAI_API_KEY"
 echo "[dev_offline] DEMO_ALLOW_UNAUTH=$DEMO_ALLOW_UNAUTH"
 
 (
-  cd backend
+  cd apps/backend
   encore run
 ) &
 BACK_PID=$!
 
 (
-  cd web
+  cd apps/web
   npm run dev
 ) &
 WEB_PID=$!
@@ -28,4 +28,3 @@ WEB_PID=$!
 trap 'kill $BACK_PID $WEB_PID 2>/dev/null || true' INT TERM EXIT
 
 wait -n $BACK_PID $WEB_PID || true
-

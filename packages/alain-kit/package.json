@@ -2,17 +2,46 @@
   "name": "alain-kit",
   "version": "1.0.0",
   "description": "Production-ready notebook generation system with quality validation and Colab compatibility",
-  "main": "validation/integration.js",
+  "type": "module",
+  "main": "./dist/validation/integration.js",
+  "types": "./dist/validation/integration.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/validation/integration.js",
+      "types": "./dist/validation/integration.d.ts"
+    },
+    "./validation/*": {
+      "import": "./dist/validation/*.js",
+      "types": "./dist/validation/*.d.ts"
+    },
+    "./core/*": {
+      "import": "./dist/core/*.js",
+      "types": "./dist/core/*.d.ts"
+    },
+    "./examples/*": {
+      "import": "./dist/examples/*.js",
+      "types": "./dist/examples/*.d.ts"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "test": "jest",
-    "example": "tsx examples/usage-example.ts"
+    "example": "tsx examples/usage-example.ts",
+    "build": "tsc -p tsconfig.json"
   },
-  "dependencies": {
-    "typescript": "^5.0.0",
-    "tsx": "^4.0.0"
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
   },
-  "keywords": ["jupyter", "notebooks", "ai", "education", "colab"],
+  "keywords": [
+    "jupyter",
+    "notebooks",
+    "ai",
+    "education",
+    "colab"
+  ],
   "author": "ALAIN Team",
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "dist",
+    "resources/prompts/alain-kit"
+  ]
 }

@@ -13,7 +13,7 @@ if (isPlaywright) {
     await expect(by).toHaveAttribute('href', /linkedin\.com\/in\/danielpgreen/);
 
     // X link
-    const x = footer.getByRole('link', { name: /X \(@dgrreen\)/i });
+    const x = footer.getByRole('link', { name: /X/i });
     await expect(x).toBeVisible();
     await expect(x).toHaveAttribute('href', 'https://x.com/dgrreen');
 

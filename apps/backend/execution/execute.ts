@@ -97,7 +97,7 @@ export const teacherExecute = api<ExecuteRequest, ExecuteResponse>(
       // Set harmony-compatible parameters for GPT-OSS models
       teacherReq.temperature = req.temperature ?? 0.3; // Lower temperature for more structured output
       const userMaxTokens = req.max_tokens ?? 2048;
-      teacherReq.max_tokens = Math.max(1, Math.min(userMaxTokens, 4096)); // Cap tokens to prevent abuse
+      teacherReq.max_tokens = Math.max(1, Math.min(userMaxTokens, 10_000)); // Cap tokens to prevent abuse
 
       const provider = getProvider(teacherReq.provider);
       const content = await withRetries(() => provider.execute(teacherReq));

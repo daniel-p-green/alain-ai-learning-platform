@@ -1,4 +1,4 @@
-import { ALAINKit } from '../index';
+import { ALAINKit } from '../index.js';
 
 async function main() {
   const kit = new ALAINKit();

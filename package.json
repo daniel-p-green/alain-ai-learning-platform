@@ -13,6 +13,8 @@
     "dev:hosted": "bash scripts/dev_hosted.sh",
     "smoke:hosted": "bash scripts/smoke/hosted.sh",
     "smoke:offline": "bash scripts/smoke/offline.sh",
+    "test:web": "npm --workspace alain-ai-learning-platform-web run test",
+    "alain:build": "npm --workspace packages/alain-kit run build && npm --workspace packages/alain-kit-sdk run build",
     "alain:example": "npm --workspace packages/alain-kit-sdk run example",
     "alain:cli": "npm --workspace packages/alain-kit-sdk run cli",
     "alain:bench:run": "npm --workspace packages/alain-kit-sdk run bench:run",
@@ -22,6 +24,7 @@
   "workspaces": [
     "apps/backend",
     "apps/web",
+    "packages/alain-kit",
     "packages/alain-kit-sdk"
   ],
   "dependencies": {

@@ -57,8 +57,8 @@ const slugify = (value: string) =>
     .slice(0, 60);
 
 const kitPromise = async () => {
-  const mod = await import('../packages/alain-kit-sdk/index.ts');
-  return mod.ALAINKit as typeof import('../packages/alain-kit-sdk/index.ts').ALAINKit;
+  const mod = await import('../packages/alain-kit/validation/integration.ts');
+  return mod.ALAINKit as typeof import('../packages/alain-kit/validation/integration.ts').ALAINKit;
 };
 
 const outputRoot = path.resolve(

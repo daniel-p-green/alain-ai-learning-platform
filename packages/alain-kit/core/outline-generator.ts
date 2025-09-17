@@ -1,8 +1,8 @@
-import { extractJsonLoose } from './json-utils';
-import { createLogger, timeIt, trackEvent, metrics } from './obs';
-import { capsFor } from './providers';
-import { supportsTemperature } from './model-caps';
-import { loadPromptTemplate, applyTemplate } from './prompt-loader';
+import { extractJsonLoose } from './json-utils.js';
+import { createLogger, timeIt, trackEvent, metrics } from './obs.js';
+import { capsFor, buildChatCompletionsUrl } from './providers.js';
+import { supportsTemperature } from './model-caps.js';
+import { loadPromptTemplate, applyTemplate } from './prompt-loader.js';
 
 /**
  * ALAIN-Kit Outline Generator
@@ -93,14 +93,15 @@ export class OutlineGenerator {
     if (!options.model) {
       throw new Error('Model is required');
     }
-    if (!options.apiKey) {
+    const isLocalEndpoint = /localhost|127\.0\.0\.1/.test((this.baseUrl || '').toLowerCase());
+    if (!options.apiKey && !isLocalEndpoint) {
       throw new Error('API key is required');
     }
     const { model, difficulty, customPrompt } = options;
-    const apiKey = options.apiKey!;
+    const apiKey = options.apiKey;
     
     // Use this.baseUrl for local model inference if provided
-    const endpoint = this.baseUrl || 'https://api.poe.com';
+    const endpoint = buildChatCompletionsUrl(this.baseUrl);
     // Allow callers to provide a subject/title and optional context (e.g., remix headings) via customPrompt
     const subject = customPrompt?.title?.trim() || model;
     const context = customPrompt?.context;
@@ -130,7 +131,7 @@ export class OutlineGenerator {
       if (providerCaps.allowResponseFormat) {
         body.response_format = { type: 'json_object' } as const;
       }
-      const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, apiKey, body);
+      const content = await this.requestWithRetry(endpoint, apiKey, body);
       try {
         outline = this.parseOutlineResponse(content);
         break;
@@ -249,8 +250,11 @@ export class OutlineGenerator {
     };
   }
 
-  private async repairOutline(outline: NotebookOutline, issues: string[], ctx: { model: string; apiKey: string; difficulty: 'beginner'|'intermediate'|'advanced'; }): Promise<NotebookOutline> {
-    const endpoint = this.baseUrl || 'https://api.poe.com';
+  private async repairOutline(outline: NotebookOutline, issues: string[], ctx: { model: string; apiKey?: string; difficulty: 'beginner'|'intermediate'|'advanced'; }): Promise<NotebookOutline> {
+    const endpoint = buildChatCompletionsUrl(this.baseUrl);
+    if (!ctx.apiKey) {
+      throw new Error('API key is required for outline repair');
+    }
     const providerCaps = capsFor(this.baseUrl);
     const repairPrompt = `You previously generated a JSON outline for a tutorial. It needs repair to meet constraints.\n`+
       `Return ONLY valid JSON (start with { and end with }). Fix the following issues: ${issues.join('; ')}.\n`+
@@ -273,7 +277,7 @@ export class OutlineGenerator {
     if (providerCaps.allowResponseFormat) {
       reqBody.response_format = { type: 'json_object' };
     }
-    const content = await this.requestWithRetry(`${endpoint}/v1/chat/completions`, ctx.apiKey, reqBody);
+    const content = await this.requestWithRetry(endpoint, ctx.apiKey, reqBody);
     const repaired = this.parseOutlineResponse(content);
     return repaired;
   }
@@ -318,12 +322,13 @@ export class OutlineGenerator {
     while (attempt < 3) {
       try {
         const started = Date.now();
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (apiKey && apiKey !== 'local') {
+          headers.Authorization = `Bearer ${apiKey}`;
+        }
         const response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
+          headers,
           body: JSON.stringify(body)
         });
         

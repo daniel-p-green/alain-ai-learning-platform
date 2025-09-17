@@ -29,7 +29,7 @@ Provider baseUrl tip
 Run the example:
 
 ```bash
-cd alain-ai-learning-platform/alain-kit-sdk
+cd packages/alain-kit-sdk
 npx tsx examples/usage-example.ts
 ```
 

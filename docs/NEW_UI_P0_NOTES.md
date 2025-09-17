@@ -26,8 +26,8 @@ This document summarizes the P0 implementation work, feature flags, and how to v
 - Requirements: `docs/REQUIREMENTS_UI_MVP.md`
 
 ## Verify locally
-1. `cd web && npm install`
-2. `npm run dev` and optionally set flags in `.env.local`:
+1. `cd apps/web && npm install`
+2. `npm run dev` (still from `apps/web`) and optionally set flags in `.env.local`:
    - `NEXT_PUBLIC_ENABLE_FALLBACK_UI=1`
 3. Visit `/`, then click Generate.
 4. Run tests: `npm run test` (all green).
