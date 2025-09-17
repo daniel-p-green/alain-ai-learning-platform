@@ -1,7 +1,9 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const DEFAULT_REPO_ROOT = join(__dirname, '../../..');
+const moduleDir = dirname(fileURLToPath(import.meta.url));
+const DEFAULT_REPO_ROOT = join(moduleDir, '../../..');
 
 export interface ResearchData {
   model: string;
