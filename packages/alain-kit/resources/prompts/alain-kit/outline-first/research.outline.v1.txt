@@ -19,6 +19,7 @@ QUALITY PATTERNS (from top-performing notebooks):
 • Balanced markdown/code ratio (40-70% markdown)
 • Clear step progression with "Step N:" format
 • Setup commands and reproducibility markers (versions, seeds, ipywidgets install)
+• Highlight modern GPT-OSS runtime notes where relevant (`pip install -U transformers kernels accelerate triton`, `use_kernels=True`, Flash Attention 3 option)
 • Callouts (Note/Tip/Warning) for guidance
 • Short, focused sections avoiding mega-cells
 
