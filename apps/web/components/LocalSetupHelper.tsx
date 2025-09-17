@@ -31,6 +31,7 @@ export default function LocalSetupHelper({ visible = true }: { visible?: boolean
 
   const installCommand = "pip install -U transformers kernels accelerate triton";
   const ollamaCommand = "ollama pull gpt-oss:20b";
+  const attnFlag = 'attn_implementation="kernels-community/vllm-flash-attn3"';
   const pythonSnippet = `from transformers import AutoModelForCausalLM\n\nmodel = AutoModelForCausalLM.from_pretrained(\n    "openai/gpt-oss-20b",\n    dtype="auto",\n    device_map="auto",\n    use_kernels=True,\n)\n`;
 
   function Copyable({ value, inline = true }: { value: string; inline?: boolean }) {
@@ -39,7 +40,7 @@ export default function LocalSetupHelper({ visible = true }: { visible?: boolean
       ? "px-2 py-1 rounded-card bg-paper-0 border border-ink-100 text-xs"
       : "px-2 py-1 rounded-card bg-paper-0 border border-ink-100 text-xs whitespace-pre-wrap leading-snug";
     const handleCopy = () => {
-      if (typeof navigator.clipboard?.writeText === "function") {
+      if (typeof navigator?.clipboard?.writeText === "function") {
         navigator.clipboard.writeText(value).catch(() => {});
       }
     };
@@ -55,9 +56,9 @@ export default function LocalSetupHelper({ visible = true }: { visible?: boolean
     <div className="mt-2 border border-ink-100 rounded-card p-3 bg-paper-0 text-sm text-ink-900 space-y-3">
       <div className="font-medium">Local Setup Helper</div>
       <p className="text-ink-700">
-        Upgrade the Transformers stack, pull the model, and load it with the new downloadable kernels. Hopper GPUs can also enable Flash Attention 3 via
-        <code className="mx-1 rounded bg-paper-0 px-1 py-[1px] border border-ink-100 text-[11px]">attn_implementation="kernels-community/vllm-flash-attn3"</code>.
+        Upgrade the Transformers stack, pull the model, and load it with the new downloadable kernels. Hopper GPUs can also enable Flash Attention 3 with the flag below.
       </p>
+      <Copyable value={attnFlag} />
       <Copyable value={installCommand} />
       <Copyable value={ollamaCommand} />
       <Copyable value={pythonSnippet} inline={false} />
