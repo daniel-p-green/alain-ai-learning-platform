@@ -135,7 +135,7 @@ export default function OutlineFirstGeneratorPage() {
         <ul className="list-disc pl-4 space-y-1">
           <li>Verify your teacher provider is configured (Poe or OpenAI-compatible) in Settings -> Environment Status.</li>
           <li>Keep this tab open while sections stream in; closing it stops generation.</li>
-          <li>Once the activity feed shows "Notebook ready," export immediately to avoid losing the buffer.</li>
+          <li>Once the activity feed shows &quot;Notebook ready,&quot; export immediately to avoid losing the buffer.</li>
         </ul>
       </div>
       <div className="space-y-4 border rounded-md p-4 bg-white shadow-sm">
