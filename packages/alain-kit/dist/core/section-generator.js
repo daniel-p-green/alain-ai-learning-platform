@@ -39,7 +39,6 @@ export class SectionGenerator {
             const prompt = this.buildSectionPrompt(outline, sectionNumber, previousSections, modelReference);
             const endpoint = buildChatCompletionsUrl(this.baseUrl);
             const providerCaps = capsFor(this.baseUrl);
-            let response;
             let data;
             try {
                 const body = {
@@ -52,19 +51,7 @@ export class SectionGenerator {
                 }
                 if (providerCaps.allowResponseFormat)
                     body.response_format = { type: 'json_object' };
-                const headers = { 'Content-Type': 'application/json' };
-                if (apiKey && apiKey !== 'local') {
-                    headers.Authorization = `Bearer ${apiKey}`;
-                }
-                response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify(body)
-                });
-                if (!response.ok) {
-                    throw new Error(`API call failed: ${response.status} ${response.statusText}`);
-                }
-                data = await response.json();
+                data = await this.requestWithRetry(endpoint, apiKey, body);
             }
             catch (error) {
                 this.log.error('section_api_failed', { error: error?.message || String(error) });
@@ -173,12 +160,12 @@ export class SectionGenerator {
         while (true) {
             try {
                 const started = Date.now();
+                const headers = { 'Content-Type': 'application/json' };
+                if (apiKey && apiKey !== 'local')
+                    headers.Authorization = `Bearer ${apiKey}`;
                 const resp = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Authorization': apiKey ? `Bearer ${apiKey}` : '',
-                        'Content-Type': 'application/json'
-                    },
+                    headers,
                     body: JSON.stringify(body)
                 });
                 if (!resp.ok)
@@ -188,7 +175,7 @@ export class SectionGenerator {
                 if (!content)
                     throw new Error('Empty content');
                 this.log.debug('section_request_success', { attempt: attempt + 1, duration_ms: Date.now() - started });
-                return content;
+                return data;
             }
             catch (e) {
                 attempt++;

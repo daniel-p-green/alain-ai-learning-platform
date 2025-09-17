@@ -1,6 +1,38 @@
 import type { ExecuteBody, Provider } from "./index";
 import { mapModelForProvider } from "./aliases";
 
+function mergeAbortSignals(timeoutMs: number, external?: AbortSignal) {
+  const timeoutController = new AbortController();
+  const timer = setTimeout(() => timeoutController.abort(), timeoutMs);
+  const controller = new AbortController();
+
+  const abortController = () => {
+    if (!controller.signal.aborted) controller.abort();
+  };
+
+  const cleanups: Array<() => void> = [];
+  const sources = [timeoutController.signal, external].filter(Boolean) as AbortSignal[];
+
+  for (const signal of sources) {
+    if (signal.aborted) {
+      abortController();
+      break;
+    }
+    const onAbort = () => abortController();
+    signal.addEventListener("abort", onAbort, { once: true });
+    cleanups.push(() => signal.removeEventListener("abort", onAbort));
+  }
+
+  const dispose = () => {
+    clearTimeout(timer);
+    cleanups.forEach((fn) => fn());
+  };
+
+  controller.signal.addEventListener("abort", dispose, { once: true });
+
+  return { signal: controller.signal, dispose };
+}
+
 async function complete(body: ExecuteBody): Promise<string> {
   const baseUrl = process.env.OPENAI_BASE_URL;
   const apiKey = process.env.OPENAI_API_KEY;
@@ -35,12 +67,7 @@ async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: A
   const baseUrl = process.env.OPENAI_BASE_URL;
   const apiKey = process.env.OPENAI_API_KEY;
   if (!baseUrl || !apiKey) throw new Error("OPENAI_BASE_URL and OPENAI_API_KEY required");
-  // Combine external abort with a 30s internal timeout
-  const ac = new AbortController();
-  const timers: any[] = [];
-  const clearAll = () => { timers.forEach(clearTimeout); };
-  timers.push(setTimeout(() => ac.abort(), 30_000));
-  const combined: AbortSignal = (AbortSignal as any).any ? (AbortSignal as any).any([ac.signal, signal].filter(Boolean)) : (signal || ac.signal);
+  const { signal: combined, dispose } = mergeAbortSignals(30_000, signal);
   const resp = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
     headers: {
@@ -62,7 +89,7 @@ async function stream(body: ExecuteBody, onData: (data: any) => void, signal?: A
   try {
     await pipeSSE(resp, onData);
   } finally {
-    clearAll();
+    dispose();
   }
 }
 

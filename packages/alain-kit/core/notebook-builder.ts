@@ -20,12 +20,26 @@ export interface Setup {
   requirements?: string[];
 }
 
+type CellMetadata = Record<string, unknown>;
+
+export interface MarkdownCell {
+  cell_type: 'markdown';
+  metadata: CellMetadata;
+  source: string[];
+}
+
+export interface CodeCell {
+  cell_type: 'code';
+  metadata: CellMetadata;
+  source: string[];
+  execution_count: number | null;
+  outputs: any[];
+}
+
+export type NotebookCell = MarkdownCell | CodeCell;
+
 export interface JupyterNotebook {
-  cells: Array<{
-    cell_type: 'markdown' | 'code';
-    metadata: {};
-    source: string[];
-  }>;
+  cells: NotebookCell[];
   metadata: {
     kernelspec: {
       display_name: string;
@@ -61,7 +75,7 @@ export class NotebookBuilder {
     if (!Array.isArray(sections)) {
       throw new Error('Sections must be an array');
     }
-    const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [];
+    const cells: NotebookCell[] = [];
 
     // ALAIN branding (expanded name) – show first
     cells.push(this.createBrandingCell());
@@ -97,7 +111,7 @@ export class NotebookBuilder {
 
     // Ensure ipywidgets is available for interactive MCQs
     cells.push({
-      cell_type: "code" as const,
+      cell_type: 'code',
       metadata: {},
       source: [
         "# Ensure ipywidgets is installed for interactive MCQs\n",
@@ -108,9 +122,9 @@ export class NotebookBuilder {
         "    import sys, subprocess\n",
         "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'ipywidgets>=8.0.0'])\n"
       ],
-      execution_count: null as any,
-      outputs: [] as any[]
-    } as any);
+      execution_count: null,
+      outputs: [],
+    });
 
     const pendingAssessments = Array.isArray(outline.assessments) ? outline.assessments.slice() : [];
     let assessmentIntroInserted = false;
@@ -118,16 +132,24 @@ export class NotebookBuilder {
     // Generated sections
     sections.forEach((section, index) => {
       section.content.forEach(cell => {
-        const obj: any = {
-          cell_type: cell.cell_type,
-          metadata: {},
-          source: this.formatCellSource(cell.source)
-        };
+        const source = this.formatCellSource(cell.source);
         if (cell.cell_type === 'code') {
-          obj.execution_count = null;
-          obj.outputs = [];
+          const codeCell: CodeCell = {
+            cell_type: 'code',
+            metadata: {},
+            source,
+            execution_count: null,
+            outputs: [],
+          };
+          cells.push(codeCell);
+        } else {
+          const markdownCell: MarkdownCell = {
+            cell_type: 'markdown',
+            metadata: {},
+            source,
+          };
+          cells.push(markdownCell);
         }
-        cells.push(obj);
       });
 
       if (pendingAssessments.length) {
@@ -206,9 +228,9 @@ export class NotebookBuilder {
     };
   }
 
-  private createEnvironmentCell() {
+  private createEnvironmentCell(): CodeCell {
     return {
-      cell_type: "code" as const,
+      cell_type: 'code',
       metadata: {},
       source: [
         "# 🔧 Environment Detection and Setup\n",
@@ -229,8 +251,8 @@ export class NotebookBuilder {
         "    except Exception:\n",
         "        pass\n"
       ],
-      execution_count: null as any,
-      outputs: [] as any[]
+      execution_count: null,
+      outputs: [],
     };
   }
 
@@ -256,9 +278,9 @@ export class NotebookBuilder {
     };
   }
 
-  private createDotenvCell() {
+  private createDotenvCell(): CodeCell {
     return {
-      cell_type: "code" as const,
+      cell_type: 'code',
       metadata: {},
       source: [
         "# 🔐 Load and manage secrets from .env\\n",
@@ -346,14 +368,14 @@ export class NotebookBuilder {
         "for k in keys:\\n",
         "    print(f'{k}:', mask(os.environ.get(k)))\\n"
       ],
-      execution_count: null as any,
-      outputs: [] as any[]
-    } as any;
+      execution_count: null,
+      outputs: [],
+    };
   }
 
-  private createProviderSetupCell() {
+  private createProviderSetupCell(): CodeCell {
     return {
-      cell_type: "code" as const,
+      cell_type: 'code',
       metadata: {},
       source: [
         "# 🌐 ALAIN Provider Setup (Poe/OpenAI-compatible)\n",
@@ -397,14 +419,14 @@ export class NotebookBuilder {
         "except Exception as e:\n",
         "    print('⚠️ Provider setup failed:', e)\n"
       ],
-      execution_count: null as any,
-      outputs: [] as any[]
+      execution_count: null,
+      outputs: [],
     };
   }
 
-  private createProviderSmokeCell() {
+  private createProviderSmokeCell(): CodeCell {
     return {
-      cell_type: "code" as const,
+      cell_type: 'code',
       metadata: {},
       source: [
         "# 🔎 Provider Smoke Test (1-token)\n",
@@ -419,8 +441,8 @@ export class NotebookBuilder {
         "    except Exception as e:\n",
         "        print('⚠️ Smoke test failed:', e)\n"
       ],
-      execution_count: null as any,
-      outputs: [] as any[]
+      execution_count: null,
+      outputs: [],
     };
   }
 

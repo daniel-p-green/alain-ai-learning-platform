@@ -391,6 +391,9 @@ function getCodeFromAPIError(error: APIError): string {
 
 function classifyErrorCode(error: any): string {
   if (error instanceof APIError) return getCodeFromAPIError(error);
+  if (error && typeof error === 'object' && (error as any).name === 'AbortError') {
+    return 'network_timeout';
+  }
   const msg = (error instanceof Error ? error.message : String(error)).toLowerCase();
   if (msg.includes('timeout') || msg.includes('aborted')) return 'network_timeout';
   if (msg.includes('401') || msg.includes('unauthorized')) return 'auth_expired';

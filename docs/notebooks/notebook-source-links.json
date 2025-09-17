@@ -1,0 +1,2647 @@
+[
+  {
+    "source": "other",
+    "path": "gpt-5_prompting_guide.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/gpt-5_prompting_guide.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "alain-ai-learning-platform/docs/templates/teaching_template.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/alain-ai-learning-platform/docs/templates/teaching_template.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "index/notebooks/gpt-5_prompting_guide.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/index/notebooks/gpt-5_prompting_guide.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/gpt-5_prompting_guide.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/gpt-5_prompting_guide.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/gpt-oss/run-nvidia.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/gpt-oss/run-nvidia.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/gpt-oss/gpt-oss-fine-tune-transformers.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/gpt-oss/gpt-oss-fine-tune-transformers.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/gpt-oss/run-colab.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/gpt-oss/run-colab.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/gpt-oss/fine-tune-korean.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/gpt-oss/fine-tune-korean.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter05/Chapter 5 - Text Clustering and Topic Modeling.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter05/Chapter 5 - Text Clustering and Topic Modeling.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter02/Chapter 2 - Tokens and Token Embeddings.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter02/Chapter 2 - Tokens and Token Embeddings.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter03/Chapter 3 - Looking Inside LLMs.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter03/Chapter 3 - Looking Inside LLMs.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter04/Chapter 4 - Text Classification.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter04/Chapter 4 - Text Classification.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter10/Chapter 10 - Creating Text Embedding Models.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter10/Chapter 10 - Creating Text Embedding Models.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter11/Chapter 11 - Fine-Tuning BERT.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter11/Chapter 11 - Fine-Tuning BERT.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter08/Chapter 8 - Semantic Search.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter08/Chapter 8 - Semantic Search.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter01/Chapter 1 - Introduction to Language Models.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter01/Chapter 1 - Introduction to Language Models.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter06/Chapter 6 - Prompt Engineering.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter06/Chapter 6 - Prompt Engineering.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter07/Chapter 7 - Advanced Text Generation Techniques and Tools.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter07/Chapter 7 - Advanced Text Generation Techniques and Tools.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter09/Chapter 9 - Multimodal Large Language Models.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter09/Chapter 9 - Multimodal Large Language Models.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/Hands-On-Large-Language-Models/chapter12/Chapter 12 - Fine-tuning Generation Models.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/Hands-On-Large-Language-Models/chapter12/Chapter 12 - Fine-tuning Generation Models.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/Prompt_Generator_[MAKE_A_COPY].ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/Prompt_Generator_[MAKE_A_COPY].ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/extended_thinking.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/extended_thinking.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/extended_thinking_with_tool_use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/extended_thinking_with_tool_use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/04_Separating_Data_and_Instructions.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/04_Separating_Data_and_Instructions.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/10.2_Appendix_Tool Use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/10.2_Appendix_Tool Use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/05_Formatting_Output_and_Speaking_for_Claude.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/05_Formatting_Output_and_Speaking_for_Claude.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/02_Being_Clear_and_Direct.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/02_Being_Clear_and_Direct.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/10.1_Appendix_Chaining Prompts.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/10.1_Appendix_Chaining Prompts.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/07_Using_Examples_Few-Shot_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/07_Using_Examples_Few-Shot_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/03_Assigning_Roles_Role_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/03_Assigning_Roles_Role_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/09_Complex_Prompts_from_Scratch.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/09_Complex_Prompts_from_Scratch.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/06_Precognition_Thinking_Step_by_Step.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/06_Precognition_Thinking_Step_by_Step.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/00_Tutorial_How-To.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/00_Tutorial_How-To.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/10.3_Appendix_Search & Retrieval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/10.3_Appendix_Search & Retrieval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/08_Avoiding_Hallucinations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/08_Avoiding_Hallucinations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/01_Basic_Prompt_Structure.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/Anthropic 1P/01_Basic_Prompt_Structure.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/04_Separating_Data_and_Instructions.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/04_Separating_Data_and_Instructions.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_1_Appendix_Chaining_Prompts.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_1_Appendix_Chaining_Prompts.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/05_Formatting_Output_and_Speaking_for_Claude.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/05_Formatting_Output_and_Speaking_for_Claude.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/02_Being_Clear_and_Direct.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/02_Being_Clear_and_Direct.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_3_Appendix_Empirical_Performance_Evaluations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_3_Appendix_Empirical_Performance_Evaluations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/03_Assigning_Roles_Role_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/03_Assigning_Roles_Role_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/09_Complex_Prompts_from_Scratch.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/09_Complex_Prompts_from_Scratch.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_2_Appendix_Tool_Use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_2_Appendix_Tool_Use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_4_Appendix_Search_and_Retrieval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/10_4_Appendix_Search_and_Retrieval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/06_Precognition_Thinking_Step_by_Step.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/06_Precognition_Thinking_Step_by_Step.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/00_Tutorial_How-To.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/00_Tutorial_How-To.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/07_Using_Examples _Few-Shot_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/07_Using_Examples _Few-Shot_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/08_Avoiding_Hallucinations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/08_Avoiding_Hallucinations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/01_Basic_Prompt_Structure.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/anthropic/01_Basic_Prompt_Structure.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/04_Separating_Data_and_Instructions.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/04_Separating_Data_and_Instructions.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_1_Appendix_Chaining_Prompts.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_1_Appendix_Chaining_Prompts.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/05_Formatting_Output_and_Speaking_for_Claude.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/05_Formatting_Output_and_Speaking_for_Claude.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_3_Appendix_Empirical_Performance_Eval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_3_Appendix_Empirical_Performance_Eval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/02_Being_Clear_and_Direct.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/02_Being_Clear_and_Direct.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/07_Using_Examples_Few-Shot_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/07_Using_Examples_Few-Shot_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/03_Assigning_Roles_Role_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/03_Assigning_Roles_Role_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/09_Complex_Prompts_from_Scratch.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/09_Complex_Prompts_from_Scratch.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_2_Appendix_Tool_Use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_2_Appendix_Tool_Use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_4_Appendix_Search_and_Retrieval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/10_4_Appendix_Search_and_Retrieval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/06_Precognition_Thinking_Step_by_Step.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/06_Precognition_Thinking_Step_by_Step.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/00_Tutorial_How-To.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/00_Tutorial_How-To.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/08_Avoiding_Hallucinations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/08_Avoiding_Hallucinations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/01_Basic_Prompt_Structure.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/prompt-eng-interactive-tutorial/AmazonBedrock/boto3/01_Basic_Prompt_Structure.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/tool_use/04_complete_workflow.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/tool_use/04_complete_workflow.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/tool_use/06_chatbot_with_multiple_tools.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/tool_use/06_chatbot_with_multiple_tools.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/tool_use/01_tool_use_overview.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/tool_use/01_tool_use_overview.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/tool_use/05_tool_choice.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/tool_use/05_tool_choice.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/tool_use/02_your_first_simple_tool.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/tool_use/02_your_first_simple_tool.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/tool_use/03_structured_outputs.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/tool_use/03_structured_outputs.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/03_prompt_engineering.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/03_prompt_engineering.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/02_medical_prompt.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/02_medical_prompt.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/01_prompting_recap.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/01_prompting_recap.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/04_call_summarizer.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/04_call_summarizer.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/05_customer_support_ai.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/real_world_prompting/05_customer_support_ai.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/04_parameters.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/04_parameters.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/01_getting_started.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/01_getting_started.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/06_vision.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/06_vision.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/03_models.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/03_models.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/05_Streaming.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/05_Streaming.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/02_messages_format.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/anthropic_api_fundamentals/02_messages_format.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/05_prompt_foo_code_graded_animals/lesson.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/05_prompt_foo_code_graded_animals/lesson.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/01_intro_to_evals/01_intro_to_evals.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/01_intro_to_evals/01_intro_to_evals.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/02_workbench_evals/02_workbench_evals.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/02_workbench_evals/02_workbench_evals.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/04_code_graded_classification_evals/04_code_graded_classification_evals.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/04_code_graded_classification_evals/04_code_graded_classification_evals.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/08_prompt_foo_model_graded/lesson.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/08_prompt_foo_model_graded/lesson.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/03_code_graded_evals/03_code_graded.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/03_code_graded_evals/03_code_graded.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/09_custom_model_graded_prompt_foo/lesson.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/09_custom_model_graded_prompt_foo/lesson.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/06_prompt_foo_code_graded_classification/lesson.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/06_prompt_foo_code_graded_classification/lesson.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/07_prompt_foo_custom_graders/lesson.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_evaluations/07_prompt_foo_custom_graders/lesson.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/04_Separating_Data_and_Instructions.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/04_Separating_Data_and_Instructions.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/10.2_Appendix_Tool Use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/10.2_Appendix_Tool Use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/05_Formatting_Output_and_Speaking_for_Claude.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/05_Formatting_Output_and_Speaking_for_Claude.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/02_Being_Clear_and_Direct.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/02_Being_Clear_and_Direct.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/10.1_Appendix_Chaining Prompts.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/10.1_Appendix_Chaining Prompts.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/07_Using_Examples_Few-Shot_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/07_Using_Examples_Few-Shot_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/03_Assigning_Roles_Role_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/03_Assigning_Roles_Role_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/09_Complex_Prompts_from_Scratch.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/09_Complex_Prompts_from_Scratch.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/06_Precognition_Thinking_Step_by_Step.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/06_Precognition_Thinking_Step_by_Step.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/00_Tutorial_How-To.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/00_Tutorial_How-To.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/10.3_Appendix_Search & Retrieval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/10.3_Appendix_Search & Retrieval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/08_Avoiding_Hallucinations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/08_Avoiding_Hallucinations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/01_Basic_Prompt_Structure.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/Anthropic 1P/01_Basic_Prompt_Structure.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/04_Separating_Data_and_Instructions.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/04_Separating_Data_and_Instructions.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_1_Appendix_Chaining_Prompts.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_1_Appendix_Chaining_Prompts.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/05_Formatting_Output_and_Speaking_for_Claude.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/05_Formatting_Output_and_Speaking_for_Claude.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/02_Being_Clear_and_Direct.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/02_Being_Clear_and_Direct.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_3_Appendix_Empirical_Performance_Evaluations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_3_Appendix_Empirical_Performance_Evaluations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/03_Assigning_Roles_Role_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/03_Assigning_Roles_Role_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/09_Complex_Prompts_from_Scratch.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/09_Complex_Prompts_from_Scratch.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_2_Appendix_Tool_Use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_2_Appendix_Tool_Use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_4_Appendix_Search_and_Retrieval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/10_4_Appendix_Search_and_Retrieval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/06_Precognition_Thinking_Step_by_Step.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/06_Precognition_Thinking_Step_by_Step.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/00_Tutorial_How-To.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/00_Tutorial_How-To.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/07_Using_Examples _Few-Shot_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/07_Using_Examples _Few-Shot_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/08_Avoiding_Hallucinations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/08_Avoiding_Hallucinations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/01_Basic_Prompt_Structure.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/anthropic/01_Basic_Prompt_Structure.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/04_Separating_Data_and_Instructions.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/04_Separating_Data_and_Instructions.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_1_Appendix_Chaining_Prompts.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_1_Appendix_Chaining_Prompts.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/05_Formatting_Output_and_Speaking_for_Claude.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/05_Formatting_Output_and_Speaking_for_Claude.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_3_Appendix_Empirical_Performance_Eval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_3_Appendix_Empirical_Performance_Eval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/02_Being_Clear_and_Direct.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/02_Being_Clear_and_Direct.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/07_Using_Examples_Few-Shot_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/07_Using_Examples_Few-Shot_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/03_Assigning_Roles_Role_Prompting.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/03_Assigning_Roles_Role_Prompting.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/09_Complex_Prompts_from_Scratch.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/09_Complex_Prompts_from_Scratch.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_2_Appendix_Tool_Use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_2_Appendix_Tool_Use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_4_Appendix_Search_and_Retrieval.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/10_4_Appendix_Search_and_Retrieval.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/06_Precognition_Thinking_Step_by_Step.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/06_Precognition_Thinking_Step_by_Step.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/00_Tutorial_How-To.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/00_Tutorial_How-To.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/08_Avoiding_Hallucinations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/08_Avoiding_Hallucinations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/01_Basic_Prompt_Structure.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/courses/prompt_engineering_interactive_tutorial/AmazonBedrock/boto3/01_Basic_Prompt_Structure.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/tool_use_with_pydantic.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/tool_use_with_pydantic.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/vision_with_tools.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/vision_with_tools.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/calculator_tool.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/calculator_tool.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/customer_service_agent.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/customer_service_agent.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/extracting_structured_json.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/extracting_structured_json.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/parallel_tools_claude_3_7_sonnet.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/parallel_tools_claude_3_7_sonnet.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/tool_choice.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/tool_choice.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/memory_cookbook.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/tool_use/memory_cookbook.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/building_moderation_filter.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/building_moderation_filter.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/mc_qa.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/mc_qa.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/illustrated_responses.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/illustrated_responses.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/using_citations.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/using_citations.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/batch_processing.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/batch_processing.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/how_to_make_sql_queries.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/how_to_make_sql_queries.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/generate_test_cases.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/generate_test_cases.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/building_evals.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/building_evals.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/prompt_caching.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/prompt_caching.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/speculative_prompt_caching.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/speculative_prompt_caching.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/sampling_past_max_tokens.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/sampling_past_max_tokens.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/how_to_enable_json_mode.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/how_to_enable_json_mode.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/read_web_pages_with_haiku.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/read_web_pages_with_haiku.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/metaprompt.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/metaprompt.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/pdf_upload_summarization.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/misc/pdf_upload_summarization.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/patterns/agents/orchestrator_workers.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/patterns/agents/orchestrator_workers.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/patterns/agents/evaluator_optimizer.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/patterns/agents/evaluator_optimizer.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/patterns/agents/basic_workflows.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/patterns/agents/basic_workflows.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/finetuning/finetuning_on_bedrock.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/finetuning/finetuning_on_bedrock.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/observability/usage_cost_api.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/observability/usage_cost_api.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/reading_charts_graphs_powerpoints.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/reading_charts_graphs_powerpoints.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/using_sub_agents.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/using_sub_agents.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/how_to_transcribe_text.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/how_to_transcribe_text.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/best_practices_for_vision.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/best_practices_for_vision.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/getting_started_with_vision.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/multimodal/getting_started_with_vision.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Basic_RAG_With_LlamaIndex.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Basic_RAG_With_LlamaIndex.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Router_Query_Engine.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Router_Query_Engine.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/SubQuestion_Query_Engine.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/SubQuestion_Query_Engine.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/ReAct_Agent.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/ReAct_Agent.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Multi_Modal.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Multi_Modal.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Multi_Document_Agents.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/LlamaIndex/Multi_Document_Agents.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Wikipedia/wikipedia-search-cookbook.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Wikipedia/wikipedia-search-cookbook.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/WolframAlpha/using_llm_api.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/WolframAlpha/using_llm_api.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Deepgram/prerecorded_audio.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Deepgram/prerecorded_audio.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/MongoDB/rag_using_mongodb.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/MongoDB/rag_using_mongodb.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Pinecone/rag_using_pinecone.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Pinecone/rag_using_pinecone.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Pinecone/claude_3_rag_agent.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/third_party/Pinecone/claude_3_rag_agent.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/extended_thinking/extended_thinking.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/extended_thinking/extended_thinking.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/extended_thinking/extended_thinking_with_tool_use.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/extended_thinking/extended_thinking_with_tool_use.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/classification/guide.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/classification/guide.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/summarization/guide.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/summarization/guide.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/retrieval_augmented_generation/guide.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/retrieval_augmented_generation/guide.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/text_to_sql/guide.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/text_to_sql/guide.ipynb"
+  },
+  {
+    "source": "anthropic",
+    "path": "leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/contextual-embeddings/guide.ipynb",
+    "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/leap-hack-2025/anthropic-notebooks/anthropic-cookbook/skills/contextual-embeddings/guide.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/aistudio_palm_prompt_chat.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/aistudio_palm_prompt_chat.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/Getting_started_with_google_colab_ai.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/Getting_started_with_google_colab_ai.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/Book_illustration.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/Book_illustration.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/Overview_of_Colaboratory_Features.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/Overview_of_Colaboratory_Features.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/aistudio_gemini_prompt_chat.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/aistudio_gemini_prompt_chat.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/aistudio_gemini_prompt_freeform.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/aistudio_gemini_prompt_freeform.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/aistudio_gemini_prompt_chat_b64.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/aistudio_gemini_prompt_chat_b64.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/Search_grounding_for_research_report.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/Search_grounding_for_research_report.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/aistudio_palm_prompt_text.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/aistudio_palm_prompt_text.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/Pdf_structured_outputs_on_invoices_and_forms.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/Pdf_structured_outputs_on_invoices_and_forms.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/google-colab/aistudio_gemini_prompt_freeform_b64.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/google-colab/aistudio_gemini_prompt_freeform_b64.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/notebooks/master_tutorial_notebook_guide.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/notebooks/master_tutorial_notebook_guide.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/6_synthetic_datasets/notebooks/instruction_sft_dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/6_synthetic_datasets/notebooks/instruction_sft_dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/6_synthetic_datasets/notebooks/preference_dpo_dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/6_synthetic_datasets/notebooks/preference_dpo_dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/5_vision_language_models/notebooks/vlm_usage_sample.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/5_vision_language_models/notebooks/vlm_usage_sample.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/5_vision_language_models/notebooks/vlm_sft_sample.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/5_vision_language_models/notebooks/vlm_sft_sample.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/1_instruction_tuning/notebooks/chat_templates_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/1_instruction_tuning/notebooks/chat_templates_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/vi/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/vi/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/6_synthetic_datasets/notebooks/instruction_sft_dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/6_synthetic_datasets/notebooks/instruction_sft_dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/6_synthetic_datasets/notebooks/preference_dpo_dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/6_synthetic_datasets/notebooks/preference_dpo_dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/5_vision_language_models/notebooks/vlm_usage_sample.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/5_vision_language_models/notebooks/vlm_usage_sample.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/5_vision_language_models/notebooks/vlm_sft_sample.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/5_vision_language_models/notebooks/vlm_sft_sample.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/1_instruction_tuning/notebooks/chat_templates_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/1_instruction_tuning/notebooks/chat_templates_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ja/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ja/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/6_synthetic_datasets/notebooks/instruction_sft_dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/6_synthetic_datasets/notebooks/instruction_sft_dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/6_synthetic_datasets/notebooks/preference_dpo_dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/6_synthetic_datasets/notebooks/preference_dpo_dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/5_vision_language_models/notebooks/vlm_usage_sample.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/5_vision_language_models/notebooks/vlm_usage_sample.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/5_vision_language_models/notebooks/vlm_sft_sample.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/5_vision_language_models/notebooks/vlm_sft_sample.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/1_instruction_tuning/notebooks/chat_templates_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/1_instruction_tuning/notebooks/chat_templates_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/pt-br/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/pt-br/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/8_agents/notebooks/agents.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/8_agents/notebooks/agents.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ko/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ko/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ko/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ko/3_parameter_efficient_finetuning/notebooks/load_lora_adapter.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ko/1_instruction_tuning/notebooks/chat_templates_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ko/1_instruction_tuning/notebooks/chat_templates_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/ko/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/ko/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/4_evaluation/notebooks/lighteval_evaluate_and_analyse_your_LLM.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/3_parameter_efficient_finetuning/notebooks/finetune_sft_peft.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/3_parameter_efficient_finetuning/notebooks/load_lora_adapter_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/3_parameter_efficient_finetuning/notebooks/load_lora_adapter_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/1_instruction_tuning/notebooks/chat_templates_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/1_instruction_tuning/notebooks/chat_templates_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/es/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/es/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/1_instruction_tuning/notebooks/chat_templates_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/1_instruction_tuning/notebooks/chat_templates_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/1_instruction_tuning/notebooks/sft_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/2_preference_alignment/notebooks/dpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/smol-course/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/smol-course/2_preference_alignment/notebooks/orpo_finetuning_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit2/02_class_conditioned_diffusion_model_example.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit2/02_class_conditioned_diffusion_model_example.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit2/01_finetuning_and_guidance.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit2/01_finetuning_and_guidance.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit4/02_diffusion_for_audio.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit4/02_diffusion_for_audio.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit4/01_ddim_inversion.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit4/01_ddim_inversion.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit3/01_stable_diffusion_introduction.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit3/01_stable_diffusion_introduction.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit1/01_introduction_to_diffusers.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit1/01_introduction_to_diffusers.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/unit1/02_diffusion_models_from_scratch.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/unit1/02_diffusion_models_from_scratch.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/diffusion-models-class/hackathon/dreambooth.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/diffusion-models-class/hackathon/dreambooth.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/tensorrt.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/tensorrt.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/edge_tpu.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/edge_tpu.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/openvino.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/openvino.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/optimum.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/optimum.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/onnx.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/onnx.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/torch.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/torch.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/tmo.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 9 - Model Optimization/tmo.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 2 - Convolutional Neural Networks/transfer_learning_vgg19.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 2 - Convolutional Neural Networks/transfer_learning_vgg19.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 2 - Convolutional Neural Networks/timm_Resnet.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 2 - Convolutional Neural Networks/timm_Resnet.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 5 - Generative Models/GANs & VAEs/cycleGAN.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 5 - Generative Models/GANs & VAEs/cycleGAN.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/transfer-learning-segmentation.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/transfer-learning-segmentation.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/LoRA-Image-Classification.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/LoRA-Image-Classification.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/Swin.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/Swin.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/Fine-tuning Vision Transformers for Object detection.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/Fine-tuning Vision Transformers for Object detection.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/transfer-learning-image-classification.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/transfer-learning-image-classification.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/KnowledgeDistillation.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/KnowledgeDistillation.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/fine-tuning-multilabel-image-classification.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/fine-tuning-multilabel-image-classification.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/DETR.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 3 - Vision Transformers/DETR.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/Clip_finetune.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/Clip_finetune.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/ClipCrop.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/ClipCrop.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Image_retrieval_with_prompts.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Image_retrieval_with_prompts.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Image_similarity.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Image_similarity.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Clustering with CLIP.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Clustering with CLIP.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Image classification with CLIP.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 4 - Multimodal Models/CLIP and relatives/Image classification with CLIP.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 6 - Basic CV Tasks/Fine_tune_SAM_(Segment_Anything_Model)_on_Custom_Dataset.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 6 - Basic CV Tasks/Fine_tune_SAM_(Segment_Anything_Model)_on_Custom_Dataset.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 7 - Video and Video Processing/Vivit_Fine_tuned_Video_Classification.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 7 - Video and Video Processing/Vivit_Fine_tuned_Video_Classification.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/Synthetic_lung_images_hf_course.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/Synthetic_lung_images_hf_course.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/image_labeling_BLIP_2.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/image_labeling_BLIP_2.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/blenderproc_examples.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/blenderproc_examples.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/synthetic_data_creation_sdxl_turbo.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/synthetic_data_creation_sdxl_turbo.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/OWLV2_labeled_image_dataset_with_annotations.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-courses/computer-vision-course/notebooks/Unit 10 - Synthetic Data Creation/OWLV2_labeled_image_dataset_with_annotations.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/articles/gpt-oss/run-nvidia.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/articles/gpt-oss/run-nvidia.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/articles/gpt-oss/run-colab.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/articles/gpt-oss/run-colab.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/articles/gpt-oss/fine-tune-transfomers.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/articles/gpt-oss/fine-tune-transfomers.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/articles/gpt-oss/fine-tune-korean.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/articles/gpt-oss/fine-tune-korean.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Fine_tuning_direct_preference_optimization_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Fine_tuning_direct_preference_optimization_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Creating_slides_with_Assistants_API_and_DALL-E3.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Creating_slides_with_Assistants_API_and_DALL-E3.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Assistants_API_overview_python.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Assistants_API_overview_python.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Visualizing_embeddings_in_3D.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Visualizing_embeddings_in_3D.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Unit_test_writing_using_a_multi-step_prompt.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Unit_test_writing_using_a_multi-step_prompt.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Optimize_Prompts.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Optimize_Prompts.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Tag_caption_images_with_GPT4V.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Tag_caption_images_with_GPT4V.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/GPT_with_vision_for_video_understanding.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/GPT_with_vision_for_video_understanding.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/File_Search_Responses.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/File_Search_Responses.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Prompt_migration_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Prompt_migration_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Speech_transcription_methods.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Speech_transcription_methods.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Classification_using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Classification_using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Whisper_prompting_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Whisper_prompting_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Multiclass_classification_for_transactions.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Multiclass_classification_for_transactions.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Using_tool_required_for_customer_service.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Using_tool_required_for_customer_service.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Data_extraction_transformation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Data_extraction_transformation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Parse_PDF_docs_for_RAG.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Parse_PDF_docs_for_RAG.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Clustering_for_transaction_classification.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Clustering_for_transaction_classification.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_use_guardrails.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_use_guardrails.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Structured_outputs_multi_agent.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Structured_outputs_multi_agent.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/custom_image_embedding_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/custom_image_embedding_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_count_tokens_with_tiktoken.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_count_tokens_with_tiktoken.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/gpt4-1_prompting_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/gpt4-1_prompting_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_use_moderation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_use_moderation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Code_search_using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Code_search_using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Function_calling_with_an_OpenAPI_spec.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Function_calling_with_an_OpenAPI_spec.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Get_embeddings_from_dataset.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Get_embeddings_from_dataset.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/batch_processing.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/batch_processing.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Custom-LLM-as-a-Judge.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Custom-LLM-as-a-Judge.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_finetune_chat_models.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_finetune_chat_models.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Named_Entity_Recognition_to_enrich_text.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Named_Entity_Recognition_to_enrich_text.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Context_summarization_with_realtime_api.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Context_summarization_with_realtime_api.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Regression_using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Regression_using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Embedding_Wikipedia_articles_for_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Embedding_Wikipedia_articles_for_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_format_inputs_to_ChatGPT_models.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_format_inputs_to_ChatGPT_models.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_call_functions_for_knowledge_retrieval.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_call_functions_for_knowledge_retrieval.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_handle_rate_limits.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_handle_rate_limits.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Chat_finetuning_data_prep.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Chat_finetuning_data_prep.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Generate_Images_With_High_Input_Fidelity.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Generate_Images_With_High_Input_Fidelity.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Recommendation_using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Recommendation_using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Whisper_processing_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Whisper_processing_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Summarizing_long_documents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Summarizing_long_documents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Unit_test_writing_using_a_multi-step_prompt_with_older_completions_API.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Unit_test_writing_using_a_multi-step_prompt_with_older_completions_API.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Realtime_prompting_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Realtime_prompting_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Question_answering_using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Question_answering_using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Fine_tuning_for_function_calling.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Fine_tuning_for_function_calling.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Structured_Outputs_Intro.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Structured_Outputs_Intro.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Visualizing_embeddings_in_2D.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Visualizing_embeddings_in_2D.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Semantic_text_search_using_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Semantic_text_search_using_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Customizing_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Customizing_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/completions_usage_api.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/completions_usage_api.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/reasoning_function_calls.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/reasoning_function_calls.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_stream_completions.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_stream_completions.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Enhance_your_prompts_with_meta_prompting.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Enhance_your_prompts_with_meta_prompting.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_call_functions_with_chat_models.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_call_functions_with_chat_models.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_combine_GPT4o_with_RAG_Outfit_Assistant.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_combine_GPT4o_with_RAG_Outfit_Assistant.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Fine-tuned_classification.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Fine-tuned_classification.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Search_reranking_with_cross-encoders.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Search_reranking_with_cross-encoders.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Function_calling_finding_nearby_places.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Function_calling_finding_nearby_places.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Data-intensive-Realtime-apps.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Data-intensive-Realtime-apps.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Entity_extraction_for_long_documents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Entity_extraction_for_long_documents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Whisper_correct_misspelling.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Whisper_correct_misspelling.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Orchestrating_agents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Orchestrating_agents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Embedding_long_inputs.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Embedding_long_inputs.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/RAG_with_graph_db.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/RAG_with_graph_db.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Reinforcement_Fine_Tuning.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Reinforcement_Fine_Tuning.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Reproducible_outputs_with_the_seed_parameter.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Reproducible_outputs_with_the_seed_parameter.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Generate_Images_With_GPT_Image.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Generate_Images_With_GPT_Image.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Prompt_Caching101.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Prompt_Caching101.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Zero-shot_classification_with_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Zero-shot_classification_with_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Question_answering_using_a_search_API.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Question_answering_using_a_search_API.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/SDG1.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/SDG1.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Developing_hallucination_guardrails.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Developing_hallucination_guardrails.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/User_and_product_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/User_and_product_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/How_to_build_a_tool-using_agent_with_Langchain.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/How_to_build_a_tool-using_agent_with_Langchain.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Using_logprobs.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Using_logprobs.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Leveraging_model_distillation_to_fine-tune_a_model.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Leveraging_model_distillation_to_fine-tune_a_model.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/Clustering.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/Clustering.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/kusto/Getting_started_with_kusto_and_openai_embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/kusto/Getting_started_with_kusto_and_openai_embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/hologres/Getting_started_with_Hologres_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/hologres/Getting_started_with_Hologres_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/chroma/hyde-with-chroma-and-openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/chroma/hyde-with-chroma-and-openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/chroma/Using_Chroma_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/chroma/Using_Chroma_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/redis/Using_Redis_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/redis/Using_Redis_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/redis/redis-hybrid-query-examples.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/redis/redis-hybrid-query-examples.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/redis/getting-started-with-redis-and-openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/redis/getting-started-with-redis-and-openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/redis/redisqna/redisqna.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/redis/redisqna/redisqna.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/redis/redisjson/redisjson.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/redis/redisjson/redisjson.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/typesense/Using_Typesense_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/typesense/Using_Typesense_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/azuresearch/Getting_started_with_azure_ai_search_and_openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/azuresearch/Getting_started_with_azure_ai_search_and_openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/PolarDB/Getting_started_with_PolarDB_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/PolarDB/Getting_started_with_PolarDB_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/mongodb_atlas/semantic_search_using_mongodb_atlas_vector_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/mongodb_atlas/semantic_search_using_mongodb_atlas_vector_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/GPT4_Retrieval_Augmentation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/GPT4_Retrieval_Augmentation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Using_Pinecone_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Using_Pinecone_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Gen_QA.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Gen_QA.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Semantic_Search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Semantic_Search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Using_vision_modality_for_RAG_with_Pinecone.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/pinecone/Using_vision_modality_for_RAG_with_Pinecone.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/neon/neon-postgres-vector-search-pgvector.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/neon/neon-postgres-vector-search-pgvector.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/qdrant/Getting_started_with_Qdrant_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/qdrant/Getting_started_with_Qdrant_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/qdrant/QA_with_Langchain_Qdrant_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/qdrant/QA_with_Langchain_Qdrant_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/qdrant/Using_Qdrant_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/qdrant/Using_Qdrant_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/cassandra_astradb/Philosophical_Quotes_AstraPy.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/cassandra_astradb/Philosophical_Quotes_AstraPy.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/cassandra_astradb/Philosophical_Quotes_CQL.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/cassandra_astradb/Philosophical_Quotes_CQL.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/cassandra_astradb/Philosophical_Quotes_cassIO.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/cassandra_astradb/Philosophical_Quotes_cassIO.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/myscale/Getting_started_with_MyScale_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/myscale/Getting_started_with_MyScale_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/myscale/Using_MyScale_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/myscale/Using_MyScale_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/zilliz/Getting_started_with_Zilliz_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/zilliz/Getting_started_with_Zilliz_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/zilliz/Filtered_search_with_Zilliz_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/zilliz/Filtered_search_with_Zilliz_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/generative-search-with-weaviate-and-openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/generative-search-with-weaviate-and-openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/Using_Weaviate_for_embeddings_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/Using_Weaviate_for_embeddings_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/hybrid-search-with-weaviate-and-openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/hybrid-search-with-weaviate-and-openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/question-answering-with-weaviate-and-openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/question-answering-with-weaviate-and-openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/getting-started-with-weaviate-and-openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/weaviate/getting-started-with-weaviate-and-openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/deeplake/deeplake_langchain_qa.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/deeplake/deeplake_langchain_qa.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/tair/QA_with_Langchain_Tair_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/tair/QA_with_Langchain_Tair_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/tair/Getting_started_with_Tair_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/tair/Getting_started_with_Tair_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/elasticsearch/elasticsearch-semantic-search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/elasticsearch/elasticsearch-semantic-search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/elasticsearch/elasticsearch-retrieval-augmented-generation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/elasticsearch/elasticsearch-retrieval-augmented-generation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/milvus/Filtered_search_with_Milvus_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/milvus/Filtered_search_with_Milvus_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/milvus/Getting_started_with_Milvus_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/milvus/Getting_started_with_Milvus_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/analyticdb/QA_with_Langchain_AnalyticDB_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/analyticdb/QA_with_Langchain_AnalyticDB_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/analyticdb/Getting_started_with_AnalyticDB_and_OpenAI.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/analyticdb/Getting_started_with_AnalyticDB_and_OpenAI.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/vector_databases/SingleStoreDB/OpenAI_wikipedia_semantic_search.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/vector_databases/SingleStoreDB/OpenAI_wikipedia_semantic_search.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/stripe_model_eval/selecting_a_model_based_on_stripe_conversion.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/stripe_model_eval/selecting_a_model_based_on_stripe_conversion.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/whisper.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/whisper.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/chat_with_your_own_data.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/chat_with_your_own_data.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/functions.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/functions.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/chat.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/chat.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/whisper.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/whisper.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/embeddings.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/embeddings.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/chat_with_your_own_data.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/chat_with_your_own_data.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/completions.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/completions.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/functions.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/functions.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/DALL-E.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/DALL-E.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/azure/archive/chat.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/azure/archive/chat.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/codex/jira-github.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/codex/jira-github.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/book_translation/translate_latex_book.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/book_translation/translate_latex_book.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/agents_sdk/dispute_agent.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/agents_sdk/dispute_agent.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/agents_sdk/parallel_agents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/agents_sdk/parallel_agents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/agents_sdk/evaluate_agents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/agents_sdk/evaluate_agents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/agents_sdk/app_assistant_voice_agents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/agents_sdk/app_assistant_voice_agents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/agents_sdk/multi-agent-portfolio-collaboration/multi_agent_portfolio_collaboration.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/olympics-2-create-qa.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/olympics-2-create-qa.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/reinforcement_finetuning_healthbench.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/reinforcement_finetuning_healthbench.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/olympics-3-train-qa.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/olympics-3-train-qa.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/ft_retrieval_augmented_generation_qdrant.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/ft_retrieval_augmented_generation_qdrant.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/olympics-1-collect-data.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/fine-tuned_qa/olympics-1-collect-data.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/mcp/databricks_mcp_cookbook.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/mcp/databricks_mcp_cookbook.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/mcp/mcp_tool_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/mcp/mcp_tool_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/o-series/o3o4-mini_prompting_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/o-series/o3o4-mini_prompting_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/gpt4o/introduction_to_gpt4o.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/gpt4o/introduction_to_gpt4o.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/multimodal/Using_GPT4_Vision_With_Function_Calling.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/multimodal/Using_GPT4_Vision_With_Function_Calling.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/multimodal/Vision_Fine_tuning_on_GPT4o_for_Visual_Question_Answering.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/multimodal/Vision_Fine_tuning_on_GPT4o_for_Visual_Question_Answering.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/multimodal/image_understanding_with_rag.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/multimodal/image_understanding_with_rag.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/Visualizing_embeddings_in_Kangas.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/Visualizing_embeddings_in_Kangas.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/GPT_finetuning_with_wandb.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/GPT_finetuning_with_wandb.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/How_to_automate_S3_storage_with_functions.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/How_to_automate_S3_storage_with_functions.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/financial_document_analysis_with_llamaindex.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/financial_document_analysis_with_llamaindex.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/Visualizing_embeddings_in_wandb.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/Visualizing_embeddings_in_wandb.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/Visualizing_embeddings_with_Atlas.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/Visualizing_embeddings_with_Atlas.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/Openai_monitoring_with_wandb_weave.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/Openai_monitoring_with_wandb_weave.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/third_party/Web_search_with_google_api_bring_your_own_browser_tool.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/third_party/Web_search_with_google_api_bring_your_own_browser_tool.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/object_oriented_agentic_approach/Secure_code_interpreter_tool_for_LLM_agents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/object_oriented_agentic_approach/Secure_code_interpreter_tool_for_LLM_agents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/partners/model_selection_guide/model_selection_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/partners/model_selection_guide/model_selection_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/partners/eval_driven_system_design/receipt_inspection.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/partners/eval_driven_system_design/receipt_inspection.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/partners/mcp_powered_voice_agents/mcp_powered_agents_cookbook.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/partners/mcp_powered_voice_agents/mcp_powered_agents_cookbook.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/partners/temporal_agents_with_knowledge_graphs/Appendix.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/partners/temporal_agents_with_knowledge_graphs/Appendix.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/partners/temporal_agents_with_knowledge_graphs/temporal_agents_with_knowledge_graphs.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/partners/temporal_agents_with_knowledge_graphs/temporal_agents_with_knowledge_graphs.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/dalle/How_to_create_dynamic_masks_with_DALL-E_and_Segment_Anything.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/dalle/How_to_create_dynamic_masks_with_DALL-E_and_Segment_Anything.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/How_to_evaluate_LLMs_for_SQL_generation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/How_to_evaluate_LLMs_for_SQL_generation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/Getting_Started_with_OpenAI_Evals.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/Getting_Started_with_OpenAI_Evals.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/How_to_eval_abstractive_summarization.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/How_to_eval_abstractive_summarization.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/Evaluate_RAG_with_LlamaIndex.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/Evaluate_RAG_with_LlamaIndex.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/mcp_eval_notebook.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/mcp_eval_notebook.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/tools-evaluation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/tools-evaluation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/responses-evaluation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/responses-evaluation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/regression.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/regression.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/completion-monitoring.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/completion-monitoring.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/structured-outputs-evaluation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/structured-outputs-evaluation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/EvalsAPI_Image_Inputs.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/EvalsAPI_Image_Inputs.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/bulk-experimentation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/bulk-experimentation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/web-search-evaluation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/web-search-evaluation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/EvalsAPI_Audio_Inputs.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/evaluation/use-cases/EvalsAPI_Audio_Inputs.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/deep_research_api/introduction_to_deep_research_api.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/deep_research_api/introduction_to_deep_research_api.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/deep_research_api/introduction_to_deep_research_api_agents.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/deep_research_api/introduction_to_deep_research_api_agents.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/gpt-5/prompt-optimization-cookbook.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/gpt-5/prompt-optimization-cookbook.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/gpt-5/gpt-5_frontend.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/gpt-5/gpt-5_frontend.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/gpt-5/gpt-5_prompting_guide.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/gpt-5/gpt-5_prompting_guide.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/gpt-5/gpt-5_new_params_and_tools.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/gpt-5/gpt-5_new_params_and_tools.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/o1/Using_reasoning_for_routine_generation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/o1/Using_reasoning_for_routine_generation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/o1/Using_chained_calls_for_o1_structured_outputs.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/o1/Using_chained_calls_for_o1_structured_outputs.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/o1/Using_reasoning_for_data_validation.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/o1/Using_reasoning_for_data_validation.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/rag-quickstart/azure/Azure_AI_Search_with_Azure_Functions_and_GPT_Actions_in_ChatGPT.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/rag-quickstart/azure/Azure_AI_Search_with_Azure_Functions_and_GPT_Actions_in_ChatGPT.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/rag-quickstart/gcp/Getting_started_with_bigquery_vector_search_and_openai.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/rag-quickstart/gcp/Getting_started_with_bigquery_vector_search_and_openai.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/rag-quickstart/pinecone-retool/gpt-action-pinecone-retool-rag.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/rag-quickstart/pinecone-retool/gpt-action-pinecone-retool-rag.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_outlook.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_snowflake_middleware.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_snowflake_middleware.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_googleads_adzviser.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_googleads_adzviser.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_middleware_aws_function.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_middleware_aws_function.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_bigquery.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_bigquery.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_redshift.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_redshift.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_gmail.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_middleware_azure_function.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_google_drive.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_google_drive.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_text.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_sql_database.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_jira.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_sharepoint_doc.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_confluence.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_notion.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_box.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_box.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_zapier.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_zapier.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_snowflake_direct.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/gpt_action_snowflake_direct.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/.gpt_action_getting_started.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/chatgpt/gpt_actions_library/.gpt_action_getting_started.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/voice_solutions/voice_translation_into_different_languages_using_GPT-4o.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/voice_solutions/voice_translation_into_different_languages_using_GPT-4o.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/voice_solutions/steering_tts.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/voice_solutions/steering_tts.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/responses_api/responses_example.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/responses_api/responses_example.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/responses_api/responses_api_tool_orchestration.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/responses_api/responses_api_tool_orchestration.ipynb"
+  },
+  {
+    "source": "openai",
+    "path": "leap-hack-2025/openai-cookbook/examples/responses_api/reasoning_items.ipynb",
+    "url": "https://github.com/openai/openai-cookbook/blob/main/leap-hack-2025/openai-cookbook/examples/responses_api/reasoning_items.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/binder/example.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/binder/example.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Custom Keyboard Shortcuts.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Custom Keyboard Shortcuts.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Running Code.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Running Code.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Connecting with the Qt Console.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Connecting with the Qt Console.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Notebook Basics.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Notebook Basics.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Typesetting Equations.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Typesetting Equations.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Importing Notebooks.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Importing Notebooks.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/What is the Jupyter Notebook.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/What is the Jupyter Notebook.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Working With Markdown Cells.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/Working With Markdown Cells.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/nbpackage/mynotebook.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/nbpackage/mynotebook.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/nbpackage/nbs/other.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/docs/source/examples/Notebook/nbpackage/nbs/other.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/autoscroll.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/autoscroll.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/simple.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/simple.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/empty.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/empty.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/simple_toc.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/simple_toc.ipynb"
+  },
+  {
+    "source": "other",
+    "path": "leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/local_links.ipynb",
+    "url": "https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/leap-hack-2025/jupyter/notebook/ui-tests/test/notebooks/local_links.ipynb"
+  },
+  {
+    "source": "hf/unsloth",
+    "path": "leap-hack-2025/huggingface-guide/templates/basic_template.ipynb",
+    "url": "https://github.com/unslothai/notebooks/blob/main/leap-hack-2025/huggingface-guide/templates/basic_template.ipynb"
+  }
+]

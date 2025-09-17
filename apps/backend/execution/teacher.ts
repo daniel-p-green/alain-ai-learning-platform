@@ -7,6 +7,15 @@ const poeApiKey = secret("POE_API_KEY");
 const openaiBaseUrl = secret("OPENAI_BASE_URL");
 const openaiApiKey = secret("OPENAI_API_KEY");
 
+function resolveSecret(secretFn: () => string | undefined, envKey: string): string | undefined {
+  try {
+    const value = secretFn();
+    if (value) return value;
+  } catch {}
+  const envValue = process.env[envKey];
+  return envValue && envValue.length > 0 ? envValue : undefined;
+}
+
 interface TeacherRequest {
   model: "GPT-OSS-20B" | "GPT-OSS-120B";
   messages: Array<{ role: "system" | "user" | "assistant"; content: string }>;
@@ -175,8 +184,8 @@ export const teacherGenerate = api<TeacherRequest, TeacherResponse>(
         return { success: true, content, usedModel: requestedModel, provider, downgraded };
       } else {
         // Use Encore secrets for OpenAI-compatible provider
-        const baseUrl = openaiBaseUrl();
-        const apiKey = openaiApiKey();
+        const baseUrl = resolveSecret(openaiBaseUrl, 'OPENAI_BASE_URL');
+        const apiKey = resolveSecret(openaiApiKey, 'OPENAI_API_KEY');
         if (!baseUrl || !apiKey) {
           throw APIError.failedPrecondition("OPENAI_BASE_URL and OPENAI_API_KEY required for openai-compatible provider");
         }

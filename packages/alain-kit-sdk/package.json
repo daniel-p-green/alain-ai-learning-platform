@@ -21,7 +21,8 @@
     "alain-kit": "dist/bin/alain-kit.js"
   },
   "dependencies": {
-    "alain-kit": "file:../alain-kit"
+    "alain-kit": "file:../alain-kit",
+    "dotenv": "^16.4.5"
   },
   "scripts": {
     "example": "tsx examples/usage-example.ts",

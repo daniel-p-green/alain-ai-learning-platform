@@ -32,6 +32,9 @@ async function ensurePyodide() {
       reject(e);
     }
   });
+  pyodidePromise.catch(() => {
+    pyodidePromise = null;
+  });
   return pyodidePromise;
 }
 
@@ -45,4 +48,3 @@ export async function runPython(code: string): Promise<{ stdout: string; stderr?
     return { stdout: '', stderr: String(e?.message || e) };
   }
 }
-

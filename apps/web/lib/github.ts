@@ -13,12 +13,16 @@ type PutFileParams = {
 let _cachedToken: string | undefined;
 async function ghToken(): Promise<string> {
   if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
-  if (typeof _cachedToken === 'string') return _cachedToken;
+  if (typeof _cachedToken === 'string' && _cachedToken.length > 0) return _cachedToken;
   try {
     const { kvGet } = await import('@/lib/kv');
     const t = await kvGet<string>('secrets:github_token');
-    _cachedToken = t || '';
-    return _cachedToken;
+    if (t && t.length > 0) {
+      _cachedToken = t;
+      return t;
+    }
+    _cachedToken = undefined;
+    return '';
   } catch {
     return '';
   }

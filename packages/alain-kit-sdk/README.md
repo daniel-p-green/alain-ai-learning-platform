@@ -4,6 +4,11 @@ Public SDK for outline‑first notebook generation, validation, and Colab compat
 
 ## Install
 
+```
+npm install          # builds both packages via prepare hooks
+npm run alain:build  # optional manual rebuild while developing the kit
+```
+
 Use `tsx` to run TypeScript directly (dev dependency is included in this subpackage).
 
 ## Quick Start
@@ -32,6 +37,11 @@ Run the example:
 cd packages/alain-kit-sdk
 npx tsx examples/usage-example.ts
 ```
+
+### Switching providers
+
+- Pass `baseUrl` (or set `ALAIN_BASE_URL`) when constructing `ALAINKit` to route the teacher through a local or cloud OpenAI-compatible endpoint. Leave it blank to keep using Poe.
+- Notebooks produced by the SDK include a provider bootstrap cell—set `OPENAI_BASE_URL`/`OPENAI_API_KEY` (or `POE_API_KEY`) in your `.env` to reroute inference without changing the notebook content.
 
 ## Exports
 

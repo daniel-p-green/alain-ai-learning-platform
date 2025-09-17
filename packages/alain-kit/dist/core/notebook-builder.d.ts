@@ -15,12 +15,22 @@ export interface Assessment {
 export interface Setup {
     requirements?: string[];
 }
+type CellMetadata = Record<string, unknown>;
+export interface MarkdownCell {
+    cell_type: 'markdown';
+    metadata: CellMetadata;
+    source: string[];
+}
+export interface CodeCell {
+    cell_type: 'code';
+    metadata: CellMetadata;
+    source: string[];
+    execution_count: number | null;
+    outputs: any[];
+}
+export type NotebookCell = MarkdownCell | CodeCell;
 export interface JupyterNotebook {
-    cells: Array<{
-        cell_type: 'markdown' | 'code';
-        metadata: {};
-        source: string[];
-    }>;
+    cells: NotebookCell[];
     metadata: {
         kernelspec: {
             display_name: string;
@@ -66,4 +76,5 @@ export declare class NotebookBuilder {
     private createTroubleshootingCell;
     private formatCellSource;
 }
+export {};
 //# sourceMappingURL=notebook-builder.d.ts.map

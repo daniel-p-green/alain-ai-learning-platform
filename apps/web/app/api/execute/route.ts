@@ -148,18 +148,40 @@ export async function POST(req: NextRequest) {
           // Buffered emission to avoid overwhelming clients on fast providers
           const queue: string[] = [];
           const flushIntervalMs = 16; // ~60Hz
-          let flushing = false;
-          const flush = () => {
-            if (flushing) return;
-            flushing = true;
-            setTimeout(() => {
+          let flushTimer: ReturnType<typeof setTimeout> | null = null;
+          let closed = false;
+
+          const stopTimer = () => {
+            if (flushTimer) {
+              clearTimeout(flushTimer);
+              flushTimer = null;
+            }
+          };
+
+          const flushNow = () => {
+            stopTimer();
+            if (!queue.length || closed) return;
+            const chunk = queue.splice(0, queue.length).join("");
+            if (!chunk) return;
+            try {
+              controller.enqueue(enc.encode(chunk));
+            } catch (error) {
+              closed = true;
+              stopTimer();
+              release();
               try {
-                if (queue.length) {
-                  const chunk = queue.splice(0, queue.length).join("");
-                  controller.enqueue(enc.encode(chunk));
-                }
-              } finally {
-                flushing = false;
+                controller.error(error);
+              } catch {}
+            }
+          };
+
+          const scheduleFlush = () => {
+            if (closed || flushTimer) return;
+            flushTimer = setTimeout(() => {
+              flushTimer = null;
+              flushNow();
+              if (queue.length && !closed) {
+                scheduleFlush();
               }
             }, flushIntervalMs);
           };
@@ -170,10 +192,9 @@ export async function POST(req: NextRequest) {
             queue.push(line);
             // Flush immediately if large, else batch
             if (queue.length > 8 || payload.length > 2048) {
-              const chunk = queue.splice(0, queue.length).join("");
-              controller.enqueue(enc.encode(chunk));
+              flushNow();
             } else {
-              flush();
+              scheduleFlush();
             }
           };
 
@@ -183,12 +204,13 @@ export async function POST(req: NextRequest) {
                 send(data);
               }, req.signal);
               queue.push("data: [DONE]\n\n");
-              const tail = queue.splice(0, queue.length).join("");
-              controller.enqueue(enc.encode(tail));
+              flushNow();
+              stopTimer();
               // Basic metrics (duration, chars/sec) for observability
               const dur = Math.max(1, Date.now() - startAt);
               const cps = Math.round((totalChars / dur) * 1000);
               console.log(`[SSE] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
+              closed = true;
               controller.close();
               // Decrement concurrency on successful close
               release();
@@ -199,11 +221,12 @@ export async function POST(req: NextRequest) {
                   send(data);
                 }, req.signal);
                 queue.push("data: [DONE]\n\n");
-                const tail = queue.splice(0, queue.length).join("");
-                controller.enqueue(enc.encode(tail));
+                flushNow();
+                stopTimer();
                 const dur = Math.max(1, Date.now() - startAt);
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.log(`[SSE:retry] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
+                closed = true;
                 controller.close();
                 release();
               } catch (e2) {
@@ -214,11 +237,15 @@ export async function POST(req: NextRequest) {
                     message: (e2 instanceof Error ? e2.message : 'unknown provider error'),
                   },
                 };
-                controller.enqueue(new TextEncoder().encode(`event: error\n`));
-                controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(err)}\n\n`));
+                try {
+                  controller.enqueue(new TextEncoder().encode(`event: error\n`));
+                  controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(err)}\n\n`));
+                } catch {}
                 const dur = Math.max(1, Date.now() - startAt);
                 const cps = Math.round((totalChars / dur) * 1000);
                 console.warn(`[SSE:error] provider=${body.provider} model=${body.model} duration_ms=${dur} chars=${totalChars} chars_per_sec=${cps}`);
+                stopTimer();
+                closed = true;
                 controller.close();
                 release();
               }
@@ -229,6 +256,8 @@ export async function POST(req: NextRequest) {
           // Handle client abort
           req.signal.addEventListener("abort", () => {
             // Optionally emit an abort event
+            stopTimer();
+            closed = true;
             controller.close();
             release();
           });

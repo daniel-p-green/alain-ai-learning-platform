@@ -10,12 +10,12 @@ const ALIASES: Record<ProviderId, Record<string, string>> = {
     'gpt-4-turbo': 'gpt-4-turbo',
     'gpt-4o': 'GPT-4o',
     'gpt-4o-mini': 'GPT-4o-mini',
-    'claude-3.5-sonnet': 'Claude-Sonnet-4',
-    'claude-3-haiku': 'Claude-3-Haiku',
-    'gemini-1.5-pro': 'Gemini-2.5-Pro',
-    'gemini-1.5-flash': 'Gemini-1.5-Flash',
-    'grok-2': 'Grok-4',
-    'llama-3.1-405b': 'Llama-3.1-405B',
+    'claude-3.5-sonnet': 'claude-3.5-sonnet',
+    'claude-3-haiku': 'claude-3-haiku',
+    'gemini-1.5-pro': 'gemini-1.5-pro',
+    'gemini-1.5-flash': 'gemini-1.5-flash',
+    'grok-2': 'grok-2',
+    'llama-3.1-405b': 'llama-3.1-405b',
   },
   'openai-compatible': {
     // Ollama/vLLM style checkpoints
