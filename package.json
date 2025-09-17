@@ -4,8 +4,8 @@
   "type": "module",
   "packageManager": "npm@10",
   "scripts": {
-    "test:pure": "npm --workspace apps/backend run test:pure",
-    "test:all": "npm --workspace apps/backend run test:all",
+    "test:pure": "npm --prefix apps/backend run test:pure",
+    "test:all": "npm --prefix apps/backend run test:all",
     "validate:lesson": "node scripts/validate-lesson.js",
     "render:lesson": "python3 scripts/json_to_notebook.py",
     "smoke:notebook": "python3 scripts/notebook_smoke.py",
@@ -13,20 +13,15 @@
     "dev:hosted": "bash scripts/dev_hosted.sh",
     "smoke:hosted": "bash scripts/smoke/hosted.sh",
     "smoke:offline": "bash scripts/smoke/offline.sh",
-    "test:web": "npm --workspace alain-ai-learning-platform-web run test",
-    "alain:build": "npm --workspace packages/alain-kit run build && npm --workspace packages/alain-kit-sdk run build",
-    "alain:example": "npm --workspace packages/alain-kit-sdk run example",
-    "alain:cli": "npm --workspace packages/alain-kit-sdk run cli",
-    "alain:bench:run": "npm --workspace packages/alain-kit-sdk run bench:run",
-    "alain:bench:analyze": "npm --workspace packages/alain-kit-sdk run bench:analyze",
-    "docs:structure": "node scripts/generate-file-structure.mjs"
+    "test:web": "npm --prefix apps/web run test",
+    "alain:build": "npm --prefix packages/alain-kit run build && npm --prefix packages/alain-kit-sdk run build",
+    "alain:example": "npm --prefix packages/alain-kit-sdk run example",
+    "alain:cli": "npm --prefix packages/alain-kit-sdk run cli",
+    "alain:bench:run": "npm --prefix packages/alain-kit-sdk run bench:run",
+    "alain:bench:analyze": "npm --prefix packages/alain-kit-sdk run bench:analyze",
+    "docs:structure": "node scripts/generate-file-structure.mjs",
+    "lint:prompts": "node scripts/check-prompts-sync.mjs"
   },
-  "workspaces": [
-    "apps/backend",
-    "apps/web",
-    "packages/alain-kit",
-    "packages/alain-kit-sdk"
-  ],
   "dependencies": {
     "motion": "^12.23.12",
     "openai": "^5.20.1"
