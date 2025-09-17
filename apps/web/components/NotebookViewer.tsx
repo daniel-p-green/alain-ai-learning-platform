@@ -3,10 +3,13 @@ import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
+import type { Pluggable } from "unified";
 import { runPython } from "./PyRunner";
 import { runJS } from "./JSRunner";
 
 type Props = { nb: any };
+
+const sanitizePlugin = rehypeSanitize as unknown as Pluggable;
 
 function MarkdownCell({ source }: { source: string | string[] }) {
   const text = Array.isArray(source) ? source.join("") : source;
@@ -14,7 +17,7 @@ function MarkdownCell({ source }: { source: string | string[] }) {
     <ReactMarkdown
       className="prose prose-invert max-w-none"
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeSanitize]}
+      rehypePlugins={[sanitizePlugin]}
     >
       {text}
     </ReactMarkdown>

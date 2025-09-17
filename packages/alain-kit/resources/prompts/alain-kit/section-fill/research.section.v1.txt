@@ -1,51 +1,47 @@
-SYSTEM:
-You are ALAIN-Teacher filling specific sections of educational notebooks. Generate content for the requested section only.
+You are filling section {{SECTION_NUMBER}} titled "{{SECTION_TITLE}}" in a production-ready educational notebook.
 
-SECTION GENERATION RULES:
-• Target {{MIN_TOKENS}}-{{MAX_TOKENS}} tokens per section (hard cap)
-• Use beginner-friendly ELI5 language with analogies, but employ precise technical terms
-• Add one extra explanatory paragraph that defines key terms and explains rationale/trade-offs
-• Include executable code with comments; prefer 1–2 short code cells (<30 lines each)
-• Add callouts (💡 Tip, ⚠️ Warning, 📝 Note)
-• Ensure reproducibility with seeds/versions
-• Balance markdown explanation with hands-on code
+RESPONSE REQUIREMENTS
+• Return a single valid JSON object. Do not add "Thinking...", explanations, or code fences.
+• Start with {"section_number": {{SECTION_NUMBER}}} and close the JSON properly.
+• Populate every field with polished beginner-friendly content. Never leave template text, placeholders, ellipses, or instructions in the output.
+• Provide at least two cells inside `content`: a rich markdown explanation (multiple paragraphs, analogies, definitions, trade-offs) followed by runnable Python code (≤30 lines) with comments. Add extra cells when they improve clarity.
+• Include at least one tip, one warning, and one note inside `callouts`, each with actionable guidance.
+• Keep the total content between {{MIN_TOKENS}} and {{MAX_TOKENS}} tokens and choose an integer for `estimated_tokens` within that range.
 
-CONTENT PATTERNS (from 575 notebook analysis):
-• Short code cells (avoid mega-cells)
-• Clear step transitions
-• Setup commands with error handling
-• Visual elements where helpful
-• Practical examples over theory
-
-RESPOND WITH ONLY THIS JSON STRUCTURE:
+REQUIRED JSON SCHEMA (replace the guidance with your generated text/code):
 {
   "section_number": {{SECTION_NUMBER}},
-  "title": "{{SECTION_TITLE}}",
+  "title": "Step {{SECTION_NUMBER}}: {{SECTION_TITLE}}",
   "content": [
     {
       "cell_type": "markdown",
-      "source": "## Step {{SECTION_NUMBER}}: Title\n\nExplanation with analogies and the extra paragraph defining key terms..."
+      "source": "...multi-paragraph explanation with analogies, definitions, and rationale for beginners..."
     },
     {
       "cell_type": "code",
-      "source": "# Clear, commented code (<=30 lines)\nprint('Hello World')"
+      "source": "...executable Python example demonstrating the concept with comments and version/seed management..."
     }
   ],
   "callouts": [
-    {
-      "type": "tip",
-      "message": "💡 Helpful guidance"
-    }
+    { "type": "tip", "message": "...actionable best practice..." },
+    { "type": "warning", "message": "...risk or pitfall to avoid..." },
+    { "type": "note", "message": "...supplementary insight or reference..." }
   ],
   "estimated_tokens": {{DEFAULT_TOKENS}},
-  "prerequisites_check": ["item verified"],
-  "next_section_hint": "brief preview of next step"
+  "prerequisites_check": ["...checks confirming readers have prerequisites from earlier steps..."],
+  "next_section_hint": "...one-sentence preview of the next step..."
 }
 
-CONTEXT PROVIDED:
-- Outline: {{OUTLINE_JSON}}
-- Current Section: {{SECTION_NUMBER}}
-- Previous Sections: {{PREVIOUS_SECTIONS}}
-- Target Model: {{MODEL_REFERENCE}}
+CONTEXT TO USE (synthesize; do not copy verbatim):
+• Outline JSON: {{OUTLINE_JSON}}
+• Previous sections already generated: {{PREVIOUS_SECTIONS}}
+• Target difficulty: beginner audience that still needs precise technical accuracy.
+• Target model: {{MODEL_REFERENCE_OR_TEXT}}
 
-Generate content for section {{SECTION_NUMBER}} only.
+ADDITIONAL GUIDELINES
+• Define key terms before using them and explain trade-offs between Poe API and local workflows where relevant.
+• Reference earlier setup decisions when appropriate and maintain reproducibility (seeds, version pins, environment variables).
+• Ensure markdown remains instructional and the code runs as-is without hidden dependencies.
+• Close with a `next_section_hint` that naturally bridges to the following section.
+
+Return only the JSON object described above. If you need to reason, do so silently and emit only the final JSON.

@@ -9,6 +9,24 @@ import { capsFor, buildChatCompletionsUrl } from './providers.js';
 import { supportsTemperature } from './model-caps.js';
 import { loadPromptTemplate, applyTemplate } from './prompt-loader.js';
 
+const SECTION_SYSTEM_PROMPT = [
+  'You are ALAIN-Teacher generating polished notebook sections for production notebooks.',
+  'Reply with a single valid JSON object that matches the required schema.',
+  'Do not output planning text, "Thinking...", code fences, or narration outside the JSON.',
+  'Replace every field with fully developed instructional content and runnable code; never leave template phrases, placeholders, or ellipses.'
+].join('\n');
+
+const SECTION_PLACEHOLDER_PATTERNS: RegExp[] = [
+  /Explanation with analogies/i,
+  /Clear, commented code/i,
+  /Helpful guidance/i,
+  /Minimal runnable example to satisfy validation/i,
+  /We need to produce JSON/i,
+  /Thinking\.{3}/i,
+  /Replace the placeholder/i,
+  /<<[^>]+>>/
+];
+
 export interface NotebookCell {
   cell_type: 'markdown' | 'code';
   source: string;
@@ -86,9 +104,13 @@ export class SectionGenerator {
     let data: any;
     
     try {
+      const messages = [
+        { role: 'system' as const, content: SECTION_SYSTEM_PROMPT },
+        { role: 'user' as const, content: prompt }
+      ];
       const body: any = {
         model: modelReference,
-        messages: [{ role: 'user', content: prompt }],
+        messages,
         max_tokens: customPrompt?.maxTokens || this.TOKEN_LIMIT,
       };
       if (supportsTemperature(modelReference)) {
@@ -139,15 +161,16 @@ export class SectionGenerator {
   }
 
   private parseSectionResponse(content: string, sectionNumber: number): GeneratedSection {
+    const extracted = this.extractFirstJsonObject(content);
+    if (!extracted) {
+      this.log.warn('section_json_missing', { section: sectionNumber, head: content.slice(0, 120) });
+      throw new Error('Section generation returned no JSON object');
+    }
     try {
-      return JSON.parse(content);
-    } catch (e) {
-      console.warn('Section JSON parse failed. Attempting bracket-matched extraction.');
-      const extracted = this.extractFirstJsonObject(content);
-      if (extracted) {
-        try { return JSON.parse(extracted); } catch {}
-      }
-      return this.createFallbackSection(sectionNumber, content);
+      return JSON.parse(extracted);
+    } catch (error) {
+      this.log.warn('section_json_parse_failed', { section: sectionNumber, head: extracted.slice(0, 120), error: (error as Error)?.message });
+      throw new Error(`Invalid JSON returned for section ${sectionNumber}`);
     }
   }
 
@@ -171,8 +194,7 @@ export class SectionGenerator {
   }
 
   private createFallbackSection(sectionNumber: number, content: string): GeneratedSection {
-    // Create a basic fallback section when parsing fails
-    // Ensure it passes validator gates: has markdown + code, and tokens within range
+    // Legacy fallback retained for backwards compatibility but no longer used.
     return {
       section_number: sectionNumber,
       title: `Section ${sectionNumber}`,
@@ -193,7 +215,6 @@ export class SectionGenerator {
         }
       ],
       callouts: [],
-      // Use a conservative estimate within [MIN_TOKENS, TOKEN_LIMIT]
       estimated_tokens: 900,
       prerequisites_check: [],
       next_section_hint: 'Continue to next section'
@@ -244,14 +265,30 @@ export class SectionGenerator {
       return { isValid: false, issues };
     }
 
-    if (typeof section.estimated_tokens === 'number') {
-      if (section.estimated_tokens > this.TOKEN_LIMIT) {
-        issues.push(`Section exceeds token limit (${section.estimated_tokens} > ${this.TOKEN_LIMIT})`);
+    const approxTokens = this.estimateSectionTokens(section);
+    if (typeof section.estimated_tokens !== 'number') {
+      this.log.warn('section_missing_estimate', { section: section.section_number ?? 'unknown', approxTokens });
+    } else {
+      const estimate = section.estimated_tokens;
+      const delta = Math.abs(estimate - approxTokens);
+      if (delta > this.MIN_TOKENS * 0.5) {
+        this.log.warn('section_estimate_mismatch', {
+          section: section.section_number ?? 'unknown',
+          estimate,
+          approxTokens
+        });
       }
+    }
 
-      if (section.estimated_tokens < this.MIN_TOKENS) {
-        issues.push(`Section below minimum tokens (${section.estimated_tokens} < ${this.MIN_TOKENS})`);
-      }
+    const upperBound = Math.round(this.TOKEN_LIMIT * 1.1);
+    const lowerBound = Math.round(this.MIN_TOKENS * 0.85);
+
+    if (approxTokens > upperBound) {
+      issues.push(`Section exceeds token limit (~${approxTokens} > ${this.TOKEN_LIMIT})`);
+    }
+
+    if (approxTokens < lowerBound) {
+      issues.push(`Section below minimum tokens (~${approxTokens} < ${this.MIN_TOKENS})`);
     }
 
     const hasMarkdown = section.content.some(cell => cell?.cell_type === 'markdown');
@@ -260,9 +297,33 @@ export class SectionGenerator {
     if (!hasMarkdown) issues.push('Section missing explanatory content');
     if (!hasCode) issues.push('Section missing code examples');
 
+    let containsPlaceholder = false;
+    section.content.forEach(cell => {
+      const source = Array.isArray(cell.source) ? cell.source.join('') : String(cell.source ?? '');
+      if (!containsPlaceholder) {
+        for (const pattern of SECTION_PLACEHOLDER_PATTERNS) {
+          if (pattern.test(source)) {
+            containsPlaceholder = true;
+            issues.push('Section contains placeholder or meta-instruction text');
+            break;
+          }
+        }
+      }
+    });
+
     return {
       isValid: issues.length === 0,
       issues
     };
+  }
+
+  private estimateSectionTokens(section: GeneratedSection): number {
+    const text = (section.content || [])
+      .map(cell => Array.isArray(cell.source) ? cell.source.join('') : String(cell.source ?? ''))
+      .join('\n');
+    if (!text) {
+      return 0;
+    }
+    return Math.max(0, Math.round(text.length / 4));
   }
 }

@@ -11,6 +11,7 @@ STRUCTURE REQUIREMENTS:
 • Setup: Installation and environment requirements (must include ipywidgets>=8.0.0)
 • Steps: {{STEP_MIN}}-{{STEP_MAX}} well-labeled sections with "Step N:" headings and estimated_tokens
 • Exercises: 2-3 hands-on challenges
+• Assessments: Provide at least 4 multiple-choice questions with explanations
 • Summary: Key takeaways and next steps
 • References: Relevant links and resources
 
@@ -57,10 +58,28 @@ RESPOND WITH ONLY THIS JSON STRUCTURE:
   ],
   "assessments": [
     {
-      "question": "MCQ question",
+      "question": "MCQ question 1",
       "options": ["A", "B", "C", "D"],
       "correct_index": 0,
       "explanation": "detailed explanation"
+    },
+    {
+      "question": "MCQ question 2",
+      "options": ["A", "B", "C", "D"],
+      "correct_index": 1,
+      "explanation": "include rationale and remediation"
+    },
+    {
+      "question": "MCQ question 3",
+      "options": ["A", "B", "C", "D"],
+      "correct_index": 2,
+      "explanation": "cover an applied scenario"
+    },
+    {
+      "question": "MCQ question 4",
+      "options": ["A", "B", "C", "D"],
+      "correct_index": 3,
+      "explanation": "reinforce safety/fairness considerations"
     }
   ],
   "summary": "key takeaways",

@@ -54,6 +54,7 @@ export declare class SectionGenerator {
         isValid: boolean;
         issues: string[];
     };
+    private estimateSectionTokens;
 }
 export {};
 //# sourceMappingURL=section-generator.d.ts.map
