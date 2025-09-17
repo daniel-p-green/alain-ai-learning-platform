@@ -13,7 +13,7 @@ export default function HomePage() {
       {/* Hero */}
       <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-center">
         <div className="space-y-6">
-          <p className="uppercase tracking-wide text-xs text-ink-700">Applied Learning for AI</p>
+          <p className="uppercase tracking-wide text-xs text-ink-700">OpenAI Open Model Hackathon Project</p>
           <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">AI Manuals for AI Models</h1>
           <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-prose">
             Paste a Hugging Face link and generate a step‑by‑step manual with runnable code, checks, and clean exports.
@@ -29,6 +29,7 @@ export default function HomePage() {
           <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card space-y-2">
             <div className="font-display font-semibold text-[18px] text-ink-900">Why ALAIN</div>
             <ul className="space-y-2 text-ink-700 text-[15px]">
+              <li>• AI adoption follows instructions. ALAIN writes them for every model.</li>
               <li>• Build real skills with hands-on steps and checks</li>
               <li>• Use one request shape across hosted and local providers</li>
               <li>• Export clean notebooks with no embedded secrets</li>
