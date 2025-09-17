@@ -41,8 +41,11 @@ AI adoption follows instructions. ALAIN provides them for any model.
 ### CLI (ALAIN‑Kit SDK)
 
 ```bash
-# Install dependencies (root)
+# Install dependencies (root). This also builds the packages via prepare hooks.
 npm install
+
+# (Optional) rebuild the packages manually while iterating on the kit
+npm run alain:build
 
 # Generate a manual from the CLI
 env POE_API_KEY=your_key \
@@ -68,6 +71,11 @@ npm run dev:hosted          # or npm run dev:offline for local providers
 ```
 
 Then visit <http://localhost:3000/generate> and drop in a model URL (e.g., https://huggingface.co/openai/gpt-oss-20b). Toggle “Force fallback (no backend)” for web-only demos.
+
+#### Swap providers quickly
+
+- **Teacher (outline/section generation)** — set `--baseUrl` (or `ALAIN_BASE_URL`) to any OpenAI-compatible endpoint. Leave it blank for Poe or point it at `http://localhost:11434` for Ollama/vLLM. Local runs can skip `--apiKey`.
+- **Notebook runtime** — notebooks include a provider setup cell. Set `OPENAI_BASE_URL`/`OPENAI_API_KEY` (or `POE_API_KEY`) in your `.env` to swap between Poe, local vLLM, or other APIs with no code edits.
 
 ### Backend APIs (Encore.dev)
 
@@ -135,6 +143,7 @@ See `docs/architecture/` for the detailed diagrams and the lesson schema in `res
 - **CLI smoke tests**: `npm run alain:example`
 - **Notebook validation**: `npm run validate:lesson path/to/lesson.json`
 - **Colab validator coverage**: `backend/validation/colab-validator.test.ts` ensures subprocess pip installs are guarded automatically. Manual instructions live in `TESTING_INSTRUCTIONS.md` (Section 6).
+- **Prompt sync check**: `npm run lint:prompts` verifies the packaged prompt templates match the root prompts (ideal for CI).
 
 ---
 

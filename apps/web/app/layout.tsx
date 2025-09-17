@@ -8,13 +8,30 @@ import { hasClerk } from "../lib/env";
 import Script from "next/script";
 import "./globals.css";
 
+const FALLBACK_SITE_URL = "http://localhost:3000";
+
+function resolveSiteUrl(raw?: string | null): string {
+  if (!raw) return FALLBACK_SITE_URL;
+  try {
+    return new URL(raw).toString();
+  } catch {
+    try {
+      return new URL(`https://${raw}`).toString();
+    } catch {
+      return FALLBACK_SITE_URL;
+    }
+  }
+}
+
+const resolvedSiteUrl = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
+
 // next/font must be initialized at module scope
 const league = League_Spartan({ subsets: ["latin"], weight: ["700", "900"], variable: "--font-logo" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-display" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: new URL(resolvedSiteUrl),
   title: "ALAIN - Applied Learning AI Notebooks",
   description: "Interactive AI learning platform with real models and hands-on tutorials",
   authors: [{ name: "Daniel Green", url: "https://linkedin.com/in/danielpgreen" }],
