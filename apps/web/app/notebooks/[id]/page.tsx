@@ -6,13 +6,15 @@ export const dynamic = "force-dynamic";
 
 async function fetchNotebook(id: string) {
   const base = appBaseUrl();
-  const res = await fetch(`${base}/api/notebooks/${id}`, { cache: "no-store" });
+  const res = await fetch(`${base}/api/notebooks/${encodeURIComponent(id)}`, { cache: "no-store" });
   if (!res.ok) return null;
   return res.json();
 }
 
 export default async function NotebookPage({ params, searchParams }: { params: { id: string }, searchParams?: { [k: string]: string | string[] | undefined } }) {
-  const rec = await fetchNotebook(params.id);
+  let decodedId: string;
+  try { decodedId = decodeURIComponent(params.id); } catch { decodedId = params.id; }
+  const rec = await fetchNotebook(decodedId);
   if (!rec) {
     return <div className="mx-auto max-w-3xl p-6">Notebook not found.</div>;
   }

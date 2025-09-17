@@ -5,8 +5,10 @@ import MarkdownEditor from "@/components/MarkdownEditor";
 import { useParams, useRouter } from "next/navigation";
 
 export default function EditNotebookPage() {
-  const { id } = useParams<{ id: string }>();
+  const { id: rawId } = useParams<{ id: string }>();
+  const id = (() => { try { return decodeURIComponent(rawId); } catch { return rawId; } })();
   const router = useRouter();
+  const encodedId = encodeURIComponent(id);
   const [jsonText, setJsonText] = useState<string>("{}");
   const [cells, setCells] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +25,7 @@ export default function EditNotebookPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const res = await fetch(`/api/notebooks/${id}`);
+      const res = await fetch(`/api/notebooks/${encodedId}`);
       if (!res.ok) return setError("Failed to load notebook");
       const data = await res.json();
       if (!cancelled) {
@@ -80,11 +82,11 @@ export default function EditNotebookPage() {
     };
     setBusy(true);
     try {
-      const res = await fetch(`/api/admin/notebooks/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nb) });
+      const res = await fetch(`/api/admin/notebooks/${encodedId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(nb) });
       const j = await res.json();
       if (!res.ok) throw new Error(j?.error || "Save failed");
       const q = j.commitUrl ? `?commit=${encodeURIComponent(j.commitUrl)}` : "";
-      router.push(`/notebooks/${id}${q}`);
+      router.push(`/notebooks/${encodedId}${q}`);
     } catch (e: any) {
       setError(e.message || String(e));
     } finally { setBusy(false); }
@@ -179,7 +181,7 @@ export default function EditNotebookPage() {
         <button onClick={onSave} disabled={busy} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50 w-full sm:w-auto whitespace-nowrap">
           {busy ? "Saving…" : "Save"}
         </button>
-        <button onClick={() => router.push(`/notebooks/${id}`)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium w-full sm:w-auto whitespace-nowrap">
+        <button onClick={() => router.push(`/notebooks/${encodedId}`)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium w-full sm:w-auto whitespace-nowrap">
           Cancel
         </button>
       </div>

@@ -1,39 +1,6 @@
 "use client";
 import React, { useState } from "react";
-
-function toGhId(input: string): string | null {
-  if (!input) return null;
-  const s = input.trim();
-  if (s.startsWith('gh:')) return s;
-  try {
-    const u = new URL(s);
-    const host = u.hostname.toLowerCase();
-    const path = u.pathname.replace(/^\/+/, '');
-    if (host === 'raw.githubusercontent.com') {
-      const parts = path.split('/');
-      if (parts.length >= 4 && path.endsWith('.ipynb')) {
-        const owner = parts[0];
-        const repo = parts[1];
-        const ref = parts[2];
-        const filePath = parts.slice(3).join('/');
-        return `gh:${owner}/${repo}@${ref}:${filePath}`;
-      }
-    }
-    if (host === 'github.com') {
-      // Handle blob URLs
-      const parts = path.split('/');
-      const blobIdx = parts.indexOf('blob');
-      if (blobIdx !== -1 && parts.length > blobIdx + 2) {
-        const owner = parts[0];
-        const repo = parts[1];
-        const ref = parts[blobIdx + 1];
-        const filePath = parts.slice(blobIdx + 2).join('/');
-        if (filePath.endsWith('.ipynb')) return `gh:${owner}/${repo}@${ref}:${filePath}`;
-      }
-    }
-  } catch {}
-  return null;
-}
+import { toGhId } from "@/lib/githubNotebook";
 
 export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolean }) {
   const [url, setUrl] = useState('');
