@@ -14,6 +14,8 @@ export type Lesson = {
   provider?: string;
   difficulty?: "beginner" | "intermediate" | "advanced";
   tags?: string[];
+  quality_score?: number;
+  colab_compatible?: boolean;
   learning_objectives?: string[];
   steps: LessonStep[];
   assessments?: Array<{
@@ -30,6 +32,7 @@ export type Lesson = {
     homepage?: string;
     license?: string;
     repo?: string;
+    responsible_use?: string[];
   };
 };
 
@@ -100,7 +103,12 @@ export function applyDefaults(
   out.provider = inferLessonProvider(out.provider, modelInfo);
   out.difficulty = (out.difficulty as any) || difficulty || "beginner";
   out.tags = Array.isArray(out.tags) ? out.tags : [];
-  if (modelInfo?.org) out.tags = Array.from(new Set([`${modelInfo.org}`, out.difficulty, ...out.tags]));
+  if (modelInfo?.org) {
+    const seededTags = [`${modelInfo.org}`, out.difficulty, ...out.tags].filter(
+      (tag): tag is string => typeof tag === 'string' && tag.trim().length > 0
+    );
+    out.tags = Array.from(new Set(seededTags));
+  }
   out.steps = (out.steps || []).map((step: any, index: number) => {
     const s: LessonStep = { ...step };
     s.step_order = typeof s.step_order === "number" ? s.step_order : index + 1;

@@ -1,17 +1,50 @@
+import NotebookCard from '@/components/NotebookCard';
+import { safeAuth } from '@/lib/auth';
 import { appBaseUrl } from '@/lib/requestBase';
 
 export const metadata = {
-  title: 'ALAIN · Notebooks',
-  description: 'Browse generated manuals with filters; open featured notebooks.',
+  title: 'ALAIN · Notebook Library',
+  description: 'Browse generated manuals, filter by model, and manage publication status.',
 };
 
-async function fetchCatalog(qs: URLSearchParams) {
+export type MakerInfo = {
+  name?: string;
+  org_type?: string;
+  homepage?: string;
+  license?: string;
+  repo?: string;
+  responsible_use?: string[];
+};
+
+export type NotebookDirectoryItem = {
+  id: number;
+  file_path: string;
+  model: string;
+  provider: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  title?: string | null;
+  overview?: string | null;
+  maker?: MakerInfo | null;
+  quality_score?: number | null;
+  colab_compatible?: boolean | null;
+  section_count?: number | null;
+  created_by?: string | null;
+  visibility: 'private' | 'public' | 'unlisted';
+  share_slug?: string | null;
+  tags?: string[] | null;
+  size_bytes?: number | null;
+  checksum?: string | null;
+  last_generated?: string | null;
+};
+
+async function fetchCatalog(qs: URLSearchParams): Promise<NotebookDirectoryItem[]> {
   const search = qs.toString();
   const base = appBaseUrl();
   const path = `/api/catalog/notebooks/public${search ? `?${search}` : ''}`;
   const res = await fetch(`${base}${path}`, { cache: 'no-store' });
-  if (!res.ok) return { items: [] } as any;
-  return await res.json();
+  if (!res.ok) return [];
+  const body = await res.json().catch(() => ({ items: [] }));
+  return Array.isArray(body?.items) ? (body.items as NotebookDirectoryItem[]) : [];
 }
 
 export default async function NotebooksPage({ searchParams }: { searchParams?: Record<string, string> }) {
@@ -20,15 +53,24 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
   if (searchParams?.provider) qs.set('provider', searchParams.provider);
   if (searchParams?.difficulty) qs.set('difficulty', searchParams.difficulty);
   if (searchParams?.tag) qs.set('tag', searchParams.tag);
-  qs.set('limit', String(Math.max(1, Math.min(50, Number(searchParams?.limit || 20)))));
-  const data = await fetchCatalog(qs);
-  const items: any[] = Array.isArray(data?.items) ? data.items : [];
+  qs.set('limit', String(Math.max(1, Math.min(50, Number(searchParams?.limit || 24)))));
+
+  const [items, auth] = await Promise.all([fetchCatalog(qs), safeAuth()]);
+  const adminIds = (process.env.ADMIN_USER_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
+
   return (
-    <div className="mx-auto max-w-5xl p-6 space-y-4 text-ink-900">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Notebooks</h1>
-        <a className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0" href="/notebooks/featured">Featured</a>
+    <div className="mx-auto max-w-6xl p-6 space-y-6 text-ink-900">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold">Notebook Library</h1>
+          <p className="text-sm text-ink-600">Filter generated manuals by model, provider, or difficulty.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <a className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0" href="/notebooks/featured">Featured</a>
+          <a className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0" href="/generate">Generate</a>
+        </div>
       </div>
+
       <form className="grid gap-4 sm:grid-cols-4" method="get" action="/notebooks">
         <div className="flex flex-col gap-1">
           <label htmlFor="filter-model" className="text-xs font-medium text-ink-600">Model ID</label>
@@ -44,7 +86,7 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
             <option value="lmstudio">LM Studio</option>
             <option value="ollama">Ollama</option>
           </select>
-          <span className="text-xs text-ink-500">Match the runtime you used to generate the notebook.</span>
+          <span className="text-xs text-ink-500">Match the runtime used to generate the notebook.</span>
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="filter-difficulty" className="text-xs font-medium text-ink-600">Difficulty</label>
@@ -66,29 +108,21 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
           <a className="h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0 inline-flex items-center" href="/notebooks">Reset</a>
         </div>
       </form>
-      <ul className="space-y-3">
-        {items.map((it) => (
-          <li key={it.id || it.file_path} className="rounded border border-ink-100 p-4 bg-white/70">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="font-medium">{it.model} · {it.provider} · <span className="uppercase">{it.difficulty}</span></div>
-                <div className="text-xs text-ink-600 break-all">{it.file_path}</div>
-                {Array.isArray(it.tags) && it.tags.length > 0 && (
-                  <div className="mt-1 text-xs text-ink-700">Tags: {it.tags.join(', ')}</div>
-                )}
-              </div>
-              <div>
-                {it.file_path && (
-                  <a className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900 text-sm" href={`/api/files/download?path=${encodeURIComponent(it.file_path)}`}>Download</a>
-                )}
-              </div>
-            </div>
-          </li>
-        ))}
-        {items.length === 0 && (
-          <li className="text-ink-700">No notebooks found. Adjust filters.</li>
-        )}
-      </ul>
+
+      {items.length === 0 ? (
+        <p className="text-ink-700">No notebooks found. Adjust filters.</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {items.map((item) => (
+            <NotebookCard
+              key={item.id || item.file_path}
+              item={item}
+              currentUserId={auth.userId || null}
+              adminIds={adminIds}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

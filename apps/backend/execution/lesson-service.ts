@@ -248,20 +248,23 @@ ${modelInfo.family ? `- Family: ${modelInfo.family}` : ''}
 ${modelInfo.toolUse ? `- Tool Use: ${modelInfo.toolUse}` : ''}
 
 Requirements:
-1. Create 3-5 progressive lesson steps
-2. Include practical examples and code snippets
-3. Focus on real-world applications
-4. Provide clear learning objectives
-5. Include model maker information when available
-${modelInfo.toolUse === 'native' ? '6. Include one short step demonstrating Tool Use via OpenAI-compatible "tools" with a simple function (e.g., get_current_time). Keep it safe and local.' : ''}
-
-${includeAssessment ? '6. Generate 3-5 multiple choice questions with explanations' : ''}
+- Create 3-5 progressive lesson steps
+- Include practical examples and code snippets
+- Focus on real-world applications
+- Provide clear learning objectives
+- Include model maker information when available
+- Provide a top-level "quality_score" (integer 0-100) that reflects lesson polish and accuracy
+- Set "colab_compatible" to true when the notebook can run as-is in Google Colab, otherwise false
+${modelInfo.toolUse === 'native' ? '- Include one short step demonstrating Tool Use via OpenAI-compatible "tools" with a simple function (e.g., get_current_time). Keep it safe and local.' : ''}
+${includeAssessment ? '- Generate 3-5 multiple choice questions with explanations' : ''}
 
 Format your response as a JSON object with this structure:
 {
   "title": "Lesson Title",
   "description": "Brief description",
 ${wantReasoning ? '  "reasoning_summary": "2-4 sentences explaining why you chose this teaching approach and step ordering.",' : ''}
+  "quality_score": 92,
+  "colab_compatible": true,
   "learning_objectives": ["Objective 1", "Objective 2"],
   "steps": [
     {
@@ -278,7 +281,8 @@ ${wantReasoning ? '  "reasoning_summary": "2-4 sentences explaining why you chos
     "org_type": "company|individual|organization",
     "homepage": "https://...",
     "license": "MIT|Apache-2.0|etc",
-    "repo": "https://github.com/..."
+    "repo": "https://github.com/...",
+    "responsible_use": ["Usage guideline", "Safety consideration"]
   }${includeAssessment ? `,
   "assessments": [
     {
@@ -305,10 +309,12 @@ export function buildLessonFromTextPrompt(
 ): string {
   const snippet = textContent.length > 2000 ? `${textContent.slice(0, 2000)}\n...` : textContent;
   const wantReasoning = includeReasoning === true;
-  const prompt = `You are an expert AI educator. Create a structured, practical lesson from the following source material. Focus on clarity, hands-on steps, and real-world utility. Do not include external links unless they are in the source text.\n\nSOURCE MATERIAL (verbatim excerpt):\n---\n${snippet}\n---\n\nDifficulty Level: ${difficulty}\n${includeAssessment ? 'Include 3-5 multiple choice questions with explanations.' : ''}\n\nOutput a single JSON object with the following structure:\n{
+  const prompt = `You are an expert AI educator. Create a structured, practical lesson from the following source material. Focus on clarity, hands-on steps, and real-world utility. Do not include external links unless they are in the source text.\n\nSOURCE MATERIAL (verbatim excerpt):\n---\n${snippet}\n---\n\nDifficulty Level: ${difficulty}\n${includeAssessment ? 'Include 3-5 multiple choice questions with explanations.' : ''}\nInclude a numeric "quality_score" (0-100) and a boolean "colab_compatible" flag describing notebook readiness.\n\nOutput a single JSON object with the following structure:\n{
   "title": "Lesson Title",
   "description": "Brief description",
 ${wantReasoning ? '  "reasoning_summary": "2-4 sentences explaining your teaching strategy and step ordering.",' : ''}
+  "quality_score": 92,
+  "colab_compatible": true,
   "learning_objectives": ["Objective 1", "Objective 2"],
   "steps": [
     { "step_order": 1, "title": "Step Title", "content": "Step content in markdown", "code_template": "Optional code", "expected_output": "Optional", "model_params": {"temperature": 0.7} }
@@ -407,6 +413,8 @@ function sanitizeLesson(lessonData: any) {
     'provider',
     'difficulty',
     'tags',
+    'quality_score',
+    'colab_compatible',
     'learning_objectives',
     'steps',
     'assessments',
