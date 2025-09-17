@@ -48,7 +48,7 @@ export class NotebookBuilder {
         }
         // Ensure ipywidgets is available for interactive MCQs
         cells.push({
-            cell_type: "code",
+            cell_type: 'code',
             metadata: {},
             source: [
                 "# Ensure ipywidgets is installed for interactive MCQs\n",
@@ -60,23 +60,32 @@ export class NotebookBuilder {
                 "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', 'ipywidgets>=8.0.0'])\n"
             ],
             execution_count: null,
-            outputs: []
+            outputs: [],
         });
         const pendingAssessments = Array.isArray(outline.assessments) ? outline.assessments.slice() : [];
         let assessmentIntroInserted = false;
         // Generated sections
         sections.forEach((section, index) => {
             section.content.forEach(cell => {
-                const obj = {
-                    cell_type: cell.cell_type,
-                    metadata: {},
-                    source: this.formatCellSource(cell.source)
-                };
+                const source = this.formatCellSource(cell.source);
                 if (cell.cell_type === 'code') {
-                    obj.execution_count = null;
-                    obj.outputs = [];
+                    const codeCell = {
+                        cell_type: 'code',
+                        metadata: {},
+                        source,
+                        execution_count: null,
+                        outputs: [],
+                    };
+                    cells.push(codeCell);
                 }
-                cells.push(obj);
+                else {
+                    const markdownCell = {
+                        cell_type: 'markdown',
+                        metadata: {},
+                        source,
+                    };
+                    cells.push(markdownCell);
+                }
             });
             if (pendingAssessments.length) {
                 if (!assessmentIntroInserted) {
@@ -160,7 +169,7 @@ export class NotebookBuilder {
     }
     createEnvironmentCell() {
         return {
-            cell_type: "code",
+            cell_type: 'code',
             metadata: {},
             source: [
                 "# 🔧 Environment Detection and Setup\n",
@@ -182,7 +191,7 @@ export class NotebookBuilder {
                 "        pass\n"
             ],
             execution_count: null,
-            outputs: []
+            outputs: [],
         };
     }
     createEnvDocsCell() {
@@ -208,7 +217,7 @@ export class NotebookBuilder {
     }
     createDotenvCell() {
         return {
-            cell_type: "code",
+            cell_type: 'code',
             metadata: {},
             source: [
                 "# 🔐 Load and manage secrets from .env\\n",
@@ -297,12 +306,12 @@ export class NotebookBuilder {
                 "    print(f'{k}:', mask(os.environ.get(k)))\\n"
             ],
             execution_count: null,
-            outputs: []
+            outputs: [],
         };
     }
     createProviderSetupCell() {
         return {
-            cell_type: "code",
+            cell_type: 'code',
             metadata: {},
             source: [
                 "# 🌐 ALAIN Provider Setup (Poe/OpenAI-compatible)\n",
@@ -347,12 +356,12 @@ export class NotebookBuilder {
                 "    print('⚠️ Provider setup failed:', e)\n"
             ],
             execution_count: null,
-            outputs: []
+            outputs: [],
         };
     }
     createProviderSmokeCell() {
         return {
-            cell_type: "code",
+            cell_type: 'code',
             metadata: {},
             source: [
                 "# 🔎 Provider Smoke Test (1-token)\n",
@@ -368,7 +377,7 @@ export class NotebookBuilder {
                 "        print('⚠️ Smoke test failed:', e)\n"
             ],
             execution_count: null,
-            outputs: []
+            outputs: [],
         };
     }
     createTitleCell(title, overview) {
@@ -424,7 +433,9 @@ export class NotebookBuilder {
                     `    subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + ${JSON.stringify(setup.requirements)})\n`,
                     "\n",
                     "print('✅ Packages installed!')\n"
-                ]
+                ],
+                execution_count: null,
+                outputs: [],
             });
         }
         return cells;
