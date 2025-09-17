@@ -9,7 +9,16 @@ export default function TryPrompt({ provider, model }: { provider: string; model
     <div className="mt-8 p-4 rounded border bg-white/70">
       <div className="font-medium mb-2">Try a prompt</div>
       <div className="text-xs text-ink-700 mb-2">Provider: {provider} · Model: {model}</div>
-      <textarea className="w-full border rounded p-2 text-sm" rows={3} value={prompt} onChange={(e)=>setPrompt(e.target.value)} />
+      <label htmlFor="promptTextarea" className="sr-only">Prompt</label>
+      <textarea
+        id="promptTextarea"
+        className="w-full border rounded p-2 text-sm"
+        rows={3}
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Enter your prompt here"
+        title="Prompt input"
+      />
       <div className="mt-2 flex items-center gap-2">
         <button
           className="inline-flex items-center px-3 py-1.5 rounded bg-ink-900 text-white text-xs"

@@ -23,7 +23,10 @@ function mergeAbortSignals(timeoutMs: number, external?: AbortSignal) {
     cleanups.push(() => signal.removeEventListener("abort", onAbort));
   }
 
+  let disposed = false;
   const dispose = () => {
+    if (disposed) return;
+    disposed = true;
     clearTimeout(timer);
     cleanups.forEach((fn) => fn());
   };

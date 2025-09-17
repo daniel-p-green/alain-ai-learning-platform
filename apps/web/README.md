@@ -22,6 +22,7 @@ This app uses `clerkMiddleware()` in `middleware.ts` and wraps the App Router la
   - On failure, Playwright HTML report is uploaded as an artifact.
 
 Included E2E checks:
+
 - `home.spec.ts` — home page renders with CTAs
 - `generate.spec.ts` — generate page shows inputs
 - `footer.spec.ts` — footer shows attribution links and no legacy links (Blueprint/Phases/Settings)

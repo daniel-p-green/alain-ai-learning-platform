@@ -74,14 +74,14 @@ export default function MobileNav() {
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby={`${menuId}-title`}>
           {/* Backdrop */}
           <div
-            className={`absolute inset-0 bg-black/40 transition-opacity duration-250 ease-[cubic-bezier(0.2,0,0,1)] ${anim ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 bg-black/40 transition-opacity duration-[250ms] ease-[cubic-bezier(0.2,0,0,1)] ${anim ? 'opacity-100' : 'opacity-0'}`}
             onClick={closeWithAnim}
           />
           {/* Sheet */}
           <div
             ref={panelRef}
             id={menuId}
-            className={`absolute inset-y-0 left-0 w-full max-w-[90vw] sm:max-w-[420px] bg-paper-0 border-r border-ink-100 shadow-card flex flex-col transform transition-all duration-250 ease-[cubic-bezier(0.2,0,0,1)] will-change-transform ${anim ? 'translate-x-0 scale-100' : '-translate-x-full scale-95'}`}
+            className={`absolute inset-y-0 left-0 w-full max-w-[90vw] sm:max-w-[420px] bg-paper-0 border-r border-ink-100 shadow-card flex flex-col transform transition-all duration-[250ms] ease-[cubic-bezier(0.2,0,0,1)] will-change-transform ${anim ? 'translate-x-0 scale-100' : '-translate-x-full scale-95'}`}
           >
             {/* Header */}
             <div className="h-14 px-3 flex items-center justify-between border-b border-ink-100">
@@ -102,7 +102,6 @@ export default function MobileNav() {
               <nav className="px-2 py-3">
                 <div className="px-2 py-2 text-xs uppercase tracking-wide text-ink-500">Navigate</div>
                 <Link href="/notebooks" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Library</Link>
-                <Link href="/generate" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Generate Manual</Link>
                 {/** Labs hidden from mobile nav for demo simplicity */}
               </nav>
             </div>

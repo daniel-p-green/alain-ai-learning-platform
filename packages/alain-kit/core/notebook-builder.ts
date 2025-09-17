@@ -111,7 +111,7 @@ export class NotebookBuilder {
 
     // Ensure ipywidgets is available for interactive MCQs
     cells.push({
-      cell_type: 'code',
+      cell_type: 'code' as const,
       metadata: {},
       source: [
         "# Ensure ipywidgets is installed for interactive MCQs\n",
@@ -189,7 +189,7 @@ export class NotebookBuilder {
     cells.push(this.createTroubleshootingCell());
 
     const createdAt = new Date().toISOString();
-    const nb = {
+    const nb: JupyterNotebook = {
       cells,
       metadata: {
         kernelspec: {
@@ -477,8 +477,8 @@ export class NotebookBuilder {
     };
   }
 
-  private createSetupCells(setup: Setup): Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> {
-    const cells: Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> = [
+  private createSetupCells(setup: Setup): NotebookCell[] {
+    const cells: NotebookCell[] = [
       {
         cell_type: "markdown" as const,
         metadata: {},
@@ -503,14 +503,16 @@ export class NotebookBuilder {
           `    subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + ${JSON.stringify(setup.requirements)})\n`,
           "\n",
           "print('✅ Packages installed!')\n"
-        ]
+        ],
+        execution_count: null,
+        outputs: [],
       });
     }
 
     return cells;
   }
 
-  private createAssessmentIntroCells(): Array<{ cell_type: 'markdown' | 'code'; metadata: {}; source: string[] }> {
+  private createAssessmentIntroCells(): NotebookCell[] {
     return [
       {
         cell_type: 'markdown' as const,
@@ -556,9 +558,9 @@ def render_mcq(question, options, correct_index, explanation):
     display(feedback)
 `
         ],
-        execution_count: null as any,
-        outputs: [] as any[]
-      } as any
+        execution_count: null,
+        outputs: []
+      }
     ];
   }
 
@@ -572,7 +574,7 @@ def render_mcq(question, options, correct_index, explanation):
     };
   }
 
-  private createAssessmentQuestionCell(mcq: Assessment) {
+  private createAssessmentQuestionCell(mcq: Assessment): CodeCell | null {
     if (!mcq || !mcq.question || !Array.isArray(mcq.options) || typeof mcq.correct_index !== 'number' || !mcq.explanation) {
       return null;
     }
@@ -585,9 +587,9 @@ def render_mcq(question, options, correct_index, explanation):
         cell_type: 'code' as const,
         metadata: {},
         source: [call],
-        execution_count: null as any,
-        outputs: [] as any[]
-      } as any;
+        execution_count: null,
+        outputs: []
+      };
     } catch (error) {
       console.warn('Failed to serialize MCQ:', error);
       return null;

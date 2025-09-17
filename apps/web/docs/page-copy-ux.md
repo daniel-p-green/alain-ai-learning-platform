@@ -7,7 +7,7 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
 - **Primary copy**
   - Eyebrow: `Applied Learning for AI`
   - Hero headline: `AI Manuals for AI Models`
-  - Subhead: `Paste a Hugging Face link or pick a local model. Generate a step‑by‑step manual with runnable code, checks, and clean exports.`
+  - Subhead: `Paste a Hugging Face link and generate a step‑by‑step manual with runnable code, checks, and clean exports.`
   - Primary CTA: `Generate Manual` → `/generate`
   - Secondary CTA: `Library` → `/notebooks`
 - **Supporting copy**

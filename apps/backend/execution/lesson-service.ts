@@ -140,11 +140,16 @@ export async function persistLessonArtifacts(options: PersistOptions) {
           model: modelId,
           provider: providerForLesson,
           difficulty,
+          title: lesson.title || null,
+          overview: lesson.description || null,
+          maker: lesson.model_maker || null,
+          section_count: Array.isArray(lesson.steps) ? lesson.steps.length : null,
           created_by: userId,
           visibility: 'private',
-          tags: [],
+          tags: Array.isArray(lesson.tags) ? lesson.tags : [],
           size_bytes: lessonSave.metadata.size_bytes,
           checksum: lessonSave.metadata.checksum,
+          last_generated: new Date().toISOString(),
         });
       } catch (error) {
         console.warn(`${logContext} catalog_lesson_index_failed`, error);
@@ -195,11 +200,18 @@ export async function persistLessonArtifacts(options: PersistOptions) {
           model: modelId,
           provider: providerForLesson,
           difficulty,
+          title: lesson.title || null,
+          overview: lesson.description || null,
+          maker: lesson.model_maker || null,
+          quality_score: (lesson as any)?.quality_score ?? null,
+          colab_compatible: (lesson as any)?.colab_compatible ?? null,
+          section_count: Array.isArray(lesson.steps) ? lesson.steps.length : null,
           created_by: userId,
           visibility: 'private',
-          tags: [],
+          tags: Array.isArray(lesson.tags) ? lesson.tags : [],
           size_bytes: nbMeta.metadata.size_bytes,
           checksum: nbMeta.metadata.checksum,
+          last_generated: new Date().toISOString(),
         });
       } catch (error) {
         console.warn(`${logContext} catalog_notebook_index_failed`, error);
