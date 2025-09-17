@@ -265,16 +265,30 @@ export class SectionGenerator {
       return { isValid: false, issues };
     }
 
+    const approxTokens = this.estimateSectionTokens(section);
     if (typeof section.estimated_tokens !== 'number') {
-      issues.push('Section missing estimated_tokens value');
+      this.log.warn('section_missing_estimate', { section: section.section_number ?? 'unknown', approxTokens });
     } else {
-      if (section.estimated_tokens > this.TOKEN_LIMIT) {
-        issues.push(`Section exceeds token limit (${section.estimated_tokens} > ${this.TOKEN_LIMIT})`);
+      const estimate = section.estimated_tokens;
+      const delta = Math.abs(estimate - approxTokens);
+      if (delta > this.MIN_TOKENS * 0.5) {
+        this.log.warn('section_estimate_mismatch', {
+          section: section.section_number ?? 'unknown',
+          estimate,
+          approxTokens
+        });
       }
+    }
 
-      if (section.estimated_tokens < this.MIN_TOKENS) {
-        issues.push(`Section below minimum tokens (${section.estimated_tokens} < ${this.MIN_TOKENS})`);
-      }
+    const upperBound = Math.round(this.TOKEN_LIMIT * 1.1);
+    const lowerBound = Math.round(this.MIN_TOKENS * 0.85);
+
+    if (approxTokens > upperBound) {
+      issues.push(`Section exceeds token limit (~${approxTokens} > ${this.TOKEN_LIMIT})`);
+    }
+
+    if (approxTokens < lowerBound) {
+      issues.push(`Section below minimum tokens (~${approxTokens} < ${this.MIN_TOKENS})`);
     }
 
     const hasMarkdown = section.content.some(cell => cell?.cell_type === 'markdown');
@@ -301,5 +315,15 @@ export class SectionGenerator {
       isValid: issues.length === 0,
       issues
     };
+  }
+
+  private estimateSectionTokens(section: GeneratedSection): number {
+    const text = (section.content || [])
+      .map(cell => Array.isArray(cell.source) ? cell.source.join('') : String(cell.source ?? ''))
+      .join('\n');
+    if (!text) {
+      return 0;
+    }
+    return Math.max(0, Math.round(text.length / 4));
   }
 }

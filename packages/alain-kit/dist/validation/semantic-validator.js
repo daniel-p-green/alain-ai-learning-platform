@@ -86,14 +86,14 @@ export class SemanticValidator {
     buildPrompt(outline, sections, notebook) {
         const objectives = Array.isArray(outline.objectives) ? outline.objectives.slice(0, 6).join('\n- ') : 'Not provided';
         const sectionSummaries = sections.map(section => {
-            const markdown = (section.content || [])
+            const markdownSource = (section.content || [])
                 .filter(cell => cell.cell_type === 'markdown')
                 .map(cell => (Array.isArray(cell.source) ? cell.source.join('') : String(cell.source || '')))
-                .join('\n')
-                .slice(0, 800)
-                .replace(/\s+/g, ' ')
-                .trim();
-            return `Section ${section.section_number}: ${section.title || 'Untitled'}\nExcerpt: ${markdown}`;
+                .join('\n');
+            const truncated = markdownSource.slice(0, 800);
+            const excerpt = truncated.replace(/\s+/g, ' ').trim();
+            const suffix = markdownSource.length > 800 ? ' …[excerpt truncated]' : '';
+            return `Section ${section.section_number}: ${section.title || 'Untitled'}\nExcerpt (first 800 chars): ${excerpt}${suffix}`;
         }).join('\n\n');
         const notebookTitle = notebook?.metadata?.title || outline.title || 'Untitled Notebook';
         return `You are auditing a generated Jupyter notebook intended for production.
