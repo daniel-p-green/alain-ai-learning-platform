@@ -67,15 +67,15 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     SHOW_FALLBACK_UI,
     ALLOW_120B,
     researchCopy,
-  onSubmit,
-  onAutoFix,
-  triggerExampleHosted,
-  triggerExampleLocal,
-  triggerDemoMode,
-  exportNotebook,
-  exportState,
-  clearExportState,
-} = props;
+    onSubmit,
+    onAutoFix,
+    triggerExampleHosted,
+    triggerExampleLocal,
+    triggerDemoMode,
+    exportNotebook,
+    exportState,
+    clearExportState,
+  } = props;
   const [showAdvancedProviders, setShowAdvancedProviders] = useState(false);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -186,10 +186,23 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
-      <h1 className="text-2xl font-black font-display">Generate Manual</h1>
-      <p className="text-sm text-ink-700">Recommended defaults. Works offline or hosted. Export to Jupyter/Colab.</p>
+    <div className="max-w-2xl mx-auto p-6 space-y-6 text-ink-900">
+      <header className="space-y-2">
+        <h1 className="font-display text-[32px] font-black leading-[1.1] tracking-tight">Generate Manual</h1>
+        <p className="text-sm text-ink-700">Recommended defaults that work out of the box. Export to Jupyter or Colab in one click.</p>
+      </header>
       <EnvironmentStatusCard envBanner={envBanner} readyHosted={readyHosted} readyLocal={readyLocal} />
+      <div className="rounded-card border border-alain-yellow/30 bg-alain-yellow/10 p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-[20px] font-semibold text-alain-blue">🚀 Quick Demo</h3>
+            <p className="text-sm text-ink-700">Load a working GPT-OSS-20B preset and show ALAIN in under a minute.</p>
+          </div>
+          <Button variant="accent" onClick={triggerDemoMode} className="w-full sm:w-auto">
+            Start Demo
+          </Button>
+        </div>
+      </div>
       <div className="rounded-card border border-ink-100 bg-paper-0 p-4 text-sm text-ink-800 space-y-4">
         <div className="space-y-1">
           <div className="text-xs font-semibold uppercase tracking-wide text-ink-500">Quick start presets</div>
@@ -212,9 +225,9 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
           ))}
         </div>
       </div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        <Button variant="secondary" onClick={triggerExampleHosted}>Use Example (Hosted)</Button>
-        <Button variant="secondary" onClick={triggerExampleLocal}>Use Example (Local: gpt-oss-20b)</Button>
+      <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+        <Button variant="secondary" className="w-full sm:w-auto" onClick={triggerExampleHosted}>Use Example (Hosted)</Button>
+        <Button variant="secondary" className="w-full sm:w-auto" onClick={triggerExampleLocal}>Use Example (Local: gpt-oss-20b)</Button>
       </div>
       {SHOW_FALLBACK_UI && (
         <div className="mt-2 p-3 rounded-card border border-yellow-200 bg-yellow-50 text-xs text-ink-900">
@@ -228,18 +241,36 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
         <div className="p-3 rounded-card border border-ink-100 bg-paper-50 text-sm text-ink-900">
           <div className="font-medium">No local models detected</div>
           <div className="text-ink-700">Use Hosted (Poe) for instant demo, or open the LM Studio Explorer to download a model locally.</div>
-          <div className="mt-2 flex gap-2">
-            <Button variant="secondary" onClick={() => { setSource('hf'); setTeacherProvider('poe'); }}>Switch to Hosted (Poe)</Button>
-            <Button variant="secondary" onClick={() => { window.location.href = '/lmstudio'; }}>Open Explorer</Button>
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={() => { setSource('hf'); setTeacherProvider('poe'); }}>Switch to Hosted (Poe)</Button>
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={() => { window.location.href = '/lmstudio'; }}>Open Explorer</Button>
           </div>
         </div>
       )}
-      <div className="flex gap-2">
-        <Button variant={source === 'hf' ? 'accent' : 'secondary'} onClick={() => setSource('hf')}>From Hugging Face</Button>
-        <Button variant={source === 'local' ? 'accent' : 'secondary'} onClick={() => setSource('local')}>From Local Runtime</Button>
-        <Button variant={source === 'text' ? 'accent' : 'secondary'} onClick={() => setSource('text')}>From Text</Button>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <Button
+          variant={source === 'hf' ? 'accent' : 'secondary'}
+          className="w-full sm:w-auto"
+          onClick={() => setSource('hf')}
+        >
+          From Hugging Face
+        </Button>
+        <Button
+          variant={source === 'local' ? 'accent' : 'secondary'}
+          className="w-full sm:w-auto"
+          onClick={() => setSource('local')}
+        >
+          From Local Runtime
+        </Button>
+        <Button
+          variant={source === 'text' ? 'accent' : 'secondary'}
+          className="w-full sm:w-auto"
+          onClick={() => setSource('text')}
+        >
+          From Text
+        </Button>
       </div>
-      <form ref={formRef} onSubmit={onSubmit} className="space-y-3">
+      <form ref={formRef} onSubmit={onSubmit} className="space-y-6">
         {source === 'hf' ? (
           <div className="space-y-2">
             <input
@@ -285,9 +316,9 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
           </div>
         ) : source === 'text' ? (
           <div className="space-y-2">
-            <label className="text-sm text-ink-700">Paste text</label>
+            <label className="text-sm font-medium text-ink-800">Paste text</label>
             <textarea
-              className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 min-h-[140px] focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
+              className="w-full min-h-[140px] rounded-card bg-paper-0 border border-ink-100 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
               placeholder="Paste any content here (docs, article, notes) to generate a lesson."
               value={rawTextInput}
               onChange={(e) => setRawTextInput(e.target.value)}
@@ -296,10 +327,10 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
           </div>
         ) : (
           <div className="space-y-2">
-            <label className="text-sm text-ink-700">Local model</label>
+            <label className="text-sm font-medium text-ink-800">Local model</label>
             {availableModels.length > 0 ? (
               <select
-                className="p-2 rounded-card bg-paper-0 border border-ink-100 w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
+                className="w-full rounded-card bg-paper-0 border border-ink-100 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
                 value={targetModel}
                 onChange={(e) => setTargetModel(e.target.value)}
               >
@@ -310,7 +341,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
               </select>
             ) : (
               <input
-                className="w-full p-2 rounded-card bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
+                className="w-full rounded-card bg-paper-0 border border-ink-100 p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
                 placeholder="gpt-oss-20b"
                 value={targetModel}
                 onChange={(e) => setTargetModel(e.target.value)}
@@ -321,7 +352,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
           </div>
         )}
         <div className="space-y-2">
-          <label className="text-sm text-ink-700">Difficulty</label>
+          <label className="text-sm font-medium text-ink-800">Difficulty</label>
           <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
             {['beginner', 'intermediate', 'advanced'].map((level) => (
               <option key={level} value={level}>{level}</option>
@@ -329,68 +360,77 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
           </select>
           <p className="text-xs text-ink-600">Select the skill level you want ALAIN to target.</p>
         </div>
-        <div className="rounded-card border border-ink-100 bg-paper-50 p-3">
-          <button
-            type="button"
-            className="flex w-full items-center justify-between text-sm font-medium text-ink-900"
-            onClick={() => setShowAdvancedProviders((prev) => !prev)}
-          >
-            Advanced provider settings
-            <span className="text-xs text-ink-600">{showAdvancedProviders ? 'Hide' : 'Show'}</span>
-          </button>
-          {showAdvancedProviders && (
-            <div className="mt-3 space-y-3">
-              <div className="space-y-1">
-                <label className="text-sm text-ink-700">Teacher provider</label>
-                <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={teacherProvider} onChange={(e) => setTeacherProvider(e.target.value as any)}>
-                  <option value="poe">{providerExplainers.poe.title}</option>
-                  <option value="openai-compatible">{providerExplainers['openai-compatible'].title}</option>
-                </select>
-                <p className="text-xs text-ink-600">{teacherProviderHelper || 'Choose where the teacher model will run.'}</p>
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ink-700">Teacher model</label>
-                <select
-                  className="p-2 rounded-card bg-paper-0 border border-ink-100"
-                  value={teacherModel}
-                  onChange={(e) => setTeacherModel(e.target.value as any)}
-                >
-                  <option value="GPT-OSS-20B">GPT-OSS-20B (default)</option>
-                  {ALLOW_120B && <option value="GPT-OSS-120B">GPT-OSS-120B (not recommended)</option>}
-                </select>
-                <p className="text-xs text-ink-600">Stay on GPT-OSS-20B for the most reliable JSON output.</p>
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-ink-700">Target provider</label>
-                <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={targetProvider} onChange={(e) => setTargetProvider(e.target.value)}>
-                  {providers.map((provider) => (
-                    <option key={provider.name} value={provider.name}>
-                      {providerExplainers[provider.name]?.title || provider.name}
-                    </option>
-                  ))}
-                </select>
-                {targetProviderHelper && <p className="text-xs text-ink-600">{targetProviderHelper}</p>}
-                <input
-                  className="p-2 rounded-card bg-paper-0 border border-ink-100"
-                  placeholder="Optional model override (e.g. gpt-oss-20b)"
-                  value={targetModel}
-                  onChange={(e) => setTargetModel(e.target.value)}
-                />
-                <p className="text-xs text-ink-600">Leave blank to use the provider\'s default deployment.</p>
-              </div>
+        <details
+          className="group rounded-card border border-ink-100 bg-paper-50 p-3"
+          open={showAdvancedProviders}
+          onToggle={(event) => setShowAdvancedProviders(event.currentTarget.open)}
+        >
+          <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-ink-900">
+            Advanced options
+            <span className="text-xs font-normal text-ink-600 transition-transform group-open:rotate-180">▼</span>
+          </summary>
+          <div className="mt-3 space-y-3 pl-1">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-ink-800">Teacher provider</label>
+              <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={teacherProvider} onChange={(e) => setTeacherProvider(e.target.value as any)}>
+                <option value="poe">{providerExplainers.poe.title}</option>
+                <option value="openai-compatible">{providerExplainers['openai-compatible'].title}</option>
+              </select>
+              <p className="text-xs text-ink-600">{teacherProviderHelper || 'Choose where the teacher model will run.'}</p>
             </div>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <Button type="submit" disabled={loading}>
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-ink-800">Teacher model</label>
+              <select
+                className="p-2 rounded-card bg-paper-0 border border-ink-100"
+                value={teacherModel}
+                onChange={(e) => setTeacherModel(e.target.value as any)}
+              >
+                <option value="GPT-OSS-20B">GPT-OSS-20B (default)</option>
+                {ALLOW_120B && <option value="GPT-OSS-120B">GPT-OSS-120B (not recommended)</option>}
+              </select>
+              <p className="text-xs text-ink-600">Stay on GPT-OSS-20B for the most reliable JSON output.</p>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-ink-800">Target provider</label>
+              <select className="p-2 rounded-card bg-paper-0 border border-ink-100" value={targetProvider} onChange={(e) => setTargetProvider(e.target.value)}>
+                {providers.map((provider) => (
+                  <option key={provider.name} value={provider.name}>
+                    {providerExplainers[provider.name]?.title || provider.name}
+                  </option>
+                ))}
+              </select>
+              {targetProviderHelper && <p className="text-xs text-ink-600">{targetProviderHelper}</p>}
+              <input
+                className="p-2 rounded-card bg-paper-0 border border-ink-100"
+                placeholder="Optional model override (e.g. gpt-oss-20b)"
+                value={targetModel}
+                onChange={(e) => setTargetModel(e.target.value)}
+              />
+              <p className="text-xs text-ink-600">Leave blank to use the provider's default deployment.</p>
+            </div>
+          </div>
+        </details>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Button type="submit" className="w-full sm:w-auto" disabled={loading}>
             {loading ? 'Generating…' : 'Generate'}
           </Button>
-          {progress !== 'idle' && <span className="text-sm text-ink-700">{progress}</span>}
+          {isActiveProgress && (
+            <div className="flex items-center gap-2 text-sm text-ink-700" role="status" aria-live="polite">
+              <span className="inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-alain-blue" aria-hidden="true" />
+              <span>{progressLabels[progress]}</span>
+            </div>
+          )}
+          {!isActiveProgress && progress === 'done' && (
+            <div className="flex items-center gap-2 text-sm text-success-700" role="status" aria-live="polite">
+              <span className="inline-flex h-2.5 w-2.5 rounded-full bg-success-600" aria-hidden="true" />
+              <span>{progressLabels.done}</span>
+            </div>
+          )}
         </div>
       </form>
 
       {error && (
-        <div className="mt-3 p-3 rounded-card border border-red-200 bg-red-50 text-red-800">
+        <div className="mt-3 rounded-card border border-red-200 bg-red-50 p-3 text-red-800">
           <div className="font-medium">{error}</div>
           {errorDetails.length > 0 && (
             <ul className="mt-1 list-disc pl-4 text-sm">
@@ -428,11 +468,48 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
           preview={result.preview as any}
           repaired={!!result.meta?.repaired}
           onExport={async (suggestedName) => exportNotebook(result, suggestedName)}
+          exporting={exportState.status === 'loading'}
         />
       )}
 
+      {exportState.status === 'loading' && (
+        <div className="rounded-card border border-alain-blue/30 bg-alain-blue/5 p-4 text-sm text-ink-800">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-alain-blue" aria-hidden="true" />
+            <span>Preparing notebook export…</span>
+          </div>
+        </div>
+      )}
+
+      {exportState.status === 'success' && (
+        <div className="space-y-2 rounded-card border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+          <div className="flex flex-col gap-1">
+            <div className="font-semibold">Export successful!</div>
+            <p>Your notebook downloaded as <span className="font-semibold">{exportState.filename}</span>. Share or reopen it any time with this temporary link.</p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={handleCopyExportLink}>
+              {copyStatus === 'success' ? 'Link copied!' : 'Copy download link'}
+            </Button>
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={clearExportState}>
+              Dismiss
+            </Button>
+          </div>
+          {copyStatus === 'error' && <p className="text-xs text-red-700">Copy failed. Right-click the link below to copy manually.</p>}
+          <a className="break-all text-xs text-green-700 underline" href={exportState.url} target="_blank" rel="noreferrer">{exportState.url}</a>
+        </div>
+      )}
+
+      {exportState.status === 'error' && (
+        <div className="rounded-card border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          <div className="font-semibold">Export failed</div>
+          <p className="text-sm">{exportState.message}</p>
+          <Button variant="secondary" className="mt-3" onClick={clearExportState}>Dismiss</Button>
+        </div>
+      )}
+
       <div className="mt-6 text-sm text-ink-700">
-        <div className="font-medium text-ink-900 mb-1">Try these popular models</div>
+        <div className="mb-1 font-medium text-ink-900">Try these popular models</div>
         <div className="flex flex-wrap gap-2">
           {['meta-llama/Meta-Llama-3.1-8B-Instruct', 'google/gemma-2-9b-it', 'mistralai/Mistral-7B-Instruct-v0.3'].map((model) => (
             <Button key={model} variant="secondary" className="px-2 py-1 text-xs" onClick={() => setHfUrl(model)}>{model}</Button>
@@ -441,7 +518,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
       </div>
 
       {snackbar && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 shadow-card">{snackbar}</div>
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-card border border-ink-100 bg-paper-0 px-4 py-2 text-ink-900 shadow-card">{snackbar}</div>
       )}
     </div>
   );
