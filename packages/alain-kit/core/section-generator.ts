@@ -266,16 +266,18 @@ export class SectionGenerator {
     }
 
     const approxTokens = this.estimateSectionTokens(section);
+    const tolerance = Math.max(Math.round(this.MIN_TOKENS * 0.5), 200);
     if (typeof section.estimated_tokens !== 'number') {
       this.log.warn('section_missing_estimate', { section: section.section_number ?? 'unknown', approxTokens });
     } else {
       const estimate = section.estimated_tokens;
       const delta = Math.abs(estimate - approxTokens);
-      if (delta > this.MIN_TOKENS * 0.5) {
+      if (delta > tolerance) {
         this.log.warn('section_estimate_mismatch', {
           section: section.section_number ?? 'unknown',
           estimate,
-          approxTokens
+          approxTokens,
+          tolerance
         });
       }
     }

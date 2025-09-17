@@ -5,6 +5,9 @@ const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const cache = new Map();
 function resolvePromptPath(fileName) {
     const customRoot = (process.env.ALAIN_PROMPT_ROOT || '').trim();
+    const resolvedCustomRoot = customRoot
+        ? path.resolve(process.cwd(), customRoot)
+        : undefined;
     const candidateBases = [
         moduleDir,
         path.resolve(moduleDir, '..'),
@@ -12,9 +15,10 @@ function resolvePromptPath(fileName) {
         path.resolve(moduleDir, '..', '..', '..'),
         process.cwd()
     ];
+    const uniqueBases = Array.from(new Set(candidateBases.map(base => path.resolve(base))));
     const searchRoots = [
-        customRoot || undefined,
-        ...candidateBases.map(base => path.resolve(base, 'resources/prompts/alain-kit'))
+        resolvedCustomRoot,
+        ...uniqueBases.map(base => path.resolve(base, 'resources/prompts/alain-kit'))
     ].filter(Boolean);
     for (const root of searchRoots) {
         const abs = path.join(root, fileName);
