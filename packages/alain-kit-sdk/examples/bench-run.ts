@@ -1,4 +1,4 @@
-import { ALAINKit } from '../index';
+import { ALAINKit } from '../index.js';
 import fs from 'fs';
 import path from 'path';
 

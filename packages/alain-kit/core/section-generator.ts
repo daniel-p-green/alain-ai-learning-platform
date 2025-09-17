@@ -4,10 +4,10 @@
  * Generates individual notebook sections with 800-1,500 token limit per section.
  * Ensures beginner-friendly content with executable code and proper structure.
  */
-import { createLogger, timeIt, trackEvent, metrics } from './obs';
-import { capsFor } from './providers';
-import { supportsTemperature } from './model-caps';
-import { loadPromptTemplate, applyTemplate } from './prompt-loader';
+import { createLogger, timeIt, trackEvent, metrics } from './obs.js';
+import { capsFor, buildChatCompletionsUrl } from './providers.js';
+import { supportsTemperature } from './model-caps.js';
+import { loadPromptTemplate, applyTemplate } from './prompt-loader.js';
 
 export interface NotebookCell {
   cell_type: 'markdown' | 'code';
@@ -70,7 +70,8 @@ export class SectionGenerator {
     if (!options.modelReference) {
       throw new Error('Model reference is required');
     }
-    if (!options.apiKey) {
+    const isLocalEndpoint = /localhost|127\.0\.0\.1/.test((this.baseUrl || '').toLowerCase());
+    if (!options.apiKey && !isLocalEndpoint) {
       throw new Error('API key is required');
     }
     if (typeof options.sectionNumber !== 'number' || options.sectionNumber < 1) {
@@ -79,7 +80,7 @@ export class SectionGenerator {
     const { outline, sectionNumber, previousSections, modelReference, apiKey, customPrompt } = options;
     const prompt = this.buildSectionPrompt(outline, sectionNumber, previousSections, modelReference);
     
-    const endpoint = this.baseUrl || 'https://api.poe.com';
+    const endpoint = buildChatCompletionsUrl(this.baseUrl);
     const providerCaps = capsFor(this.baseUrl);
 
     let response: Response;
@@ -95,12 +96,13 @@ export class SectionGenerator {
         body.temperature = customPrompt?.temperature ?? 0.2;
       }
       if (providerCaps.allowResponseFormat) body.response_format = { type: 'json_object' as const };
-      response = await fetch(`${endpoint}/v1/chat/completions`, {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (apiKey && apiKey !== 'local') {
+        headers.Authorization = `Bearer ${apiKey}`;
+      }
+      response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(body)
       });
       

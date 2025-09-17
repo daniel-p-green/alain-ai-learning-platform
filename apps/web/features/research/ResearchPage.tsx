@@ -26,7 +26,7 @@ export default function ResearchPage() {
   function formatErrorMessage(status: number, raw?: string | null) {
     const normalized = (raw || '').toLowerCase();
     if (status === 401 || normalized.includes('unauthorized') || normalized.includes('authentication')) {
-      return 'Authentication failed. Update your provider credentials in Settings -> Environment Status and try again.';
+      return 'Authentication failed. Update your provider credentials in Settings → Environment Status and try again.';
     }
     if (status === 404 || normalized.includes('not found')) {
       return 'Model information not found. Confirm the owner/repo is public and spelled correctly.';

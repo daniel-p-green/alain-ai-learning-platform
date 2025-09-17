@@ -5,9 +5,9 @@
  * Ensures proper structure and Colab compatibility.
  */
 
-import { NotebookOutline } from './outline-generator';
-import { GeneratedSection } from './section-generator';
-import { createLogger, trackEvent } from './obs';
+import { NotebookOutline } from './outline-generator.js';
+import { GeneratedSection } from './section-generator.js';
+import { createLogger, trackEvent } from './obs.js';
 
 export interface Assessment {
   question: string;

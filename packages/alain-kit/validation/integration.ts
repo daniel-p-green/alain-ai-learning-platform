@@ -5,14 +5,16 @@
  * notebook building, and validation in a single pipeline.
  */
 
-import { OutlineGenerator, NotebookOutline } from '../core/outline-generator';
-import { SectionGenerator, GeneratedSection } from '../core/section-generator';
-import { NotebookBuilder } from '../core/notebook-builder';
-import { QualityValidator, QualityMetrics } from './quality-validator';
-import { ColabValidator, ColabValidationResult } from './colab-validator';
-import { QaGate, QaGateReport } from './qa-gate';
-import { SemanticValidator, SemanticReport } from './semantic-validator';
-import { metrics, trackEvent } from '../core/obs';
+import { mkdirSync, existsSync, readdirSync, writeFileSync, readFileSync } from 'fs';
+import path from 'path';
+import { OutlineGenerator, NotebookOutline } from '../core/outline-generator.js';
+import { SectionGenerator, GeneratedSection } from '../core/section-generator.js';
+import { NotebookBuilder } from '../core/notebook-builder.js';
+import { QualityValidator, QualityMetrics } from './quality-validator.js';
+import { ColabValidator, ColabValidationResult } from './colab-validator.js';
+import { QaGate, QaGateReport } from './qa-gate.js';
+import { SemanticValidator, SemanticReport } from './semantic-validator.js';
+import { metrics, trackEvent } from '../core/obs.js';
 
 export interface ALAINKitResult {
   success: boolean;
@@ -60,7 +62,7 @@ export class ALAINKit {
     // Checkpoint directory: allow resume across runs when ALAIN_CHECKPOINT_DIR is set
     const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     this.checkpointsDir = process.env.ALAIN_CHECKPOINT_DIR || `/tmp/alain-kit-${stamp}`;
-    try { require('fs').mkdirSync(this.checkpointsDir, { recursive: true }); } catch {}
+    try { mkdirSync(this.checkpointsDir, { recursive: true }); } catch {}
   }
 
   /**
@@ -84,13 +86,12 @@ export class ALAINKit {
   }): Promise<ALAINKitResult> {
     const pipelineStart = Date.now();
     try {
-      const isLocalProvider = !!this.baseUrl && (/localhost|127\.0\.0\.1/i.test(this.baseUrl));
-      const apiKeyOrLocal = isLocalProvider ? (config.apiKey || 'local') : (config.apiKey || '');
+      const apiKeyForRequests = config.apiKey;
       // Step 1: Generate outline
       const tOutlineStart = Date.now();
       const outline = await this.outlineGenerator.generateOutline({
         model: config.modelReference,
-        apiKey: apiKeyOrLocal,
+        apiKey: apiKeyForRequests,
         difficulty: config.difficulty || 'beginner',
         customPrompt: config.customPrompt
       });
@@ -103,12 +104,10 @@ export class ALAINKit {
       }
 
       // Step 2: Generate sections (checkpoint + bounded concurrency)
-      const fs = require('fs');
-      const path = require('path');
       const sectionsDir = path.join(this.checkpointsDir, 'sections');
-      try { fs.mkdirSync(sectionsDir, { recursive: true }); } catch {}
+      try { mkdirSync(sectionsDir, { recursive: true }); } catch {}
       const completed = new Set<number>();
-      for (const f of (fs.existsSync(sectionsDir) ? fs.readdirSync(sectionsDir) : [])) {
+      for (const f of (existsSync(sectionsDir) ? readdirSync(sectionsDir) : [])) {
         const m = f.match(/^(\d+)\.json$/);
         if (m) completed.add(Number(m[1]));
       }
@@ -116,10 +115,10 @@ export class ALAINKit {
       const sections: Array<GeneratedSection | undefined> = new Array(maxSections).fill(undefined);
       const sectionDurations: number[] = [];
       // Preload any saved sections (resume)
-      for (const idx of Array.from(completed).sort((a,b)=>a-b)) {
+      for (const idx of Array.from(completed).sort((a, b) => a - b)) {
         if (idx >= 1 && idx <= maxSections) {
           try {
-            const rec = JSON.parse(fs.readFileSync(path.join(sectionsDir, `${idx}.json`), 'utf-8'));
+            const rec = JSON.parse(readFileSync(path.join(sectionsDir, `${idx}.json`), 'utf-8'));
             sections[idx - 1] = rec;
           } catch {}
         }
@@ -139,7 +138,7 @@ export class ALAINKit {
               sectionNumber,
               previousSections,
               modelReference: config.modelReference,
-              apiKey: apiKeyOrLocal,
+              apiKey: apiKeyForRequests,
               customPrompt: config.customPrompt,
               difficulty: config.difficulty || 'beginner'
             });
@@ -151,7 +150,7 @@ export class ALAINKit {
             }
             sections[sectionNumber - 1] = section;
             // Save checkpoint
-            try { fs.writeFileSync(path.join(sectionsDir, `${sectionNumber}.json`), JSON.stringify(section, null, 2)); } catch {}
+            try { writeFileSync(path.join(sectionsDir, `${sectionNumber}.json`), JSON.stringify(section, null, 2)); } catch {}
           };
           await this.attemptWithBackoff(fn, 3);
         });
@@ -203,7 +202,7 @@ export class ALAINKit {
 
       // Step 4: Quality validation
       const tempPath = `/tmp/alain-notebook-${Date.now()}.ipynb`;
-      require('fs').writeFileSync(tempPath, JSON.stringify(notebook, null, 2));
+      writeFileSync(tempPath, JSON.stringify(notebook, null, 2));
       const tQualityStart = Date.now();
       const qualityMetrics = this.qualityValidator.validateNotebook(tempPath);
       const tQuality = Date.now() - tQualityStart;
@@ -369,7 +368,7 @@ export async function generateNotebook(options: {
   customPrompt?: {
     title: string;
     description: string;
-    difficulty: string;
+    difficulty: 'beginner' | 'intermediate' | 'advanced';
     topics: string[];
     modelSpecificInstructions?: string;
   };

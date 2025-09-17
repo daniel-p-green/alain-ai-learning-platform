@@ -1,9 +1,9 @@
-import { NotebookOutline } from '../core/outline-generator';
-import { GeneratedSection } from '../core/section-generator';
-import { createLogger } from '../core/obs';
-import { extractJsonLoose } from '../core/json-utils';
-import { capsFor } from '../core/providers';
-import { supportsTemperature } from '../core/model-caps';
+import { NotebookOutline } from '../core/outline-generator.js';
+import { GeneratedSection } from '../core/section-generator.js';
+import { createLogger } from '../core/obs.js';
+import { extractJsonLoose } from '../core/json-utils.js';
+import { capsFor } from '../core/providers.js';
+import { supportsTemperature } from '../core/model-caps.js';
 
 export type SemanticStatus = 'pass' | 'warn' | 'fail';
 

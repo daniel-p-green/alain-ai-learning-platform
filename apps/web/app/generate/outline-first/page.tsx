@@ -133,7 +133,7 @@ export default function OutlineFirstGeneratorPage() {
       <div className="rounded border border-ink-100 bg-paper-50 p-3 text-xs text-ink-700 mb-4">
         <div className="font-medium text-ink-900 mb-1">Before you start</div>
         <ul className="list-disc pl-4 space-y-1">
-          <li>Verify your teacher provider is configured (Poe or OpenAI-compatible) in Settings -> Environment Status.</li>
+          <li>Verify your teacher provider is configured (Poe or OpenAI-compatible) in Settings &rarr; Environment Status.</li>
           <li>Keep this tab open while sections stream in; closing it stops generation.</li>
           <li>Once the activity feed shows &quot;Notebook ready,&quot; export immediately to avoid losing the buffer.</li>
         </ul>
@@ -161,10 +161,12 @@ export default function OutlineFirstGeneratorPage() {
         <div className="flex items-center gap-3">
           {!running && <button onClick={start} className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-2 rounded">Start</button>}
           {running && <button onClick={stop} className="bg-gray-600 hover:bg-gray-700 text-white text-sm px-3 py-2 rounded">Stop</button>}
-          {notebook && <>
-            <button onClick={downloadNotebook} className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-3 py-2 rounded">Download .ipynb</button>
-            <button onClick={downloadBundle} className="bg-emerald-700 hover:bg-emerald-800 text-white text-sm px-3 py-2 rounded">Download Bundle (.zip)</button>
-          </>}
+          {notebook && (
+            <>
+              <button onClick={downloadNotebook} className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-3 py-2 rounded">Download .ipynb</button>
+              <button onClick={downloadBundle} className="bg-emerald-700 hover:bg-emerald-800 text-white text-sm px-3 py-2 rounded">Download Bundle (.zip)</button>
+            </>
+          )}
         </div>
       </div>
 

@@ -1,4 +1,5 @@
-import { supportsTemperature } from '../core/model-caps';
+import { readFileSync } from 'fs';
+import { supportsTemperature } from '../core/model-caps.js';
 
 /**
  * ALAIN-Kit Colab Validator
@@ -108,7 +109,7 @@ else:
    * Validate notebook for Colab compatibility
    */
   async validateNotebook(notebookPath: string): Promise<ColabValidationResult> {
-    const notebook = require('fs').readFileSync(notebookPath, 'utf8');
+    const notebook = readFileSync(notebookPath, 'utf8');
     const notebookData = JSON.parse(notebook);
     
     const issues = this.detectIssues(notebookData);

@@ -1,5 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 
 const cache = new Map<string, string>();
 
@@ -7,7 +10,7 @@ function resolvePromptPath(fileName: string): string | undefined {
   const customRoot = (process.env.ALAIN_PROMPT_ROOT || '').trim();
   const searchRoots = [
     customRoot || undefined,
-    path.resolve(__dirname, '../../../resources/prompts/alain-kit'),
+    path.resolve(moduleDir, '../../../resources/prompts/alain-kit'),
     path.resolve(process.cwd(), 'resources/prompts/alain-kit')
   ].filter(Boolean) as string[];
 

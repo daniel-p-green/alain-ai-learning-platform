@@ -54,6 +54,12 @@ type ResultMeta = {
   reasoning_summary?: string;
 };
 
+type ExportState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; url: string; filename: string }
+  | { status: 'error'; message: string };
+
 export type GenerateResult = {
   tutorialId: number | string;
   meta?: ResultMeta;
@@ -105,7 +111,10 @@ export interface UseGenerateLessonResult {
   onAutoFix: () => Promise<void>;
   triggerExampleHosted: () => void;
   triggerExampleLocal: () => void;
+  triggerDemoMode: () => void;
   exportNotebook: (result: GenerateResult, suggestedName: string) => Promise<void>;
+  exportState: ExportState;
+  clearExportState: () => void;
   submitForm: () => void;
 }
 
@@ -137,6 +146,17 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
   const [envBanner, setEnvBanner] = useState<any>(null);
   const [forceFallback, setForceFallback] = useState(false);
   const [researchMode, setResearchMode] = useState<ResearchMode>('standard');
+  const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
+  const exportUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (exportUrlRef.current) {
+        URL.revokeObjectURL(exportUrlRef.current);
+        exportUrlRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -402,25 +422,60 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     requestSubmitSoon();
   }
 
+  function triggerDemoMode() {
+    setSource('local');
+    setTeacherProvider('openai-compatible');
+    setTeacherModel('GPT-OSS-20B');
+    setTargetProvider('openai-compatible');
+    setTargetModel('gpt-oss-20b');
+    setDifficulty('beginner');
+    setResearchMode('standard');
+    setForceFallback(false);
+    setRawTextInput('');
+    setHfUrl('');
+    setSnackbar('Demo preset loaded with GPT-OSS-20B. Click Generate to run it.');
+    setTimeout(() => setSnackbar(null), 2600);
+  }
+
+  function clearExportState() {
+    if (exportUrlRef.current) {
+      URL.revokeObjectURL(exportUrlRef.current);
+      exportUrlRef.current = null;
+    }
+    setExportState({ status: 'idle' });
+  }
+
   async function exportNotebook(currentResult: GenerateResult, suggestedName: string) {
     const id = String(currentResult.tutorialId);
     let notebook: any = null;
-    if (id.startsWith('local-')) {
-      const res = await fetch(`/api/export/colab/local/${id}`);
-      notebook = await res.json();
-    } else {
-      const res = await fetch(backendUrl(`/export/colab/${id}`));
-      notebook = await res.json();
+    if (exportUrlRef.current) {
+      URL.revokeObjectURL(exportUrlRef.current);
+      exportUrlRef.current = null;
     }
-    const notebookBlob = new Blob([JSON.stringify(notebook, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(notebookBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${suggestedName}.ipynb`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    setExportState({ status: 'loading' });
+    try {
+      if (id.startsWith('local-')) {
+        const res = await fetch(`/api/export/colab/local/${id}`);
+        notebook = await res.json();
+      } else {
+        const res = await fetch(backendUrl(`/export/colab/${id}`));
+        notebook = await res.json();
+      }
+      const notebookBlob = new Blob([JSON.stringify(notebook, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(notebookBlob);
+      exportUrlRef.current = url;
+      const filename = `${suggestedName}.ipynb`;
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setExportState({ status: 'success', url, filename });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Export failed. Try again.';
+      setExportState({ status: 'error', message });
+    }
   }
 
   return {
@@ -464,7 +519,10 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     onAutoFix,
     triggerExampleHosted,
     triggerExampleLocal,
+    triggerDemoMode,
     exportNotebook,
+    exportState,
+    clearExportState,
     submitForm,
   };
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { ALAINKit } from '../index';
+import { ALAINKit } from '../index.js';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -34,9 +34,9 @@ function computeReadability(notebook: any) {
 
 function fk(text: string): number {
   const sentences = Math.max(1, splitSentences(text).length);
-  const wordsArr = (text.match(/[A-Za-zÀ-ÖØ-öø-ÿ]+(?:'[A-Za-z]+)?/g) || []);
+  const wordsArr = (text.match(/[A-Za-zÀ-ÖØ-öø-ÿ]+(?:'[A-Za-z]+)?/g) || []) as string[];
   const words = Math.max(1, wordsArr.length);
-  const syllables = Math.max(1, wordsArr.reduce((s, w) => s + syllableCount(w), 0));
+  const syllables = Math.max(1, wordsArr.reduce((sum, w) => sum + syllableCount(w), 0));
   const wordsPerSentence = words / sentences;
   const syllablesPerWord = syllables / words;
   return 0.39 * wordsPerSentence + 11.8 * syllablesPerWord - 15.59;

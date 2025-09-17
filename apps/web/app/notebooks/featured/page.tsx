@@ -1,10 +1,12 @@
 import React from 'react';
 import nextDynamic from 'next/dynamic';
+import { appBaseUrl } from '@/lib/requestBase';
 const GitHubOpenForm = nextDynamic(() => import('@/components/GitHubOpenForm'), { ssr: false });
 
 async function fetchFeatured() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/notebooks/featured`, { cache: 'no-store' });
+    const base = appBaseUrl();
+    const res = await fetch(`${base}/api/notebooks/featured`, { cache: 'no-store' });
     const j = await res.json();
     return Array.isArray(j.items) ? j.items : [];
   } catch { return []; }

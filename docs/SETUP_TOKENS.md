@@ -51,7 +51,7 @@ How to get it:
 
 Setup (Encore secrets or env):
 ```bash
-cd backend
+cd apps/backend
 encore secret set KAGGLE_USERNAME
 encore secret set KAGGLE_KEY
 # or in apps/backend/.env for local only
@@ -75,7 +75,7 @@ Notes:
 2. **Set secrets using Encore CLI**:
    ```bash
    # Navigate to backend directory
-   cd backend
+   cd apps/backend
 
    # Set Poe API key
    encore secret set POE_API_KEY
@@ -131,7 +131,7 @@ echo "KAGGLE_KEY=your_key" >> apps/backend/.env            # optional
 
 1. **Start the backend**:
    ```bash
-   cd backend
+   cd apps/backend
    encore run
    ```
 

@@ -5,7 +5,8 @@
  * high-quality, Colab-compatible notebooks.
  */
 
-import { ALAINKit } from '../validation/integration';
+import { writeFileSync } from 'fs';
+import { ALAINKit } from '../validation/integration.js';
 
 async function example() {
   const alainKit = new ALAINKit();
@@ -23,13 +24,13 @@ async function example() {
     console.log(`📱 Colab compatible: ${result.colabCompatible}`);
     
     // Save notebook
-    require('fs').writeFileSync(
+    writeFileSync(
       'generated-notebook.ipynb',
       JSON.stringify(result.notebook, null, 2)
     );
     
     // Save validation report
-    require('fs').writeFileSync(
+    writeFileSync(
       'validation-report.md',
       result.validationReport
     );

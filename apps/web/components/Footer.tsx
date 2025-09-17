@@ -27,7 +27,16 @@ export default function Footer() {
           <div>
             <div className="font-display font-semibold text-ink-900">Community</div>
             <ul className="mt-2 space-y-1 text-sm">
-              <li><a className="hover:underline" href="#">GitHub</a></li>
+              <li>
+                <a
+                  className="hover:underline"
+                  href="https://github.com/daniel-p-green/alain-ai-learning-platform"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
+              </li>
               <li>
                 <a
                   className="hover:underline"
@@ -55,8 +64,22 @@ export default function Footer() {
             </a>
           </div>
           <div className="flex gap-3 text-ink-700">
-            <a href="#" className="hover:underline">Privacy</a>
-            <a href="#" className="hover:underline">Terms</a>
+            <a
+              href="https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/docs/notebooks/data-privacy-and-secrets.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Privacy
+            </a>
+            <a
+              href="https://github.com/daniel-p-green/alain-ai-learning-platform/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              Terms
+            </a>
           </div>
         </div>
       </div>

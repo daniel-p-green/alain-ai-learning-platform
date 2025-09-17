@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "NodeNext",
+    "target": "ES2020",
+    "moduleResolution": "node16",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "isolatedModules": true,
+    "paths": {
+      "alain-kit": [
+        "../alain-kit/dist/validation/integration.js"
+      ],
+      "alain-kit/*": [
+        "../alain-kit/dist/*.js"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "include": [
+    "index.ts",
+    "bin/**/*.ts",
+    "examples/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts"
+  ]
+}

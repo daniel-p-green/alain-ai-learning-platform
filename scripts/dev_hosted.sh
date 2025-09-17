@@ -11,13 +11,13 @@ if [[ -z "${POE_API_KEY:-}" ]]; then
 fi
 
 (
-  cd backend
+  cd apps/backend
   encore run
 ) &
 BACK_PID=$!
 
 (
-  cd web
+  cd apps/web
   npm run dev
 ) &
 WEB_PID=$!
@@ -25,4 +25,3 @@ WEB_PID=$!
 trap 'kill $BACK_PID $WEB_PID 2>/dev/null || true' INT TERM EXIT
 
 wait -n $BACK_PID $WEB_PID || true
-

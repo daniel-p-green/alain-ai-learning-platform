@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+
 /**
  * ALAIN-Kit Quality Validator
  * 
@@ -25,7 +27,7 @@ export class QualityValidator {
    * Validate notebook quality against standards
    */
   validateNotebook(notebookPath: string): QualityMetrics {
-    const notebook = require('fs').readFileSync(notebookPath, 'utf8');
+    const notebook = readFileSync(notebookPath, 'utf8');
     const notebookData = JSON.parse(notebook);
     
     return this.analyzeNotebook(notebookData);

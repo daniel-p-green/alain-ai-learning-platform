@@ -1,6 +1,6 @@
-import { NotebookOutline } from '../core/outline-generator';
-import { GeneratedSection } from '../core/section-generator';
-import { createLogger } from '../core/obs';
+import { NotebookOutline } from '../core/outline-generator.js';
+import { GeneratedSection } from '../core/section-generator.js';
+import { createLogger } from '../core/obs.js';
 
 export type QaGateStatus = 'pass' | 'warn' | 'fail';
 
@@ -47,6 +47,7 @@ export interface QaGateReport {
 interface QaGateInput {
   outline: NotebookOutline;
   sections: GeneratedSection[];
+  notebook?: any;
 }
 
 export class QaGate {
