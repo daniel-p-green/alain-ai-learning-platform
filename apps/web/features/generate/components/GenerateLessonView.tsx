@@ -5,7 +5,7 @@ import { Button } from '../../../components/Button';
 import { PreviewPanel } from '../../../components/PreviewPanel';
 import api, { parseHfRef } from '../../../lib/api';
 import type { UseGenerateLessonResult } from '../hooks/useGenerateLesson';
-import { GenerateWizard } from './GenerateWizard';
+
 
 const providerExplainers: Record<string, { title: string; helper: string }> = {
   poe: {
@@ -25,6 +25,9 @@ const providerExplainers: Record<string, { title: string; helper: string }> = {
     helper: 'Connects to an Ollama host (default http://localhost:11434). Pull the model before starting.'
   },
 };
+
+type PresetId = 'hosted' | 'local' | 'colab';
+type EnvBanner = UseGenerateLessonResult['envBanner'];
 
 export function GenerateLessonView(props: UseGenerateLessonResult) {
   const {
@@ -70,7 +73,6 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     triggerExampleLocal,
     exportNotebook,
   } = props;
-  const [wizardOpen, setWizardOpen] = useState(false);
   const [showAdvancedProviders, setShowAdvancedProviders] = useState(false);
 
   const readyHosted = !!envBanner && envBanner.teacherProvider === 'poe' && !!envBanner.poeConfigured;
@@ -78,6 +80,71 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   const hfInfo = parseHfRef(hfUrl);
   const teacherProviderHelper = providerExplainers[teacherProvider]?.helper;
   const targetProviderHelper = providers.find((provider) => provider.name === targetProvider)?.description || providerExplainers[targetProvider]?.helper;
+
+  const applyPreset = (preset: PresetId) => {
+    if (preset === 'hosted') {
+      setSource('hf');
+      setTeacherProvider('poe');
+      setTeacherModel('GPT-OSS-20B');
+      setTargetProvider('poe');
+      setTargetModel('');
+      setResearchMode('standard');
+      setDifficulty('beginner');
+      setForceFallback(false);
+      setRawTextInput('');
+      return;
+    }
+    if (preset === 'local') {
+      setSource('local');
+      setTeacherProvider('openai-compatible');
+      setTeacherModel('GPT-OSS-20B');
+      setTargetProvider('openai-compatible');
+      if (availableModels.length > 0) {
+        setTargetModel(availableModels[0]);
+      }
+      setResearchMode('standard');
+      setDifficulty('beginner');
+      setForceFallback(false);
+      setRawTextInput('');
+      setHfUrl('');
+      return;
+    }
+    setSource('hf');
+    setTeacherProvider('poe');
+    setTeacherModel('GPT-OSS-20B');
+    setTargetProvider('poe');
+    setTargetModel('');
+    setResearchMode('thorough');
+    setDifficulty('beginner');
+    setForceFallback(false);
+    setRawTextInput('');
+  };
+
+  const quickPresetCards: Array<{ id: PresetId; title: string; description: string; ready: boolean; status: string }> = [
+    {
+      id: 'hosted',
+      title: 'Hosted (Poe)',
+      description: 'Fast start with managed runtime and no local setup.',
+      ready: readyHosted,
+      status: readyHosted ? 'Ready — Poe configured.' : 'Add a Poe API key in Settings → Environment Status.',
+    },
+    {
+      id: 'local',
+      title: 'Local runtime',
+      description: 'Generate with an OpenAI-compatible server (Ollama, LM Studio, vLLM).',
+      ready: readyLocal,
+      status: readyLocal
+        ? `Ready — using ${envBanner?.openaiBaseUrl ?? 'configured base URL'}.`
+        : 'Set an OpenAI-compatible base URL in Settings → Environment Status.',
+    },
+    {
+      id: 'colab',
+      title: 'Colab export',
+      description: 'Optimised for Google Colab with hosted providers and thorough research.',
+      ready: readyHosted,
+      status: readyHosted ? 'Ready — hosted provider available.' : 'Configure Poe to unlock Colab-friendly exports.',
+    },
+  ];
 
   useEffect(() => {
     if (
@@ -92,26 +159,29 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     <div className="max-w-2xl mx-auto p-6 space-y-4 text-ink-900">
       <h1 className="text-2xl font-black font-display">Generate Manual</h1>
       <p className="text-sm text-ink-700">Recommended defaults. Works offline or hosted. Export to Jupyter/Colab.</p>
-      {envBanner && (
-        <div className="mt-2 text-xs text-ink-700 border border-ink-100 rounded-card bg-paper-0 p-2">
-          <span className="font-medium">Env:</span> {envBanner.offlineMode ? 'Offline' : 'Hosted'} · Provider: {envBanner.teacherProvider || 'unknown'} · Base URL: {envBanner.openaiBaseUrl || 'n/a'}
+      <EnvironmentStatusCard envBanner={envBanner} readyHosted={readyHosted} readyLocal={readyLocal} />
+      <div className="rounded-card border border-ink-100 bg-paper-0 p-4 text-sm text-ink-800 space-y-4">
+        <div className="space-y-1">
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink-500">Quick start presets</div>
+          <p className="text-xs text-ink-600">Pick a starting point and we'll fill the form below. You can still adjust any field before generating.</p>
         </div>
-      )}
-      <div className="rounded-card border border-ink-100 bg-paper-50 p-4 text-sm text-ink-800">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="font-medium text-ink-900">Not sure where to start?</div>
-            <p className="text-xs text-ink-600">Open the guided wizard to pick the right environment (hosted Poe, local GPU, or Colab export) with hardware notes.</p>
-          </div>
-          <Button variant="secondary" onClick={() => setWizardOpen(true)}>Open Guided Wizard</Button>
+        <div className="grid gap-3 md:grid-cols-3">
+          {quickPresetCards.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => applyPreset(preset.id)}
+              className="flex h-full flex-col justify-between rounded-card border border-ink-100 bg-paper-0 p-3 text-left transition hover:border-alain-blue/60"
+            >
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-ink-900">{preset.title}</div>
+                <p className="text-xs text-ink-600">{preset.description}</p>
+              </div>
+              <span className={`text-xs font-medium ${preset.ready ? 'text-success-700' : 'text-warning-700'}`}>{preset.status}</span>
+            </button>
+          ))}
         </div>
       </div>
-      {envBanner && !(readyHosted || readyLocal) && (
-        <div className="mt-2 p-3 rounded-card bg-paper-50 border border-ink-100 text-sm text-ink-900">
-          <div className="font-medium">Setup needed</div>
-          <div className="text-ink-700">Use Settings → Environment Status to apply a quick preset (Hosted Poe or Local GPT‑OSS), then run tests. Or click one of the example buttons below.</div>
-        </div>
-      )}
       <div className="mt-2 flex flex-wrap gap-2">
         <Button variant="secondary" onClick={triggerExampleHosted}>Use Example (Hosted)</Button>
         <Button variant="secondary" onClick={triggerExampleLocal}>Use Example (Local: gpt-oss-20b)</Button>
@@ -343,7 +413,47 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
       {snackbar && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-card bg-paper-0 border border-ink-100 text-ink-900 shadow-card">{snackbar}</div>
       )}
-      <GenerateWizard open={wizardOpen} onClose={() => setWizardOpen(false)} viewModel={props} />
+    </div>
+  );
+}
+
+function EnvironmentStatusCard({ envBanner, readyHosted, readyLocal }: { envBanner: EnvBanner; readyHosted: boolean; readyLocal: boolean }) {
+  if (!envBanner) {
+    return (
+      <div className="rounded-card border border-ink-100 bg-paper-0 p-4 text-sm text-ink-800">
+        <div className="font-medium text-ink-900">Environment status</div>
+        <p className="mt-1 text-xs text-ink-600">Checking your provider configuration… If this message stays visible, open Settings → Environment Status to verify credentials.</p>
+      </div>
+    );
+  }
+
+  const hostedMessage = readyHosted
+    ? 'Hosted preset ready — Poe is configured.'
+    : 'Add a Poe API key in Settings → Environment Status to unlock hosted presets.';
+  const localMessage = readyLocal
+    ? `Local preset ready — using ${envBanner.openaiBaseUrl ?? 'configured base URL'}.`
+    : 'Set an OpenAI-compatible base URL or enable offline mode in Settings → Environment Status.';
+
+  const items = [
+    { label: 'Hosted (Poe)', ready: readyHosted, detail: hostedMessage },
+    { label: 'Local runtime', ready: readyLocal, detail: localMessage },
+  ];
+
+  return (
+    <div className="rounded-card border border-ink-100 bg-paper-0 p-4 text-sm text-ink-800 space-y-3">
+      <div className="font-medium text-ink-900">Environment status</div>
+      <div className="grid gap-2 md:grid-cols-2">
+        {items.map((item) => (
+          <div key={item.label} className="rounded-card border border-ink-100 bg-paper-50 p-3">
+            <div className="flex items-center gap-2">
+              <span className={`inline-flex h-2.5 w-2.5 rounded-full ${item.ready ? 'bg-success-600' : 'bg-warning-600'}`} aria-hidden="true" />
+              <span className="text-sm font-semibold text-ink-900">{item.label}</span>
+            </div>
+            <p className="mt-1 text-xs text-ink-600">{item.detail}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-ink-600">Update providers from Settings → Environment Status to change these defaults.</p>
     </div>
   );
 }

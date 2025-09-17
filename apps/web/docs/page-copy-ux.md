@@ -16,14 +16,16 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
   - “How it works” steps: `1. Paste a model link`, `2. Generate a manual`, `3. Run and export`
   - Audience cards: `For teams`, `For educators`, `For builders`
 - **Experience overview**: Visitors land on a lightweight hero focused on the value promise, see two clear CTAs, then scroll through three-step onboarding guidance and persona-specific cards that explain fit. No forms, just static marketing copy.
+- **Implementation note (2025-09-16)**: Reverted earlier experiment that added extra credibility chips and global CTA utilities to keep the hero lean and avoid unused component helpers. CTA buttons continue to rely on local Tailwind classes for clarity.
 
 ## Generate (`/generate`)
 
 - **Primary copy**
   - Page title: `Generate Manual`
   - Supporting line: `Recommended defaults. Works offline or hosted. Export to Jupyter/Colab.`
-- Example buttons: `Use Example (Hosted)`, `Use Example (Local: gpt-oss-20b)`
-- Guided wizard CTA: `Open Guided Wizard` (drawer overlay)
+  - Environment status card: `Environment status` with sub-cards `Hosted (Poe)` / `Local runtime` showing readiness guidance.
+  - Quick presets card header: `Quick start presets` with buttons `Hosted (Poe)`, `Local runtime`, `Colab export` plus readiness copy.
+  - Example buttons: `Use Example (Hosted)`, `Use Example (Local: gpt-oss-20b)`
   - Source toggle labels: `From Hugging Face`, `From Local Runtime`, `From Text`
   - Research module: `Research mode` with buttons `Standard`, `Thorough`, optional `Web-only`
   - Fallback hint (flagged by env): `Force fallback mode (no backend) for From Text. Helpful on Vercel. Only From Text is supported in fallback.`
@@ -33,12 +35,11 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
   - Error text: `Setup needed`, validation errors such as `Select or enter a local model id`, `Enter a valid Hugging Face URL or org/model (owner/repo)`
   - Auto-fix modal copy: checkboxes `add_description`, `add_intro_step`, `compact_steps`, action button `Auto-fix and Import`
 - **Supporting copy**
-  - Environmental banner: `Env: {Offline|Hosted} · Provider: {provider} · Base URL: {url}` and hints like `Use Settings → Environment Status...`
+  - Environment card messaging: `Environment status`, readiness lines `Hosted preset ready — Poe is configured.` / `Set an OpenAI-compatible base URL...`
   - Research notes (per mode): e.g. `Fetches model info... (~2–6s)`, `Adds reasoning summary... (~5–12s)`
   - Local runtime helper: `No local models detected`, `Use Hosted (Poe)...`, `Open Explorer`
   - HF quick-pick buttons rendered with model ids
-  - Preview panel headings: `Preview`, `Model Maker`, `Objectives`, `Step 1: {title}` plus buttons `Open Manual`, `Export Notebook`, `Download JSON`
-- **Experience overview**: Page opens with context about default environment. Users can launch the guided wizard (three-step drawer with hosted/local/Colab presets and hardware guidance) or stay in the advanced form. The form lets them choose data source (HF, local, or pasted text), optionally adjust research depth and teacher/target settings, then submit. Success reveals the PreviewPanel with open/export actions. Errors present inline banner plus optional auto-fix workflow. Snackbar pulses confirm progress. Example buttons prefill and auto-submit for demos.
+- **Experience overview**: Page surfaces environment readiness first, then inline quick presets that pre-fill the advanced form. Users pick a preset (or type directly), refine source/research/provider settings, and submit. Success reveals the PreviewPanel with open/export actions. Errors present inline banner plus optional auto-fix workflow. Snackbar pulses confirm progress. Example buttons still prefill the form for demos.
 - **Notable states**: Environment probe call may surface readiness message; provider/model lists hydrate asynchronously; fallback UI gated by `NEXT_PUBLIC_ENABLE_FALLBACK_UI`.
 
 ## Outline-First Generator (`/generate/outline-first`)
