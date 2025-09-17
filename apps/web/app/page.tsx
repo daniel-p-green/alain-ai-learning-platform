@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'ALAIN · Home',
@@ -15,11 +16,15 @@ export default function HomePage() {
           <p className="uppercase tracking-wide text-xs text-ink-700">Applied Learning for AI</p>
           <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight">AI Manuals for AI Models</h1>
           <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-prose">
-            Paste a Hugging Face link or pick a local model. Generate a step‑by‑step manual with runnable code, checks, and clean exports.
+            Paste a Hugging Face link and generate a step‑by‑step manual with runnable code, checks, and clean exports.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">Generate Manual</a>
-            <a href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">Library</a>
+            <Link href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold">
+              Generate Manual
+            </Link>
+            <Link href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">
+              Library
+            </Link>
           </div>
           <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card space-y-2">
             <div className="font-display font-semibold text-[18px] text-ink-900">Why ALAIN</div>
