@@ -1,5 +1,8 @@
 "use client";
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeSanitize from "rehype-sanitize";
 import { runPython } from "./PyRunner";
 import { runJS } from "./JSRunner";
 
@@ -7,7 +10,15 @@ type Props = { nb: any };
 
 function MarkdownCell({ source }: { source: string | string[] }) {
   const text = Array.isArray(source) ? source.join("") : source;
-  return <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, "<br/>") }} />;
+  return (
+    <ReactMarkdown
+      className="prose prose-invert max-w-none"
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeSanitize]}
+    >
+      {text}
+    </ReactMarkdown>
+  );
 }
 
 function CodeCell({ source, lang }: { source: string | string[]; lang?: string }) {

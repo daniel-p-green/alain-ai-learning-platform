@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { putNotebook, getNotebook, type NotebookMeta } from '@/lib/notebookStore';
 import { parseGhId, fetchPublicNotebook } from '@/lib/githubRaw';
 
@@ -54,6 +55,10 @@ function extractPlainText(nb: any, maxChars = 8000): string {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+    }
     const body = await req.json().catch(() => ({} as ReqBody)) as ReqBody;
     const id = (body.id || '').trim();
     const baseUrl = (body.baseUrl || process.env.OPENAI_BASE_URL || '').replace(/\/$/, '') || 'http://localhost:1234';

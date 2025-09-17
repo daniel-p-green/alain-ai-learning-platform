@@ -3,12 +3,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import CodeEditor from "@/components/CodeEditor";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import { useParams, useRouter } from "next/navigation";
+import { decodeNotebookParam, encodeNotebookId } from "@/lib/notebookId";
 
 export default function EditNotebookPage() {
   const { id: rawId } = useParams<{ id: string }>();
-  const id = (() => { try { return decodeURIComponent(rawId); } catch { return rawId; } })();
+  const id = decodeNotebookParam(rawId);
   const router = useRouter();
-  const encodedId = encodeURIComponent(id);
+  const encodedId = encodeNotebookId(id);
   const [jsonText, setJsonText] = useState<string>("{}");
   const [cells, setCells] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
