@@ -5,14 +5,14 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
 ## Home (`/`)
 
 - **Primary copy**
-  - Eyebrow: `Applied Learning for AI`
+  - Eyebrow: `OpenAI Open Model Hackathon Project`
   - Hero headline: `AI Manuals for AI Models`
   - Subhead: `Paste a Hugging Face link and generate a step‑by‑step manual with runnable code, checks, and clean exports.`
   - Primary CTA: `Generate Manual` → `/generate`
   - Secondary CTA: `Library` → `/notebooks`
 - **Supporting copy**
   - Promo card heading: `Why ALAIN`
-  - Value bullets: `• Build real skills with hands-on steps and checks`, `• Use one request shape across hosted and local providers`, `• Export clean notebooks with no embedded secrets`
+  - Value bullets: `• AI adoption follows instructions. ALAIN writes them for every model.`, `• Build real skills with hands-on steps and checks`, `• Use one request shape across hosted and local providers`, `• Export clean notebooks with no embedded secrets`
   - “How it works” steps: `1. Paste a model link`, `2. Generate a manual`, `3. Run and export`
   - Audience cards: `For teams`, `For educators`, `For builders`
 - **Experience overview**: Visitors land on a lightweight hero focused on the value promise, see two clear CTAs, then scroll through three-step onboarding guidance and persona-specific cards that explain fit. No forms, just static marketing copy.
