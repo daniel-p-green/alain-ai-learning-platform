@@ -202,6 +202,25 @@ function StepOne({ selected, onSelect }: StepOneProps) {
   );
 }
 
+const providerExplainers: Record<string, { title: string; helper: string }> = {
+  poe: {
+    title: 'Hosted Poe (recommended)',
+    helper: 'Runs fully in Poe\'s managed environment. No local setup required.'
+  },
+  'openai-compatible': {
+    title: 'OpenAI-compatible / local runtime',
+    helper: 'Uses your configured base URL (Ollama, LM Studio, vLLM). Requires credentials or a running local server.'
+  },
+  lmstudio: {
+    title: 'LM Studio runtime',
+    helper: 'Targets the LM Studio local server. Make sure models are downloaded and the server is running.'
+  },
+  ollama: {
+    title: 'Ollama runtime',
+    helper: 'Runs against an Ollama host (default http://localhost:11434). Ensure the model is pulled before generating.'
+  },
+};
+
 type StepTwoProps = {
   draft: DraftState;
   setDraft: Dispatch<SetStateAction<DraftState>>;
@@ -216,12 +235,25 @@ type StepTwoProps = {
 
 function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, researchCopy, requirement, showFallbackUI, allow120B }: StepTwoProps) {
   const researchModes = (Object.keys(researchCopy) as Array<ResearchMode>).filter((mode) => showFallbackUI || mode !== 'fallback');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const activeTargetProvider = providers.find((provider) => provider.name === draft.targetProvider);
+  const targetProviderHelper = activeTargetProvider?.description || providerExplainers[draft.targetProvider]?.helper;
+  const teacherHelper = providerExplainers[draft.teacherProvider]?.helper;
 
   useEffect(() => {
     if (!showFallbackUI && draft.researchMode === 'fallback') {
       setDraft((prev) => ({ ...prev, researchMode: 'standard', forceFallback: false }));
     }
   }, [showFallbackUI, draft.researchMode, setDraft]);
+
+  useEffect(() => {
+    if (
+      !showAdvanced &&
+      (draft.teacherProvider !== 'poe' || draft.teacherModel !== 'GPT-OSS-20B' || draft.targetProvider !== 'poe' || draft.targetModel.trim())
+    ) {
+      setShowAdvanced(true);
+    }
+  }, [showAdvanced, draft.teacherModel, draft.teacherProvider, draft.targetModel, draft.targetProvider]);
 
   return (
     <div className="space-y-6">
@@ -328,55 +360,79 @@ function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, re
           <div className="text-xs text-ink-600">{researchCopy[draft.researchMode].note}</div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-ink-600">Difficulty</label>
-            <select
-              className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={draft.difficulty}
-              onChange={(event) => setDraft((prev) => ({ ...prev, difficulty: event.target.value }))}
-            >
-              {['beginner', 'intermediate', 'advanced'].map((level) => (
-                <option key={level} value={level}>{level}</option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-ink-600">Teacher provider</label>
-            <select
-              className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={draft.teacherProvider}
-              onChange={(event) => setDraft((prev) => ({ ...prev, teacherProvider: event.target.value as any }))}
-            >
-              <option value="poe">Poe (hosted)</option>
-              <option value="openai-compatible">OpenAI-compatible</option>
-            </select>
-          </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-ink-600">Difficulty</label>
+          <select
+            className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+            value={draft.difficulty}
+            onChange={(event) => setDraft((prev) => ({ ...prev, difficulty: event.target.value }))}
+          >
+            {['beginner', 'intermediate', 'advanced'].map((level) => (
+              <option key={level} value={level}>{level}</option>
+            ))}
+          </select>
+          <p className="text-xs text-ink-600">Pick the skill level you want ALAIN to write for.</p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-ink-600">Teacher model</label>
-            <select
-              className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={draft.teacherModel}
-              onChange={(event) => setDraft((prev) => ({ ...prev, teacherModel: event.target.value as any }))}
-            >
-              <option value="GPT-OSS-20B">GPT-OSS-20B</option>
-              {allow120B && <option value="GPT-OSS-120B">GPT-OSS-120B</option>}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-ink-600">Target provider</label>
-            <select
-              className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
-              value={draft.targetProvider}
-              onChange={(event) => setDraft((prev) => ({ ...prev, targetProvider: event.target.value }))}
-            >
-              {providers.map((provider) => (
-                <option key={provider.name} value={provider.name}>{provider.name}</option>
-              ))}
-            </select>
-          </div>
+
+        <div className="rounded-lg border border-ink-100 bg-paper-50 p-3">
+          <button
+            type="button"
+            className="flex w-full items-center justify-between text-sm font-medium text-ink-900"
+            onClick={() => setShowAdvanced((prev) => !prev)}
+          >
+            Advanced provider settings
+            <span className="text-xs text-ink-600">{showAdvanced ? 'Hide' : 'Show'}</span>
+          </button>
+          {showAdvanced && (
+            <div className="mt-4 space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-ink-600">Teacher provider</label>
+                <select
+                  className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+                  value={draft.teacherProvider}
+                  onChange={(event) => setDraft((prev) => ({ ...prev, teacherProvider: event.target.value as any }))}
+                >
+                  <option value="poe">{providerExplainers.poe.title}</option>
+                  <option value="openai-compatible">{providerExplainers['openai-compatible'].title}</option>
+                </select>
+                <p className="text-xs text-ink-600">{teacherHelper || 'Choose where the teacher model will run.'}</p>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-ink-600">Teacher model</label>
+                <select
+                  className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+                  value={draft.teacherModel}
+                  onChange={(event) => setDraft((prev) => ({ ...prev, teacherModel: event.target.value as any }))}
+                >
+                  <option value="GPT-OSS-20B">GPT-OSS-20B</option>
+                  {allow120B && <option value="GPT-OSS-120B">GPT-OSS-120B</option>}
+                </select>
+                <p className="text-xs text-ink-600">Stay on GPT-OSS-20B for the most reliable JSON output.</p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-ink-600">Target provider</label>
+                <select
+                  className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+                  value={draft.targetProvider}
+                  onChange={(event) => setDraft((prev) => ({ ...prev, targetProvider: event.target.value }))}
+                >
+                  {providers.map((provider) => (
+                    <option key={provider.name} value={provider.name}>
+                      {providerExplainers[provider.name]?.title || provider.name}
+                    </option>
+                  ))}
+                </select>
+                {targetProviderHelper && <p className="text-xs text-ink-600">{targetProviderHelper}</p>}
+                <input
+                  className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+                  placeholder="Optional model override (e.g. gpt-oss-20b)"
+                  value={draft.targetModel}
+                  onChange={(event) => setDraft((prev) => ({ ...prev, targetModel: event.target.value }))}
+                />
+                <p className="text-xs text-ink-600">Leave blank to use the provider\'s default deployment. Set when you need a specific model slug.</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

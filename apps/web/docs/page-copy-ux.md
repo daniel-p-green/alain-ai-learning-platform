@@ -93,7 +93,8 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
 - **Primary copy**
   - Header: `Notebooks`
   - Top CTA: `Featured`
-  - Filters: placeholders `model (e.g., gpt-oss-20b)`, `provider (poe|openai-compatible)`, select options `any difficulty / beginner / intermediate / advanced`, `tag`
+  - Filters: `Model ID`, `Provider` select (Any/Poe/OpenAI-compatible/LM Studio/Ollama), difficulty select (Any/Beginner/Intermediate/Advanced), `Tag`
+  - Helper text clarifies you can leave Model ID blank, maps providers (hosted Poe vs OpenAI-compatible/local), and notes tags match notebook metadata.
   - Buttons: `Apply Filters`, `Reset`
   - Card text: `{model} · {provider} · {DIFFICULTY}` plus `Download` button
   - Empty state: `No notebooks found. Adjust filters.`
@@ -140,7 +141,8 @@ Authoritative inventory of the current customer-facing copy and a quick UX narra
 
 - **Primary copy**
   - Header: `Lessons`
-  - Filters: `model`, `provider`, difficulty select, `tag`
+  - Filters: `Model ID`, `Provider` select (Any/Poe/OpenAI-compatible/LM Studio/Ollama), difficulty select, `Tag`
+  - Helper text mirrors the notebook view so users know provider names correspond to runtimes.
   - Buttons: `Apply Filters`, `Reset`
   - Card info: same trio `model · provider · DIFFICULTY`, path line, optional `Tags:` row
   - Empty state: `No lessons found. Adjust filters.`

@@ -70,9 +70,10 @@ export default function OutlineFirstGeneratorPage() {
     es.addEventListener("error", (ev: MessageEvent) => {
       try {
         const data = JSON.parse(ev.data || "{}");
-        append("error", data.error || "Unknown error");
+        const detail = data.error || "Stream error";
+        append("error", `${detail}. Check provider logs or rerun from the main Generate flow.`);
       } catch {
-        append("error", "Stream error");
+        append("error", "Stream error. Check provider configuration and try again.");
       }
       es.close();
       setRunning(false);
@@ -127,7 +128,16 @@ export default function OutlineFirstGeneratorPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-4">ALAIN‑Kit — Outline‑First Notebook Generator</h1>
+      <h1 className="text-2xl font-semibold mb-2">ALAIN-Kit -- Outline‑First Notebook Generator</h1>
+      <p className="text-sm text-ink-700 mb-4">Stream each section of the notebook as the teacher model writes it. Ideal for prompt tuning or reviewing lessons before import.</p>
+      <div className="rounded border border-ink-100 bg-paper-50 p-3 text-xs text-ink-700 mb-4">
+        <div className="font-medium text-ink-900 mb-1">Before you start</div>
+        <ul className="list-disc pl-4 space-y-1">
+          <li>Verify your teacher provider is configured (Poe or OpenAI-compatible) in Settings -> Environment Status.</li>
+          <li>Keep this tab open while sections stream in; closing it stops generation.</li>
+          <li>Once the activity feed shows &quot;Notebook ready,&quot; export immediately to avoid losing the buffer.</li>
+        </ul>
+      </div>
       <div className="space-y-4 border rounded-md p-4 bg-white shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <label className="flex flex-col text-sm">
@@ -145,6 +155,7 @@ export default function OutlineFirstGeneratorPage() {
           <label className="flex flex-col text-sm">
             <span className="text-ink-600 mb-1">Max Sections</span>
             <input type="number" min={6} max={12} value={maxSections} onChange={e=>setMaxSections(Number(e.target.value||8))} className="border rounded px-2 py-1" />
+            <span className="text-xs text-ink-500 mt-1">Keep between 6 and 12 to balance coverage and streaming time.</span>
           </label>
         </div>
         <div className="flex items-center gap-3">

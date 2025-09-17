@@ -36,6 +36,7 @@ alain-kit/**/test/output/
 alain-kit/**/test/node_modules/
 alain-kit-sdk/output/
 **/.ipynb_checkpoints/
+gauntlet-output/
 
 # Ignore generated backend JS test artifacts
 apps/backend/**/*.test.js

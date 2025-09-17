@@ -26,16 +26,38 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
         <h1 className="text-2xl font-semibold">Notebooks</h1>
         <a className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0" href="/notebooks/featured">Featured</a>
       </div>
-      <form className="grid gap-3 sm:grid-cols-4" method="get" action="/notebooks">
-        <input name="model" placeholder="model (e.g., gpt-oss-20b)" defaultValue={searchParams?.model || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white" />
-        <input name="provider" placeholder="provider (poe|openai-compatible)" defaultValue={searchParams?.provider || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white" />
-        <select name="difficulty" defaultValue={searchParams?.difficulty || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white">
-          <option value="">any difficulty</option>
-          <option value="beginner">beginner</option>
-          <option value="intermediate">intermediate</option>
-          <option value="advanced">advanced</option>
-        </select>
-        <input name="tag" placeholder="tag" defaultValue={searchParams?.tag || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white" />
+      <form className="grid gap-4 sm:grid-cols-4" method="get" action="/notebooks">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="filter-model" className="text-xs font-medium text-ink-600">Model ID</label>
+          <input id="filter-model" name="model" placeholder="e.g. gpt-oss-20b" defaultValue={searchParams?.model || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white" />
+          <span className="text-xs text-ink-500">Leave blank to include every model.</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="filter-provider" className="text-xs font-medium text-ink-600">Provider</label>
+          <select id="filter-provider" name="provider" defaultValue={searchParams?.provider || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white">
+            <option value="">Any provider</option>
+            <option value="poe">Poe (hosted cloud)</option>
+            <option value="openai-compatible">OpenAI-compatible / local</option>
+            <option value="lmstudio">LM Studio</option>
+            <option value="ollama">Ollama</option>
+          </select>
+          <span className="text-xs text-ink-500">Match the runtime you used to generate the notebook.</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="filter-difficulty" className="text-xs font-medium text-ink-600">Difficulty</label>
+          <select id="filter-difficulty" name="difficulty" defaultValue={searchParams?.difficulty || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white">
+            <option value="">Any difficulty</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+          <span className="text-xs text-ink-500">Filter by target learner level.</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="filter-tag" className="text-xs font-medium text-ink-600">Tag</label>
+          <input id="filter-tag" name="tag" placeholder="e.g. vision" defaultValue={searchParams?.tag || ''} className="h-10 px-3 rounded-alain-lg border border-ink-100 bg-white" />
+          <span className="text-xs text-ink-500">Matches notebook metadata tags.</span>
+        </div>
         <div className="sm:col-span-4 flex gap-2">
           <button className="h-10 px-4 rounded-alain-lg bg-ink-900 text-white" type="submit">Apply Filters</button>
           <a className="h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0 inline-flex items-center" href="/notebooks">Reset</a>
