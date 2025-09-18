@@ -1,6 +1,7 @@
 import NotebookCard from '@/components/NotebookCard';
 import { safeAuth } from '@/lib/auth';
 import { appBaseUrl } from '@/lib/requestBase';
+import featuredNotebooks from '@/data/featured-notebooks.json';
 
 export const metadata = {
   title: 'ALAIN · Notebook Library',
@@ -47,6 +48,29 @@ async function fetchCatalog(qs: URLSearchParams): Promise<NotebookDirectoryItem[
   return Array.isArray(body?.items) ? (body.items as NotebookDirectoryItem[]) : [];
 }
 
+function fallbackCatalog(): NotebookDirectoryItem[] {
+  return featuredNotebooks.map((item, index) => ({
+    id: -(index + 1),
+    file_path: item.id,
+    model: 'gpt-oss-20b',
+    provider: 'github',
+    difficulty: 'intermediate' as const,
+    title: item.title,
+    overview: item.org ? `Curated from ${item.org}` : null,
+    maker: item.org ? { name: item.org, org_type: 'community' } : null,
+    quality_score: null,
+    colab_compatible: null,
+    section_count: null,
+    created_by: null,
+    visibility: 'public',
+    share_slug: item.id,
+    tags: item.tags || [],
+    size_bytes: null,
+    checksum: null,
+    last_generated: null,
+  }));
+}
+
 export default async function NotebooksPage({ searchParams }: { searchParams?: Record<string, string> }) {
   const qs = new URLSearchParams();
   if (searchParams?.model) qs.set('model', searchParams.model);
@@ -57,17 +81,23 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
 
   const [items, auth] = await Promise.all([fetchCatalog(qs), safeAuth()]);
   const adminIds = (process.env.ADMIN_USER_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const usingFallback = items.length === 0;
+  const displayItems = usingFallback ? fallbackCatalog() : items;
 
   return (
     <div className="mx-auto max-w-6xl p-6 space-y-6 text-ink-900">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-semibold">Notebook Library</h1>
           <p className="text-sm text-ink-600">Filter generated manuals by model, provider, or difficulty.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <a className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0" href="/notebooks/featured">Featured</a>
-          <a className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-ink-100 bg-paper-0" href="/generate">Generate</a>
+        <div className="flex items-center gap-3">
+          <a className="inline-flex items-center text-sm font-medium text-alain-blue underline-offset-4 transition hover:underline" href="/notebooks/featured">
+            Featured notebooks
+          </a>
+          <a className="inline-flex h-10 items-center rounded-alain-lg bg-alain-blue px-4 text-sm font-semibold text-white shadow-card hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/30" href="/generate">
+            Generate manual
+          </a>
         </div>
       </div>
 
@@ -109,11 +139,11 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
         </div>
       </form>
 
-      {items.length === 0 ? (
+      {displayItems.length === 0 ? (
         <p className="text-ink-700">No notebooks found. Adjust filters.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((item) => (
+          {displayItems.map((item) => (
             <NotebookCard
               key={item.id || item.file_path}
               item={item}
@@ -121,6 +151,11 @@ export default async function NotebooksPage({ searchParams }: { searchParams?: R
               adminIds={adminIds}
             />
           ))}
+        </div>
+      )}
+      {usingFallback && (
+        <div className="rounded-alain-lg border border-ink-100 bg-paper-0 p-4 text-sm text-ink-600">
+          Live catalog is empty right now. Showing a curated set of GitHub notebooks so you can preview the viewer experience.
         </div>
       )}
     </div>

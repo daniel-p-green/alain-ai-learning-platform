@@ -1,15 +1,23 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import HomeNotebookPreview from '@/components/HomeNotebookPreview';
-import { ButtonLink } from '@/components/ButtonLink';
 import { PageContainer } from '@/components/layout/PageContainer';
 
-const heroBullets = [
-  'Outline-first prompts keep every lesson predictable and remixable.',
-  'Quality + Colab validators guard readability, installs, and safety notes.',
-  'Exports ship with a runnable notebook, validation summary, and metrics JSON.',
+// Hero journey mirrors the PRD narrative—show users the three beats between paste and export.
+const heroJourney = [
+  {
+    title: '1. Capture the brief',
+    body: 'Drop in a model card or spec. ALAIN distills objectives, guardrails, and setup requirements into a structured outline.',
+  },
+  {
+    title: '2. Build the manual',
+    body: 'Sections expand into balanced markdown and runnable code. Validators flag missing installs or risky placeholders along the way.',
+  },
+  {
+    title: '3. Ship with confidence',
+    body: 'Export a Colab-ready notebook, validation summary, and metrics JSON—ready for reviewers, workshops, or CI.',
+  },
 ];
-
-const heroMeta = 'Built for launch · OpenAI Open Model Hackathon · 3rd place at leap.new 2025 · MIT Licensed';
 
 const notebookDeliverables = [
   { title: '.ipynb notebook', body: 'Runnable, parameterized sections with reproducible setup.' },
@@ -70,42 +78,37 @@ export default function HomePage() {
         <PageContainer maxWidth="wide" paddingY="none" className="py-16 lg:py-20">
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
             <div className="space-y-7">
-              <div className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-500">
-                {heroMeta}
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-alain-blue uppercase tracking-[0.18em]">
+                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-alain-yellow" />
+                AI Manuals for AI Models
               </div>
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 text-sm font-semibold text-alain-blue uppercase tracking-[0.18em]">
-                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-alain-yellow" />
-                  AI Manuals for AI Models
-                </div>
-                <h1 className="font-display text-[42px] leading-[1.05] tracking-tight text-ink-900 md:text-[54px]">
-                  AI Manuals for AI Models
-                </h1>
-                <p className="font-inter text-lg leading-8 text-ink-700 max-w-2xl">
-                  Paste a model card and get the runnable lesson in minutes—complete with setup, safe experiments, assessments, and clean exports.
-                </p>
-              </div>
-              <ul className="space-y-3 text-sm text-ink-700 font-inter">
-                {heroBullets.map((bullet) => (
-                  <li key={bullet} className="flex items-start gap-3">
-                    <span className="mt-1 inline-flex h-2.5 w-2.5 flex-none rounded-full bg-alain-yellow" />
-                    <span>{bullet}</span>
+              <h1 className="font-display text-[42px] leading-[1.05] tracking-tight text-ink-900 md:text-[54px]">
+                AI Manuals for AI Models
+              </h1>
+              <p className="font-inter text-lg leading-8 text-ink-700 max-w-xl">
+                Paste a model card and ALAIN walks the hero’s journey for you—research, outline, section drafting, validation, and export—so teams read a finished manual instead of stitching one together.
+              </p>
+              <ol className="grid gap-3 sm:grid-cols-3">
+                {heroJourney.map((item) => (
+                  <li key={item.title} className="rounded-[16px] border border-ink-100 bg-white p-4 text-sm text-ink-700 shadow-card">
+                    <div className="font-semibold text-ink-900">{item.title}</div>
+                    <p className="mt-1 leading-5">{item.body}</p>
                   </li>
                 ))}
-              </ul>
-              <div className="flex flex-wrap gap-4">
-                <ButtonLink href="/generate" variant="accent" className="px-6 py-3 shadow-cardHover">
-                  Generate Manual
-                </ButtonLink>
-                <ButtonLink
-                  href="https://github.com/AppliedLearningAI/alain-ai-learning-platform"
-                  variant="secondary"
-                  className="px-6 py-3 font-semibold"
-                  target="_blank"
-                  rel="noreferrer"
+              </ol>
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link
+                  href="/generate"
+                  className="inline-flex items-center h-12 px-6 rounded-[14px] bg-alain-blue text-white font-semibold shadow-cardHover transition hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
                 >
-                  Contribute on GitHub
-                </ButtonLink>
+                  Generate manual
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="inline-flex items-center h-12 px-6 rounded-[14px] border border-white/30 text-white/85 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+                >
+                  See how it works
+                </Link>
               </div>
             </div>
             <div className="relative flex justify-center lg:justify-end">
@@ -148,7 +151,7 @@ export default function HomePage() {
         </PageContainer>
       </section>
 
-      <section className="bg-paper-50">
+      <section id="how-it-works" className="bg-paper-50">
         <PageContainer maxWidth="wide" paddingY="none" className="py-16 lg:py-20 space-y-10">
           <header className="max-w-3xl space-y-3">
             <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">How ALAIN works</h2>
