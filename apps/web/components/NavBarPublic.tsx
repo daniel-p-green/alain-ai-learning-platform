@@ -1,28 +1,49 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import BrandLogo from "./BrandLogo";
 import MobileNav from "./MobileNav";
 import TopNav from "./TopNav";
 
 const linkClass = "text-sm font-medium text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5";
 
-export default function NavBarPublic() {
-  const primaryLinks = [
-    { href: "/", label: "Home" },
-    { href: "/generate", label: "Generate Manual" },
-    { href: "/notebooks", label: "Notebook Library" },
-    { href: "/notebooks/featured", label: "Featured" },
-  ];
+function formatStars(count: number | null) {
+  if (!count || Number.isNaN(count)) return null;
+  if (count < 1000) return String(count);
+  return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+}
 
-  const desktopLinks = (
-    <>
-      {primaryLinks.map((item) => (
-        <Link key={item.href} href={item.href} className={linkClass}>
-          {item.label}
-        </Link>
-      ))}
-    </>
-  );
+export default function NavBarPublic() {
+  const [stars, setStars] = useState<string | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        const res = await fetch("https://api.github.com/repos/AppliedLearningAI/alain-ai-learning-platform", { cache: "force-cache" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!ignore) setStars(formatStars(typeof data?.stargazers_count === "number" ? data.stargazers_count : null));
+      } catch {
+        /* ignore errors */
+      }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const primaryLinks = useMemo(() => [
+    { href: "/docs", label: "Documentation" },
+    { href: "/notebooks", label: "Notebook Library" },
+    { href: "https://github.com/AppliedLearningAI/alain-ai-learning-platform", label: stars ? `GitHub (${stars})` : "GitHub", external: true },
+  ], [stars]);
+
+  const desktopLinks = primaryLinks.map((item) => (
+    <Link key={item.href} href={item.href} className={linkClass} target={item.external ? "_blank" : undefined} rel={item.external ? "noreferrer" : undefined}>
+      {item.label}
+    </Link>
+  ));
 
   const desktopActions = (
     <>
@@ -40,6 +61,13 @@ export default function NavBarPublic() {
       </Link>
     </>
   );
+
+  const mobileLinks = [
+    { href: "/", label: "Home" },
+    ...primaryLinks.map((item) => ({ href: item.href, label: item.label, external: item.external })),
+    { href: "/generate", label: "Generate Manual" },
+    { href: "/sign-in", label: "Sign in" },
+  ];
 
   const mobileFooter = (
     <div className="space-y-2">
@@ -69,9 +97,9 @@ export default function NavBarPublic() {
           <BrandLogo variant="blue" width={148} height={44} />
         </Link>
       }
-      desktopLinks={desktopLinks}
+      desktopLinks={<div className="hidden items-center gap-5 md:flex">{desktopLinks}</div>}
       desktopActions={desktopActions}
-      mobileMenu={<MobileNav links={primaryLinks} footer={mobileFooter} triggerAriaLabel="Open main menu" side="right" />}
+      mobileMenu={<MobileNav links={mobileLinks} footer={mobileFooter} triggerAriaLabel="Open main menu" side="right" />}
     />
   );
 }

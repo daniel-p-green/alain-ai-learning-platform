@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import BrandLogo from "./BrandLogo";
 import MobileNav from "./MobileNav";
@@ -7,35 +8,59 @@ import TopNav from "./TopNav";
 
 const linkClass = "text-sm font-medium text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5";
 
+function formatStars(count: number | null) {
+  if (!count || Number.isNaN(count)) return null;
+  if (count < 1000) return String(count);
+  return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+}
+
 export default function NavBar() {
   const { user } = useUser();
   const isAdmin = (user?.publicMetadata as any)?.role === "admin";
+  const [stars, setStars] = useState<string | null>(null);
 
-  const primaryLinks = [
-    { href: "/", label: "Home" },
-    { href: "/generate", label: "Generate Manual" },
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        const res = await fetch("https://api.github.com/repos/AppliedLearningAI/alain-ai-learning-platform", { cache: "force-cache" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!ignore) setStars(formatStars(typeof data?.stargazers_count === "number" ? data.stargazers_count : null));
+      } catch {
+        /* no-op; keep nav lightweight if GitHub API throttles */
+      }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const primaryLinks = useMemo(() => [
+    { href: "/docs", label: "Documentation" },
     { href: "/notebooks", label: "Notebook Library" },
-    { href: "/notebooks/featured", label: "Featured" },
-  ];
+    { href: "https://github.com/AppliedLearningAI/alain-ai-learning-platform", label: stars ? `GitHub (${stars})` : "GitHub", external: true },
+  ], [stars]);
 
   const accountLinks = [
-    ...(user ? [{ href: "/onboarding", label: "Setup Wizard" }] : []),
     ...(user ? [{ href: "/settings", label: "Account" }] : []),
     ...(isAdmin ? [{ href: "/admin/moderation", label: "Moderation" }] : []),
   ];
 
-  const authLinks = user ? [] : [{ href: "/sign-in", label: "Sign in" }];
-  const mobileLinks = [...primaryLinks, ...accountLinks, ...authLinks];
+  const mobileLinks = [
+    { href: "/", label: "Home" },
+    ...primaryLinks,
+    { href: "/generate", label: "Generate Manual" },
+    ...(user ? [{ href: "/onboarding", label: "Setup Wizard" }] : []),
+    ...(accountLinks),
+    ...(user ? [] : [{ href: "/sign-in", label: "Sign in" }]),
+  ];
 
-  const desktopLinks = (
-    <>
-      {primaryLinks.map((item) => (
-        <Link key={item.href} href={item.href} className={linkClass}>
-          {item.label}
-        </Link>
-      ))}
-    </>
-  );
+  const desktopLinks = primaryLinks.map((item) => (
+    <Link key={item.href} href={item.href} className={linkClass} target={item.external ? "_blank" : undefined} rel={item.external ? "noreferrer" : undefined}>
+      {item.label}
+    </Link>
+  ));
 
   const desktopActions = (
     <>
@@ -97,7 +122,7 @@ export default function NavBar() {
           <BrandLogo variant="blue" width={148} height={44} />
         </Link>
       }
-      desktopLinks={desktopLinks}
+      desktopLinks={<div className="hidden items-center gap-5 md:flex">{desktopLinks}</div>}
       desktopActions={desktopActions}
       mobileMenu={
         <div className="flex items-center gap-2">

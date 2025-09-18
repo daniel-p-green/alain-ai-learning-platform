@@ -11,7 +11,7 @@ type SetupProbe = {
   poeConfigured?: boolean;
 };
 
-export type MobileNavLink = { href: string; label: string };
+export type MobileNavLink = { href: string; label: string; external?: boolean };
 
 type MobileNavProps = {
   links: MobileNavLink[];
@@ -149,6 +149,8 @@ export default function MobileNav({
                     key={link.href}
                     href={link.href}
                     className="block rounded-[14px] px-3 py-3 text-[17px] font-medium text-ink-800 transition hover:bg-paper-50 active:bg-paper-100"
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noreferrer" : undefined}
                     onClick={closeWithAnim}
                   >
                     {link.label}

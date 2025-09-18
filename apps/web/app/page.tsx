@@ -25,26 +25,32 @@ const notebookDeliverables = [
   { title: 'Metrics JSON', body: 'Structured data for sections, readability, and timings.' },
 ];
 
-const timelineSteps = [
+const heroProofPoints = [
+  { label: 'Models awaiting manuals', value: '1.86M on Hugging Face' },
+  { label: 'Outline-first pipeline', value: 'Research → Draft → Validate' },
+  { label: 'Open ecosystem', value: 'MIT Licensed, provider agnostic' },
+];
+
+const pipelineStages = [
+  {
+    title: 'Research Scout',
+    description: 'Digest model cards, specs, and community notes into a machine-readable brief.',
+  },
   {
     title: 'Outline Generator',
-    description: 'Outline-first prompt requests strict JSON (title, objectives, steps, assessments) so lessons start structured.',
-    code: 'const outline = await kit.outline.generate({ modelReference: "gpt-oss-20b" });',
+    description: 'Enforces structured objectives, guardrails, and setup requirements as deterministic JSON.',
   },
   {
-    title: 'Section Generator',
-    description: 'Fills each step with balanced markdown + code locally, respecting token hints and pedagogy notes.',
-    code: 'await kit.sections.generate({ outline, sectionNumber: 3 });',
-  },
-  {
-    title: 'Notebook Builder',
-    description: 'Stitches outline and sections into a runnable notebook with setup cells, assessments, and troubleshooting.',
-    code: 'const notebook = kit.builder.compose({ outline, sections });',
+    title: 'Section Builder',
+    description: 'Expands each outline step into balanced markdown, runnable code, and assessment items.',
   },
   {
     title: 'Validators',
-    description: 'Quality + Colab validators score readability, ensure installs, and auto-fix cells before exporting.',
-    code: 'await kit.validate({ notebook, quality: true, colab: true });',
+    description: 'Quality + Colab checks catch missing installs, placeholders, and readability regressions.',
+  },
+  {
+    title: 'Export',
+    description: 'Publish a Colab-ready notebook, validation summary, and metrics JSON for reviewers.',
   },
 ];
 
@@ -77,25 +83,22 @@ export default function HomePage() {
       <section className="bg-paper-0">
         <PageContainer maxWidth="wide" paddingY="none" className="py-16 lg:py-20">
           <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
-            <div className="space-y-7">
-              <div className="inline-flex items-center gap-2 text-sm font-semibold text-alain-blue uppercase tracking-[0.18em]">
-                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-alain-yellow" />
-                AI Manuals for AI Models
-              </div>
+            <div className="space-y-6">
+              <span className="inline-flex items-center rounded-full bg-alain-blue/10 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.2em] text-alain-blue">APPLIED LEARNING AI NOTEBOOKS</span>
               <h1 className="font-display text-[42px] leading-[1.05] tracking-tight text-ink-900 md:text-[54px]">
                 AI Manuals for AI Models
               </h1>
               <p className="font-inter text-lg leading-8 text-ink-700 max-w-xl">
-                Paste a model card and ALAIN walks the hero’s journey for you—research, outline, section drafting, validation, and export—so teams read a finished manual instead of stitching one together.
+                ALAIN turns undocumented models into reproducible labs. The outline-first pipeline researches, drafts, validates, and exports so teams adopt the long-tail of AI without reverse-engineering docs.
               </p>
-              <ol className="grid gap-3 sm:grid-cols-3">
-                {heroJourney.map((item) => (
-                  <li key={item.title} className="rounded-[16px] border border-ink-100 bg-white p-4 text-sm text-ink-700 shadow-card">
-                    <div className="font-semibold text-ink-900">{item.title}</div>
-                    <p className="mt-1 leading-5">{item.body}</p>
-                  </li>
+              <div className="flex flex-wrap gap-3 text-sm font-medium text-alain-blue">
+                {heroProofPoints.map((point) => (
+                  <div key={point.label} className="flex items-center gap-2 rounded-full border border-alain-blue/20 bg-white/70 px-3 py-1">
+                    <span className="font-semibold text-alain-blue">{point.value}</span>
+                    <span className="text-alain-blue/80">{point.label}</span>
+                  </div>
                 ))}
-              </ol>
+              </div>
               <div className="flex flex-wrap gap-4 pt-2">
                 <Link
                   href="/generate"
@@ -110,6 +113,14 @@ export default function HomePage() {
                   See how it works
                 </Link>
               </div>
+              <ol className="grid gap-3 sm:grid-cols-3">
+                {heroJourney.map((item) => (
+                  <li key={item.title} className="rounded-[16px] border border-ink-100 bg-white p-4 text-sm text-ink-700 shadow-card">
+                    <div className="font-semibold text-ink-900">{item.title}</div>
+                    <p className="mt-1 leading-5">{item.body}</p>
+                  </li>
+                ))}
+              </ol>
             </div>
             <div className="relative flex justify-center lg:justify-end">
               <div className="absolute -top-6 -left-6 hidden h-20 w-20 rounded-full bg-gradient-to-br from-alain-yellow/60 to-transparent blur-2xl md:block" aria-hidden />
@@ -159,19 +170,27 @@ export default function HomePage() {
               ALAIN-Kit powers the pipeline: outline → sections → notebook build → validation. Every phase is deterministic and runs locally once JSON comes back from the teacher.
             </p>
           </header>
-          <div className="grid gap-6 lg:grid-cols-2">
-            {timelineSteps.map((step) => (
-              <div key={step.title} className="flex flex-col gap-4 rounded-2xl border border-ink-100 border-l-[6px] border-l-alain-blue/80 bg-white p-6 pl-7 shadow-card">
-                <div className="space-y-1">
-                  <div className="text-sm font-semibold uppercase tracking-wide text-alain-blue/80">{step.title}</div>
-                  <p className="text-base text-ink-800 leading-6">{step.description}</p>
+          <ol className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            {pipelineStages.map((step, index) => (
+              <li key={step.title} className="relative flex md:flex-1">
+                <div className="flex items-start gap-4 md:flex-col md:items-center md:text-center">
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-alain-blue text-white text-sm font-semibold">
+                    {index + 1}
+                    {index < pipelineStages.length - 1 && (
+                      <span className="absolute left-1/2 top-[calc(100%+0.5rem)] block h-10 w-[2px] -translate-x-1/2 bg-ink-200 md:hidden" />
+                    )}
+                    {index < pipelineStages.length - 1 && (
+                      <span className="absolute top-1/2 left-[calc(100%+1.5rem)] hidden h-[2px] w-[calc(100%+1.5rem)] bg-ink-200 md:block" />
+                    )}
+                  </div>
+                  <div className="max-w-xs space-y-2 text-left md:text-center">
+                    <div className="text-sm font-semibold uppercase tracking-wide text-alain-blue/80">{step.title}</div>
+                    <p className="text-sm leading-6 text-ink-700">{step.description}</p>
+                  </div>
                 </div>
-                <pre className="overflow-x-auto rounded-xl bg-ink-900 text-ink-50 text-xs leading-relaxed p-4">
-                  <code>{step.code}</code>
-                </pre>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </PageContainer>
       </section>
 
