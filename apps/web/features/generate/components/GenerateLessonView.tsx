@@ -5,7 +5,6 @@ import { Button } from '../../../components/Button';
 import NotebookWorkspace, { WorkspaceState, ExportUiState } from '../../../components/NotebookWorkspace';
 import WorkspaceSplit from '../../../components/WorkspaceSplit';
 import { AppShell } from '../../../components/layout/AppShell';
-import { NotebookToolbar } from '../../../components/NotebookToolbar';
 import api, { parseHfRef } from '../../../lib/api';
 import { backendUrl } from '../../../lib/backend';
 import { encodeNotebookId } from '../../../lib/notebookId';
@@ -354,7 +353,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
       <AppShell containerClassName="text-ink-900" maxWidth="wide">
         <WorkspaceSplit
           className="gap-6"
-        left={
+          left={
           <div className="space-y-6 pb-10 px-1 lg:px-0" data-generator-form-root="true">
             <header className="space-y-2">
         <h1 className="font-display text-[32px] font-black leading-[1.1] tracking-tight">Generate Manual</h1>
@@ -640,8 +639,8 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
               </div>
             </div>
           </div>
-        }
-        right={
+          }
+          right={
           <NotebookWorkspace
             workspace={workspaceState}
             preview={manualPreview ?? undefined}
@@ -661,7 +660,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
             onRemix={handleRemix}
             onNotebookChange={handleNotebookChange}
             onTitleChange={handleTitleChange}
-            toolbarActions=[
+            toolbarActions={[
               {
                 key: 'add-markdown',
                 label: 'Add Markdown',
@@ -686,9 +685,9 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
                 onClick: handleDownloadJson,
                 disabled: workspaceState.status !== 'ready',
               },
-            ]
+            ]}
           />
-        }
+          }
       />
       </AppShell>
 
