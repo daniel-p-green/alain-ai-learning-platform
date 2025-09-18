@@ -168,13 +168,21 @@ export default function MobileNav({
                 {statusError && <div className="text-xs text-amber-600">{statusError}</div>}
                 {!statusError && (
                   <ul className="space-y-1">
-                    {buildConnectionList(status).map((item) => (
+                    {connections.map((item) => (
                       <li key={item.id} className="flex items-center justify-between text-[13px]">
                         <span className="text-ink-700">{item.label}</span>
                         <span className={`text-xs font-semibold ${item.ok ? 'text-emerald-600' : 'text-amber-600'}`}>{item.message}</span>
                       </li>
                     ))}
                   </ul>
+                )}
+                {connectionNeedsHelp && (
+                  <Link
+                    href="/onboarding"
+                    className="mt-3 inline-flex h-9 items-center justify-center rounded-[12px] border border-ink-200 px-3 text-xs font-semibold text-ink-800 hover:bg-paper-50"
+                  >
+                    Open setup wizard
+                  </Link>
                 )}
               </div>
             )}

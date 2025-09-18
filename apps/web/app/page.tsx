@@ -3,6 +3,7 @@ import Link from 'next/link';
 import HomeNotebookPreview from '@/components/HomeNotebookPreview';
 import { PageContainer } from '@/components/layout/PageContainer';
 
+// Hero journey mirrors the PRD narrative—show users the three beats between paste and export.
 const heroJourney = [
   {
     title: '1. Capture the brief',
