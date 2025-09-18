@@ -258,6 +258,102 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   }, [tutorialId]);
 
   const showWorkspace = workspaceState.status === 'ready';
+  const progressLabels: Record<typeof progress, string> = useMemo(() => ({
+    idle: '',
+    parsing: 'Preparing your model details…',
+    asking: 'Generating lesson plan with GPT-OSS-20B…',
+    importing: 'Saving and formatting the manual…',
+    done: 'Manual ready! Review the workspace to continue.',
+  }), []);
+  const workspaceProgressLabel = progressLabels[progress];
+
+  const handleCopyExportLink = useCallback(async () => {
+    if (exportState.status !== 'success') return;
+    try {
+      await navigator.clipboard.writeText(exportState.url);
+      setCopyStatus('success');
+    } catch (err) {
+      console.error('Copy failed', err);
+      setCopyStatus('error');
+    }
+  }, [exportState]);
+
+  const handleDownloadJson = useCallback(async () => {
+    if (!result) return;
+    try {
+      const id = String(result.tutorialId || '');
+      if (!id) throw new Error('Missing tutorial identifier');
+      let payload: any = null;
+      if (id.startsWith('local-')) {
+        const res = await fetch(`/api/tutorials/local/${id}`);
+        if (!res.ok) throw new Error('Local manual not found');
+        payload = await res.json();
+      } else {
+        const res = await fetch(backendUrl(`/tutorials/${id}`));
+        if (!res.ok) throw new Error('Failed to fetch tutorial JSON');
+        payload = await res.json();
+      }
+      const filenameBase = (workspaceTitle || 'lesson').trim();
+      const filename = (filenameBase.length > 0 ? filenameBase : 'lesson').replace(/\s+/g, '_');
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${filename}.json`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download JSON failed', err);
+    }
+  }, [result, workspaceTitle]);
+
+  const handleOpenManual = useCallback(() => {
+    if (!tutorialId) return;
+    window.location.href = `/tutorial/${tutorialId}`;
+  }, [tutorialId]);
+
+  const handleRemix = useCallback(() => {
+    if (!tutorialId) return;
+    window.location.href = `/tutorial/${tutorialId}?remix=1`;
+  }, [tutorialId]);
+
+  const handleTitleChange = useCallback((nextTitle: string) => {
+    setWorkspaceTitle(nextTitle);
+  }, []);
+
+  const handleDownloadIpynb = useCallback(() => {
+    if (workspaceState.status !== 'ready') return;
+    const notebook = workspaceState.notebook;
+    if (!notebook) return;
+    try {
+      const baseTitle = (workspaceTitle || 'lesson').trim();
+      const safeTitle = (baseTitle.length > 0 ? baseTitle : 'lesson').replace(/\s+/g, '_');
+      const notebookForDownload = JSON.parse(JSON.stringify(notebook));
+      if (!notebookForDownload.metadata || typeof notebookForDownload.metadata !== 'object') {
+        notebookForDownload.metadata = {};
+      }
+      notebookForDownload.metadata.title = workspaceTitle;
+      const blob = new Blob([JSON.stringify(notebookForDownload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${safeTitle}.ipynb`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download .ipynb failed', err);
+    }
+  }, [workspaceState, workspaceTitle]);
+
+  const handleExport = useCallback(async (suggestedName: string) => {
+    if (!result) return;
+    await exportNotebook(result, suggestedName);
+  }, [exportNotebook, result]);
+
   const workspacePane = showWorkspace ? (
     <NotebookWorkspace
       workspace={workspaceState}
@@ -265,7 +361,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
       repaired={!!result?.meta?.repaired}
       tutorialId={tutorialId || undefined}
       title={workspaceTitle}
-      progressActive={isActiveProgress}
+      progressActive={progress === 'parsing' || progress === 'asking' || progress === 'importing'}
       progressLabel={workspaceProgressLabel}
       exportState={exportState as unknown as ExportUiState}
       onExport={handleExport}
