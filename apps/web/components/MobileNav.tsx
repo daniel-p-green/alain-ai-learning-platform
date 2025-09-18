@@ -38,6 +38,7 @@ export default function MobileNav({
   const panelRef = useRef<HTMLDivElement | null>(null);
   const isRight = side !== "left";
   const fetchedStatusRef = useRef(false);
+  // Build the provider status list ahead of render so we can reuse it for messaging and actions.
   const connections = buildConnectionList(status);
   const connectionNeedsHelp = connections.some((item) => !item.ok);
 
