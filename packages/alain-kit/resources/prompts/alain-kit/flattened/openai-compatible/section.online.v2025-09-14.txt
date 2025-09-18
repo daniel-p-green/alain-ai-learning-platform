@@ -39,4 +39,10 @@ CONTEXT:
 - Previous Sections: {{PREVIOUS_SECTIONS}}
 - Target Model: {{MODEL_REFERENCE_OR_TEXT}}
 
+ADDITIONAL GUIDELINES:
+- Define key terms before using them and explain trade-offs between provider APIs (Poe/OpenAI-compatible) and local workflows where relevant.
+- Reference earlier setup decisions when appropriate and maintain reproducibility (seeds, version pins, environment variables).
+- Ensure markdown remains instructional and the code runs as-is without hidden dependencies.
+- Close with a `next_section_hint` that naturally bridges to the following section.
+
 Generate only section {{SECTION_NUMBER}}.

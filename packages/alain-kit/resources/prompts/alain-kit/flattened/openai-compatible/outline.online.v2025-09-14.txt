@@ -6,10 +6,11 @@ CRITICAL:
 - If you cannot generate valid JSON, respond exactly with: {"error": "Unable to generate valid JSON response"}
 
 BEST PRACTICES (from analysis of 575 notebooks):
-- Include: Title, Overview, Objectives (exactly 4), Prerequisites, Setup, 6–12 Steps, Exercises, Summary, References.
+- Include: Title, Overview, Objectives (exactly 4), Prerequisites, Setup, 6–12 Steps, Exercises, Assessments (≥4 MCQs with explanations), Summary, References.
 - Use explicit step titles with "Step N:" and H2/H3 intent.
 - Balance content: 40–70% markdown target across the full notebook.
 - Add setup commands and reproducibility markers (seeds, versions).
+- Highlight modern GPT-OSS runtime notes when relevant (`pip install -U transformers kernels accelerate triton`, `use_kernels=True`, Flash Attention 3 option).
 - Plan short, focused cells; avoid mega-cells.
 - Include callouts (Note/Tip/Warning) and visuals where helpful.
 - Target 15–30 minutes read time; 2,000–4,000 tokens total typical.
