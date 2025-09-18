@@ -21,7 +21,13 @@ export default function GitHubOpenForm({ defaultRemix }: { defaultRemix?: boolea
         {err && <div className="text-xs text-red-600 mt-1">{err}</div>}
       </div>
       <button type="submit" className="inline-flex items-center h-9 px-3 rounded bg-ink-900 text-white">Open</button>
-      <button type="button" onClick={() => { const id = toGhId(url); if (!id) { setErr('Enter a valid GitHub .ipynb URL'); return; } const target = `/notebooks/${encodeNotebookId(id)}?remix=1`; window.location.assign(target); }} className="inline-flex items-center h-9 px-3 rounded bg-alain-yellow text-alain-blue font-semibold">Remix</button>
+      <button
+        type="button"
+        onClick={() => { const id = toGhId(url); if (!id) { setErr('Enter a valid GitHub .ipynb URL'); return; } const target = `/notebooks/${encodeNotebookId(id)}?remix=1`; window.location.assign(target); }}
+        className="inline-flex items-center h-9 px-3 rounded bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+      >
+        Remix
+      </button>
     </form>
   );
 }

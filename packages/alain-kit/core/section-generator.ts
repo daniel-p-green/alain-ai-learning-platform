@@ -296,32 +296,15 @@ export class SectionGenerator {
 
   private ensureSectionCompleteness(section: GeneratedSection, sectionNumber: number): void {
     const issues: string[] = [];
-    const fallbackMessages: string[] = [];
-    let markdownCells = section.content.filter(cell => cell?.cell_type === 'markdown');
-    let codeCells = section.content.filter(cell => cell?.cell_type === 'code');
+    const markdownCells = section.content.filter(cell => cell?.cell_type === 'markdown');
+    const codeCells = section.content.filter(cell => cell?.cell_type === 'code');
 
     if (markdownCells.length < 1) {
-      section.content.unshift({
-        cell_type: 'markdown',
-        source: `## Additional Context\n\nThis auto-generated note ensures the section includes narrative guidance for **${section.title || 'this topic'}**. Reviewers should expand this explanation with domain-specific detail.`
-      } as any);
-      fallbackMessages.push('Inserted fallback markdown cell to ensure narrative coverage');
-      markdownCells = section.content.filter(cell => cell?.cell_type === 'markdown');
+      issues.push('Requires at least one markdown cell with substantive content');
     }
 
     if (codeCells.length < 1) {
-      const fallbackCode = [
-        '# Auto-generated fallback code snippet -- replace with scenario-specific example',
-        'import json',
-        'summary = {',
-        `    "section_title": ${JSON.stringify(section.title || 'Smoke Test Section')},`,
-        '    "status": "needs_manual_enrichment"',
-        '}',
-        'print(json.dumps(summary, indent=2))'
-      ].join('\n');
-      section.content.push({ cell_type: 'code', source: fallbackCode } as any);
-      fallbackMessages.push('Inserted fallback code cell with placeholder implementation');
-      codeCells = section.content.filter(cell => cell?.cell_type === 'code');
+      issues.push('Requires at least one runnable code cell');
     }
 
     const checkCell = (cell: any) => {
@@ -345,26 +328,6 @@ export class SectionGenerator {
     };
 
     section.content.forEach(checkCell);
-
-    const requiredCallouts: Record<string, string> = {
-      tip: '💡 Quick win: highlight a practical hint reviewers can expand.',
-      warning: '⚠️ Caution: note a risk or constraint that must be elaborated.',
-      note: '📝 Reminder: describe supporting material or references to add.'
-    };
-
-    if (!Array.isArray(section.callouts)) section.callouts = [];
-    const existingTypes = new Set(section.callouts.map(c => c?.type));
-    for (const [type, message] of Object.entries(requiredCallouts)) {
-      if (!existingTypes.has(type as any)) {
-        section.callouts.push({ type: type as any, message });
-        fallbackMessages.push(`Inserted fallback ${type} callout`);
-      }
-    }
-
-    if (fallbackMessages.length) {
-      this.logTrace(sectionNumber, 'auto_patch', fallbackMessages.join(' | '));
-      this.recordHumanReview(sectionNumber, JSON.stringify(section, null, 2), 'auto_patch');
-    }
 
     if (!section.callouts || section.callouts.length < 3) {
       issues.push('Missing required callouts (tip, warning, note)');

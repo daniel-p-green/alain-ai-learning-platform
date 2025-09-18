@@ -126,7 +126,10 @@ export default function ResearchPage() {
           <p className="text-xs text-ink-600">Enable only if you need local copies of the source files; it can add several minutes.</p>
         </div>
         <div>
-          <button className="inline-flex items-center h-10 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50" disabled={loading}>
+          <button
+            className="inline-flex items-center h-10 px-4 rounded-[12px] bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+            disabled={loading}
+          >
             {loading ? 'Running…' : 'Run Research'}
           </button>
         </div>

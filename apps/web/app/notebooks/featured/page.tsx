@@ -1,6 +1,7 @@
 import React from 'react';
 import nextDynamic from 'next/dynamic';
 import { appBaseUrl } from '@/lib/requestBase';
+
 const GitHubOpenForm = nextDynamic(() => import('@/components/GitHubOpenForm'), { ssr: false });
 
 async function fetchFeatured() {
@@ -9,7 +10,9 @@ async function fetchFeatured() {
     const res = await fetch(`${base}/api/notebooks/featured`, { cache: 'no-store' });
     const j = await res.json();
     return Array.isArray(j.items) ? j.items : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export const dynamic = 'force-dynamic';
@@ -46,11 +49,21 @@ export default async function FeaturedNotebooks() {
               </div>
               <div className="flex items-center gap-2">
                 <a className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900 text-sm" href={`/notebooks/${encodeURIComponent(it.id)}`}>Open</a>
-                <a className="inline-flex items-center h-9 px-3 rounded bg-alain-yellow text-alain-blue text-sm font-semibold" href={`/notebooks/${encodeURIComponent(it.id)}?remix=1`}>Remix</a>
+                <a
+                  className="inline-flex items-center h-9 px-3 rounded bg-alain-blue text-white text-sm font-semibold hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                  href={`/notebooks/${encodeURIComponent(it.id)}?remix=1`}
+                >
+                  Remix
+                </a>
               </div>
             </div>
           </li>
         ))}
+        {items.length === 0 && (
+          <li className="rounded border border-ink-100 bg-paper-0 p-4 text-sm text-ink-700">
+            Featured notebooks are temporarily unavailable. Check back soon or open any GitHub notebook below.
+          </li>
+        )}
       </ul>
       <hr className="my-6" />
       <div className="space-y-2">

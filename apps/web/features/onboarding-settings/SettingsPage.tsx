@@ -286,7 +286,11 @@ export default function SettingsPage() {
                   <span>Show onboarding on next launch</span>
                 </label>
                 <div className="mt-3 flex gap-2">
-                  <button data-testid="open-reset-dialog" className="h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue border border-alain-stroke focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40" onClick={() => setDialogOpen(true)}>
+                  <button
+                    data-testid="open-reset-dialog"
+                    className="h-10 px-4 rounded-alain-lg bg-alain-blue text-white border border-alain-blue/80 hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                    onClick={() => setDialogOpen(true)}
+                  >
                     Reset onboarding
                   </button>
                 </div>
