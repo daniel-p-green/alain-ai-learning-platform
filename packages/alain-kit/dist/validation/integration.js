@@ -131,6 +131,9 @@ export class ALAINKit {
                             outline,
                             modelReference: config.modelReference,
                             difficulty: config.difficulty || 'beginner',
+                            customPrompt: config.customPrompt,
+                            maxSections: config.maxSections,
+                            apiKey: apiKeyForRequests,
                             runtime: toolRuntime,
                             notebookController
                         });

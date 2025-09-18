@@ -34,14 +34,33 @@ export class ToolCallingOrchestrator {
                     customPrompt,
                     difficulty,
                 });
-                durations.push(Date.now() - started);
-                resolvedSections.push(section);
-                notebookController.registerSection(section);
+                const duration = Date.now() - started;
+                durations.push(duration);
                 runtime?.completeInvocation?.(TOOL_INVOCATION, 'ok', {
                     sectionNumber,
                     markdownCells: section.content.filter((cell) => cell.cell_type === 'markdown').length,
                     codeCells: section.content.filter((cell) => cell.cell_type === 'code').length,
                 });
+                runtime?.logInvocation?.('notebook.section_validation', { sectionNumber });
+                const validation = this.sectionGenerator.validateSection(section);
+                if (!validation.isValid) {
+                    runtime?.completeInvocation?.('notebook.section_validation', 'error', {
+                        sectionNumber,
+                        issues: validation.issues,
+                    });
+                    this.log.error('tool_section_validation_failed', {
+                        sectionNumber,
+                        issues: validation.issues,
+                    });
+                    throw new Error(`Section ${sectionNumber} failed validation: ${validation.issues.join(', ')}`);
+                }
+                runtime?.completeInvocation?.('notebook.section_validation', 'ok', {
+                    sectionNumber,
+                    estimatedTokens: section.estimated_tokens,
+                    callouts: section.callouts.length,
+                });
+                resolvedSections.push(section);
+                notebookController.registerSection(section);
             }
             catch (error) {
                 runtime?.completeInvocation?.(TOOL_INVOCATION, 'error', {
