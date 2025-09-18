@@ -1,5 +1,68 @@
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
+
+const NotebookPreview = dynamic(() => import('../components/HomeNotebookPreview'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-72 w-full rounded-xl border border-ink-100 bg-ink-900/80 animate-pulse" aria-hidden />
+  ),
+});
+
+const heroBullets = [
+  'Outline-first prompts keep every lesson predictable and remixable.',
+  'Quality + Colab validators guard readability, installs, and safety notes.',
+  'Exports ship with a runnable notebook, validation summary, and metrics JSON.',
+];
+
+const heroMeta = 'Built for launch · OpenAI Open Model Hackathon · 3rd place at leap.new 2025 · MIT Licensed';
+
+const notebookDeliverables = [
+  { title: '.ipynb notebook', body: 'Runnable, parameterized sections with reproducible setup.' },
+  { title: 'Validation report', body: 'Markdown summary of quality score, fixes, and next checks.' },
+  { title: 'Metrics JSON', body: 'Structured data for sections, readability, and timings.' },
+];
+
+const timelineSteps = [
+  {
+    title: 'Outline Generator',
+    description: 'Outline-first prompt requests strict JSON (title, objectives, steps, assessments) so lessons start structured.',
+    code: 'const outline = await kit.outline.generate({ modelReference: "gpt-oss-20b" });',
+  },
+  {
+    title: 'Section Generator',
+    description: 'Fills each step with balanced markdown + code locally, respecting token hints and pedagogy notes.',
+    code: 'await kit.sections.generate({ outline, sectionNumber: 3 });',
+  },
+  {
+    title: 'Notebook Builder',
+    description: 'Stitches outline and sections into a runnable notebook with setup cells, assessments, and troubleshooting.',
+    code: 'const notebook = kit.builder.compose({ outline, sections });',
+  },
+  {
+    title: 'Validators',
+    description: 'Quality + Colab validators score readability, ensure installs, and auto-fix cells before exporting.',
+    code: 'await kit.validate({ notebook, quality: true, colab: true });',
+  },
+];
+
+const providerCards = [
+  {
+    name: 'Poe (default)',
+    summary: 'Fastest path to GPT-OSS teachers—just add `POE_API_KEY`.',
+    instructions: ['Set `POE_API_KEY` in `.env`.', 'Start with `npm run dev:hosted` or CLI `--baseUrl https://api.poe.com`.'],
+  },
+  {
+    name: 'OpenAI-compatible',
+    summary: 'Point at any compatible endpoint to reuse enterprise infra.',
+    instructions: ['Set `OPENAI_BASE_URL` + `OPENAI_API_KEY`.', 'Web + CLI pick up the same config automatically.'],
+  },
+  {
+    name: 'Local (Ollama / vLLM)',
+    summary: 'Keep everything offline while using identical lesson contracts.',
+    instructions: ['Run `http://localhost:11434` or your vLLM endpoint.', 'Skip `--apiKey`; notebooks stay local-first.'],
+  },
+];
 
 export const metadata = {
   title: 'ALAIN · Home',
@@ -7,43 +70,52 @@ export const metadata = {
 };
 
 export default function HomePage() {
-  const generateHref = '/generate';
-
   return (
     <main className="flex flex-col text-ink-900">
-      {/* Hero */}
       <section className="bg-paper-0">
         <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 lg:py-20">
-          <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] items-center">
             <div className="space-y-7">
-              <div className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-paper-0 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-ink-600">
-                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-alain-yellow" />
-                OpenAI Open Model Hackathon Project
+              <div className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-500">
+                {heroMeta}
               </div>
-              <h1 className="font-display font-bold text-[40px] leading-[44px] tracking-tight md:text-[48px] md:leading-[52px]">
-                AI Manuals for AI Models
-              </h1>
-              <p className="font-inter text-[18px] leading-[28px] text-ink-700 max-w-2xl">
-                Paste a Hugging Face link (or pick a local model) and get a runnable lesson with code, checks, and clean exports. No guesswork—just the steps you need.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link href={generateHref} className="inline-flex items-center h-11 px-5 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold shadow-cardHover">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 text-sm font-semibold text-alain-blue uppercase tracking-[0.18em]">
+                  <span className="inline-flex h-1.5 w-1.5 rounded-full bg-alain-yellow" />
+                  AI Manuals for AI Models
+                </div>
+                <h1 className="font-display text-[42px] leading-[1.05] tracking-tight text-ink-900 md:text-[54px]">
+                  AI Manuals for AI Models
+                </h1>
+                <p className="font-inter text-lg leading-8 text-ink-700 max-w-2xl">
+                  Paste a model card and get the runnable lesson in minutes—complete with setup, safe experiments, assessments, and clean exports.
+                </p>
+              </div>
+              <ul className="space-y-3 text-sm text-ink-700 font-inter">
+                {heroBullets.map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-2.5 w-2.5 flex-none rounded-full bg-alain-yellow" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/generate"
+                  className="inline-flex items-center h-12 px-6 rounded-[14px] bg-alain-yellow text-alain-blue font-semibold shadow-cardHover focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                >
                   Generate Manual
                 </Link>
-                <Link href="/notebooks" className="inline-flex items-center h-11 px-5 rounded-[12px] border border-ink-100 bg-white text-ink-900">
-                  Browse Library
+                <Link
+                  href="https://github.com/AppliedLearningAI/alain-ai-learning-platform"
+                  className="inline-flex items-center h-12 px-6 rounded-[14px] border border-ink-200 bg-white/70 text-ink-900 font-semibold hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                >
+                  Contribute on GitHub
                 </Link>
               </div>
-              <div className="rounded-card border border-ink-100 bg-paper-0 p-5 shadow-card space-y-2">
-                <div className="font-display font-semibold text-[18px] text-ink-900">Why teams use ALAIN</div>
-                <ul className="space-y-2 text-ink-700 text-[15px]">
-                  <li>• Step-by-step guidance with runnable notebooks</li>
-                  <li>• One workflow across hosted and local providers</li>
-                  <li>• Exports stay clean—no embedded secrets</li>
-                </ul>
-              </div>
             </div>
-            <div className="flex justify-center lg:justify-end">
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="absolute -top-6 -left-6 hidden h-20 w-20 rounded-full bg-gradient-to-br from-alain-yellow/60 to-transparent blur-2xl md:block" aria-hidden />
               <Image
                 src="/hero/ALAIN-figure-hero_brand-colors.svg"
                 alt="Illustration of an ALAIN manual guiding AI model usage"
@@ -58,78 +130,80 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="bg-paper-50">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <h2 className="font-display text-[30px] leading-[36px] tracking-tight">From model link to lesson in minutes</h2>
-            <p className="text-[16px] text-ink-600">
-              ALAIN keeps the flow linear—drop a model, read your manual, export it where you want. No extra clicking.
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            <HomeCard title="1 · Paste a model" text="Enter a Hugging Face URL or owner/repo, or select a local preset." subtle />
-            <HomeCard title="2 · Generate" text="ALAIN writes runnable sections with quick checks, metadata, and context." subtle />
-            <HomeCard title="3 · Run & export" text="Stream results instantly, then export to Colab or Jupyter with zero embedded secrets." subtle />
-          </div>
-        </div>
-      </section>
-
-      {/* Highlights */}
       <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <h2 className="font-display text-[30px] leading-[36px] tracking-tight">Everything stays in one view</h2>
-            <p className="text-[16px] text-ink-600">
-              Preview the manual, tweak settings, and publish—without hopping around the product.
+        <div className="mx-auto max-w-7xl px-6 md:px-8 py-14 lg:py-18 grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-center">
+          <div className="space-y-5">
+            <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">See the manual before you export</h2>
+            <p className="text-base text-ink-600 max-w-xl">
+              Notebook preview renders live output from the generator—the same `.ipynb` you can export to Colab or Jupyter. No secrets baked in, no extra wiring.
             </p>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {notebookDeliverables.map((item) => (
+                <li key={item.title} className="rounded-card border border-ink-100 bg-paper-50 p-4 shadow-card">
+                  <div className="text-sm font-semibold uppercase tracking-wide text-ink-500">{item.title}</div>
+                  <p className="mt-1 text-sm text-ink-700 leading-5">{item.body}</p>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            <HighlightCard title="Notebook viewer" body="Live render every section with code, callouts, and maker metadata." />
-            <HighlightCard title="Share instantly" body="Publish public or unlisted with one toggle—share links copy in a single click." />
-            <HighlightCard title="Local-friendly" body="Swap providers or run everything with LM Studio / Ollama in the same flow." />
+          <div className="rounded-2xl bg-white shadow-card border border-ink-100 p-5">
+            <NotebookPreview />
           </div>
         </div>
       </section>
 
-      {/* Audience */}
-      <section className="bg-gradient-to-b from-paper-50 via-white to-paper-0">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <h2 className="font-display text-[30px] leading-[36px] tracking-tight">Built for how you teach, test, and ship</h2>
-            <p className="text-[16px] text-ink-600">
-              Manuals land ready for action—no onboarding labyrinth, just the routes you already use.
+      <section className="bg-paper-50">
+        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 lg:py-20 space-y-10">
+          <header className="max-w-3xl space-y-3">
+            <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">How ALAIN works</h2>
+            <p className="text-base text-ink-600">
+              ALAIN-Kit powers the pipeline: outline → sections → notebook build → validation. Every phase is deterministic and runs locally once JSON comes back from the teacher.
             </p>
+          </header>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {timelineSteps.map((step) => (
+              <div key={step.title} className="flex flex-col gap-4 rounded-2xl border border-ink-100 border-l-[6px] border-l-alain-blue/80 bg-white p-6 pl-7 shadow-card">
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold uppercase tracking-wide text-alain-blue/80">{step.title}</div>
+                  <p className="text-base text-ink-800 leading-6">{step.description}</p>
+                </div>
+                <pre className="overflow-x-auto rounded-xl bg-ink-900 text-ink-50 text-xs leading-relaxed p-4">
+                  <code>{step.code}</code>
+                </pre>
+              </div>
+            ))}
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            <HomeCard title="For teams" text="Evaluate models with identical templates, notes, and reproducible checks." />
-            <HomeCard title="For educators" text="Design labs students can run in minutes with expected outputs and assessments." />
-            <HomeCard title="For builders" text="Ship tutorials customers can trust, remix, and embed in docs." />
+        </div>
+      </section>
+
+      <section className="bg-gradient-to-b from-paper-50 via-white to-paper-0">
+        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 lg:py-20 space-y-8">
+          <header className="space-y-3">
+            <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">Run it anywhere</h2>
+            <p className="text-base text-ink-600 max-w-3xl">
+              Swap teachers and runtimes without rewriting lessons. ALAIN shares the same request shape across Poe, OpenAI-compatible APIs, and fully local stacks.
+            </p>
+          </header>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {providerCards.map((card) => (
+              <div key={card.name} className="flex flex-col gap-3 rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+                <div className="space-y-1">
+                  <h3 className="font-display text-xl text-ink-900">{card.name}</h3>
+                  <p className="text-sm text-ink-600">{card.summary}</p>
+                </div>
+                <ul className="space-y-2 text-sm text-ink-700">
+                  {card.instructions.map((instruction) => (
+                    <li key={instruction} className="flex items-start gap-2">
+                      <span className="mt-1 inline-flex h-1.5 w-1.5 flex-none rounded-full bg-alain-yellow" />
+                      <span>{instruction}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
     </main>
-  );
-}
-
-function HomeCard({ title, text, subtle }: { title: string; text: string; subtle?: boolean }) {
-  return (
-    <div
-      className={`rounded-card border border-ink-100 bg-paper-0 p-6 shadow-card space-y-2 ${
-        subtle ? 'bg-white/90' : ''
-      }`}
-    >
-      <h3 className="font-display text-[20px] leading-[28px] tracking-tight">{title}</h3>
-      <p className="font-inter text-[15px] leading-[24px] text-ink-700">{text}</p>
-    </div>
-  );
-}
-
-function HighlightCard({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="flex flex-col gap-3 rounded-card border border-ink-100 bg-paper-0 p-6 shadow-card">
-      <h3 className="font-display text-[20px] leading-[28px] tracking-tight">{title}</h3>
-      <p className="font-inter text-[15px] leading-[24px] text-ink-700">{body}</p>
-    </div>
   );
 }

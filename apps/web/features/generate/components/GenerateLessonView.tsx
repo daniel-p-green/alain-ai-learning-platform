@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../../../components/Button';
-import { PreviewPanel } from '../../../components/PreviewPanel';
+import NotebookWorkspace, { WorkspaceState, ExportUiState } from '../../../components/NotebookWorkspace';
+import WorkspaceSplit from '../../../components/WorkspaceSplit';
 import api, { parseHfRef } from '../../../lib/api';
+import { backendUrl } from '../../../lib/backend';
+import { encodeNotebookId } from '../../../lib/notebookId';
 import type { UseGenerateLessonResult } from '../hooks/useGenerateLesson';
 
 
@@ -78,6 +81,9 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   } = props;
   const [showAdvancedProviders, setShowAdvancedProviders] = useState(false);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [workspaceState, setWorkspaceState] = useState<WorkspaceState>({ status: 'empty' });
+
+  const tutorialId = useMemo(() => (result ? String(result.tutorialId) : null), [result]);
 
   const readyHosted = !!envBanner && envBanner.teacherProvider === 'poe' && !!envBanner.poeConfigured;
   const readyLocal = !!envBanner && !!envBanner.offlineMode && !!envBanner.openaiBaseUrl;
@@ -165,14 +171,49 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     }
   }, [exportState.status]);
 
-  const progressLabels: Record<typeof progress, string> = {
-    idle: '',
-    parsing: 'Preparing your model details…',
-    asking: 'Generating lesson plan with GPT-OSS-20B…',
-    importing: 'Saving and formatting the manual…',
-    done: 'Manual ready! Review the preview or export below.',
-  };
-  const isActiveProgress = progress === 'parsing' || progress === 'asking' || progress === 'importing';
+  useEffect(() => {
+    if (!tutorialId) {
+      setWorkspaceState({ status: 'empty' });
+      return;
+    }
+
+    let active = true;
+    const controller = new AbortController();
+    const encodedId = encodeNotebookId(tutorialId);
+    setWorkspaceState({ status: 'loading' });
+
+    fetch(`/api/notebooks/${encodedId}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          const message = res.status === 404
+            ? 'Preview not cached yet. Open the manual to view the full notebook.'
+            : text || 'Failed to load notebook.';
+          const error = new Error(message) as Error & { status?: number };
+          error.status = res.status;
+          throw error;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!active) return;
+        setWorkspaceState({ status: 'ready', notebook: data.nb, meta: data.meta });
+      })
+      .catch((err) => {
+        if (!active || controller.signal.aborted) return;
+        const status = (err as any)?.status;
+        const message = err instanceof Error ? err.message : 'Failed to load notebook.';
+        setWorkspaceState({
+          status: 'error',
+          message: status === 404 ? 'The manual is ready, but the inline preview is unavailable. Open the full manual to continue.' : message,
+        });
+      });
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [tutorialId]);
 
   async function handleCopyExportLink() {
     if (exportState.status !== 'success') return;
@@ -185,9 +226,70 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     }
   }
 
+  async function handleDownloadJson() {
+    if (!result) return;
+    try {
+      const id = String(result.tutorialId || '');
+      if (!id) throw new Error('Missing tutorial identifier');
+      let payload: any = null;
+      if (id.startsWith('local-')) {
+        const res = await fetch(`/api/tutorials/local/${id}`);
+        if (!res.ok) throw new Error('Local manual not found');
+        payload = await res.json();
+      } else {
+        const res = await fetch(backendUrl(`/tutorials/${id}`));
+        if (!res.ok) throw new Error('Failed to fetch tutorial JSON');
+        payload = await res.json();
+      }
+      const filename = (result.preview?.title || 'lesson').replace(/\s+/g, '_');
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${filename}.json`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download JSON failed', err);
+    }
+  }
+
+  const handleOpenManual = () => {
+    if (!tutorialId) return;
+    window.location.href = `/tutorial/${tutorialId}`;
+  };
+
+  const handleRemix = () => {
+    if (!tutorialId) return;
+    window.location.href = `/tutorial/${tutorialId}?remix=1`;
+  };
+
+  const handleExport = async (suggestedName: string) => {
+    if (!result) return;
+    // TODO: instrument export action for analytics once tracking pipeline is ready.
+    await exportNotebook(result, suggestedName);
+  };
+
+  const progressLabels: Record<typeof progress, string> = useMemo(() => ({
+    idle: '',
+    parsing: 'Preparing your model details…',
+    asking: 'Generating lesson plan with GPT-OSS-20B…',
+    importing: 'Saving and formatting the manual…',
+    done: 'Manual ready! Review the workspace to continue.',
+  }), []);
+  const isActiveProgress = progress === 'parsing' || progress === 'asking' || progress === 'importing';
+  const workspaceProgressLabel = progressLabels[progress];
+  const manualPreview = result?.preview ?? null;
+
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6 text-ink-900">
-      <header className="space-y-2">
+    <div className="mx-auto w-full max-w-[1400px] px-4 py-6 lg:py-10 text-ink-900">
+      <WorkspaceSplit
+        className="gap-6"
+        left={
+          <div className="space-y-6 pb-10 px-1 lg:px-0" data-generator-form-root="true">
+            <header className="space-y-2">
         <h1 className="font-display text-[32px] font-black leading-[1.1] tracking-tight">Generate Manual</h1>
         <p className="text-sm text-ink-700">Recommended defaults that work out of the box. Export to Jupyter or Colab in one click.</p>
       </header>
@@ -462,60 +564,35 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
         </div>
       )}
 
-      {result && (
-        <PreviewPanel
-          tutorialId={result.tutorialId}
-          preview={result.preview as any}
-          repaired={!!result.meta?.repaired}
-          onExport={async (suggestedName) => exportNotebook(result, suggestedName)}
-          exporting={exportState.status === 'loading'}
-        />
-      )}
-
-      {exportState.status === 'loading' && (
-        <div className="rounded-card border border-alain-blue/30 bg-alain-blue/5 p-4 text-sm text-ink-800">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-alain-blue" aria-hidden="true" />
-            <span>Preparing notebook export…</span>
+            <div className="mt-6 text-sm text-ink-700">
+              <div className="mb-1 font-medium text-ink-900">Try these popular models</div>
+              <div className="flex flex-wrap gap-2">
+                {['meta-llama/Meta-Llama-3.1-8B-Instruct', 'google/gemma-2-9b-it', 'mistralai/Mistral-7B-Instruct-v0.3'].map((model) => (
+                  <Button key={model} variant="secondary" className="px-2 py-1 text-xs" onClick={() => setHfUrl(model)}>{model}</Button>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-
-      {exportState.status === 'success' && (
-        <div className="space-y-2 rounded-card border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-          <div className="flex flex-col gap-1">
-            <div className="font-semibold">Export successful!</div>
-            <p>Your notebook downloaded as <span className="font-semibold">{exportState.filename}</span>. Share or reopen it any time with this temporary link.</p>
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button variant="secondary" className="w-full sm:w-auto" onClick={handleCopyExportLink}>
-              {copyStatus === 'success' ? 'Link copied!' : 'Copy download link'}
-            </Button>
-            <Button variant="secondary" className="w-full sm:w-auto" onClick={clearExportState}>
-              Dismiss
-            </Button>
-          </div>
-          {copyStatus === 'error' && <p className="text-xs text-red-700">Copy failed. Right-click the link below to copy manually.</p>}
-          <a className="break-all text-xs text-green-700 underline" href={exportState.url} target="_blank" rel="noreferrer">{exportState.url}</a>
-        </div>
-      )}
-
-      {exportState.status === 'error' && (
-        <div className="rounded-card border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          <div className="font-semibold">Export failed</div>
-          <p className="text-sm">{exportState.message}</p>
-          <Button variant="secondary" className="mt-3" onClick={clearExportState}>Dismiss</Button>
-        </div>
-      )}
-
-      <div className="mt-6 text-sm text-ink-700">
-        <div className="mb-1 font-medium text-ink-900">Try these popular models</div>
-        <div className="flex flex-wrap gap-2">
-          {['meta-llama/Meta-Llama-3.1-8B-Instruct', 'google/gemma-2-9b-it', 'mistralai/Mistral-7B-Instruct-v0.3'].map((model) => (
-            <Button key={model} variant="secondary" className="px-2 py-1 text-xs" onClick={() => setHfUrl(model)}>{model}</Button>
-          ))}
-        </div>
-      </div>
+        }
+        right={
+          <NotebookWorkspace
+            workspace={workspaceState}
+            preview={manualPreview ?? undefined}
+            repaired={!!result?.meta?.repaired}
+            tutorialId={tutorialId || undefined}
+            progressActive={isActiveProgress}
+            progressLabel={workspaceProgressLabel}
+            exportState={exportState as unknown as ExportUiState}
+            onExport={handleExport}
+            onDownloadJson={handleDownloadJson}
+            onCopyExportLink={handleCopyExportLink}
+            onDismissExportState={clearExportState}
+            copyStatus={copyStatus}
+            onOpenManual={handleOpenManual}
+            onRemix={handleRemix}
+          />
+        }
+      />
 
       {snackbar && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-card border border-ink-100 bg-paper-0 px-4 py-2 text-ink-900 shadow-card">{snackbar}</div>

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const provider = (process.env.ALAIN_PROVIDER || 'poe').toLowerCase();
 
 interface Scenario {
   name: string;
@@ -12,12 +13,15 @@ interface Scenario {
   generate: () => Promise<void>;
 }
 
-const REQUIRED_ENV = ['POE_API_KEY'];
-
 const ensureEnv = () => {
-  for (const key of REQUIRED_ENV) {
-    if (!process.env[key]) {
-      throw new Error(`Missing required environment variable: ${key}`);
+  if (provider === 'poe') {
+    if (!process.env.POE_API_KEY) {
+      throw new Error('Missing required environment variable: POE_API_KEY');
+    }
+  } else if (provider === 'lmstudio') {
+    // optional LM Studio API key; warn if missing for protected endpoints
+    if (!process.env.LM_STUDIO_BASE_URL) {
+      console.warn('ℹ️  Using default LM Studio base URL http://localhost:1234/v1 (override with LM_STUDIO_BASE_URL).');
     }
   }
 };
@@ -127,33 +131,69 @@ const scenarios = async (): Promise<NotebookScenario[]> => {
     },
     options: { maxSections?: number }
   ): Promise<NotebookRunResult> => {
-    const kit = new ALAINKit({ baseUrl: process.env.OPENAI_BASE_URL || 'https://api.poe.com' });
-    const res = await kit.generateNotebook({
-      modelReference: 'gpt-oss-20b',
-      apiKey: process.env.POE_API_KEY,
-      difficulty: prompt.difficulty,
-      maxSections: options.maxSections ?? 6,
-      customPrompt: prompt,
-    } as any);
+    const baseUrl =
+      provider === 'lmstudio'
+        ? process.env.LM_STUDIO_BASE_URL || 'http://localhost:1234/v1'
+        : process.env.OPENAI_BASE_URL || 'https://api.poe.com';
+    const primaryModel =
+      process.env.ALAIN_MODEL_REFERENCE || (provider === 'lmstudio' ? (process.env.LM_STUDIO_MODEL || 'gpt-oss-20b') : 'gpt-oss-20b-T');
+    const fallbackModel = provider === 'poe' && primaryModel !== 'gpt-oss-20b'
+      ? 'gpt-oss-20b'
+      : undefined;
+    const apiKey = provider === 'lmstudio' ? process.env.LM_STUDIO_API_KEY || 'local' : process.env.POE_API_KEY;
 
-    if (!res.success) {
-      throw new Error(`Notebook generation failed: ${res.validationReport}`);
+    const kit = new ALAINKit({ baseUrl });
+    const reviewDir = path.join(outputRoot, slug, 'human-review');
+    process.env.ALAIN_SCENARIO_SLUG = slug;
+    process.env.ALAIN_HUMAN_REVIEW_DIR = reviewDir;
+    fs.mkdirSync(reviewDir, { recursive: true });
+
+    try {
+      const modelsToTry = [primaryModel, fallbackModel].filter(Boolean) as string[];
+
+      let lastError: Error | undefined;
+      for (const modelReference of modelsToTry) {
+        try {
+          console.log(`🤖 Provider: ${provider} | Base URL: ${baseUrl} | Model: ${modelReference}`);
+          const res = await kit.generateNotebook({
+            modelReference,
+            apiKey,
+            difficulty: prompt.difficulty,
+            maxSections: options.maxSections ?? 6,
+            customPrompt: prompt,
+          } as any);
+
+          if (!res.success) {
+            throw new Error(`Notebook generation failed: ${res.validationReport}`);
+          }
+
+          console.log(`Quality: ${res.qualityScore} | Colab: ${res.colabCompatible}`);
+          saveArtifacts(slug, res.notebook, res.validationReport, {
+            qualityScore: res.qualityScore,
+            colabCompatible: res.colabCompatible,
+            phaseTimings: res.phaseTimings,
+            sections: res.sections?.length ?? 0,
+          });
+
+          return {
+            slug,
+            qualityScore: res.qualityScore,
+            colabCompatible: Boolean(res.colabCompatible),
+            outputDir: path.join(outputRoot, slug),
+          };
+        } catch (error) {
+          lastError = error as Error;
+          console.warn(`⚠️  Model ${modelReference} failed: ${(lastError as Error).message}`);
+        }
+      }
+
+      if (lastError) {
+        throw lastError;
+      }
+    } finally {
+      delete process.env.ALAIN_SCENARIO_SLUG;
+      delete process.env.ALAIN_HUMAN_REVIEW_DIR;
     }
-
-    console.log(`Quality: ${res.qualityScore} | Colab: ${res.colabCompatible}`);
-    saveArtifacts(slug, res.notebook, res.validationReport, {
-      qualityScore: res.qualityScore,
-      colabCompatible: res.colabCompatible,
-      phaseTimings: res.phaseTimings,
-      sections: res.sections?.length ?? 0,
-    });
-
-    return {
-      slug,
-      qualityScore: res.qualityScore,
-      colabCompatible: Boolean(res.colabCompatible),
-      outputDir: path.join(outputRoot, slug),
-    };
   };
 
   const remixNotebook = loadNotebook('resources/content/notebooks/gpt-5_prompting_guide.ipynb');
