@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import NotebookViewer from "./NotebookViewer";
 import { Button } from "./Button";
+import { NotebookToolbar, NotebookToolbarAction } from "./NotebookToolbar";
 
 export type WorkspaceState =
   | { status: "empty" }
@@ -42,6 +43,7 @@ type NotebookWorkspaceProps = {
   onRemix: () => void;
   onNotebookChange?: (notebook: any) => void;
   onTitleChange?: (title: string) => void;
+  toolbarActions?: NotebookToolbarAction[];
 };
 
 export default function NotebookWorkspace({
@@ -63,6 +65,7 @@ export default function NotebookWorkspace({
   onRemix,
   onNotebookChange,
   onTitleChange,
+  toolbarActions,
 }: NotebookWorkspaceProps) {
   const learningList = useMemo(() => {
     if (!preview?.learning_objectives || preview.learning_objectives.length === 0) return null;
@@ -125,8 +128,16 @@ export default function NotebookWorkspace({
   const renderNotebook = () => {
     if (workspace.status === "ready") {
       return (
-        <div className="relative flex-1 overflow-hidden">
-          <div className="absolute inset-0 overflow-auto rounded-2xl border border-ink-100 bg-ink-900/90 p-4">
+        <div className="flex flex-col gap-3">
+          {toolbarActions && (
+            <NotebookToolbar
+              title="Inline editing"
+              actions={toolbarActions}
+            >
+              Changes stay local; use export tools to persist.
+            </NotebookToolbar>
+          )}
+          <div className="relative flex-1 overflow-auto rounded-2xl border border-ink-100 bg-ink-900/90 p-4">
             <NotebookViewer
               nb={workspace.notebook}
               editable={Boolean(onNotebookChange)}
@@ -262,9 +273,11 @@ export default function NotebookWorkspace({
             Remix
           </Button>
         </div>
-        <div className="text-xs text-ink-500">
-          Inline edits and title changes stay local. Use Download .ipynb to capture this exact notebook.
-        </div>
+        {!toolbarActions && (
+          <div className="text-xs text-ink-500">
+            Inline edits and title changes stay local. Use Download .ipynb to capture this exact notebook.
+          </div>
+        )}
         {exportState.status === "loading" && (
           <div className="rounded-card border border-alain-blue/30 bg-alain-blue/5 p-3 text-sm text-ink-800">
             <div className="flex items-center gap-2">

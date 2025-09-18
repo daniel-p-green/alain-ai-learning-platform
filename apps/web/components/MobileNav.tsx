@@ -1,9 +1,17 @@
 "use client";
 import Link from "next/link";
-import { SignedIn } from "@clerk/nextjs";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
-export default function MobileNav() {
+export type MobileNavLink = { href: string; label: string };
+
+type MobileNavProps = {
+  links: MobileNavLink[];
+  footer?: ReactNode;
+  title?: string;
+  triggerAriaLabel?: string;
+};
+
+export default function MobileNav({ links, footer, title = "Menu", triggerAriaLabel = "Menu" }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const [anim, setAnim] = useState(false); // controls enter/exit transitions
   const menuId = useId();
@@ -58,7 +66,7 @@ export default function MobileNav() {
         onClick={() => setOpen((v) => !v)}
         className="inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/30 bg-transparent text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
       >
-        <span className="sr-only">Menu</span>
+        <span className="sr-only">{triggerAriaLabel}</span>
         <div className="relative w-5 h-5">
           <span
             className={`absolute left-0 w-5 h-0.5 bg-white transition-all duration-200 ease-out ${open ? 'top-2.5 rotate-45' : 'top-1 rotate-0'}`}
@@ -86,7 +94,7 @@ export default function MobileNav() {
           >
             {/* Header */}
             <div className="h-14 px-3 flex items-center justify-between border-b border-ink-100">
-              <div id={`${menuId}-title`} className="font-display font-semibold text-ink-900">Menu</div>
+              <div id={`${menuId}-title`} className="font-display font-semibold text-ink-900">{title}</div>
               <button
                 onClick={closeWithAnim}
                 aria-label="Close menu"
@@ -102,21 +110,25 @@ export default function MobileNav() {
             <div className="flex-1 overflow-y-auto">
               <nav className="px-2 py-3">
                 <div className="px-2 py-2 text-xs uppercase tracking-wide text-ink-500">Navigate</div>
-                <Link href="/notebooks" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Library</Link>
-                <SignedIn>
-                  <Link href="/settings" className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100" onClick={closeWithAnim}>Settings</Link>
-                </SignedIn>
-                {/** Labs hidden from mobile nav for demo simplicity */}
+                {links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block px-3 py-3 text-[16px] rounded-[12px] hover:bg-paper-50 active:bg-paper-100"
+                    onClick={closeWithAnim}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
             </div>
 
             {/* Sticky bottom actions */}
-            <div className="p-3 border-t border-ink-100 bg-paper-0">
-              <Link href="/generate" className="inline-flex w-full items-center justify-center h-11 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold" onClick={closeWithAnim}>
-                Generate Manual
-              </Link>
-              {/** Labs hidden from mobile nav for demo simplicity */}
-            </div>
+            {footer && (
+              <div className="p-3 border-t border-ink-100 bg-paper-0" onClick={closeWithAnim}>
+                {footer}
+              </div>
+            )}
           </div>
         </div>
       )}
