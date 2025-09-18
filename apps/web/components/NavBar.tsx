@@ -9,10 +9,10 @@ export default function NavBar() {
   const isAdmin = (user?.publicMetadata as any)?.role === 'admin';
   return (
     <nav className="bg-alain-blue text-white shadow-brand">
-      <div className="mx-auto max-w-7xl px-4 md:px-6 h-[68px] flex items-center justify-between">
-        <div className="flex items-center gap-5">
-          <Link href="/" className="h-[56px] flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded" aria-label="ALAIN Home">
-            <BrandLogo variant="blue" className="h-14 w-auto" />
+      <div className="mx-auto max-w-7xl px-4 md:px-6 h-[72px] flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <Link href="/" className="h-[60px] flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded" aria-label="ALAIN Home">
+            <BrandLogo variant="blue" width={240} height={64} />
           </Link>
           <div className="hidden md:flex items-center gap-5">
             <Link href="/notebooks" className="text-sm text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5">Library</Link>

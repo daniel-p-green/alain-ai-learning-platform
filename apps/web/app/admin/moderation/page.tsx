@@ -45,7 +45,13 @@ export default function ModerationQueue() {
             </div>
             <div className="flex items-center gap-2">
               <button disabled={busyId === i.id} onClick={() => act(i.id, 'reject')} className="h-8 px-3 rounded bg-ink-200 text-ink-900">Reject</button>
-              <button disabled={busyId === i.id} onClick={() => act(i.id, 'approve')} className="h-8 px-3 rounded bg-alain-yellow text-alain-blue font-semibold">Approve</button>
+              <button
+                disabled={busyId === i.id}
+                onClick={() => act(i.id, 'approve')}
+                className="h-8 px-3 rounded bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+              >
+                Approve
+              </button>
             </div>
           </div>
         ))}
@@ -54,4 +60,3 @@ export default function ModerationQueue() {
     </div>
   );
 }
-
