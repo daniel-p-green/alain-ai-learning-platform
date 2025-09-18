@@ -78,12 +78,12 @@ export default function HomeNotebookPreview() {
                 <article key={index} className="space-y-2">
                   <h3 className="font-semibold text-ink-100">{cell.heading}</h3>
                   {cell.body?.map((paragraph, paragraphIndex) => (
-                    <p key={paragraphIndex} className="text-ink-200">
+                    <p key={paragraphIndex} className="text-ink-50">
                       {paragraph}
                     </p>
                   ))}
                   {cell.list && (
-                    <ul className="list-disc space-y-1 pl-5 text-ink-200">
+                    <ul className="list-disc space-y-1 pl-5 text-ink-50">
                       {cell.list.map((item, itemIndex) => (
                         <li key={itemIndex}>{item}</li>
                       ))}

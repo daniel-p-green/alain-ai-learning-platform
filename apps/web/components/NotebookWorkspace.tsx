@@ -137,7 +137,7 @@ export default function NotebookWorkspace({
               Changes stay local; use export tools to persist.
             </NotebookToolbar>
           )}
-          <div className="relative flex-1 overflow-auto rounded-2xl border border-ink-100 bg-ink-900/90 p-4">
+          <div className="relative flex-1 overflow-auto rounded-2xl border border-ink-100 bg-paper-0 p-4">
             <NotebookViewer
               nb={workspace.notebook}
               editable={Boolean(onNotebookChange)}

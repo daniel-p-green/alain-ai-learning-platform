@@ -1,59 +1,53 @@
 "use client";
 import Link from "next/link";
-import { Fragment } from "react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import BrandLogo from "./BrandLogo";
 import MobileNav from "./MobileNav";
 import TopNav from "./TopNav";
 
+const linkClass = "text-sm font-medium text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5";
+
 export default function NavBar() {
   const { user } = useUser();
   const isAdmin = (user?.publicMetadata as any)?.role === "admin";
 
+  const primaryLinks = [
+    { href: "/", label: "Home" },
+    { href: "/generate", label: "Generate Manual" },
+    { href: "/notebooks", label: "Notebook Library" },
+    { href: "/notebooks/featured", label: "Featured" },
+  ];
+
+  const accountLinks = [
+    ...(user ? [{ href: "/onboarding", label: "Setup Wizard" }] : []),
+    ...(user ? [{ href: "/settings", label: "Account" }] : []),
+    ...(isAdmin ? [{ href: "/admin/moderation", label: "Moderation" }] : []),
+  ];
+
+  const authLinks = user ? [] : [{ href: "/sign-in", label: "Sign in" }];
+  const mobileLinks = [...primaryLinks, ...accountLinks, ...authLinks];
+
   const desktopLinks = (
-    <Fragment>
-      <Link
-        href="/notebooks"
-        className="text-sm text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5"
-      >
-        Library
-      </Link>
-      <SignedIn>
-        <Link
-          href="/settings"
-          className="text-sm text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5"
-        >
-          Settings
+    <>
+      {primaryLinks.map((item) => (
+        <Link key={item.href} href={item.href} className={linkClass}>
+          {item.label}
         </Link>
-      </SignedIn>
-      {isAdmin && (
-        <Link
-          href="/admin/moderation"
-          className="text-sm text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5"
-        >
-          Moderation
-        </Link>
-      )}
-    </Fragment>
+      ))}
+    </>
   );
 
   const desktopActions = (
-    <Fragment>
-      <Link
-        href="/onboarding"
-        className="inline-flex items-center h-10 px-4 rounded-alain-lg border border-white/40 bg-transparent text-white/85 text-sm font-medium hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
-      >
-        Setup Wizard
-      </Link>
+    <>
       <Link
         href="/generate"
-        className="inline-flex items-center h-10 px-5 rounded-alain-lg border border-white/80 bg-transparent text-white/90 font-semibold hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+        className="inline-flex h-10 items-center rounded-full bg-white px-4 text-sm font-semibold text-alain-blue shadow-sm transition hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
       >
         Generate Manual
       </Link>
       <SignedOut>
         <SignInButton>
-          <button className="inline-flex items-center h-10 px-3 rounded-alain-lg border border-white/25 bg-white/10 hover:bg-white/15 text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">
+          <button className="inline-flex h-10 items-center rounded-full border border-white/30 px-4 text-sm font-medium text-white/90 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">
             Sign in
           </button>
         </SignInButton>
@@ -63,41 +57,28 @@ export default function NavBar() {
           afterSignOutUrl="/"
           appearance={{
             elements: {
-              rootBox: "flex items-center",
+              rootBox: "flex",
               userButtonTrigger:
-                "inline-flex items-center h-10 rounded-alain-lg border border-white/25 bg-white/10 px-1 hover:bg-white/15 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue",
+                "inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 p-1 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue",
               avatarBox: "h-8 w-8",
             },
           }}
         />
       </SignedIn>
-    </Fragment>
+    </>
   );
-
-  const mobileLinks = [
-    { href: "/notebooks", label: "Library" },
-    { href: "/onboarding", label: ".env Setup Wizard" },
-    ...(user ? [{ href: "/settings", label: "Settings" }] : []),
-    ...(isAdmin ? [{ href: "/admin/moderation", label: "Moderation" }] : []),
-  ];
 
   const mobileFooter = (
     <div className="space-y-2">
       <Link
-        href="/onboarding"
-        className="inline-flex w-full items-center justify-center h-11 px-4 rounded-[12px] border border-ink-200 bg-white text-ink-900 font-medium"
-      >
-        Open Setup Wizard
-      </Link>
-      <Link
         href="/generate"
-        className="inline-flex w-full items-center justify-center h-11 px-4 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold"
+        className="inline-flex h-11 w-full items-center justify-center rounded-[12px] bg-alain-blue text-sm font-semibold text-white shadow-card hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/30"
       >
         Generate Manual
       </Link>
       <SignedOut>
         <SignInButton>
-          <button className="inline-flex w-full items-center justify-center h-11 px-4 rounded-[12px] border border-ink-200 text-ink-900 font-medium">
+          <button className="inline-flex h-11 w-full items-center justify-center rounded-[12px] border border-ink-200 bg-white text-sm font-medium text-ink-900 hover:bg-paper-50">
             Sign in
           </button>
         </SignInButton>
@@ -110,15 +91,32 @@ export default function NavBar() {
       brand={
         <Link
           href="/"
-          className="h-[56px] flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded"
-          aria-label="ALAIN Home"
+          className="flex h-[44px] items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+          aria-label="ALAIN home"
         >
-          <BrandLogo variant="blue" width={200} height={56} />
+          <BrandLogo variant="blue" width={148} height={44} />
         </Link>
       }
       desktopLinks={desktopLinks}
       desktopActions={desktopActions}
-      mobileMenu={<MobileNav links={mobileLinks} footer={mobileFooter} triggerAriaLabel="Open main menu" />}
+      mobileMenu={
+        <div className="flex items-center gap-2">
+          <SignedIn>
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  rootBox: "hidden sm:flex",
+                  userButtonTrigger:
+                    "inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 p-1 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue",
+                  avatarBox: "h-8 w-8",
+                },
+              }}
+            />
+          </SignedIn>
+          <MobileNav links={mobileLinks} footer={mobileFooter} triggerAriaLabel="Open main menu" side="right" />
+        </div>
+      }
     />
   );
 }

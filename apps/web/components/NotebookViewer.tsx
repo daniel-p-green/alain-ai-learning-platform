@@ -33,14 +33,14 @@ function MarkdownCell({ source, editable, onChange }: MarkdownCellProps) {
   }, [text, editing]);
 
   return (
-    <div className="space-y-2">
+    <section className="rounded-2xl border border-ink-100 bg-white p-6 shadow-sm">
       {editable && (
-        <div className="flex justify-end gap-2">
+        <div className="mb-3 flex justify-end gap-2">
           {!editing && (
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="rounded bg-transparent px-2 py-1 text-xs font-medium text-ink-400 hover:bg-ink-800/40 hover:text-ink-200"
+              className="rounded bg-transparent px-2 py-1 text-xs font-semibold text-ink-500 hover:bg-paper-100 hover:text-ink-700"
             >
               Edit
             </button>
@@ -50,7 +50,7 @@ function MarkdownCell({ source, editable, onChange }: MarkdownCellProps) {
               <button
                 type="button"
                 onClick={() => { setDraft(text); setEditing(false); }}
-                className="rounded bg-transparent px-2 py-1 text-xs font-medium text-ink-400 hover:bg-ink-800/40 hover:text-ink-200"
+                className="rounded bg-transparent px-2 py-1 text-xs font-semibold text-ink-400 hover:bg-paper-100 hover:text-ink-700"
               >
                 Cancel
               </button>
@@ -72,19 +72,19 @@ function MarkdownCell({ source, editable, onChange }: MarkdownCellProps) {
         <textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          className="w-full rounded border border-ink-700 bg-ink-900/70 p-3 text-sm text-ink-50 focus:border-alain-blue focus:outline-none"
-          rows={Math.max(6, draft.split(/\r?\n/).length)}
+          className="w-full rounded-[14px] border border-ink-200 bg-white p-3 text-sm text-ink-800 shadow-inner focus:border-alain-blue focus:outline-none"
+          rows={Math.max(6, draft.replace(/\r?\n$/, '').split(/\r?\n/).length + 1)}
         />
       ) : (
         <ReactMarkdown
-          className="prose prose-invert max-w-none"
+          className="prose prose-slate max-w-none text-ink-800"
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[sanitizePlugin]}
         >
           {text}
         </ReactMarkdown>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -129,14 +129,14 @@ function CodeCell({ source, lang, editable, onChange }: CodeCellProps) {
     }
   }
   return (
-    <div className="bg-ink-900/50 rounded p-3 overflow-x-auto text-sm space-y-2">
+    <section className="space-y-3 rounded-2xl border border-ink-900/70 bg-[#0B1120] p-5 text-sm text-ink-50 shadow-sm">
       {editable && (
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 text-xs">
           {!editing && (
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="rounded bg-transparent px-2 py-1 text-xs font-medium text-ink-300 hover:bg-ink-800/40 hover:text-ink-100"
+              className="rounded bg-transparent px-2 py-1 font-semibold text-ink-200 hover:bg-white/10 hover:text-white"
             >
               Edit
             </button>
@@ -146,7 +146,7 @@ function CodeCell({ source, lang, editable, onChange }: CodeCellProps) {
               <button
                 type="button"
                 onClick={() => { setDraft(code); setEditing(false); }}
-                className="rounded bg-transparent px-2 py-1 text-xs font-medium text-ink-300 hover:bg-ink-800/40 hover:text-ink-100"
+                className="rounded bg-transparent px-2 py-1 font-semibold text-ink-300 hover:bg-white/10 hover:text-white"
               >
                 Cancel
               </button>
@@ -156,7 +156,7 @@ function CodeCell({ source, lang, editable, onChange }: CodeCellProps) {
                   onChange?.(draft);
                   setEditing(false);
                 }}
-                className="rounded bg-alain-blue px-3 py-1 text-xs font-semibold text-white hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                className="rounded bg-alain-blue px-3 py-1 font-semibold text-white hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
               >
                 Save
               </button>
@@ -168,29 +168,29 @@ function CodeCell({ source, lang, editable, onChange }: CodeCellProps) {
         <textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          className="w-full rounded border border-ink-700 bg-ink-950 p-3 font-mono text-sm text-ink-50 focus:border-alain-blue focus:outline-none"
-          rows={Math.max(8, draft.split(/\r?\n/).length)}
+          className="w-full rounded-[14px] border border-ink-700 bg-ink-950 p-3 font-mono text-sm text-ink-50 focus:border-alain-blue focus:outline-none"
+          rows={Math.max(8, draft.replace(/\r?\n$/, '').split(/\r?\n/).length + 1)}
         />
       ) : (
-        <pre className="overflow-x-auto text-sm"><code>{code}</code></pre>
+        <pre className="overflow-x-auto text-sm leading-relaxed"><code>{code}</code></pre>
       )}
       <div className="flex items-center gap-2">
         <button
           onClick={onRun}
           disabled={busy || editing}
-          className="h-8 px-3 rounded bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+          className="inline-flex h-9 items-center rounded-full bg-alain-blue px-4 text-xs font-semibold text-white transition hover:bg-alain-blue/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
         >
-          {busy ? 'Running…' : 'Run'}
+          {busy ? 'Running…' : 'Run cell'}
         </button>
-        {lang && <span className="text-xs text-ink-400">{lang}</span>}
+        {lang && <span className="text-xs text-ink-300 uppercase tracking-wide">{lang}</span>}
       </div>
       {(out || err) && (
-        <div className="mt-2 rounded bg-black/40 p-2 text-xs whitespace-pre-wrap">
+        <div className="rounded-xl border border-white/20 bg-black/30 p-3 text-xs whitespace-pre-wrap">
           {out && <div>{out}</div>}
-          {err && <div className="text-red-400">{err}</div>}
+          {err && <div className="text-red-300">{err}</div>}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -224,7 +224,7 @@ export default function NotebookViewer({ nb, editable, onChange }: Props) {
   }, [editable, nb, onChange]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {cells.map((cell: any, i: number) => {
         if (cell.cell_type === "markdown") {
           return (
