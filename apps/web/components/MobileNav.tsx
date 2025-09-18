@@ -78,6 +78,7 @@ export default function MobileNav({ links, footer, title = "Menu", triggerAriaLa
             className={`absolute left-0 w-5 h-0.5 bg-white transition-all duration-200 ease-out ${open ? 'top-2.5 -rotate-45' : 'top-4 rotate-0'}`}
           />
         </div>
+        <span className="ml-2 hidden text-sm font-semibold text-white sm:inline">Menu</span>
       </button>
       {open && (
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby={`${menuId}-title`}>

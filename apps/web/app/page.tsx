@@ -1,6 +1,6 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import HomeNotebookPreview from '@/components/HomeNotebookPreview';
-import { ButtonLink } from '@/components/ButtonLink';
 import { PageContainer } from '@/components/layout/PageContainer';
 
 const heroBullets = [
@@ -94,18 +94,20 @@ export default function HomePage() {
                 ))}
               </ul>
               <div className="flex flex-wrap gap-4">
-                <ButtonLink href="/generate" variant="accent" className="px-6 py-3 shadow-cardHover">
+                <Link
+                  href="/generate"
+                  className="inline-flex items-center h-12 px-6 rounded-[14px] bg-alain-yellow text-alain-blue font-semibold shadow-cardHover focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                >
                   Generate Manual
-                </ButtonLink>
-                <ButtonLink
+                </Link>
+                <Link
                   href="https://github.com/AppliedLearningAI/alain-ai-learning-platform"
-                  variant="secondary"
-                  className="px-6 py-3 font-semibold"
+                  className="inline-flex items-center h-12 px-6 rounded-[14px] border border-ink-200 bg-white/70 text-ink-900 font-semibold hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
                   target="_blank"
                   rel="noreferrer"
                 >
                   Contribute on GitHub
-                </ButtonLink>
+                </Link>
               </div>
             </div>
             <div className="relative flex justify-center lg:justify-end">

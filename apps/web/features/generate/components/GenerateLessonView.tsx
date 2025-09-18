@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Button } from '../../../components/Button';
 import NotebookWorkspace, { WorkspaceState, ExportUiState } from '../../../components/NotebookWorkspace';
 import WorkspaceSplit from '../../../components/WorkspaceSplit';
@@ -734,7 +735,13 @@ function EnvironmentStatusCard({ envBanner, readyHosted, readyLocal }: { envBann
           </div>
         ))}
       </div>
-      <p className="text-xs text-ink-600">Update providers from Settings → Environment Status to change these defaults.</p>
+      <p className="text-xs text-ink-600">Update providers from Settings → Environment Status or re-run the setup wizard to change these defaults.</p>
+      <Link
+        href="/onboarding"
+        className="inline-flex h-9 items-center rounded-[10px] border border-ink-200 bg-white px-3 text-xs font-medium text-ink-900 hover:bg-paper-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue"
+      >
+        Open .env setup wizard
+      </Link>
     </div>
   );
 }
