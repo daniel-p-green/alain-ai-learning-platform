@@ -92,17 +92,15 @@ export class SemanticValidator {
                 .join('\n');
             const truncated = markdownSource.slice(0, 800);
             const excerpt = truncated.replace(/\s+/g, ' ').trim();
-            const suffix = markdownSource.length > 800 ? ' [excerpt intentionally truncated for brevity]' : '';
             const codeSource = (section.content || [])
                 .filter(cell => cell.cell_type === 'code')
                 .map(cell => (Array.isArray(cell.source) ? cell.source.join('\n') : String(cell.source || '')))
                 .join('\n');
             const codeExcerptRaw = codeSource.slice(0, 400).replace(/\s+/g, ' ').trim();
-            const codeSuffix = codeSource.length > 400 ? ' [code excerpt truncated]' : '';
             const codePreview = codeSource
-                ? `Code preview (first 400 chars from code cells): ${codeExcerptRaw}${codeSuffix}`
+                ? `Code preview (first 400 chars from code cells): ${codeExcerptRaw}`
                 : 'Code preview: <no code cells in this section yet>';
-            return `Section ${section.section_number}: ${section.title || 'Untitled'}\nSnippet (first 800 chars of full markdown; complete content exists in notebook): ${excerpt}${suffix}\n${codePreview}`;
+            return `Section ${section.section_number}: ${section.title || 'Untitled'}\nSnippet (first 800 chars of full markdown): ${excerpt}\n${codePreview}`;
         }).join('\n\n');
         const notebookTitle = notebook?.metadata?.title || outline.title || 'Untitled Notebook';
         return `You are auditing a generated Jupyter notebook intended for production.

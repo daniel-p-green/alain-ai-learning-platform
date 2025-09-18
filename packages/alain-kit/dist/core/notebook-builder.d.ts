@@ -66,7 +66,9 @@ export declare class NotebookBuilder {
     private createDotenvCell;
     private createProviderSetupCell;
     private createProviderSmokeCell;
-    /** Adds a light-touch runtime recap so learners see the same checklist in notebooks. */
+    /**
+     * Adds a light-touch runtime recap so learners see the same checklist that lives in the UI/README.
+     */
     private createTransformerRuntimeCell;
     private createTitleCell;
     private createObjectivesCell;

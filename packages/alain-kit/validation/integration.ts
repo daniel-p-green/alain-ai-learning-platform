@@ -5,8 +5,7 @@
  * notebook building, and validation in a single pipeline.
  */
 
-import { mkdirSync, existsSync, readdirSync, writeFileSync, readFileSync } from 'fs';
-import path from 'path';
+import { mkdirSync, writeFileSync } from 'fs';
 import { OutlineGenerator, NotebookOutline } from '../core/outline-generator.js';
 import { SectionGenerator, GeneratedSection } from '../core/section-generator.js';
 import { NotebookBuilder } from '../core/notebook-builder.js';
@@ -14,7 +13,12 @@ import { QualityValidator, QualityMetrics } from './quality-validator.js';
 import { ColabValidator, ColabValidationResult } from './colab-validator.js';
 import { QaGate, QaGateReport } from './qa-gate.js';
 import { SemanticValidator, SemanticReport } from './semantic-validator.js';
-import { metrics, trackEvent } from '../core/obs.js';
+import { metrics, trackEvent, createLogger } from '../core/obs.js';
+import { HarmonyStubRuntime } from '../core/tool-runtime.js';
+import { NotebookToolController } from '../core/notebook-tool-controller.js';
+import { ValidatorToolController } from '../core/validator-tool-controller.js';
+import { LegacyNotebookOrchestrator, SectionGenerationResult } from '../core/orchestrator.js';
+import { ToolCallingOrchestrator } from '../core/tool-orchestrator.js';
 
 export interface ALAINKitResult {
   success: boolean;
@@ -40,6 +44,7 @@ export interface ALAINKitResult {
 }
 
 export class ALAINKit {
+  private log = createLogger('ALAINKit');
   private outlineGenerator: OutlineGenerator;
   private sectionGenerator: SectionGenerator;
   private notebookBuilder: NotebookBuilder;
@@ -49,6 +54,8 @@ export class ALAINKit {
   private semanticValidator: SemanticValidator;
   private baseUrl?: string;
   private checkpointsDir: string;
+  private toolRuntime?: HarmonyStubRuntime;
+  private orchestrator: LegacyNotebookOrchestrator;
 
   constructor(options: { baseUrl?: string } = {}) {
     this.baseUrl = options.baseUrl;
@@ -63,6 +70,27 @@ export class ALAINKit {
     const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     this.checkpointsDir = process.env.ALAIN_CHECKPOINT_DIR || `/tmp/alain-kit-${stamp}`;
     try { mkdirSync(this.checkpointsDir, { recursive: true }); } catch {}
+    this.orchestrator = new LegacyNotebookOrchestrator(this.sectionGenerator, this.checkpointsDir, this.baseUrl);
+
+    if (process.env.ALAIN_TOOL_RUNTIME === 'stub') {
+      this.toolRuntime = new HarmonyStubRuntime();
+      const tools = [
+        { namespace: 'notebook', name: 'add_dependency', description: 'Register a dependency for the runtime environment.' },
+        { namespace: 'notebook', name: 'emit_markdown_step', description: 'Append markdown instruction content for a section.' },
+        { namespace: 'notebook', name: 'emit_code_cell', description: 'Append a runnable code cell aligned with the current section.' },
+        { namespace: 'notebook', name: 'record_assessment', description: 'Create assessment items (MCQs, exercises) for the lesson.' },
+        { namespace: 'notebook', name: 'finalize', description: 'Finalize notebook metadata, summary, and export artifacts.' },
+        { namespace: 'notebook', name: 'generate_section_legacy', description: 'Legacy section generator placeholder until full tool calling is enabled.' },
+        { namespace: 'notebook', name: 'section_validation', description: 'Validate generated section content against structural checks.' },
+        { namespace: 'notebook', name: 'record_prerequisites', description: 'Track prerequisite callouts emitted by sections.' },
+        { namespace: 'validator', name: 'run_quality', description: 'Execute notebook quality validation and return metrics.' },
+        { namespace: 'validator', name: 'run_colab', description: 'Execute Colab compatibility checks and return issues/fixes.' },
+        { namespace: 'validator', name: 'run_qa_gate', description: 'Run the lightweight QA gate before downstream validators.' },
+        { namespace: 'validator', name: 'run_semantic', description: 'Run semantic validation against policy/completeness heuristics.' },
+        { namespace: 'pipeline', name: 'error', description: 'Represents terminal pipeline errors before teardown.' }
+      ];
+      tools.forEach(descriptor => this.toolRuntime?.registerTool(descriptor));
+    }
   }
 
   /**
@@ -85,16 +113,37 @@ export class ALAINKit {
     };
   }): Promise<ALAINKitResult> {
     const pipelineStart = Date.now();
+    const toolRuntime = this.toolRuntime;
+    toolRuntime?.startSession({
+      modelReference: config.modelReference,
+      difficulty: config.difficulty || 'beginner'
+    });
     try {
       const apiKeyForRequests = config.apiKey;
       // Step 1: Generate outline
       const tOutlineStart = Date.now();
-      const outline = await this.outlineGenerator.generateOutline({
-        model: config.modelReference,
-        apiKey: apiKeyForRequests,
-        difficulty: config.difficulty || 'beginner',
-        customPrompt: config.customPrompt
+      toolRuntime?.logInvocation('notebook.generate_outline', {
+        modelReference: config.modelReference,
+        difficulty: config.difficulty || 'beginner'
       });
+      let outline: NotebookOutline;
+      try {
+        outline = await this.outlineGenerator.generateOutline({
+          model: config.modelReference,
+          apiKey: apiKeyForRequests,
+          difficulty: config.difficulty || 'beginner',
+          customPrompt: config.customPrompt
+        });
+        toolRuntime?.completeInvocation('notebook.generate_outline', 'ok', {
+          stepCount: outline.outline.length,
+          objectives: outline.objectives.length
+        });
+      } catch (outlineError) {
+        toolRuntime?.completeInvocation('notebook.generate_outline', 'error', {
+          message: outlineError instanceof Error ? outlineError.message : String(outlineError)
+        });
+        throw outlineError;
+      }
       const tOutline = Date.now() - tOutlineStart;
 
       // Validate outline
@@ -103,78 +152,80 @@ export class ALAINKit {
         throw new Error(`Outline validation failed: ${outlineValidation.issues.join(', ')}`);
       }
 
-      // Step 2: Generate sections (checkpoint + bounded concurrency)
-      const sectionsDir = path.join(this.checkpointsDir, 'sections');
-      try { mkdirSync(sectionsDir, { recursive: true }); } catch {}
-      const completed = new Set<number>();
-      for (const f of (existsSync(sectionsDir) ? readdirSync(sectionsDir) : [])) {
-        const m = f.match(/^(\d+)\.json$/);
-        if (m) completed.add(Number(m[1]));
-      }
-      const maxSections = Math.min(config.maxSections || outline.outline.length, outline.outline.length);
-      const sections: Array<GeneratedSection | undefined> = new Array(maxSections).fill(undefined);
-      const sectionDurations: number[] = [];
-      // Preload any saved sections (resume)
-      for (const idx of Array.from(completed).sort((a, b) => a - b)) {
-        if (idx >= 1 && idx <= maxSections) {
+      const notebookController = new NotebookToolController(outline, this.notebookBuilder, toolRuntime);
+      const validatorController = new ValidatorToolController({
+        qaGate: this.qaGate,
+        semanticValidator: this.semanticValidator,
+        qualityValidator: this.qualityValidator,
+        colabValidator: this.colabValidator,
+        runtime: toolRuntime
+      });
+
+      let sectionsResult: SectionGenerationResult | undefined;
+      const resolvedSections: GeneratedSection[] = [];
+      const useToolOrchestrator = process.env.ALAIN_TOOL_ORCHESTRATOR === '1';
+
+      if (useToolOrchestrator) {
+        const toolModel = process.env.ALAIN_TOOL_MODEL || 'gpt-4o-mini';
+        const toolApiKey =
+          config.apiKey ||
+          process.env.ALAIN_TOOL_API_KEY ||
+          process.env.OPENAI_API_KEY ||
+          process.env.POE_API_KEY;
+
+        if (!toolApiKey) {
+          this.log.warn('Tool orchestrator enabled but no API key provided. Falling back to legacy generator.');
+        } else {
           try {
-            const rec = JSON.parse(readFileSync(path.join(sectionsDir, `${idx}.json`), 'utf-8'));
-            sections[idx - 1] = rec;
-          } catch {}
+            const toolOrchestrator = new ToolCallingOrchestrator({
+              model: toolModel,
+              apiKey: toolApiKey,
+              baseUrl: this.baseUrl
+            });
+            sectionsResult = await toolOrchestrator.generateSections({
+              outline,
+              modelReference: config.modelReference,
+              difficulty: config.difficulty || 'beginner',
+              runtime: toolRuntime,
+              notebookController
+            });
+            sectionsResult.sections.forEach(section => resolvedSections.push(section));
+          } catch (error) {
+            this.log.warn('Tool orchestrator failed, reverting to legacy sections.', {
+              error: error instanceof Error ? error.message : String(error)
+            });
+          }
         }
       }
-      const isLocal = !!this.baseUrl && (/localhost|127\.0\.0\.1/.test(this.baseUrl));
-      const maxConcurrency = Number(process.env.ALAIN_CONCURRENCY || (isLocal ? 2 : 1));
-      const tasks: Array<() => Promise<void>> = [];
-      for (let i = 0; i < maxSections; i++) {
-        const sectionNumber = i + 1;
-        if (completed.has(sectionNumber)) continue;
-        tasks.push(async () => {
-          const fn = async () => {
-            const secStart = Date.now();
-            const previousSections = sections.slice(0, sectionNumber - 1).filter((s): s is GeneratedSection => !!s);
-            const section = await this.sectionGenerator.generateSection({
-              outline,
-              sectionNumber,
-              previousSections,
-              modelReference: config.modelReference,
-              apiKey: apiKeyForRequests,
-              customPrompt: config.customPrompt,
-              difficulty: config.difficulty || 'beginner'
-            });
-            const secDur = Date.now() - secStart;
-            try { sectionDurations.push(secDur); } catch {}
-            const v = this.sectionGenerator.validateSection(section);
-            if (!v.isValid) {
-              throw new Error(`Section ${sectionNumber} failed validation: ${v.issues.join(', ')}`);
-            }
-            sections[sectionNumber - 1] = section;
-            // Save checkpoint
-            try { writeFileSync(path.join(sectionsDir, `${sectionNumber}.json`), JSON.stringify(section, null, 2)); } catch {}
-          };
-          await this.attemptWithBackoff(fn, 5);
-        });
-      }
-      const tSectionsStart = Date.now();
-      await this.runPool(tasks, maxConcurrency);
-      const tSectionsTotal = Date.now() - tSectionsStart;
 
-      const orderedSections = sections.slice(0, maxSections);
-      const missing = orderedSections
-        .map((section, index) => (section ? null : index + 1))
-        .filter((value): value is number => value !== null);
-      if (missing.length > 0) {
-        throw new Error(`Section generation incomplete. Missing sections: ${missing.join(', ')}`);
+      if (!sectionsResult) {
+        sectionsResult = await this.orchestrator.generateSections({
+          outline,
+          modelReference: config.modelReference,
+          apiKey: apiKeyForRequests,
+          difficulty: config.difficulty || 'beginner',
+          customPrompt: config.customPrompt,
+          maxSections: config.maxSections,
+          runtime: toolRuntime
+        });
+        sectionsResult.sections.forEach(section => {
+          resolvedSections.push(section);
+          notebookController.registerSection(section);
+        });
+      } else if (!notebookController.hasToolSections()) {
+        sectionsResult.sections.forEach(section => notebookController.registerSection(section));
       }
-      const resolvedSections = orderedSections as GeneratedSection[];
+
+      const sectionDurations = sectionsResult.durations;
+      const tSectionsTotal = sectionsResult.totalDuration;
 
       // Step 3: Build notebook
       const tBuildStart = Date.now();
-      let notebook = this.notebookBuilder.buildNotebook(outline, resolvedSections);
+      let notebook = notebookController.buildNotebook();
       const tBuild = Date.now() - tBuildStart;
 
       // Step 3.5: Run lightweight QA gate before expensive validators
-      const qaReport = await this.qaGate.evaluate({
+      const qaReport = await validatorController.runQaGate({
         outline,
         sections: resolvedSections,
         notebook
@@ -188,7 +239,7 @@ export class ALAINKit {
         throw new Error(`QA gate failed: ${qaReport.blocking_issues.join('; ') || qaReport.summary}`);
       }
 
-      const semanticReport = await this.semanticValidator.evaluate({
+      const semanticReport = await validatorController.runSemantic({
         outline,
         sections: resolvedSections,
         notebook,
@@ -204,12 +255,12 @@ export class ALAINKit {
       const tempPath = `/tmp/alain-notebook-${Date.now()}.ipynb`;
       writeFileSync(tempPath, JSON.stringify(notebook, null, 2));
       const tQualityStart = Date.now();
-      const qualityMetrics = this.qualityValidator.validateNotebook(tempPath);
+      const qualityMetrics = validatorController.runQuality(tempPath);
       const tQuality = Date.now() - tQualityStart;
 
       // Step 5: Colab validation and fixes
       const tColabStart = Date.now();
-      const colabValidation = await this.colabValidator.validateNotebook(tempPath);
+      const colabValidation = await validatorController.runColab(tempPath);
       const tColab = Date.now() - tColabStart;
       if (!colabValidation.isCompatible && colabValidation.fixedNotebook) {
         notebook = colabValidation.fixedNotebook;
@@ -248,6 +299,8 @@ export class ALAINKit {
     } catch (error) {
       const duration = Date.now() - pipelineStart;
       const errMessage = error instanceof Error ? error.message : String(error);
+      this.toolRuntime?.logInvocation('pipeline.error', { message: errMessage });
+      this.toolRuntime?.completeInvocation('pipeline.error', 'error', { message: errMessage });
       metrics.inc('alain_pipeline_failures_total', 1, { model: config.modelReference, difficulty: config.difficulty || 'beginner' });
       trackEvent('alain_pipeline_failure', { model: config.modelReference, difficulty: config.difficulty || 'beginner', duration_ms: duration, error: errMessage });
       return {
@@ -303,6 +356,9 @@ export class ALAINKit {
         validationReport: `Generation failed: ${errMessage}`
       };
     }
+    finally {
+      toolRuntime?.endSession();
+    }
   }
 
   private generateValidationReport(quality: QualityMetrics, colab: ColabValidationResult): string {
@@ -324,36 +380,6 @@ ${quality.meetsStandards && colab.isCompatible ?
   '⚠️ Improvements applied - ready for testing'}`;
   }
 
-  // --- Concurrency + backoff helpers ---
-  private async runPool(tasks: Array<() => Promise<void>>, limit: number): Promise<void> {
-    const q = tasks.slice();
-    const n = Math.min(Math.max(1, limit), Math.max(1, q.length));
-    const worker = async () => {
-      while (q.length) {
-        const t = q.shift();
-        if (!t) break;
-        await t();
-      }
-    };
-    await Promise.all(Array.from({ length: n }, worker));
-  }
-
-  private async attemptWithBackoff(fn: () => Promise<void>, retries: number): Promise<void> {
-    let attempt = 0;
-    let delay = 500;
-    while (true) {
-      try {
-        await fn();
-        return;
-      } catch (e) {
-        attempt++;
-        if (attempt > retries) throw e;
-        const jitter = Math.round(delay * (0.8 + Math.random() * 0.4));
-        await new Promise(r => setTimeout(r, jitter));
-        delay = Math.min(5000, delay * 2);
-      }
-    }
-  }
 }
 
 /**

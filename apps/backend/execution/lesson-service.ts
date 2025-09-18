@@ -235,9 +235,11 @@ export function buildLessonGenerationPrompt(
   modelInfo: any,
   difficulty: string,
   includeAssessment?: boolean,
-  includeReasoning?: boolean
+  includeReasoning?: boolean,
+  customPrompt?: CustomPromptConfig
 ): string {
   const wantReasoning = includeReasoning === true;
+  const briefSection = formatUserBrief(customPrompt);
   const basePrompt = `Generate a comprehensive, structured lesson for the AI model: ${modelInfo.name}
 
 Model Information:
@@ -247,7 +249,8 @@ Model Information:
 ${modelInfo.family ? `- Family: ${modelInfo.family}` : ''}
 ${modelInfo.toolUse ? `- Tool Use: ${modelInfo.toolUse}` : ''}
 
-Requirements:
+${briefSection ? `${briefSection}
+` : ''}Requirements:
 - Create 3-5 progressive lesson steps
 - Include practical examples and code snippets
 - Focus on real-world applications
@@ -255,6 +258,8 @@ Requirements:
 - Include model maker information when available
 - Provide a top-level "quality_score" (integer 0-100) that reflects lesson polish and accuracy
 - Set "colab_compatible" to true when the notebook can run as-is in Google Colab, otherwise false
+${customPrompt?.title ? '- Align the generated lesson title closely with the requested focus from the user brief.' : ''}
+${customPrompt?.context ? '- Use the additional context from the user brief to shape the description, learning objectives, and step ordering.' : ''}
 ${modelInfo.toolUse === 'native' ? '- Include one short step demonstrating Tool Use via OpenAI-compatible "tools" with a simple function (e.g., get_current_time). Keep it safe and local.' : ''}
 ${includeAssessment ? '- Generate 3-5 multiple choice questions with explanations' : ''}
 
@@ -309,7 +314,8 @@ export function buildLessonFromTextPrompt(
 ): string {
   const snippet = textContent.length > 2000 ? `${textContent.slice(0, 2000)}\n...` : textContent;
   const wantReasoning = includeReasoning === true;
-  const prompt = `You are an expert AI educator. Create a structured, practical lesson from the following source material. Focus on clarity, hands-on steps, and real-world utility. Do not include external links unless they are in the source text.\n\nSOURCE MATERIAL (verbatim excerpt):\n---\n${snippet}\n---\n\nDifficulty Level: ${difficulty}\n${includeAssessment ? 'Include 3-5 multiple choice questions with explanations.' : ''}\nInclude a numeric "quality_score" (0-100) and a boolean "colab_compatible" flag describing notebook readiness.\n\nOutput a single JSON object with the following structure:\n{
+  const briefSection = formatUserBrief(customPrompt);
+  const prompt = `You are an expert AI educator. Create a structured, practical lesson from the following source material. Focus on clarity, hands-on steps, and real-world utility. Do not include external links unless they are in the source text.\n\nSOURCE MATERIAL (verbatim excerpt):\n---\n${snippet}\n---\n\n${briefSection ? `${briefSection}\n` : ''}Difficulty Level: ${difficulty}\n${includeAssessment ? 'Include 3-5 multiple choice questions with explanations.' : ''}\nInclude a numeric "quality_score" (0-100) and a boolean "colab_compatible" flag describing notebook readiness.\n${customPrompt?.title ? 'Treat the user-provided title as the lesson focus when generating your own title.' : ''}\n${customPrompt?.context ? 'Incorporate the additional context into the description, learning objectives, and the flow of steps.' : ''}\n\nOutput a single JSON object with the following structure:\n{
   "title": "Lesson Title",
   "description": "Brief description",
 ${wantReasoning ? '  "reasoning_summary": "2-4 sentences explaining your teaching strategy and step ordering.",' : ''}

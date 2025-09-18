@@ -39,6 +39,8 @@ type DraftState = {
   researchMode: ResearchMode;
   difficulty: string;
   forceFallback: boolean;
+  briefTitle: string;
+  briefContext: string;
 };
 
 type Props = {
@@ -263,6 +265,31 @@ function StepTwo({ draft, setDraft, availableModels, labelsByName, providers, re
         </div>
       )}
 
+      <div className="space-y-3">
+        <div className="text-sm font-medium text-ink-900">Notebook brief</div>
+        <div className="space-y-2">
+          <label className="text-xs text-ink-600" htmlFor="wizard-brief-title">Title</label>
+          <input
+            id="wizard-brief-title"
+            className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+            placeholder="e.g. Responsible LLM launch playbook"
+            value={draft.briefTitle}
+            onChange={(event) => setDraft((prev) => ({ ...prev, briefTitle: event.target.value }))}
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-xs text-ink-600" htmlFor="wizard-brief-context">What should the manual cover?</label>
+          <textarea
+            id="wizard-brief-context"
+            className="w-full rounded-md border border-ink-200 bg-white px-3 py-2 text-sm"
+            rows={3}
+            placeholder="Summarise the goal, audience, and any must-have steps."
+            value={draft.briefContext}
+            onChange={(event) => setDraft((prev) => ({ ...prev, briefContext: event.target.value }))}
+          />
+        </div>
+      </div>
+
       <div className="space-y-4">
         <div className="space-y-2">
           <div className="text-sm font-medium text-ink-900">Where is your source?</div>
@@ -446,13 +473,17 @@ type StepThreeProps = {
 };
 
 function StepThree({ draft, researchCopy, requirement }: StepThreeProps) {
+  const briefPreview = draft.briefContext.trim();
+  const briefSummary = briefPreview.length > 140 ? `${briefPreview.slice(0, 137)}…` : briefPreview;
   const summary = useMemo(() => [
+    { label: 'Notebook title', value: draft.briefTitle.trim() || 'Not set yet' },
+    { label: 'Manual brief', value: briefSummary || 'Not set yet' },
     { label: 'Source', value: draft.source === 'hf' ? `Hugging Face (${draft.hfUrl || 'model not set'})` : draft.source === 'local' ? `Local runtime (${draft.targetModel || 'model pending'})` : 'Text input' },
     { label: 'Target provider / model', value: draft.source === 'local' ? `${draft.targetProvider} · ${draft.targetModel || 'model pending'}` : draft.targetProvider },
     { label: 'Research mode', value: researchCopy[draft.researchMode].label },
     { label: 'Difficulty', value: draft.difficulty },
     { label: 'Teacher', value: `${draft.teacherProvider} · ${draft.teacherModel}` },
-  ], [draft, researchCopy]);
+  ], [briefSummary, draft, researchCopy]);
 
   return (
     <div className="space-y-4">
@@ -518,6 +549,8 @@ function createDraftFromViewModel(viewModel: UseGenerateLessonResult): DraftStat
     researchMode: normalizedResearchMode,
     difficulty: viewModel.difficulty,
     forceFallback: normalizedForceFallback,
+    briefTitle: viewModel.briefTitle,
+    briefContext: viewModel.briefContext,
   };
 }
 
@@ -570,6 +603,8 @@ function commitDraftToViewModel(draft: DraftState, viewModel: UseGenerateLessonR
     setResearchMode,
     setDifficulty,
     setForceFallback,
+    setBriefTitle,
+    setBriefContext,
   } = viewModel;
 
   const allowFallback = viewModel.SHOW_FALLBACK_UI;
@@ -592,4 +627,6 @@ function commitDraftToViewModel(draft: DraftState, viewModel: UseGenerateLessonR
   setResearchMode(normalizedResearchMode);
   setDifficulty(draft.difficulty);
   setForceFallback(normalizedForceFallback);
+  setBriefTitle(draft.briefTitle);
+  setBriefContext(draft.briefContext);
 }

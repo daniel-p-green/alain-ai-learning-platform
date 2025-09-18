@@ -6,7 +6,8 @@ import BrandLogo from "./BrandLogo";
 import MobileNav from "./MobileNav";
 import TopNav from "./TopNav";
 
-const linkClass = "text-sm font-medium text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue rounded px-1 py-0.5";
+const linkClass =
+  "rounded px-1.5 py-0.5 text-sm font-medium text-ink-600 transition-colors duration-150 hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
 function formatStars(count: number | null) {
   if (!count || Number.isNaN(count)) return null;
@@ -28,7 +29,7 @@ export default function NavBar() {
         const data = await res.json();
         if (!ignore) setStars(formatStars(typeof data?.stargazers_count === "number" ? data.stargazers_count : null));
       } catch {
-        /* no-op; keep nav lightweight if GitHub API throttles */
+        /* silent network errors keep the nav responsive */
       }
     })();
     return () => {
@@ -50,29 +51,35 @@ export default function NavBar() {
   const mobileLinks = [
     { href: "/", label: "Home" },
     ...primaryLinks,
-    { href: "/generate", label: "Generate Manual" },
+    { href: "/generate", label: "Get started" },
     ...(user ? [{ href: "/onboarding", label: "Setup Wizard" }] : []),
-    ...(accountLinks),
+    ...accountLinks,
     ...(user ? [] : [{ href: "/sign-in", label: "Sign in" }]),
   ];
 
   const desktopLinks = primaryLinks.map((item) => (
-    <Link key={item.href} href={item.href} className={linkClass} target={item.external ? "_blank" : undefined} rel={item.external ? "noreferrer" : undefined}>
+    <Link
+      key={item.href}
+      href={item.href}
+      className={linkClass}
+      target={item.external ? "_blank" : undefined}
+      rel={item.external ? "noreferrer" : undefined}
+    >
       {item.label}
     </Link>
   ));
 
   const desktopActions = (
-    <>
+    <div className="hidden items-center gap-3 md:flex">
       <Link
         href="/generate"
-        className="inline-flex h-10 items-center rounded-full bg-white px-4 text-sm font-semibold text-alain-blue shadow-sm transition hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+        className="inline-flex h-10 items-center rounded-full bg-alain-blue px-4 text-sm font-semibold text-white shadow-card transition hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
-        Generate Manual
+        Get started
       </Link>
       <SignedOut>
         <SignInButton>
-          <button className="inline-flex h-10 items-center rounded-full border border-white/30 px-4 text-sm font-medium text-white/90 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue">
+          <button className="inline-flex h-10 items-center rounded-full border border-ink-200 bg-white px-4 text-sm font-semibold text-ink-700 transition hover:border-alain-blue/40 hover:text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
             Sign in
           </button>
         </SignInButton>
@@ -84,13 +91,13 @@ export default function NavBar() {
             elements: {
               rootBox: "flex",
               userButtonTrigger:
-                "inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 p-1 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue",
+                "inline-flex items-center justify-center rounded-full border border-ink-200 bg-white p-1 text-ink-700 transition hover:border-alain-blue/40 hover:text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
               avatarBox: "h-8 w-8",
             },
           }}
         />
       </SignedIn>
-    </>
+    </div>
   );
 
   const mobileFooter = (
@@ -99,11 +106,11 @@ export default function NavBar() {
         href="/generate"
         className="inline-flex h-11 w-full items-center justify-center rounded-[12px] bg-alain-blue text-sm font-semibold text-white shadow-card hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/30"
       >
-        Generate Manual
+        Get started
       </Link>
       <SignedOut>
         <SignInButton>
-          <button className="inline-flex h-11 w-full items-center justify-center rounded-[12px] border border-ink-200 bg-white text-sm font-medium text-ink-900 hover:bg-paper-50">
+          <button className="inline-flex h-11 w-full items-center justify-center rounded-[12px] border border-ink-200 bg-white text-sm font-semibold text-ink-800 transition hover:border-alain-blue/40 hover:text-alain-blue">
             Sign in
           </button>
         </SignInButton>
@@ -116,10 +123,10 @@ export default function NavBar() {
       brand={
         <Link
           href="/"
-          className="flex h-[44px] items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+          className="flex h-[40px] items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           aria-label="ALAIN home"
         >
-          <BrandLogo variant="blue" width={148} height={44} />
+          <BrandLogo variant="blue" width={120} height={40} />
         </Link>
       }
       desktopLinks={<div className="hidden items-center gap-5 md:flex">{desktopLinks}</div>}
@@ -133,7 +140,7 @@ export default function NavBar() {
                 elements: {
                   rootBox: "hidden sm:flex",
                   userButtonTrigger:
-                    "inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 p-1 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue",
+                    "inline-flex items-center justify-center rounded-full border border-ink-200 bg-white p-1 text-ink-700 transition hover:border-alain-blue/40 hover:text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   avatarBox: "h-8 w-8",
                 },
               }}

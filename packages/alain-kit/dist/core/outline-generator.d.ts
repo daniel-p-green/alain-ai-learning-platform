@@ -73,6 +73,8 @@ export declare class OutlineGenerator {
     private buildOutlinePrompt;
     private buildRetryOutlinePrompt;
     private parseOutlineResponse;
+    private trimToJson;
+    private sanitizeJsonResponse;
     private describeAudience;
     private buildSystemPrompt;
     /**
@@ -85,6 +87,11 @@ export declare class OutlineGenerator {
     private repairOutline;
     private repairOutlineDeterministic;
     private requestWithRetry;
+    private recordHumanReview;
+    private logTrace;
+    private compileFallbackOutline;
+    private appendTrace;
+    private ensureOutlineCompleteness;
 }
 export {};
 //# sourceMappingURL=outline-generator.d.ts.map

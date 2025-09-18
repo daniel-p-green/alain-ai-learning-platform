@@ -1,132 +1,160 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const markdownCells = [
+// Lightweight preview that mirrors the core notebook structure without running code.
+const notebookCells = [
   {
-    heading: "Quick Start Cell",
+    kind: 'markdown' as const,
+    label: 'Markdown cell',
+    title: 'Step 1 · Capture the brief',
     body: [
-      "You're looking at a live preview of an ALAIN-generated notebook.",
-      "It ships with setup notes, reproducible commands, and Try-it-yourself cells.",
+      'Paste a model card or spec. ALAIN extracts guardrails, objectives, and constraints into structured JSON so every downstream stage stays aligned.',
+      'Editors can pause here, adjust the outline, and replay the remaining stages with a single command.',
     ],
   },
   {
-    heading: "Checklist",
+    kind: 'markdown' as const,
+    label: 'Checklist',
     list: [
-      "Install requirements (%pip install -U transformers kernels accelerate triton)",
-      "Load your POE_API_KEY or local provider URL",
-      "Run the quick smoke test before deeper experiments",
+      'Install requirements with `%pip install -r requirements.txt`.',
+      'Set `POE_API_KEY` or point `OPENAI_BASE_URL` to your compatible endpoint.',
+      'Run the smoke test cell before diving into experiments.',
+    ],
+  },
+  {
+    kind: 'code' as const,
+    label: 'Code cell',
+    title: 'Teacher smoke test',
+    code: `from alain_kit.runtime import client
+client.health_check(model="gpt-oss-20b")
+outline, sections = client.generate_notebook(ref="TheBloke/gpt-oss-20b")
+print(f"Outline steps: {len(outline['steps'])}")`,
+  },
+  {
+    kind: 'output' as const,
+    label: 'Output',
+    list: [
+      '✓ Outline schema repaired (2 retries)',
+      '✓ 6 sections generated · Markdown 58% / Code 42%',
+      '✓ Colab checks passed · Runtime estimate 6 min',
     ],
   },
 ];
 
-const codeCell = `model = "gpt-oss-20b"\nprint(f"Ready to generate with {model}")\nhealth_checks = ["outline ok", "sections ok", "colab-ready ok"]\nfor check in health_checks:\n    print(check)`;
-
-const pipelineStages = [
-  {
-    title: "Research Scout",
-    description:
-      "A research helper explores model cards, docs, and community notes, returning a structured JSON report about specs, strengths, and challenges.",
-  },
-  {
-    title: "Lesson Architect",
-    description:
-      "The design helper builds learner personas, objectives, and assessment plans, all stored as structured JSON for later stages.",
-  },
-  {
-    title: "Outline Builder",
-    description:
-      "An outline helper writes the strict table of contents—title, overview, four objectives, 6–12 steps, references—and flags gaps for human review.",
-  },
-  {
-    title: "Section Scribe",
-    description:
-      "Each step gets multi-paragraph markdown, runnable code, and reproducibility notes. If JSON fails, a placeholder section is saved for editors.",
-  },
-  {
-    title: "Classroom Monitor",
-    description:
-      "Lightweight QA checks for balanced content, clear next steps, and no placeholders. Issues are logged, but the pipeline keeps moving.",
-  },
-  {
-    title: "Semantic Reviewer",
-    description:
-      "A second model critiques clarity, completeness, and defined terminology, capturing precise edits for the human team.",
-  },
-  {
-    title: "Quality & Colab Fixer",
-    description:
-      "Quality metrics and reading-time estimates are generated, and Colab fixes are applied automatically so notebooks run out of the box.",
-  },
-  {
-    title: "Orchestrator",
-    description:
-      "Everything is assembled into the final .ipynb, validation reports are exported, and artifacts are stored so any stage can be replayed when providers misbehave.",
-  },
+const runSummary = [
+  { label: 'Runtime', value: '6 min 42 s' },
+  { label: 'Teacher', value: 'Poe · gpt-oss-20b' },
+  { label: 'Validators', value: '11 checks · 0 blockers' },
+  { label: 'Artifacts', value: '.ipynb, validation.md, metrics.json' },
 ];
 
 export default function HomeNotebookPreview() {
   return (
-    <div className="space-y-6">
-      <Card className="border-ink-100 shadow-card">
-        <CardHeader className="flex flex-row items-center justify-between text-xs font-medium uppercase tracking-wide text-ink-500">
-          <span>Notebook Preview</span>
-          <span>ALAINKit · Sample</span>
-        </CardHeader>
-        <CardContent>
-          <div className="max-h-64 overflow-hidden rounded-xl border border-ink-800 bg-ink-900 text-ink-50">
-            <div className="space-y-4 p-4 text-sm">
-              {markdownCells.map((cell, index) => (
-                <article key={index} className="space-y-2">
-                  <h3 className="font-semibold text-ink-100">{cell.heading}</h3>
-                  {cell.body?.map((paragraph, paragraphIndex) => (
-                    <p key={paragraphIndex} className="text-ink-50">
-                      {paragraph}
-                    </p>
-                  ))}
-                  {cell.list && (
-                    <ul className="list-disc space-y-1 pl-5 text-ink-50">
-                      {cell.list.map((item, itemIndex) => (
-                        <li key={itemIndex}>{item}</li>
-                      ))}
-                    </ul>
-                  )}
-                </article>
-              ))}
-              <pre className="overflow-x-auto rounded-lg bg-ink-900/80 p-4 font-mono text-xs leading-relaxed">
-                <code>{codeCell}</code>
-              </pre>
+    <figure className="rounded-[28px] border border-ink-100 bg-white/95 shadow-card">
+      <div className="grid gap-0 lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
+        <div className="border-b border-ink-100 lg:border-b-0 lg:border-r lg:border-ink-100/70">
+          <header className="flex items-center justify-between gap-4 border-b border-ink-100 bg-paper-50 px-6 py-4">
+            <div className="flex items-center gap-3 text-sm font-semibold text-ink-700">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+              </span>
+              ALAIN · Sample Notebook
             </div>
-          </div>
-        </CardContent>
-      </Card>
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-alain-blue/80">Live preview</span>
+          </header>
+          <div className="space-y-5 bg-paper-50 px-6 py-8">
+            {notebookCells.map((cell) => {
+              if (cell.kind === 'markdown') {
+                return (
+                  <article key={cell.label} className="rounded-2xl border border-ink-100 bg-white">
+                    <div className="border-b border-ink-100/70 px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-ink-400">
+                      {cell.label}
+                    </div>
+                    <div className="space-y-3 px-5 py-4 text-sm leading-6 text-ink-700">
+                      {cell.title && <h3 className="text-[15px] font-semibold text-ink-900">{cell.title}</h3>}
+                      {cell.body?.map((paragraph) => (
+                        <p key={paragraph}>{paragraph}</p>
+                      ))}
+                      {cell.list && (
+                        <ul className="list-disc space-y-1 pl-5">
+                          {cell.list.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </article>
+                );
+              }
 
-      <Card className="border-ink-100 shadow-card">
-        <CardHeader>
-          <CardTitle className="text-sm uppercase tracking-wide text-ink-500">How ALAIN-Kit Builds Notebooks</CardTitle>
-          <CardDescription className="text-xs text-ink-400">
-            Eight observable stages, each with its own artifacts and review points—so editors can step in wherever automation stumbles.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            {pipelineStages.map((stage, index) => (
-              <Card key={stage.title} className="border-ink-100 bg-ink-50">
-                <CardHeader className="flex items-start gap-3 p-4 pb-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-alain-blue/10 text-sm font-semibold text-alain-blue">
-                    {index + 1}
-                  </div>
-                  <CardTitle className="text-sm text-ink-700">{stage.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0 text-sm text-ink-500">
-                  {stage.description}
-                </CardContent>
-              </Card>
-            ))}
+              if (cell.kind === 'code') {
+                return (
+                  <article key={cell.label} className="overflow-hidden rounded-2xl border border-ink-900/20 bg-ink-950 text-ink-100">
+                    <div className="flex items-center justify-between border-b border-white/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
+                      <span>{cell.label}</span>
+                      <span>Python</span>
+                    </div>
+                    <div className="space-y-3 px-5 py-4">
+                      {cell.title && <h3 className="text-sm font-semibold text-white/90">{cell.title}</h3>}
+                      <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-emerald-100/90">
+                        <code>{cell.code}</code>
+                      </pre>
+                    </div>
+                  </article>
+                );
+              }
+
+              return (
+                <article key={cell.label} className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-5 text-sm text-emerald-900">
+                  <div className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-600">{cell.label}</div>
+                  <ul className="mt-3 space-y-2">
+                    {cell.list?.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="mt-1 inline-flex h-1.5 w-1.5 flex-none rounded-full bg-emerald-500" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              );
+            })}
           </div>
-          <p className="mt-4 text-xs text-ink-400">
-            Every stage saves its raw output, structured JSON, and any issues it spots. If a helper fails, we stash the artifact and flag it for manual review so editors can rerun just that part without losing progress.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+        <aside className="flex flex-col gap-6 bg-white/80 px-6 py-8 lg:px-8">
+          <div className="space-y-2">
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-alain-blue/80">Run summary</div>
+            <h3 className="font-display text-[26px] leading-[1.1] text-ink-900">Everything you need before handoff</h3>
+            <p className="text-sm text-ink-600">
+              Every generation ships with guardrails, retries, and audit trails. Editors can replay any step or export artifacts straight to Colab, Jupyter, or CI.
+            </p>
+          </div>
+          <dl className="grid gap-4 text-sm text-ink-700">
+            {runSummary.map((item) => (
+              <div key={item.label} className="rounded-2xl border border-ink-100 bg-white p-4 shadow-alain-sm">
+                <dt className="text-xs font-semibold uppercase tracking-[0.22em] text-ink-400">{item.label}</dt>
+                <dd className="mt-1 font-medium text-ink-900">{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="rounded-2xl border border-ink-100 bg-paper-0 p-5 shadow-alain-sm">
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-400">Launch checklist</div>
+            <ul className="mt-3 space-y-2 text-sm text-ink-700">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 inline-flex h-1.5 w-1.5 flex-none rounded-full bg-alain-blue" />
+                Notebook metadata embeds provider, objectives, and validators for analytics.
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 inline-flex h-1.5 w-1.5 flex-none rounded-full bg-alain-blue" />
+                Validation markdown highlights fixes and any manual follow-ups.
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 inline-flex h-1.5 w-1.5 flex-none rounded-full bg-alain-blue" />
+                Metrics JSON feeds dashboards for readability, retries, and export events.
+              </li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+      <figcaption className="sr-only">Sample cells and summary from an ALAIN generated notebook.</figcaption>
+    </figure>
   );
 }
