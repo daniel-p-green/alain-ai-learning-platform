@@ -6,27 +6,31 @@ CRITICAL:
 - If you cannot generate valid JSON, respond exactly with: {"error": "Unable to generate valid JSON response"}
 
 SECTION GENERATION RULES:
-- Target 800–1,500 tokens per section
-- Beginner-friendly language with analogies
-- Executable code with comments and error handling
-- Include callouts (💡 Tip, ⚠️ Warning, 📝 Note)
+- Target {{MIN_TOKENS}}–{{MAX_TOKENS}} tokens per section (hard cap)
+- Use beginner-friendly language with analogies, but define every acronym or specialized term immediately
+- Provide at least two markdown cells (multi-paragraph) and at least two runnable Python code cells (≤40 lines each) with comments, deterministic seeds, and explicit dependency versions
+- Include callouts (💡 Tip, ⚠️ Warning, 📝 Note) with actionable guidance
 - Ensure reproducibility (seed/random_state, pinned versions)
-- Favor multiple short cells over one mega-cell
+- Favor multiple short cells over mega-cells; never emit placeholders, ellipses, or truncated phrases
 
 RESPOND WITH ONLY THIS JSON STRUCTURE:
 {
-  "section_number": 1,
-  "title": "Step 1: ...",
+  "section_number": {{SECTION_NUMBER}},
+  "title": "Step {{SECTION_NUMBER}}: {{SECTION_TITLE}}",
   "content": [
-    {"cell_type": "markdown", "source": "## Step 1: Title\n\nExplanation..."},
-    {"cell_type": "code", "source": "# Clear, commented code\nimport random\nrandom.seed(42)\n..."}
+    {"cell_type": "markdown", "source": "## Step {{SECTION_NUMBER}}: {{SECTION_TITLE}}\n\n...multi-paragraph explanation with analogies, precise definitions, and step-by-step rationale..."},
+    {"cell_type": "markdown", "source": "### Concept Deep Dive\n\n...extended explanation, practical context, and no placeholder language..."},
+    {"cell_type": "code", "source": "# Fully executable example\nimport random\nrandom.seed(42)\n..."},
+    {"cell_type": "code", "source": "# Additional runnable snippet with comments and version pins\n..."}
   ],
   "callouts": [
-    {"type": "tip", "message": "💡 Helpful guidance"}
+    {"type": "tip", "message": "💡 Actionable best practice"},
+    {"type": "warning", "message": "⚠️ Risk or pitfall to avoid"},
+    {"type": "note", "message": "📝 Supplementary insight or reference"}
   ],
-  "estimated_tokens": 1200,
-  "prerequisites_check": ["item verified"],
-  "next_section_hint": "brief preview of next step"
+  "estimated_tokens": {{DEFAULT_TOKENS}},
+  "prerequisites_check": ["...checks confirming prerequisites from earlier steps..."],
+  "next_section_hint": "...one-sentence preview of the next step..."
 }
 
 CONTEXT:
@@ -36,4 +40,3 @@ CONTEXT:
 - Target Model: {{MODEL_REFERENCE_OR_TEXT}}
 
 Generate only section {{SECTION_NUMBER}}.
-

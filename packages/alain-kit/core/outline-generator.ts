@@ -201,8 +201,10 @@ export class OutlineGenerator {
     const trimmed = this.trimToJson(raw);
     if (!trimmed) {
       this.log.error('outline_json_extract_failed', { head: raw.slice(0, 200) });
-      this.recordHumanReview('outline', raw, 'no_json_object');
-      throw new Error('No valid JSON found in outline response');
+      const fallback = this.compileFallbackOutline(raw);
+      this.logTrace('outline', 0, 'compiled_fallback', 'Generated fallback after missing JSON');
+      this.recordHumanReview('outline', raw, 'compiled_fallback');
+      return fallback;
     }
     try {
       return JSON.parse(trimmed);
@@ -215,8 +217,10 @@ export class OutlineGenerator {
       return loose as NotebookOutline;
     }
     this.log.error('outline_json_extract_failed', { head: trimmed.slice(0, 200) });
-    this.recordHumanReview('outline', trimmed, 'json_extraction_failed');
-    throw new Error('No valid JSON found in outline response');
+    const fallback = this.compileFallbackOutline(trimmed);
+    this.logTrace('outline', 0, 'compiled_fallback', 'Generated fallback after parse failure');
+    this.recordHumanReview('outline', trimmed, 'compiled_fallback');
+    return fallback;
   }
 
   private trimToJson(raw: string): string {
@@ -449,6 +453,42 @@ export class OutlineGenerator {
     }
   }
 
+
+
+  private compileFallbackOutline(raw: string): NotebookOutline {
+    const placeholder = raw.slice(0, 2000).replace(/```/g, '').trim();
+    return {
+      title: 'Manual Review Required',
+      overview: placeholder || 'Outline unavailable. Manual authoring required.',
+      objectives: [
+        'Replace fallback outline with finalized objectives.',
+        'Document prerequisites and references before publishing.',
+        'Ensure each section contains actionable guidance.'
+      ],
+      prerequisites: ['Manual review required'],
+      setup: {
+        requirements: ['Manual review required'],
+        environment: ['Manual review required'],
+        commands: []
+      },
+      outline: [
+        {
+          step: 1,
+          title: 'Step 1: Manual Review Needed',
+          type: 'concept',
+          estimated_tokens: 400,
+          content_type: 'markdown + code'
+        }
+      ],
+      exercises: [],
+      assessments: [],
+      summary: 'Outline generation failed; content requires manual authoring.',
+      next_steps: 'Replace fallback content with a complete outline.',
+      references: ['Manual review required'],
+      estimated_total_tokens: 1200,
+      target_reading_time: '15-20 minutes'
+    } as NotebookOutline;
+  }
   private appendTrace(dir: string, kind: string, phase: string, payload: string): void {
     const traceLine = `${new Date().toISOString()}\tkind=${kind}\tphase=${phase}\tpreview=${payload.slice(0, 160).replace(/[\r\n]+/g, ' ')}\n`;
     fs.appendFileSync(path.join(dir, 'trace.log'), traceLine, 'utf8');
