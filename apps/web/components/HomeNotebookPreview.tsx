@@ -47,7 +47,7 @@ const runSummary = [
 
 export default function HomeNotebookPreview() {
   return (
-    <figure className="rounded-[28px] border border-ink-100 bg-white/95 shadow-card">
+    <figure className="rounded-[28px] border border-ink-100 bg-white shadow-card">
       <div className="grid gap-0 lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
         <div className="border-b border-ink-100 lg:border-b-0 lg:border-r lg:border-ink-100/70">
           <header className="flex items-center justify-between gap-4 border-b border-ink-100 bg-paper-50 px-6 py-4">
@@ -119,7 +119,7 @@ export default function HomeNotebookPreview() {
             })}
           </div>
         </div>
-        <aside className="flex flex-col gap-6 bg-white/80 px-6 py-8 lg:px-8">
+        <aside className="flex flex-col gap-6 bg-white px-6 py-8 lg:px-8">
           <div className="space-y-2">
             <div className="text-xs font-semibold uppercase tracking-[0.24em] text-alain-blue/80">Run summary</div>
             <h3 className="font-display text-[26px] leading-[1.1] text-ink-900">Everything you need before handoff</h3>

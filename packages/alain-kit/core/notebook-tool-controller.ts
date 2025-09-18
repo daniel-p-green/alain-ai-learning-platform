@@ -198,8 +198,7 @@ export class NotebookToolController {
       this.outline.summary = outline_summary;
     }
     if (Array.isArray(next_steps)) {
-      this.outline.next_steps = next_steps.join("
-");
+      this.outline.next_steps = next_steps.join('\n');
     }
     if (Array.isArray(references)) {
       this.outline.references = references;

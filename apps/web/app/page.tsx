@@ -125,7 +125,7 @@ export default function HomePage() {
             {heroHighlights.map((signal) => (
               <div
                 key={signal.heading}
-                className="rounded-2xl border border-ink-100/70 bg-white/90 p-6 transition duration-200 ease-out hover:border-alain-blue/30 hover:shadow-card"
+                className="rounded-2xl border border-ink-100 bg-white p-6 shadow-alain-sm"
               >
                 <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-alain-blue/80">{signal.heading}</dt>
                 <dd className="mt-2 text-sm leading-6 text-ink-700">{signal.body}</dd>
@@ -167,7 +167,7 @@ export default function HomePage() {
                   className="flex flex-col gap-3 rounded-3xl border border-ink-100 bg-white/95 p-6 shadow-alain-sm"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-alain-blue/40 font-display text-[18px] font-semibold text-alain-blue">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-alain-blue/40 font-display text-base font-semibold text-alain-blue">
                       {String(index + 1).padStart(2, '0')}
                     </span>
                     <div className="text-xs font-semibold uppercase tracking-[0.26em] text-ink-400">

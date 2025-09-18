@@ -265,6 +265,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     importing: 'Saving and formatting the manual…',
     done: 'Manual ready! Review the workspace to continue.',
   }), []);
+  const isActiveProgress = progress === 'parsing' || progress === 'asking' || progress === 'importing';
   const workspaceProgressLabel = progressLabels[progress];
 
   const handleCopyExportLink = useCallback(async () => {
@@ -361,7 +362,7 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
       repaired={!!result?.meta?.repaired}
       tutorialId={tutorialId || undefined}
       title={workspaceTitle}
-      progressActive={progress === 'parsing' || progress === 'asking' || progress === 'importing'}
+      progressActive={isActiveProgress}
       progressLabel={workspaceProgressLabel}
       exportState={exportState as unknown as ExportUiState}
       onExport={handleExport}
