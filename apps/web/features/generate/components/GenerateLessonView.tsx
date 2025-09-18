@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '../../../components/Button';
 import NotebookWorkspace, { WorkspaceState, ExportUiState } from '../../../components/NotebookWorkspace';
 import WorkspaceSplit from '../../../components/WorkspaceSplit';
@@ -82,8 +82,17 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   const [showAdvancedProviders, setShowAdvancedProviders] = useState(false);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [workspaceState, setWorkspaceState] = useState<WorkspaceState>({ status: 'empty' });
+  const [workspaceTitle, setWorkspaceTitle] = useState<string>('Generated manual');
+
+  const handleNotebookChange = useCallback((nextNotebook: any) => {
+    setWorkspaceState((prev) => {
+      if (prev.status !== 'ready') return prev;
+      return { ...prev, notebook: nextNotebook };
+    });
+  }, []);
 
   const tutorialId = useMemo(() => (result ? String(result.tutorialId) : null), [result]);
+  const manualPreview = result?.preview ?? null;
 
   const readyHosted = !!envBanner && envBanner.teacherProvider === 'poe' && !!envBanner.poeConfigured;
   const readyLocal = !!envBanner && !!envBanner.offlineMode && !!envBanner.openaiBaseUrl;
@@ -172,6 +181,12 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   }, [exportState.status]);
 
   useEffect(() => {
+    const normalized = manualPreview?.title?.trim() ?? '';
+    const nextTitle = normalized.length > 0 ? normalized : 'Generated manual';
+    setWorkspaceTitle((prev) => (prev === nextTitle ? prev : nextTitle));
+  }, [manualPreview?.title, tutorialId]);
+
+  useEffect(() => {
     if (!tutorialId) {
       setWorkspaceState({ status: 'empty' });
       return;
@@ -241,7 +256,8 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
         if (!res.ok) throw new Error('Failed to fetch tutorial JSON');
         payload = await res.json();
       }
-      const filename = (result.preview?.title || 'lesson').replace(/\s+/g, '_');
+      const filenameBase = (workspaceTitle || 'lesson').trim();
+      const filename = (filenameBase.length > 0 ? filenameBase : 'lesson').replace(/\s+/g, '_');
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
@@ -266,6 +282,36 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     window.location.href = `/tutorial/${tutorialId}?remix=1`;
   };
 
+  const handleTitleChange = useCallback((nextTitle: string) => {
+    setWorkspaceTitle(nextTitle);
+  }, []);
+
+  const handleDownloadIpynb = useCallback(() => {
+    if (workspaceState.status !== 'ready') return;
+    const notebook = workspaceState.notebook;
+    if (!notebook) return;
+    try {
+      const baseTitle = (workspaceTitle || 'lesson').trim();
+      const safeTitle = (baseTitle.length > 0 ? baseTitle : 'lesson').replace(/\s+/g, '_');
+      const notebookForDownload = JSON.parse(JSON.stringify(notebook));
+      if (!notebookForDownload.metadata || typeof notebookForDownload.metadata !== 'object') {
+        notebookForDownload.metadata = {};
+      }
+      notebookForDownload.metadata.title = workspaceTitle;
+      const blob = new Blob([JSON.stringify(notebookForDownload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${safeTitle}.ipynb`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download .ipynb failed', err);
+    }
+  }, [workspaceState, workspaceTitle]);
+
   const handleExport = async (suggestedName: string) => {
     if (!result) return;
     // TODO: instrument export action for analytics once tracking pipeline is ready.
@@ -281,7 +327,6 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   }), []);
   const isActiveProgress = progress === 'parsing' || progress === 'asking' || progress === 'importing';
   const workspaceProgressLabel = progressLabels[progress];
-  const manualPreview = result?.preview ?? null;
 
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 py-6 lg:py-10 text-ink-900">
@@ -580,16 +625,20 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
             preview={manualPreview ?? undefined}
             repaired={!!result?.meta?.repaired}
             tutorialId={tutorialId || undefined}
+            title={workspaceTitle}
             progressActive={isActiveProgress}
             progressLabel={workspaceProgressLabel}
             exportState={exportState as unknown as ExportUiState}
             onExport={handleExport}
             onDownloadJson={handleDownloadJson}
+            onDownloadIpynb={handleDownloadIpynb}
             onCopyExportLink={handleCopyExportLink}
             onDismissExportState={clearExportState}
             copyStatus={copyStatus}
             onOpenManual={handleOpenManual}
             onRemix={handleRemix}
+            onNotebookChange={handleNotebookChange}
+            onTitleChange={handleTitleChange}
           />
         }
       />

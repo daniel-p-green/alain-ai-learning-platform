@@ -37,7 +37,12 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
   return (
     <div className="flex flex-wrap gap-2 items-center justify-end">
       <a href={`/notebooks/${encodedId}/edit`} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium whitespace-nowrap w-full sm:w-auto">Edit</a>
-      <button onClick={() => setShowRemix(true)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold whitespace-nowrap w-full sm:w-auto">Remix</button>
+      <button
+        onClick={() => setShowRemix(true)}
+        className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-semibold whitespace-nowrap w-full sm:w-auto hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+      >
+        Remix
+      </button>
       <button onClick={() => setShowAlainRemix(true)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue/10 text-alain-blue font-semibold whitespace-nowrap w-full sm:w-auto">Remix (Full ALAIN)</button>
       <button onClick={exportPR} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-900 text-white font-medium whitespace-nowrap w-full sm:w-auto">Export ALAIN (PR)</button>
       <form action={`/api/notebooks/${encodedId}/publish-request`} method="post">
@@ -82,7 +87,7 @@ export default function NotebookActions({ id, promptRemix }: { id: string; promp
             <div className="flex items-center justify-end gap-2 pt-2">
               <button className="h-9 px-3 rounded border border-ink-200" onClick={()=> setShowRemix(false)}>Cancel</button>
               <button
-                className="h-9 px-3 rounded bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50"
+                className="h-9 px-3 rounded bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
                 disabled={busy}
                 onClick={async ()=>{
                   setBusy(true);

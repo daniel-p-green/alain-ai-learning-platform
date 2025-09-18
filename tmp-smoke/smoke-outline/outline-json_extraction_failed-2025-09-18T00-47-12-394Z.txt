@@ -1,0 +1,198 @@
+# Human Review Artifact
+Scenario: smoke-outline
+Type: outline
+Reason: json_extraction_failed
+Timestamp: 2025-09-18T00:47:12.394Z
+
+{
+  "title": "Quick Smoke Outline: A 10-Minute Check to See If Things Work",
+  "overview": "This lesson teaches you how to run a quick, friendly \"smoke test\"—a fast check to see if your tools and a tiny piece of a project work at all. You’ll set up a simple environment, run a small test, read the signals (green = good, red = needs help), and log what you find so you can fix issues calmly.",
+  "objectives": [
+    "Explain what a smoke test is and why it’s useful for quick checks",
+    "Set up a minimal environment and run a tiny test safely",
+    "Interpret simple pass/fail signals and common error messages",
+    "Record results and next steps to keep troubleshooting organized"
+  ],
+  "prerequisites": [
+    "Basic comfort using a web-based notebook (e.g., Jupyter or Colab)",
+    "Ability to copy-paste simple commands and read short messages"
+  ],
+  "setup": {
+    "requirements": [
+      "ipywidgets>=8.0.0",
+      "python>=3.9",
+      "notebook or jupyterlab",
+      "pip",
+      "internet connection"
+    ],
+    "environment": [
+      "ENV=dev",
+      "PYTHONHASHSEED=42",
+      "TOKENIZERS_PARALLELISM=false"
+    ],
+    "commands": [
+      "pip install -U ipywidgets>=8.0.0",
+      "pip install -U transformers kernels accelerate triton",
+      "python -c \"import random,os; random.seed(42); os.environ['PYTHONHASHSEED']='42'; print('Seed set')\""
+    ]
+  },
+  "outline": [
+    {
+      "step": 1,
+      "title": "Step 1: What Is a Smoke Test?",
+      "type": "concept",
+      "estimated_tokens": 220,
+      "content_type": "markdown"
+    },
+    {
+      "step": 2,
+      "title": "Step 2: Tools Check and Install",
+      "type": "setup",
+      "estimated_tokens": 260,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 3,
+      "title": "Step 3: Create a Safe Playground",
+      "type": "setup",
+      "estimated_tokens": 210,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 4,
+      "title": "Step 4: The Tiny Test (Hello, Widgets!)",
+      "type": "hands-on",
+      "estimated_tokens": 260,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 5",
+      "title": "Step 5: Quick Model Ping with GPT-OSS Stack",
+      "type": "hands-on",
+      "estimated_tokens": 320,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 6,
+      "title": "Step 6: Read the Signals (Green/Yellow/Red)",
+      "type": "concept",
+      "estimated_tokens": 230,
+      "content_type": "markdown"
+    },
+    {
+      "step": 7",
+      "title": "Step 7: Common Pitfalls and Simple Fixes",
+      "type": "concept",
+      "estimated_tokens": 280,
+      "content_type": "markdown"
+    },
+    {
+      "step": 8",
+      "title": "Step 8: Add One Tiny Extra Check (Data In, Data Out)",
+      "type": "hands-on",
+      "estimated_tokens": 300,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 9",
+      "title": "Step 9: Log Your Findings (The Little Diary)",
+      "type": "practice",
+      "estimated_tokens": 220,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 10",
+      "title": "Step 10: Make It Reproducible (Seeds and Versions)",
+      "type": "concept",
+      "estimated_tokens": 250,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 11",
+      "title": "Step 11: Speed Tips (Use Kernels, Optional Flash Attention)",
+      "type": "concept",
+      "estimated_tokens": 230,
+      "content_type": "markdown"
+    },
+    {
+      "step": 12",
+      "title": "Step 12: Wrap-Up: Checklists You Can Reuse",
+      "type": "summary",
+      "estimated_tokens": 220,
+      "content_type": "markdown"
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Exercise 1: Show a Button and Capture a Click",
+      "difficulty": "beginner",
+      "estimated_tokens": 180
+    },
+    {
+      "title": "Exercise 2: Run a One-Line Text Generation and Save the Output",
+      "difficulty": "beginner",
+      "estimated_tokens": 220
+    },
+    {
+      "title": "Exercise 3: Make a 3-Item Smoke Checklist for Your Own Project",
+      "difficulty": "beginner",
+      "estimated_tokens": 180
+    }
+  ],
+  "assessments": [
+    {
+      "question": "What is the main purpose of a smoke test?",
+      "options": [
+        "A quick check to see if the basics work at all",
+        "A full, deep test of every feature",
+        "A way to speed up your computer’s hardware",
+        "A method to permanently fix all bugs"
+      ],
+      "correct_index": 0,
+      "explanation": "A smoke test is a fast, simple check to confirm essentials are working. It is not a full test, doesn’t change hardware, and won’t fix all bugs."
+    },
+    {
+      "question": "Why set a random seed (e.g., 42) during smoke tests?",
+      "options": [
+        "To make the code run faster",
+        "To make results more repeatable",
+        "To enable internet access",
+        "To avoid installing dependencies"
+      ],
+      "correct_index": 1,
+      "explanation": "A fixed seed makes results more repeatable, which helps you compare runs. It doesn’t speed up code, grant internet, or replace installations."
+    },
+    {
+      "question": "If ipywidgets fails to display, what’s a sensible first step?",
+      "options": [
+        "Ignore it and continue",
+        "Uninstall Python entirely",
+        "Check that ipywidgets>=8.0.0 is installed and enabled",
+        "Disable all extensions"
+      ],
+      "correct_index": 2,
+      "explanation": "Display issues often come from missing or outdated ipywidgets. Verify version and enable it. No need for drastic actions like uninstalling Python."
+    },
+    {
+      "question": "What is a fair safety practice when smoke-testing text models?",
+      "options": [
+        "Use real private data to test realism",
+        "Share error logs with personal tokens",
+        "Use harmless sample inputs and avoid sharing secrets",
+        "Run tests only on production systems"
+      ],
+      "correct_index": 3,
+      "explanation": "Use harmless prompts and never expose secrets in logs. Also prefer test/dev environments. This protects privacy and safety."
+    }
+  ],
+  "summary": "You learned how a smoke test gives a quick yes/no signal that your setup and a tiny task work. You prepared tools, ran a tiny widget and a small model check, read simple signals, and wrote down what happened. With a short checklist and repeatable steps, you can spot issues early and fix them calmly.",
+  "next_steps": "Expand your checklist to cover one small feature per day, learn basic debugging (reading error messages), and practice saving clean logs. Later, try automated smoke tests that run on every change.",
+  "references": [
+    "https://ipywidgets.readthedocs.io/en/stable/",
+    "https://huggingface.co/docs/transformers/index",
+    "https://jupyter.org/",
+    "https://pytorch.org/get-started/locally/"
+  ],
+  "estimated_total_tokens": 2600,
+  "target_reading_time": "15-20 minutes"
+}

@@ -94,7 +94,7 @@ export default function EditNotebookPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl p-6 space-y-4">
+    <div className="mx-auto max-w-6xl p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Edit Notebook</h1>
       <p className="text-sm text-ink-600">Notebook ID: {id}</p>
       {error && <div className="text-red-500 text-sm">{error}</div>}
@@ -105,13 +105,14 @@ export default function EditNotebookPage() {
           <option value="vs-light">Light</option>
         </select>
       </div>
-      <div className="space-y-3">
-        <div className="rounded border p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm font-medium mb-1">Title</label>
-            <input className="w-full rounded border px-3 py-2" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
-          </div>
-          <div>
+      <div className="md:grid md:grid-cols-[minmax(0,1fr)_240px] md:gap-6">
+        <div className="space-y-3">
+          <div className="rounded border p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Title</label>
+              <input className="w-full rounded border px-3 py-2" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
+            </div>
+            <div>
             <label className="block text-sm font-medium mb-1">Source Type</label>
             <select className="w-full rounded border px-3 py-2" value={metaSourceType} onChange={(e) => setMetaSourceType(e.target.value as any)}>
               <option value="user">User</option>
@@ -138,48 +139,63 @@ export default function EditNotebookPage() {
             <input type="checkbox" checked={metaPublished} onChange={(e) => setMetaPublished(e.target.checked)} /> Publish
           </label>
         </div>
-        {cells.map((c, idx) => (
-          <div key={idx} className="rounded border p-3 space-y-2" draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', String(idx))} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { const from = Number(e.dataTransfer.getData('text/plain')); moveCell(from, idx); }}>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Cell {idx + 1} — {c.cell_type}</span>
-              <div className="flex items-center gap-2">
-                <button type="button" onClick={() => moveCell(idx, Math.max(0, idx - 1))} className="text-sm">↑</button>
-                <button type="button" onClick={() => moveCell(idx, Math.min(cells.length - 1, idx + 1))} className="text-sm">↓</button>
-                <button type="button" onClick={() => removeCell(idx)} className="text-sm text-red-500">Remove</button>
-              </div>
-            </div>
-            {c.cell_type === "markdown" ? (
-              <MarkdownEditor value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} />
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="text-ink-600">Language</span>
-                  <select value={(c.metadata?.lang as string) || 'python'} onChange={(e) => {
-                    const lang = e.target.value; setCells((prev) => prev.map((cell, i) => i === idx ? { ...cell, metadata: { ...(cell.metadata || {}), lang } } : cell));
-                  }} className="rounded border px-2 py-1">
-                    <option value="python">Python</option>
-                    <option value="javascript">JavaScript</option>
-                    <option value="typescript">TypeScript</option>
-                    <option value="bash">Bash</option>
-                    <option value="json">JSON</option>
-                  </select>
+          {cells.map((c, idx) => (
+            <div key={idx} className="rounded border p-3 space-y-2" draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', String(idx))} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { const from = Number(e.dataTransfer.getData('text/plain')); moveCell(from, idx); }}>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Cell {idx + 1} — {c.cell_type}</span>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => moveCell(idx, Math.max(0, idx - 1))} className="text-sm">↑</button>
+                  <button type="button" onClick={() => moveCell(idx, Math.min(cells.length - 1, idx + 1))} className="text-sm">↓</button>
+                  <button type="button" onClick={() => removeCell(idx)} className="text-sm text-red-500">Remove</button>
                 </div>
-                <CodeEditor language={(c.metadata?.lang as string) || 'python'} theme={editorTheme} value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} height={220} />
               </div>
-            )}
+              {c.cell_type === "markdown" ? (
+                <MarkdownEditor value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} />
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="text-ink-600">Language</span>
+                    <select value={(c.metadata?.lang as string) || 'python'} onChange={(e) => {
+                      const lang = e.target.value; setCells((prev) => prev.map((cell, i) => i === idx ? { ...cell, metadata: { ...(cell.metadata || {}), lang } } : cell));
+                    }} className="rounded border px-2 py-1">
+                      <option value="python">Python</option>
+                      <option value="javascript">JavaScript</option>
+                      <option value="typescript">TypeScript</option>
+                      <option value="bash">Bash</option>
+                      <option value="json">JSON</option>
+                    </select>
+                  </div>
+                  <CodeEditor language={(c.metadata?.lang as string) || 'python'} theme={editorTheme} value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} height={220} />
+                </div>
+              )}
+            </div>
+          ))}
+          <div className="md:hidden flex flex-wrap gap-2">
+            <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Markdown</button>
+            <button type="button" onClick={() => addCell("code")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Code</button>
           </div>
-        ))}
-      <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Markdown</button>
-          <button type="button" onClick={() => addCell("code")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Code</button>
         </div>
+        <aside className="hidden md:block">
+          <div className="sticky top-28 rounded-2xl border border-ink-100 bg-paper-0 p-4 shadow-card space-y-3">
+            <div className="text-sm font-semibold text-ink-900">Add cell</div>
+            <div className="flex flex-col gap-2">
+              <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center justify-center h-10 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">Add Markdown</button>
+              <button type="button" onClick={() => addCell("code")} className="inline-flex items-center justify-center h-10 rounded-alain-lg bg-ink-900 text-white font-medium">Add Code</button>
+            </div>
+            <p className="text-xs text-ink-600">New cells append to the end. Reorder anytime with the arrows in each cell.</p>
+          </div>
+        </aside>
       </div>
       <details>
         <summary className="cursor-pointer text-sm text-ink-600">Advanced: Edit raw JSON</summary>
         <textarea className="w-full h-[40vh] font-mono text-xs rounded border p-3 mt-2" value={jsonText} onChange={(e) => setJsonText(e.target.value)} />
       </details>
       <div className="flex flex-wrap gap-3">
-        <button onClick={onSave} disabled={busy} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-yellow text-alain-blue font-semibold disabled:opacity-50 w-full sm:w-auto whitespace-nowrap">
+        <button
+          onClick={onSave}
+          disabled={busy}
+          className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-50 w-full sm:w-auto whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+        >
           {busy ? "Saving…" : "Save"}
         </button>
         <button onClick={() => router.push(`/notebooks/${encodedId}`)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium w-full sm:w-auto whitespace-nowrap">

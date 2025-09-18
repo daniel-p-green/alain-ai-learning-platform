@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NotebookViewer from "./NotebookViewer";
 import { Button } from "./Button";
 
@@ -28,16 +28,20 @@ type NotebookWorkspaceProps = {
   preview?: Preview | null;
   repaired?: boolean;
   tutorialId?: string | number;
+  title: string;
   progressActive: boolean;
   progressLabel?: string;
   exportState: ExportUiState;
   onExport: (suggestedName: string) => Promise<void> | void;
   onDownloadJson: () => Promise<void> | void;
+  onDownloadIpynb: () => Promise<void> | void;
   onCopyExportLink: () => void;
   onDismissExportState: () => void;
   copyStatus: "idle" | "success" | "error";
   onOpenManual: () => void;
   onRemix: () => void;
+  onNotebookChange?: (notebook: any) => void;
+  onTitleChange?: (title: string) => void;
 };
 
 export default function NotebookWorkspace({
@@ -45,16 +49,20 @@ export default function NotebookWorkspace({
   preview,
   repaired,
   tutorialId,
+  title,
   progressActive,
   progressLabel,
   exportState,
   onExport,
   onDownloadJson,
+  onDownloadIpynb,
   onCopyExportLink,
   onDismissExportState,
   copyStatus,
   onOpenManual,
   onRemix,
+  onNotebookChange,
+  onTitleChange,
 }: NotebookWorkspaceProps) {
   const learningList = useMemo(() => {
     if (!preview?.learning_objectives || preview.learning_objectives.length === 0) return null;
@@ -62,10 +70,25 @@ export default function NotebookWorkspace({
   }, [preview?.learning_objectives]);
 
   const suggestedFilename = useMemo(() => {
-    const base = preview?.title?.trim();
+    const base = (title || preview?.title || "").trim();
     if (!base || base.length === 0) return "lesson";
     return base.replace(/\s+/g, "_").toLowerCase();
-  }, [preview?.title]);
+  }, [preview?.title, title]);
+
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState(title);
+
+  useEffect(() => {
+    if (!editingTitle) {
+      setTitleDraft(title);
+    }
+  }, [title, editingTitle]);
+
+  const handleTitleSave = () => {
+    const trimmed = titleDraft.trim();
+    onTitleChange?.(trimmed.length > 0 ? trimmed : "Generated manual");
+    setEditingTitle(false);
+  };
 
   const renderBlankState = () => (
     <div className="flex h-full flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-ink-200 bg-white/80 p-8 text-center text-ink-700">
@@ -104,7 +127,11 @@ export default function NotebookWorkspace({
       return (
         <div className="relative flex-1 overflow-hidden">
           <div className="absolute inset-0 overflow-auto rounded-2xl border border-ink-100 bg-ink-900/90 p-4">
-            <NotebookViewer nb={workspace.notebook} />
+            <NotebookViewer
+              nb={workspace.notebook}
+              editable={Boolean(onNotebookChange)}
+              onChange={onNotebookChange}
+            />
           </div>
         </div>
       );
@@ -137,7 +164,47 @@ export default function NotebookWorkspace({
               {tutorialId && <span className="rounded-full border border-ink-100 px-2 py-0.5">Manual #{String(tutorialId)}</span>}
               {repaired && <span className="rounded-full border border-alain-yellow/50 bg-alain-yellow/20 px-2 py-0.5 text-alain-blue">Auto-repaired</span>}
             </div>
-            <h2 className="text-2xl font-semibold text-ink-900">{preview?.title || 'Generated manual'}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              {editingTitle ? (
+                <input
+                  value={titleDraft}
+                  onChange={(event) => setTitleDraft(event.target.value)}
+                  className="w-full max-w-md rounded border border-ink-200 bg-white px-3 py-1.5 text-xl font-semibold text-ink-900 focus:border-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                  placeholder="Manual title"
+                  autoFocus
+                />
+              ) : (
+                <h2 className="text-2xl font-semibold text-ink-900">{(title || '').trim() || 'Generated manual'}</h2>
+              )}
+              {onTitleChange && (
+                editingTitle ? (
+                  <div className="flex items-center gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => { setTitleDraft(title); setEditingTitle(false); }}
+                      className="rounded bg-transparent px-2 py-1 font-medium text-ink-500 hover:bg-ink-100"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleTitleSave}
+                      className="rounded bg-alain-blue px-3 py-1 font-semibold text-white hover:bg-alain-blue/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                    >
+                      Save title
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setEditingTitle(true)}
+                    className="rounded bg-transparent px-2 py-1 text-xs font-medium text-ink-500 hover:bg-ink-100"
+                  >
+                    Edit title
+                  </button>
+                )
+              )}
+            </div>
             {preview?.description && <p className="text-sm leading-relaxed text-ink-700">{preview.description}</p>}
             {learningList && (
               <ul className="list-disc pl-5 text-sm text-ink-700">
@@ -188,12 +255,15 @@ export default function NotebookWorkspace({
           <Button variant="secondary" onClick={onDownloadJson}>
             Download JSON
           </Button>
+          <Button variant="secondary" onClick={onDownloadIpynb}>
+            Download .ipynb
+          </Button>
           <Button variant="secondary" onClick={onRemix}>
             Remix
           </Button>
         </div>
         <div className="text-xs text-ink-500">
-          TODO: inline editing for markdown/code cells will land here in a future update.
+          Inline edits and title changes stay local. Use Download .ipynb to capture this exact notebook.
         </div>
         {exportState.status === "loading" && (
           <div className="rounded-card border border-alain-blue/30 bg-alain-blue/5 p-3 text-sm text-ink-800">

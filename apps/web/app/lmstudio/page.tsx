@@ -147,7 +147,13 @@ export default function LMStudioExplorerPage() {
       )}
       <div className="flex gap-2">
         <input className="flex-1 px-3 py-2 rounded bg-paper-0 border border-ink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" value={term} onChange={e => setTerm(e.target.value)} placeholder="Search term (e.g. llama-3)" />
-        <button className="px-4 h-10 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" onClick={doSearch} disabled={loading}>{loading ? 'Searching…' : 'Search'}</button>
+        <button
+          className="px-4 h-10 rounded-[12px] bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+          onClick={doSearch}
+          disabled={loading}
+        >
+          {loading ? 'Searching…' : 'Search'}
+        </button>
       </div>
       {error && <div className="p-2 text-red-800 bg-red-50 border border-red-200 rounded-card">{error}</div>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -176,7 +182,13 @@ export default function LMStudioExplorerPage() {
                     <div className="font-mono text-sm">{o.name}</div>
                     <div className="text-xs text-ink-700">{o.quantization || 'quant?'} • {humanSize(o.sizeBytes)} • fit: {o.fitEstimation || 'unknown'} {o.recommended ? ' (recommended)' : ''}</div>
                   </div>
-                  <button className="px-3 h-9 rounded-[12px] bg-alain-yellow text-alain-blue font-semibold disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue" onClick={() => download(o.index)} disabled={downloading}>{downloading ? 'Downloading…' : 'Download'}</button>
+                  <button
+                    className="px-3 h-9 rounded-[12px] bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                    onClick={() => download(o.index)}
+                    disabled={downloading}
+                  >
+                    {downloading ? 'Downloading…' : 'Download'}
+                  </button>
                 </li>
               ))}
             </ul>

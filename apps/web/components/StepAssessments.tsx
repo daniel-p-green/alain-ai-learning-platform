@@ -84,10 +84,12 @@ export default function StepAssessments({ tutorialId, stepOrder }: { tutorialId:
             </div>
             <div className="mt-2 flex items-center gap-2">
               <button
-                className="h-8 px-3 rounded bg-alain-yellow text-alain-blue font-semibold text-sm disabled:opacity-50"
+                className="h-8 px-3 rounded bg-alain-blue text-white font-semibold text-sm hover:bg-alain-blue/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
                 disabled={loadingId === a.id || selected[a.id] == null}
                 onClick={() => grade(a.id)}
-              >{loadingId === a.id ? 'Grading…' : 'Grade'}</button>
+              >
+                {loadingId === a.id ? 'Grading…' : 'Grade'}
+              </button>
               {result[a.id] && (
                 <span className={`text-xs ${result[a.id].correct ? 'text-green-700' : 'text-red-700'}`}>
                   {result[a.id].correct ? 'Correct' : 'Incorrect'}
@@ -103,4 +105,3 @@ export default function StepAssessments({ tutorialId, stepOrder }: { tutorialId:
     </div>
   );
 }
-
