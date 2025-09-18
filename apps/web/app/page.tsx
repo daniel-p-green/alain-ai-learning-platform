@@ -1,13 +1,6 @@
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-
-const NotebookPreview = dynamic(() => import('../components/HomeNotebookPreview'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-72 w-full rounded-xl border border-ink-100 bg-ink-900/80 animate-pulse" aria-hidden />
-  ),
-});
+import HomeNotebookPreview from '@/components/HomeNotebookPreview';
 
 const heroBullets = [
   'Outline-first prompts keep every lesson predictable and remixable.',
@@ -147,7 +140,7 @@ export default function HomePage() {
             </ul>
           </div>
           <div className="rounded-2xl bg-white shadow-card border border-ink-100 p-5">
-            <NotebookPreview />
+            <HomeNotebookPreview />
           </div>
         </div>
       </section>
