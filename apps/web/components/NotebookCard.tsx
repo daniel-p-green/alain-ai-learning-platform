@@ -3,11 +3,13 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { NotebookDirectoryItem } from "@/app/notebooks/page";
+import { cn } from "@/lib/utils";
 
 type Props = {
   item: NotebookDirectoryItem;
   currentUserId: string | null;
   adminIds: string[];
+  layout?: "grid" | "list";
 };
 
 type Visibility = NotebookDirectoryItem["visibility"];
@@ -28,13 +30,14 @@ function formatQuality(score?: number | null) {
   return `${score}/100`;
 }
 
-export default function NotebookCard({ item, currentUserId, adminIds }: Props) {
+export default function NotebookCard({ item, currentUserId, adminIds, layout = "grid" }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [visibility, setVisibility] = useState<Visibility>(item.visibility);
   const [shareSlug, setShareSlug] = useState<string | null | undefined>(item.share_slug);
   const [toast, setToast] = useState<string | null>(null);
   const canManage = Boolean(currentUserId && (item.created_by === currentUserId || adminIds.includes(currentUserId)));
+  const isList = layout === "list";
 
   const shareUrl = useMemo(() => {
     const base = siteUrl || (typeof window !== "undefined" ? window.location.origin : "");
@@ -83,80 +86,114 @@ export default function NotebookCard({ item, currentUserId, adminIds }: Props) {
   const maker = item.maker;
   const lastGenerated = formatDate(item.last_generated || item.created_by ? item.last_generated : undefined);
   const quality = formatQuality(item.quality_score);
+  const overview = item.overview;
+  const visibleTags = Array.isArray(item.tags) ? item.tags.slice(0, 6) : [];
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-ink-100 bg-white/80 p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-semibold text-ink-900">
-            {item.title || item.model}
-          </h2>
-          <p className="text-xs text-ink-600">
-            {item.model} · {item.provider} · <span className="uppercase">{item.difficulty}</span>
-          </p>
-        </div>
-        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${visibility === 'public' ? 'bg-alain-blue text-white' : visibility === 'unlisted' ? 'bg-amber-100 text-amber-800' : 'bg-ink-200 text-ink-800'}`}>
-          {visibility.toUpperCase()}
-        </span>
-      </div>
-
-      {maker && (maker.name || maker.org_type) && (
-        <div className="mt-3 rounded-lg border border-ink-100 bg-paper-0 p-3 text-xs text-ink-700">
-          <div className="font-medium text-ink-900">{maker.name || 'Model Maker'} {maker.org_type && <span className="text-ink-600">· {maker.org_type}</span>}</div>
-          <div className="space-x-2">
-            {maker.license && <span>License: {maker.license}</span>}
-            {maker.homepage && <a href={maker.homepage} target="_blank" className="underline">Homepage</a>}
-            {maker.repo && <a href={maker.repo} target="_blank" className="underline">Repo</a>}
-          </div>
-          {Array.isArray(maker.responsible_use) && maker.responsible_use.length > 0 && (
-            <ul className="mt-1 list-disc pl-4">
-              {maker.responsible_use.slice(0, 3).map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+    <article
+      className={cn(
+        "group relative flex flex-col rounded-2xl border border-ink-100 bg-white/90 p-5 shadow-sm transition duration-150 hover:-translate-y-0.5 hover:border-alain-blue/40 hover:shadow-lg",
+        isList && "sm:flex-row sm:items-start sm:gap-6"
       )}
+    >
+      <div className={cn("flex flex-1 flex-col gap-3", isList && "sm:py-1")}
+      >
+        <header className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1">
+            <h2 className="text-lg font-semibold leading-tight text-ink-900">
+              {item.title || item.model}
+            </h2>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-ink-600">
+              <span className="rounded-full bg-ink-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-700">
+                {item.difficulty}
+              </span>
+              <span>{item.model}</span>
+              <span className="text-ink-400">•</span>
+              <span className="capitalize">{item.provider}</span>
+            </div>
+          </div>
+          <span
+            className={cn(
+              "inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold",
+              visibility === "public" && "bg-alain-blue text-white",
+              visibility === "unlisted" && "bg-amber-100 text-amber-800",
+              visibility === "private" && "bg-ink-200 text-ink-800"
+            )}
+          >
+            {visibility.toUpperCase()}
+          </span>
+        </header>
 
-      <div className="mt-3 text-xs text-ink-600 space-y-1">
-        {quality && <div>Quality score: {quality}</div>}
-        {typeof item.section_count === 'number' && <div>Sections: {item.section_count}</div>}
-        {item.colab_compatible !== undefined && item.colab_compatible !== null && (
-          <div>Colab: {item.colab_compatible ? '✅ Compatible' : '⚠️ Needs review'}</div>
+        {overview && (
+          <p className="text-sm text-ink-600">
+            {overview}
+          </p>
         )}
-        {lastGenerated && <div>Last generated: {lastGenerated}</div>}
-        {Array.isArray(item.tags) && item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {item.tags.map((tag) => (
-              <span key={tag} className="rounded-full bg-ink-100 px-2 py-0.5 text-[10px] uppercase tracking-wide text-ink-700">{tag}</span>
-            ))}
+
+        {maker && (maker.name || maker.org_type) && (
+          <div className="text-xs text-ink-500">
+            <span className="font-medium text-ink-700">By {maker.name || "Community maker"}</span>
+            {maker.org_type && <span> · {maker.org_type}</span>}
+            <div className="mt-1 flex flex-wrap gap-3">
+              {maker.license && <span className="rounded-full bg-ink-100 px-2 py-0.5 text-[10px] uppercase tracking-wide text-ink-700">{maker.license}</span>}
+              {maker.homepage && (
+                <a className="text-ink-600 underline" href={maker.homepage} target="_blank" rel="noreferrer">
+                  Homepage
+                </a>
+              )}
+              {maker.repo && (
+                <a className="text-ink-600 underline" href={maker.repo} target="_blank" rel="noreferrer">
+                  Repo
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="grid gap-2 text-xs text-ink-600 sm:grid-cols-2">
+          {quality && <div><span className="font-semibold text-ink-800">Quality:</span> {quality}</div>}
+          {typeof item.section_count === "number" && <div><span className="font-semibold text-ink-800">Sections:</span> {item.section_count}</div>}
+          {item.colab_compatible !== undefined && item.colab_compatible !== null && (
+            <div><span className="font-semibold text-ink-800">Colab:</span> {item.colab_compatible ? "✅ Compatible" : "⚠️ Needs review"}</div>
+          )}
+          {lastGenerated && <div><span className="font-semibold text-ink-800">Updated:</span> {lastGenerated}</div>}
+        </div>
+
+        {visibleTags.length > 0 && (
+          <div className="pt-2">
+            <div className="flex flex-wrap gap-2">
+              {visibleTags.map((tag) => (
+                <span key={tag} className="rounded-full bg-ink-100 px-2 py-0.5 text-[10px] uppercase tracking-wide text-ink-700">{tag}</span>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2 text-sm">
+      <div className={cn("mt-5 flex flex-wrap gap-2 text-sm", isList && "sm:mt-0 sm:w-48 sm:flex-col")}
+      >
         <a
-          className="inline-flex items-center rounded-alain-lg border border-ink-100 bg-paper-0 px-3 py-1"
+          className="inline-flex items-center justify-center rounded-alain-lg bg-ink-900 px-4 py-2 font-semibold text-white transition hover:bg-ink-900/90"
           href={`/notebooks/${encodeURIComponent(shareSlug || item.file_path)}`}
         >
-          View
+          View notebook
         </a>
         <a
-          className="inline-flex items-center rounded-alain-lg border border-ink-100 bg-paper-0 px-3 py-1"
+          className="inline-flex items-center justify-center rounded-alain-lg border border-ink-200 px-4 py-2 text-ink-700 transition hover:border-ink-300"
           href={`/api/files/download?path=${encodeURIComponent(item.file_path)}`}
         >
           Download
         </a>
         <button
           type="button"
-          className="inline-flex items-center rounded-alain-lg bg-ink-900 px-3 py-1 text-white"
+          className="inline-flex items-center justify-center rounded-alain-lg border border-ink-200 px-4 py-2 text-ink-700 transition hover:border-ink-300"
           onClick={copyShareLink}
         >
-          Copy Share Link
+          Copy share link
         </button>
         {canManage && (
           <select
-            className="inline-flex h-8 items-center rounded-alain-lg border border-ink-200 bg-white px-2 text-xs"
+            className="inline-flex h-9 items-center rounded-alain-lg border border-ink-200 bg-white px-3 text-xs"
             value={visibility}
             onChange={(e) => updateVisibility(e.target.value as Visibility)}
             disabled={isPending}
@@ -167,7 +204,8 @@ export default function NotebookCard({ item, currentUserId, adminIds }: Props) {
           </select>
         )}
       </div>
-      {toast && <p className="mt-2 text-xs text-ink-600">{toast}</p>}
-    </div>
+
+      {toast && <p className="mt-3 text-xs text-ink-600">{toast}</p>}
+    </article>
   );
 }
