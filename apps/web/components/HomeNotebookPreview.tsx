@@ -37,12 +37,12 @@ const sampleNotebook = {
 
 export default function HomeNotebookPreview() {
   return (
-    <div className="rounded-2xl border border-ink-100 bg-ink-900/90 p-4 shadow-card backdrop-blur">
-      <div className="mb-3 flex items-center justify-between text-xs font-medium uppercase tracking-wide text-ink-400">
+    <div className="rounded-2xl border border-ink-100 bg-white p-4 shadow-card">
+      <div className="mb-3 flex items-center justify-between text-xs font-medium uppercase tracking-wide text-ink-500">
         <span>Notebook Preview</span>
         <span>ALAINKit · Sample</span>
       </div>
-      <div className="max-h-64 overflow-hidden rounded-xl border border-ink-700 bg-ink-900/60">
+      <div className="max-h-64 overflow-hidden rounded-xl border border-ink-800 bg-ink-900 text-ink-50">
         <NotebookViewer nb={sampleNotebook} />
       </div>
     </div>

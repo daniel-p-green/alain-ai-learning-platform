@@ -135,8 +135,11 @@ const scenarios = async (): Promise<NotebookScenario[]> => {
       provider === 'lmstudio'
         ? process.env.LM_STUDIO_BASE_URL || 'http://localhost:1234/v1'
         : process.env.OPENAI_BASE_URL || 'https://api.poe.com';
-    const modelReference =
+    const primaryModel =
       process.env.ALAIN_MODEL_REFERENCE || (provider === 'lmstudio' ? (process.env.LM_STUDIO_MODEL || 'gpt-oss-20b') : 'gpt-oss-20b-T');
+    const fallbackModel = provider === 'poe' && primaryModel !== 'gpt-oss-20b'
+      ? 'gpt-oss-20b'
+      : undefined;
     const apiKey = provider === 'lmstudio' ? process.env.LM_STUDIO_API_KEY || 'local' : process.env.POE_API_KEY;
 
     const kit = new ALAINKit({ baseUrl });
@@ -146,33 +149,47 @@ const scenarios = async (): Promise<NotebookScenario[]> => {
     fs.mkdirSync(reviewDir, { recursive: true });
 
     try {
-      console.log(`🤖 Provider: ${provider} | Base URL: ${baseUrl} | Model: ${modelReference}`);
-      const res = await kit.generateNotebook({
-        modelReference,
-        apiKey,
-        difficulty: prompt.difficulty,
-        maxSections: options.maxSections ?? 6,
-        customPrompt: prompt,
-      } as any);
+      const modelsToTry = [primaryModel, fallbackModel].filter(Boolean) as string[];
 
-      if (!res.success) {
-        throw new Error(`Notebook generation failed: ${res.validationReport}`);
+      let lastError: Error | undefined;
+      for (const modelReference of modelsToTry) {
+        try {
+          console.log(`🤖 Provider: ${provider} | Base URL: ${baseUrl} | Model: ${modelReference}`);
+          const res = await kit.generateNotebook({
+            modelReference,
+            apiKey,
+            difficulty: prompt.difficulty,
+            maxSections: options.maxSections ?? 6,
+            customPrompt: prompt,
+          } as any);
+
+          if (!res.success) {
+            throw new Error(`Notebook generation failed: ${res.validationReport}`);
+          }
+
+          console.log(`Quality: ${res.qualityScore} | Colab: ${res.colabCompatible}`);
+          saveArtifacts(slug, res.notebook, res.validationReport, {
+            qualityScore: res.qualityScore,
+            colabCompatible: res.colabCompatible,
+            phaseTimings: res.phaseTimings,
+            sections: res.sections?.length ?? 0,
+          });
+
+          return {
+            slug,
+            qualityScore: res.qualityScore,
+            colabCompatible: Boolean(res.colabCompatible),
+            outputDir: path.join(outputRoot, slug),
+          };
+        } catch (error) {
+          lastError = error as Error;
+          console.warn(`⚠️  Model ${modelReference} failed: ${(lastError as Error).message}`);
+        }
       }
 
-      console.log(`Quality: ${res.qualityScore} | Colab: ${res.colabCompatible}`);
-      saveArtifacts(slug, res.notebook, res.validationReport, {
-        qualityScore: res.qualityScore,
-        colabCompatible: res.colabCompatible,
-        phaseTimings: res.phaseTimings,
-        sections: res.sections?.length ?? 0,
-      });
-
-      return {
-        slug,
-        qualityScore: res.qualityScore,
-        colabCompatible: Boolean(res.colabCompatible),
-        outputDir: path.join(outputRoot, slug),
-      };
+      if (lastError) {
+        throw lastError;
+      }
     } finally {
       delete process.env.ALAIN_SCENARIO_SLUG;
       delete process.env.ALAIN_HUMAN_REVIEW_DIR;

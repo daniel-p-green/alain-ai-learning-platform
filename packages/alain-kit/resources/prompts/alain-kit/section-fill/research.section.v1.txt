@@ -4,7 +4,7 @@ RESPONSE REQUIREMENTS
 • Return a single valid JSON object. Do not add "Thinking...", explanations, or code fences.
 • Start with {"section_number": {{SECTION_NUMBER}}} and close the JSON properly.
 • Populate every field with polished beginner-friendly content. Never leave template text, placeholders, ellipses, or instructions in the output.
-• Provide at least two cells inside `content`: a rich markdown explanation (multiple paragraphs, analogies, definitions, trade-offs) followed by runnable Python code (≤30 lines) with comments. Add extra cells when they improve clarity.
+• Provide at least two markdown cells (multi-paragraph) and two runnable Python code cells (≤40 lines each) with comments, deterministic seeds, and explicit dependency versions. Add extra cells when they improve clarity.
 • Include at least one tip, one warning, and one note inside `callouts`, each with actionable guidance.
 • Keep the total content between {{MIN_TOKENS}} and {{MAX_TOKENS}} tokens and choose an integer for `estimated_tokens` within that range.
 
@@ -15,11 +15,11 @@ REQUIRED JSON SCHEMA (replace the guidance with your generated text/code):
   "content": [
     {
       "cell_type": "markdown",
-      "source": "...multi-paragraph explanation with analogies, definitions, and rationale for beginners..."
+      "source": "...multi-paragraph explanation with analogies, precise definitions, step-by-step rationale, and no truncated or placeholder language..."
     },
     {
       "cell_type": "code",
-      "source": "...executable Python example demonstrating the concept with comments and version/seed management..."
+      "source": "...fully executable Python example demonstrating the concept with comments, deterministic seeds, and explicit dependency versions. Do not include TODOs, ellipses, or truncated snippets..."
     }
   ],
   "callouts": [

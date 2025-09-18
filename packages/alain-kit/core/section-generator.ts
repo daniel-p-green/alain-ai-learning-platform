@@ -6,6 +6,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { extractJsonLoose } from './json-utils.js';
 import { createLogger, timeIt, trackEvent, metrics } from './obs.js';
 import { capsFor, buildChatCompletionsUrl } from './providers.js';
 import { supportsTemperature } from './model-caps.js';
@@ -26,7 +27,10 @@ const SECTION_PLACEHOLDER_PATTERNS: RegExp[] = [
   /We need to produce JSON/i,
   /Thinking\.{3}/i,
   /Replace the placeholder/i,
-  /<<[^>]+>>/
+  /<<[^>]+>>/,
+  /excerpt intentionally truncated/i,
+  /code excerpt truncated/i,
+  /\.\.\.$/
 ];
 
 export interface NotebookCell {
@@ -74,8 +78,8 @@ export class SectionGenerator {
   constructor(options: SectionGeneratorOptions = {}) {
     this.baseUrl = options.baseUrl;
   }
-  // Tighten per-section token limit to help keep total under ~6000 for 6 sections
-  private readonly TOKEN_LIMIT = 1000;
+  // Allow larger sections while keeping overall notebook manageable
+  private readonly TOKEN_LIMIT = 2000;
   private readonly MIN_TOKENS = 800;
   private readonly sectionTemplate = loadPromptTemplate('section-fill/research.section.v1.txt');
 
@@ -176,9 +180,18 @@ export class SectionGenerator {
       throw new Error('Section generation returned no JSON object');
     }
     try {
-      return JSON.parse(extracted);
+      const parsed = JSON.parse(extracted);
+      const processed = this.postProcessSection(parsed as GeneratedSection, sectionNumber);
+      this.ensureSectionCompleteness(processed, sectionNumber);
+      return processed;
     } catch (error) {
       this.log.warn('section_json_parse_failed', { section: sectionNumber, head: extracted.slice(0, 120), error: (error as Error)?.message });
+      const loose = extractJsonLoose(extracted);
+      if (loose) {
+        const processed = this.postProcessSection(loose as GeneratedSection, sectionNumber);
+        this.ensureSectionCompleteness(processed, sectionNumber);
+        return processed;
+      }
       this.recordHumanReview(sectionNumber, extracted, 'json_parse_failed');
       throw new Error(`Invalid JSON returned for section ${sectionNumber}`);
     }
@@ -237,8 +250,94 @@ export class SectionGenerator {
       const file = path.join(dir, `section-${String(sectionNumber).padStart(2, '0')}-${reason}-${stamp}.txt`);
       const header = `# Human Review Artifact\nScenario: ${scenario}\nSection: ${sectionNumber}\nReason: ${reason}\nTimestamp: ${new Date().toISOString()}\n\n`;
       fs.writeFileSync(file, header + payload, 'utf8');
+      this.appendTrace(dir, sectionNumber, reason, payload);
     } catch (error) {
       this.log.warn('human_review_write_failed', { error: (error as Error)?.message || String(error) });
+    }
+  }
+
+  private logTrace(sectionNumber: number, phase: string, payload: string): void {
+    const reviewRoot = (process.env.ALAIN_HUMAN_REVIEW_DIR || '').trim();
+    if (!reviewRoot) return;
+    try {
+      const scenario = (process.env.ALAIN_SCENARIO_SLUG || 'unknown').replace(/[^a-zA-Z0-9-_]/g, '_');
+      const dir = path.resolve(reviewRoot, scenario || 'unknown');
+      fs.mkdirSync(dir, { recursive: true });
+      this.appendTrace(dir, sectionNumber, phase, payload);
+    } catch (error) {
+      this.log.warn('trace_write_failed', { error: (error as Error)?.message || String(error) });
+    }
+  }
+
+  private appendTrace(dir: string, sectionNumber: number, phase: string, payload: string): void {
+    const traceFile = path.join(dir, 'trace.log');
+    const line = `${new Date().toISOString()}\tsection=${sectionNumber}\tphase=${phase}\tpreview=${payload.slice(0, 160).replace(/[\r\n]+/g, ' ')}\n`;
+    fs.appendFileSync(traceFile, line, 'utf8');
+  }
+
+  private postProcessSection(section: GeneratedSection, sectionNumber: number): GeneratedSection {
+    if (!section) return section;
+    if (typeof section.title === 'string') {
+      section.title = section.title.replace(/^(Step \d+:) \1/, '$1');
+    }
+    if (Array.isArray(section.content)) {
+      section.content = section.content.map(cell => {
+        if (cell?.cell_type === 'markdown' && typeof cell.source === 'string') {
+          cell.source = cell.source.replace(/^(## Step \d+:) \1/, '$1');
+        }
+        return cell;
+      });
+    }
+    if (typeof section.estimated_tokens === 'number') {
+      section.estimated_tokens = Math.min(section.estimated_tokens, this.TOKEN_LIMIT);
+    }
+    return section;
+  }
+
+  private ensureSectionCompleteness(section: GeneratedSection, sectionNumber: number): void {
+    const issues: string[] = [];
+    const markdownCells = section.content.filter(cell => cell?.cell_type === 'markdown');
+    const codeCells = section.content.filter(cell => cell?.cell_type === 'code');
+
+    if (markdownCells.length < 1) {
+      issues.push('Requires at least one markdown cell with substantive content');
+    }
+
+    if (codeCells.length < 1) {
+      issues.push('Requires at least one runnable code cell');
+    }
+
+    const checkCell = (cell: any) => {
+      const source = Array.isArray(cell?.source) ? cell.source.join('') : String(cell?.source || '');
+      for (const pattern of SECTION_PLACEHOLDER_PATTERNS) {
+        if (pattern.test(source)) {
+          issues.push(`Placeholder text detected: ${pattern}`);
+          break;
+        }
+      }
+      if (cell?.cell_type === 'markdown' && source.trim().length < 150) {
+        issues.push('Markdown content too short (<150 characters)');
+      }
+      if (cell?.cell_type === 'code') {
+        const trimmed = source.trim();
+        const lines = trimmed.split(/\r?\n/).filter(Boolean);
+        if (lines.length < 3 || lines.every(line => line.trim().startsWith('#'))) {
+          issues.push('Code cell lacks executable content');
+        }
+      }
+    };
+
+    section.content.forEach(checkCell);
+
+    if (!section.callouts || section.callouts.length < 3) {
+      issues.push('Missing required callouts (tip, warning, note)');
+    }
+
+    if (issues.length) {
+      const message = issues.join('; ');
+      this.logTrace(sectionNumber, 'incomplete', message);
+      this.recordHumanReview(sectionNumber, JSON.stringify(section, null, 2), 'incomplete');
+      throw new Error(`Section completeness check failed: ${message}`);
     }
   }
 

@@ -1,0 +1,7 @@
+# Human Review Artifact
+Scenario: smoke-section
+Section: 1
+Reason: json_parse_failed
+Timestamp: 2025-09-18T00:27:03.335Z
+
+{acc:.4f}
