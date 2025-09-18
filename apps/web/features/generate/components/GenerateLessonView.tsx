@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '../../../components/Button';
 import NotebookWorkspace, { WorkspaceState, ExportUiState } from '../../../components/NotebookWorkspace';
 import WorkspaceSplit from '../../../components/WorkspaceSplit';
+import { AppShell } from '../../../components/layout/AppShell';
 import api, { parseHfRef } from '../../../lib/api';
 import { backendUrl } from '../../../lib/backend';
 import { encodeNotebookId } from '../../../lib/notebookId';
@@ -88,6 +89,25 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
     setWorkspaceState((prev) => {
       if (prev.status !== 'ready') return prev;
       return { ...prev, notebook: nextNotebook };
+    });
+  }, []);
+
+  const handleAddCell = useCallback((cellType: 'markdown' | 'code') => {
+    setWorkspaceState((prev) => {
+      if (prev.status !== 'ready') return prev;
+      const existingCells = Array.isArray(prev.notebook?.cells) ? [...prev.notebook.cells] : [];
+      if (cellType === 'markdown') {
+        existingCells.push({ cell_type: 'markdown', source: '', metadata: {} });
+      } else {
+        existingCells.push({ cell_type: 'code', source: '', metadata: { lang: 'python' } });
+      }
+      return {
+        ...prev,
+        notebook: {
+          ...prev.notebook,
+          cells: existingCells,
+        },
+      };
     });
   }, []);
 
@@ -329,10 +349,11 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
   const workspaceProgressLabel = progressLabels[progress];
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] px-4 py-6 lg:py-10 text-ink-900">
-      <WorkspaceSplit
-        className="gap-6"
-        left={
+    <>
+      <AppShell containerClassName="text-ink-900" maxWidth="wide">
+        <WorkspaceSplit
+          className="gap-6"
+          left={
           <div className="space-y-6 pb-10 px-1 lg:px-0" data-generator-form-root="true">
             <header className="space-y-2">
         <h1 className="font-display text-[32px] font-black leading-[1.1] tracking-tight">Generate Manual</h1>
@@ -618,8 +639,8 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
               </div>
             </div>
           </div>
-        }
-        right={
+          }
+          right={
           <NotebookWorkspace
             workspace={workspaceState}
             preview={manualPreview ?? undefined}
@@ -639,14 +660,41 @@ export function GenerateLessonView(props: UseGenerateLessonResult) {
             onRemix={handleRemix}
             onNotebookChange={handleNotebookChange}
             onTitleChange={handleTitleChange}
+            toolbarActions={[
+              {
+                key: 'add-markdown',
+                label: 'Add Markdown',
+                onClick: () => handleAddCell('markdown'),
+                disabled: workspaceState.status !== 'ready',
+              },
+              {
+                key: 'add-code',
+                label: 'Add Code',
+                onClick: () => handleAddCell('code'),
+                disabled: workspaceState.status !== 'ready',
+              },
+              {
+                key: 'download-ipynb',
+                label: 'Download .ipynb',
+                onClick: handleDownloadIpynb,
+                disabled: workspaceState.status !== 'ready',
+              },
+              {
+                key: 'download-json',
+                label: 'Download JSON',
+                onClick: handleDownloadJson,
+                disabled: workspaceState.status !== 'ready',
+              },
+            ]}
           />
-        }
+          }
       />
+      </AppShell>
 
       {snackbar && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-card border border-ink-100 bg-paper-0 px-4 py-2 text-ink-900 shadow-card">{snackbar}</div>
       )}
-    </div>
+    </>
   );
 }
 

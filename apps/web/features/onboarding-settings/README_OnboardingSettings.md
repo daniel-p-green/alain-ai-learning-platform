@@ -7,10 +7,11 @@ This folder provides a production-ready onboarding wizard and a clean Settings U
 1. `types.ts` — shared types and defaults
 2. `useOnboarding.ts` — onboarding state with `start()`, `complete()`, `reset()`
 3. `useSettings.ts` — providers/models/ui settings + import/export
-4. `OnboardingWizard.tsx` - 5-step wizard
-5. `SettingsPage.tsx` — tabs + Reset dialog
-6. `OnboardingGate.tsx` — route guard component
-7. `__tests__/useOnboarding.test.ts` — minimal unit test
+4. `useSettingsDraft.ts` — draft wrapper with save/reset helpers for the new layout
+5. `OnboardingWizard.tsx` - .env onboarding wizard
+6. `SettingsPage.tsx` — sidebar layout + save bars
+7. `OnboardingGate.tsx` — route guard component
+8. `__tests__/useOnboarding.test.ts` — minimal unit test
 
 Brand: Uses your Tailwind tokens (`alain-blue`, `alain-yellow`, `alain-stroke`, `paper-*`, `ink-*`).
 
@@ -112,9 +113,10 @@ vitest run web/features/onboarding-settings/__tests__/useOnboarding.test.ts
 ```
 
 ## Acceptance Checklist
-- Finish the wizard → Settings → Reset onboarding → refresh → onboarding shows again.
-- Provider Test buttons disable while testing and show success/error.
+- Complete the wizard, download `.env.local`, place it in the repo root, restart the dev server — providers should read the new env values.
+- Settings → Reset onboarding → refresh → wizard appears again.
+- Provider Test buttons disable while testing and show success/error based on the env config.
 - LocalStorage keys update:
   - `alain.onboarding.completed` flips to `false` on reset.
-  - `alain.onboarding.version` is `"1"`.
-  - Provider and model settings persist to `alain.providers` and `alain.models`.
+  - `alain.onboarding.version` stays at `"1"`.
+  - Provider enablement/base URLs persist to `alain.providers` (API keys are not stored).

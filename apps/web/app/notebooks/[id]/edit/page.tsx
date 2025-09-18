@@ -4,6 +4,8 @@ import CodeEditor from "@/components/CodeEditor";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import { useParams, useRouter } from "next/navigation";
 import { decodeNotebookParam, encodeNotebookId } from "@/lib/notebookId";
+import { AppShell } from "@/components/layout/AppShell";
+import { NotebookToolbar } from "@/components/NotebookToolbar";
 
 export default function EditNotebookPage() {
   const { id: rawId } = useParams<{ id: string }>();
@@ -66,6 +68,23 @@ export default function EditNotebookPage() {
     setCells((prev) => prev.filter((_, i) => i !== idx));
   }
 
+  const renderAddCellButtons = (layout: "column" | "row") => {
+    const base =
+      layout === "column"
+        ? "flex flex-col gap-2"
+        : "flex flex-wrap gap-2";
+    return (
+      <div className={base}>
+        <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center justify-center h-10 px-3 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">
+          Add Markdown
+        </button>
+        <button type="button" onClick={() => addCell("code")} className="inline-flex items-center justify-center h-10 px-3 rounded-alain-lg bg-ink-900 text-white font-medium">
+          Add Code
+        </button>
+      </div>
+    );
+  };
+
   async function onSave() {
     setError(null);
     let parsed: any;
@@ -94,18 +113,50 @@ export default function EditNotebookPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">Edit Notebook</h1>
-      <p className="text-sm text-ink-600">Notebook ID: {id}</p>
-      {error && <div className="text-red-500 text-sm">{error}</div>}
-      <div className="flex items-center gap-3 text-sm">
-        <span className="text-ink-600">Editor theme</span>
-        <select value={editorTheme} onChange={(e) => { const v = e.target.value as any; setEditorTheme(v); if (typeof window !== 'undefined') localStorage.setItem('nb_editor_theme', v); }} className="rounded border px-2 py-1">
-          <option value="vs-dark">Dark</option>
-          <option value="vs-light">Light</option>
-        </select>
-      </div>
-      <div className="md:grid md:grid-cols-[minmax(0,1fr)_240px] md:gap-6">
+    <AppShell
+      containerClassName="text-ink-900"
+      maxWidth="wide"
+      sidebar={
+        <div className="hidden lg:block">
+          <div className="sticky top-28 rounded-2xl border border-ink-100 bg-paper-0 p-4 shadow-card space-y-3">
+            <div className="text-sm font-semibold text-ink-900">Add cell</div>
+            {renderAddCellButtons("column")}
+            <p className="text-xs text-ink-600">New cells append to the end. Reorder anytime with the arrows in each cell.</p>
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        <NotebookToolbar
+          title="Notebook editor"
+          actions={[
+            { key: 'add-markdown', label: 'Add Markdown', onClick: () => addCell('markdown') },
+            { key: 'add-code', label: 'Add Code', onClick: () => addCell('code') },
+          ]}
+        >
+          Cells append to the end; use arrows to reorder.
+        </NotebookToolbar>
+
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold">Edit Notebook</h1>
+          <p className="text-sm text-ink-600">Notebook ID: {id}</p>
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+        </div>
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-ink-600">Editor theme</span>
+          <select
+            value={editorTheme}
+            onChange={(e) => {
+              const v = e.target.value as any;
+              setEditorTheme(v);
+              if (typeof window !== 'undefined') localStorage.setItem('nb_editor_theme', v);
+            }}
+            className="rounded border px-2 py-1"
+          >
+            <option value="vs-dark">Dark</option>
+            <option value="vs-light">Light</option>
+          </select>
+        </div>
         <div className="space-y-3">
           <div className="rounded border p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
@@ -113,34 +164,44 @@ export default function EditNotebookPage() {
               <input className="w-full rounded border px-3 py-2" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
             </div>
             <div>
-            <label className="block text-sm font-medium mb-1">Source Type</label>
-            <select className="w-full rounded border px-3 py-2" value={metaSourceType} onChange={(e) => setMetaSourceType(e.target.value as any)}>
-              <option value="user">User</option>
-              <option value="company">Company</option>
-            </select>
+              <label className="block text-sm font-medium mb-1">Source type</label>
+              <select className="w-full rounded border px-3 py-2" value={metaSourceType} onChange={(e) => setMetaSourceType(e.target.value as any)}>
+                <option value="user">User</option>
+                <option value="company">Company</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Source org</label>
+              <input className="w-full rounded border px-3 py-2" value={metaOrg} onChange={(e) => setMetaOrg(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Tags</label>
+              <input className="w-full rounded border px-3 py-2" value={metaTags} onChange={(e) => setMetaTags(e.target.value)} placeholder="comma separated" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">License</label>
+              <input className="w-full rounded border px-3 py-2" value={metaLicense} onChange={(e) => setMetaLicense(e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Provenance URL</label>
+              <input className="w-full rounded border px-3 py-2" value={metaProv} onChange={(e) => setMetaProv(e.target.value)} />
+            </div>
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={metaPublished} onChange={(e) => setMetaPublished(e.target.checked)} /> Publish
+            </label>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Org</label>
-            <input className="w-full rounded border px-3 py-2" value={metaOrg} onChange={(e) => setMetaOrg(e.target.value)} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Tags (comma)</label>
-            <input className="w-full rounded border px-3 py-2" value={metaTags} onChange={(e) => setMetaTags(e.target.value)} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">License</label>
-            <input className="w-full rounded border px-3 py-2" value={metaLicense} onChange={(e) => setMetaLicense(e.target.value)} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Provenance URL</label>
-            <input className="w-full rounded border px-3 py-2" value={metaProv} onChange={(e) => setMetaProv(e.target.value)} />
-          </div>
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={metaPublished} onChange={(e) => setMetaPublished(e.target.checked)} /> Publish
-          </label>
-        </div>
           {cells.map((c, idx) => (
-            <div key={idx} className="rounded border p-3 space-y-2" draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', String(idx))} onDragOver={(e) => e.preventDefault()} onDrop={(e) => { const from = Number(e.dataTransfer.getData('text/plain')); moveCell(from, idx); }}>
+            <div
+              key={idx}
+              className="rounded border p-3 space-y-2"
+              draggable
+              onDragStart={(e) => e.dataTransfer.setData('text/plain', String(idx))}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                const from = Number(e.dataTransfer.getData('text/plain'));
+                moveCell(from, idx);
+              }}
+            >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Cell {idx + 1} — {c.cell_type}</span>
                 <div className="flex items-center gap-2">
@@ -155,9 +216,18 @@ export default function EditNotebookPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs">
                     <span className="text-ink-600">Language</span>
-                    <select value={(c.metadata?.lang as string) || 'python'} onChange={(e) => {
-                      const lang = e.target.value; setCells((prev) => prev.map((cell, i) => i === idx ? { ...cell, metadata: { ...(cell.metadata || {}), lang } } : cell));
-                    }} className="rounded border px-2 py-1">
+                    <select
+                      value={(c.metadata?.lang as string) || 'python'}
+                      onChange={(e) => {
+                        const lang = e.target.value;
+                        setCells((prev) =>
+                          prev.map((cell, i) =>
+                            i === idx ? { ...cell, metadata: { ...(cell.metadata || {}), lang } } : cell
+                          )
+                        );
+                      }}
+                      className="rounded border px-2 py-1"
+                    >
                       <option value="python">Python</option>
                       <option value="javascript">JavaScript</option>
                       <option value="typescript">TypeScript</option>
@@ -165,43 +235,40 @@ export default function EditNotebookPage() {
                       <option value="json">JSON</option>
                     </select>
                   </div>
-                  <CodeEditor language={(c.metadata?.lang as string) || 'python'} theme={editorTheme} value={Array.isArray(c.source) ? c.source.join("") : c.source} onChange={(v) => setCellSource(idx, v)} height={220} />
+                  <CodeEditor
+                    language={(c.metadata?.lang as string) || 'python'}
+                    theme={editorTheme}
+                    value={Array.isArray(c.source) ? c.source.join("") : c.source}
+                    onChange={(v) => setCellSource(idx, v)}
+                    height={220}
+                  />
                 </div>
               )}
             </div>
           ))}
-          <div className="md:hidden flex flex-wrap gap-2">
-            <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Markdown</button>
-            <button type="button" onClick={() => addCell("code")} className="inline-flex items-center h-9 px-3 rounded bg-ink-200 text-ink-900">Add Code</button>
-          </div>
+          <div className="lg:hidden">{renderAddCellButtons("row")}</div>
         </div>
-        <aside className="hidden md:block">
-          <div className="sticky top-28 rounded-2xl border border-ink-100 bg-paper-0 p-4 shadow-card space-y-3">
-            <div className="text-sm font-semibold text-ink-900">Add cell</div>
-            <div className="flex flex-col gap-2">
-              <button type="button" onClick={() => addCell("markdown")} className="inline-flex items-center justify-center h-10 rounded-alain-lg bg-ink-200 text-ink-900 font-medium">Add Markdown</button>
-              <button type="button" onClick={() => addCell("code")} className="inline-flex items-center justify-center h-10 rounded-alain-lg bg-ink-900 text-white font-medium">Add Code</button>
-            </div>
-            <p className="text-xs text-ink-600">New cells append to the end. Reorder anytime with the arrows in each cell.</p>
-          </div>
-        </aside>
+        <details>
+          <summary className="cursor-pointer text-sm text-ink-600">Advanced: Edit raw JSON</summary>
+          <textarea className="w-full h-[40vh] font-mono text-xs rounded border p-3 mt-2" value={jsonText} onChange={(e) => setJsonText(e.target.value)} />
+        </details>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={onSave}
+            disabled={busy}
+            className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-50 w-full sm:w-auto whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+          >
+            {busy ? "Saving…" : "Save"}
+          </button>
+          <button
+            onClick={() => router.push(`/notebooks/${encodedId}`)}
+            className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium w-full sm:w-auto whitespace-nowrap"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
-      <details>
-        <summary className="cursor-pointer text-sm text-ink-600">Advanced: Edit raw JSON</summary>
-        <textarea className="w-full h-[40vh] font-mono text-xs rounded border p-3 mt-2" value={jsonText} onChange={(e) => setJsonText(e.target.value)} />
-      </details>
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={onSave}
-          disabled={busy}
-          className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-alain-blue text-white font-semibold hover:bg-alain-blue/90 disabled:opacity-50 w-full sm:w-auto whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
-        >
-          {busy ? "Saving…" : "Save"}
-        </button>
-        <button onClick={() => router.push(`/notebooks/${encodedId}`)} className="inline-flex items-center h-10 px-4 rounded-alain-lg bg-ink-200 text-ink-900 font-medium w-full sm:w-auto whitespace-nowrap">
-          Cancel
-        </button>
-      </div>
-    </div>
+    </AppShell>
   );
+
 }

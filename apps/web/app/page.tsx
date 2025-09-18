@@ -1,6 +1,7 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import HomeNotebookPreview from '@/components/HomeNotebookPreview';
+import { ButtonLink } from '@/components/ButtonLink';
+import { PageContainer } from '@/components/layout/PageContainer';
 
 const heroBullets = [
   'Outline-first prompts keep every lesson predictable and remixable.',
@@ -66,8 +67,8 @@ export default function HomePage() {
   return (
     <main className="flex flex-col text-ink-900">
       <section className="bg-paper-0">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 lg:py-20">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] items-center">
+        <PageContainer maxWidth="wide" paddingY="none" className="py-16 lg:py-20">
+          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
             <div className="space-y-7">
               <div className="text-[11px] font-medium uppercase tracking-[0.24em] text-ink-500">
                 {heroMeta}
@@ -93,18 +94,18 @@ export default function HomePage() {
                 ))}
               </ul>
               <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/generate"
-                  className="inline-flex items-center h-12 px-6 rounded-[14px] bg-alain-yellow text-alain-blue font-semibold shadow-cardHover focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
-                >
+                <ButtonLink href="/generate" variant="accent" className="px-6 py-3 shadow-cardHover">
                   Generate Manual
-                </Link>
-                <Link
+                </ButtonLink>
+                <ButtonLink
                   href="https://github.com/AppliedLearningAI/alain-ai-learning-platform"
-                  className="inline-flex items-center h-12 px-6 rounded-[14px] border border-ink-200 bg-white/70 text-ink-900 font-semibold hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40"
+                  variant="secondary"
+                  className="px-6 py-3 font-semibold"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   Contribute on GitHub
-                </Link>
+                </ButtonLink>
               </div>
             </div>
             <div className="relative flex justify-center lg:justify-end">
@@ -120,12 +121,13 @@ export default function HomePage() {
               />
             </div>
           </div>
-        </div>
+        </PageContainer>
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-14 lg:py-18 grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-center">
-          <div className="space-y-5">
+        <PageContainer maxWidth="wide" paddingY="none" className="py-14 lg:py-18">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="space-y-5">
             <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">See the manual before you export</h2>
             <p className="text-base text-ink-600 max-w-xl">
               Notebook preview renders live output from the generator—the same `.ipynb` you can export to Colab or Jupyter. No secrets baked in, no extra wiring.
@@ -138,15 +140,16 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
+            </div>
+            <div className="rounded-2xl bg-white shadow-card border border-ink-100 p-5">
+              <HomeNotebookPreview />
+            </div>
           </div>
-          <div className="rounded-2xl bg-white shadow-card border border-ink-100 p-5">
-            <HomeNotebookPreview />
-          </div>
-        </div>
+        </PageContainer>
       </section>
 
       <section className="bg-paper-50">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 lg:py-20 space-y-10">
+        <PageContainer maxWidth="wide" paddingY="none" className="py-16 lg:py-20 space-y-10">
           <header className="max-w-3xl space-y-3">
             <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">How ALAIN works</h2>
             <p className="text-base text-ink-600">
@@ -166,11 +169,11 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </section>
 
       <section className="bg-gradient-to-b from-paper-50 via-white to-paper-0">
-        <div className="mx-auto max-w-7xl px-6 md:px-8 py-16 lg:py-20 space-y-8">
+        <PageContainer maxWidth="wide" paddingY="none" className="py-16 lg:py-20 space-y-8">
           <header className="space-y-3">
             <h2 className="font-display text-[34px] leading-[1.1] tracking-tight text-ink-900">Run it anywhere</h2>
             <p className="text-base text-ink-600 max-w-3xl">
@@ -195,7 +198,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </PageContainer>
       </section>
     </main>
   );

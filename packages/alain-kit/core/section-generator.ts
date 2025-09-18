@@ -176,8 +176,10 @@ export class SectionGenerator {
     const extracted = this.extractFirstJsonObject(content);
     if (!extracted) {
       this.log.warn('section_json_missing', { section: sectionNumber, head: content.slice(0, 120) });
-      this.recordHumanReview(sectionNumber, content, 'json_extraction_failed');
-      throw new Error('Section generation returned no JSON object');
+      const fallback = this.compileFallbackSection(content, sectionNumber);
+      this.logTrace(sectionNumber, 'compiled_fallback', 'Generated fallback after missing JSON');
+      this.recordHumanReview(sectionNumber, content, 'compiled_fallback');
+      return fallback;
     }
     try {
       const parsed = JSON.parse(extracted);
@@ -192,8 +194,10 @@ export class SectionGenerator {
         this.ensureSectionCompleteness(processed, sectionNumber);
         return processed;
       }
-      this.recordHumanReview(sectionNumber, extracted, 'json_parse_failed');
-      throw new Error(`Invalid JSON returned for section ${sectionNumber}`);
+      const fallback = this.compileFallbackSection(content, sectionNumber);
+      this.logTrace(sectionNumber, 'compiled_fallback', 'Generated fallback after parse failure');
+      this.recordHumanReview(sectionNumber, content, 'compiled_fallback');
+      return fallback;
     }
   }
 
@@ -341,31 +345,34 @@ export class SectionGenerator {
     }
   }
 
-  private createFallbackSection(sectionNumber: number, content: string): GeneratedSection {
-    // Legacy fallback retained for backwards compatibility but no longer used.
+  private compileFallbackSection(content: string, sectionNumber: number): GeneratedSection {
+    const sanitized = content.replace(/```/g, '').trim();
+    const fallbackMarkdown = sanitized ? sanitized.slice(0, 1800) : 'Content unavailable. Manual authoring required.';
+    const fallbackCodeLines = [
+      '# Fallback generated after JSON parse failure',
+      'import json',
+      'payload = {',
+      `    "section_number": ${sectionNumber},`,
+      '    "status": "manual_review_required"',
+      '}',
+      'print(json.dumps(payload, indent=2))'
+    ];
+
     return {
       section_number: sectionNumber,
-      title: `Section ${sectionNumber}`,
+      title: `Section ${sectionNumber}: Manual Review Required`,
       content: [
-        {
-          cell_type: 'markdown',
-          source: `## Section ${sectionNumber}\n\n${content.substring(0, 500)}...`
-        },
-        {
-          cell_type: 'code',
-          source: [
-            '# Minimal runnable example to satisfy validation',
-            "def greet(name='ALAIN'):",
-            "    return f'Hello, {name}!'",
-            '',
-            "print(greet())"
-          ].join('\n')
-        }
+        { cell_type: 'markdown', source: `## Manual Review Required\n\n${fallbackMarkdown}` },
+        { cell_type: 'code', source: fallbackCodeLines.join('\n') }
       ],
-      callouts: [],
-      estimated_tokens: 900,
-      prerequisites_check: [],
-      next_section_hint: 'Continue to next section'
+      callouts: [
+        { type: 'tip', message: '💡 Replace fallback content with finalized instructional material.' },
+        { type: 'warning', message: '⚠️ Original provider response could not be parsed. Verify accuracy before publishing.' },
+        { type: 'note', message: '📝 Capture the intended learning outcome and include runnable examples.' }
+      ],
+      estimated_tokens: Math.min(1200, this.TOKEN_LIMIT),
+      prerequisites_check: ['Manual author should confirm prerequisites from previous sections.'],
+      next_section_hint: 'Continue drafting the next section once this placeholder is replaced.'
     };
   }
 
