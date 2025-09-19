@@ -88,16 +88,21 @@ export default function HomeNotebookPreview() {
 
               if (cell.kind === 'code') {
                 return (
-                  <article key={cell.label} className="overflow-hidden rounded-2xl border border-ink-900/20 bg-ink-950 text-ink-100">
-                    <div className="flex items-center justify-between border-b border-white/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
+                  <article
+                    key={cell.label}
+                    className="overflow-hidden rounded-2xl border border-ink-900/50 bg-[#0B1120] text-ink-100 shadow-alain-sm"
+                  >
+                    <div className="flex items-center justify-between border-b border-white/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
                       <span>{cell.label}</span>
                       <span>Python</span>
                     </div>
                     <div className="space-y-3 px-5 py-4">
-                      {cell.title && <h3 className="text-sm font-semibold text-white/90">{cell.title}</h3>}
-                      <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-emerald-100/90">
-                        <code>{cell.code}</code>
-                      </pre>
+                      {cell.title && <h3 className="text-sm font-semibold text-white">{cell.title}</h3>}
+                      <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                        <pre className="overflow-x-auto font-mono text-[13px] leading-relaxed text-emerald-100">
+                          <code>{cell.code}</code>
+                        </pre>
+                      </div>
                     </div>
                   </article>
                 );
