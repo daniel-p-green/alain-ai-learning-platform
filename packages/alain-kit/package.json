@@ -1,6 +1,6 @@
 {
   "name": "alain-kit",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Production-ready notebook generation system with quality validation and Colab compatibility",
   "type": "module",
   "main": "./dist/validation/integration.js",

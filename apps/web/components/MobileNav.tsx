@@ -41,6 +41,7 @@ export default function MobileNav({
   // Build the provider status list ahead of render so we can reuse it for messaging and actions.
   const connections = buildConnectionList(status);
   const connectionNeedsHelp = connections.some((item) => !item.ok);
+  const portalTarget = typeof document !== "undefined" ? document.body : null;
 
   useEffect(() => {
     setMounted(true);
@@ -107,7 +108,7 @@ export default function MobileNav({
     setTimeout(() => setOpen(false), 250);
   }
 
-  const overlay = open && mounted
+  const overlay = open && mounted && portalTarget
     ? createPortal(
         <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-labelledby={`${menuId}-title`}>
           <div
@@ -125,14 +126,14 @@ export default function MobileNav({
               anim ? "translate-x-0" : isRight ? "translate-x-full" : "-translate-x-full"
             }`}
           >
-            <div className="flex h-16 items-center justify-between border-b border-ink-100 bg-alain-blue px-4 text-white">
-              <div id={`${menuId}-title`} className="text-sm font-semibold uppercase tracking-[0.22em]">
+            <div className="flex h-16 items-center justify-between border-b border-ink-100 bg-white px-4">
+              <div id={`${menuId}-title`} className="text-sm font-semibold uppercase tracking-[0.22em] text-ink-500">
                 {title}
               </div>
               <button
                 onClick={closeWithAnim}
                 aria-label="Close menu"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 transition hover:bg-paper-50"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="stroke-current">
                   <path d="M6 6l12 12M18 6l-12 12" strokeWidth="2" strokeLinecap="round" />
@@ -191,7 +192,7 @@ export default function MobileNav({
             )}
           </div>
         </div>,
-        document.body
+        portalTarget
       )
     : null;
 
@@ -202,27 +203,27 @@ export default function MobileNav({
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => (open ? closeWithAnim() : setOpen(true))}
-        className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 bg-white/20 px-3 py-2 text-white transition hover:bg-white/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-alain-blue"
+        className="inline-flex items-center justify-center gap-2 rounded-full border border-ink-200 bg-white px-3 py-2 text-ink-800 shadow-sm transition hover:border-alain-blue/40 hover:text-alain-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-alain-blue/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
         <span className="sr-only">{triggerAriaLabel}</span>
         <div className="relative h-4 w-5">
           <span
-            className={`absolute left-0 h-0.5 w-5 bg-white transition-all duration-200 ease-out ${
+            className={`absolute left-0 h-0.5 w-5 bg-current transition-all duration-200 ease-out ${
               open ? "top-2 rotate-45" : "top-0 rotate-0"
             }`}
           />
           <span
-            className={`absolute left-0 h-0.5 w-5 bg-white transition-all duration-200 ease-out ${
+            className={`absolute left-0 h-0.5 w-5 bg-current transition-all duration-200 ease-out ${
               open ? "top-2 opacity-0" : "top-2 opacity-100"
             }`}
           />
           <span
-            className={`absolute left-0 h-0.5 w-5 bg-white transition-all duration-200 ease-out ${
+            className={`absolute left-0 h-0.5 w-5 bg-current transition-all duration-200 ease-out ${
               open ? "top-2 -rotate-45" : "top-4 rotate-0"
             }`}
           />
         </div>
-        <span className="hidden text-sm font-medium text-white sm:inline">Menu</span>
+        <span className="hidden text-sm font-medium text-ink-700 sm:inline">Menu</span>
       </button>
       {overlay}
     </div>

@@ -11,6 +11,7 @@ import {
   generateLessonContent,
   mapLessonGenerationError,
   persistLessonArtifacts,
+  CustomPromptConfig,
 } from "./lesson-service";
 
 interface LessonGenerationRequest {
@@ -22,6 +23,7 @@ interface LessonGenerationRequest {
   provider?: "poe" | "openai-compatible";
   // Optional: ask the teacher to include a brief reasoning summary in the output JSON
   includeReasoning?: boolean;
+  customPrompt?: CustomPromptConfig;
 }
 
 interface LessonGenerationResponse {
@@ -95,6 +97,7 @@ export const generateLesson = api(
           req.difficulty,
           req.includeAssessment,
           req.includeReasoning,
+          req.customPrompt,
         );
         const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as 'poe' | 'openai-compatible';
         const generation = await generateLessonContent({
@@ -106,6 +109,12 @@ export const generateLesson = api(
         });
 
         const { lesson, usedRepair, reasoningSummary, teacherResponse } = generation;
+        if (req.customPrompt?.title && (!lesson.title || !String(lesson.title).trim())) {
+          lesson.title = req.customPrompt.title;
+        }
+        if (req.customPrompt?.context && (!lesson.description || !String(lesson.description).trim())) {
+          lesson.description = req.customPrompt.context;
+        }
         const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
         const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
         const modelId = modelInfo.name || 'unknown-model';
@@ -156,6 +165,7 @@ export const generateLocalLesson = api<{
   includeAssessment?: boolean;
   provider?: "poe" | "openai-compatible";
   includeReasoning?: boolean;
+  customPrompt?: CustomPromptConfig;
 }, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate-local" },
   async (req) => {
@@ -191,6 +201,7 @@ export const generateLocalLesson = api<{
           req.difficulty,
           req.includeAssessment,
           req.includeReasoning,
+          req.customPrompt,
         );
         const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as 'poe' | 'openai-compatible';
         const generation = await generateLessonContent({
@@ -202,6 +213,12 @@ export const generateLocalLesson = api<{
         });
 
         const { lesson, usedRepair, reasoningSummary, teacherResponse } = generation;
+        if (req.customPrompt?.title && (!lesson.title || !String(lesson.title).trim())) {
+          lesson.title = req.customPrompt.title;
+        }
+        if (req.customPrompt?.context && (!lesson.description || !String(lesson.description).trim())) {
+          lesson.description = req.customPrompt.context;
+        }
         const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
         const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
 
@@ -302,6 +319,7 @@ export const generateFromText = api<{
   includeAssessment?: boolean;
   provider?: "poe" | "openai-compatible";
   includeReasoning?: boolean;
+  customPrompt?: CustomPromptConfig;
 }, LessonGenerationResponse>(
   { expose: true, method: "POST", path: "/lessons/generate-from-text" },
   async (req) => {
@@ -332,6 +350,7 @@ export const generateFromText = api<{
           req.difficulty,
           req.includeAssessment,
           req.includeReasoning,
+          req.customPrompt,
         );
         const selectedProvider = (req.provider ?? (process.env.TEACHER_PROVIDER === 'openai-compatible' ? 'openai-compatible' : 'poe')) as 'poe' | 'openai-compatible';
         const modelInfo = { name: 'Custom Content', org: 'user', url: 'about:blank' } as any;
@@ -344,6 +363,12 @@ export const generateFromText = api<{
         });
 
         const { lesson, usedRepair, reasoningSummary, teacherResponse } = generation;
+        if (req.customPrompt?.title && (!lesson.title || !String(lesson.title).trim())) {
+          lesson.title = req.customPrompt.title;
+        }
+        if (req.customPrompt?.context && (!lesson.description || !String(lesson.description).trim())) {
+          lesson.description = req.customPrompt.context;
+        }
         const teacherUsed = (teacherResponse as any)?.usedModel || req.teacherModel || 'GPT-OSS-20B';
         const teacherDowngraded = !!(teacherResponse as any)?.downgraded;
 

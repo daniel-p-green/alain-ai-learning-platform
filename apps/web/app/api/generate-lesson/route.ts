@@ -1,6 +1,22 @@
 import { safeAuth, demoBypassEnabled } from "../../../lib/auth";
 import { backendUrl } from "../../../lib/backend";
 
+type CustomPromptPayload = {
+  title?: string;
+  context?: string;
+};
+
+function normalizeCustomPrompt(input: any): CustomPromptPayload | undefined {
+  if (!input || typeof input !== 'object') return undefined;
+  const rawTitle = typeof input.title === 'string' ? input.title.trim() : '';
+  const rawContext = typeof input.context === 'string' ? input.context.trim() : '';
+  if (!rawTitle && !rawContext) return undefined;
+  return {
+    title: rawTitle || undefined,
+    context: rawContext || undefined,
+  };
+}
+
 export async function POST(req: Request) {
   const { userId, getToken } = await safeAuth();
   if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
@@ -18,6 +34,7 @@ export async function POST(req: Request) {
   const includeAssessment = Boolean(body.includeAssessment);
   const provider = (body.provider || process.env.TEACHER_PROVIDER || 'poe') as 'poe' | 'openai-compatible';
   const includeReasoning = Boolean(body.showReasoning);
+  const customPrompt = normalizeCustomPrompt(body.customPrompt);
   const token = await getToken();
 
   // 1) Generate lesson structure from HF URL
@@ -27,7 +44,7 @@ export async function POST(req: Request) {
   const genResp = await fetch(backendUrl('/lessons/generate'), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning }),
+    body: JSON.stringify({ hfUrl: body.hfUrl, difficulty, teacherModel, includeAssessment, provider, includeReasoning, customPrompt }),
     signal: genCtrl.signal,
   });
   let gen: any = null;
@@ -45,6 +62,12 @@ export async function POST(req: Request) {
   if (!gen.success) return Response.json(gen, { status: 422 });
 
   const lesson = gen.lesson;
+  if (customPrompt?.title && (!lesson.title || !String(lesson.title).trim())) {
+    lesson.title = customPrompt.title;
+  }
+  if (customPrompt?.context && (!lesson.description || !String(lesson.description).trim())) {
+    lesson.description = customPrompt.context;
+  }
   // Optional HF enrichment: license (non-offline)
   try {
     if (body?.hfUrl && typeof body.hfUrl === 'string') {

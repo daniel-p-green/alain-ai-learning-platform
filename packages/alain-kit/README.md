@@ -9,6 +9,13 @@ Applied Learning AI Notebooks (ALAIN) – Kit edition. This package orchestrates
 * Optional Gemini (via Poe) review rewrites problematic cells and helps reach “Colab ✅” automatically.
 * Outputs include the notebook, a markdown validation report, and structured metrics (quality, readability, timings).
 
+## Versioning
+
+* **v0.2.0 – Tooling Orchestrator (default)**: the current release that wires the outline/section pipeline through the new tool runtime (`core/tool-runtime.ts`, `core/notebook-tool-controller.ts`, `core/tool-orchestrator.ts`). Prompts and harmony files for this version continue to live under `resources/prompts/alain-kit/`.
+* **v0.1.0 – Text Prompt Baseline**: the original prompt-only workflow (outline + section JSON without tool calling). The preserved prompt set lives in `resources/prompts/alain-kit/versions/v0.1-text/` so you can diff it against the tooling variant.
+
+Both versions share the same validation and notebook assembly layers; the distinction is purely in orchestration and prompt strategy.
+
 ## Repository Layout
 
 ```

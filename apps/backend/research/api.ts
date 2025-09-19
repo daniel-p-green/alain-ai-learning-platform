@@ -2,7 +2,10 @@ import { api, APIError } from "encore.dev/api";
 import { researchModel } from "../utils/research";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.join(__dirname, '..', '..', '..');
 
 interface RunResearchRequest {
@@ -54,4 +57,3 @@ export const runResearch = api<RunResearchRequest, RunResearchResponse>(
     }
   }
 );
-

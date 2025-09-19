@@ -44,8 +44,15 @@ export declare class SectionGenerator {
     generateSection(options: SectionGenerationOptions): Promise<GeneratedSection>;
     private buildSectionPrompt;
     private parseSectionResponse;
+    private trimToJson;
+    private sanitizeJsonResponse;
     private extractFirstJsonObject;
-    private createFallbackSection;
+    private recordHumanReview;
+    private logTrace;
+    private appendTrace;
+    private postProcessSection;
+    private ensureSectionCompleteness;
+    private compileFallbackSection;
     private requestWithRetry;
     /**
      * Validate section meets quality standards

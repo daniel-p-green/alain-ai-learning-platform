@@ -1,5 +1,13 @@
 # ALAIN-Kit Versions
 
+## v0.2.0 – Tooling Orchestrator (current)
+
+Prompts powering the tool-runtime pipeline (Harmony orchestrator, research, design, develop, validate) remain at the root of `resources/prompts/alain-kit/`. Use these when exercising the `0.2.0` release that integrates notebook and validator tool controllers.
+
+## v0.1.0 – Text Prompt Baseline
+
+The original text-only JSON prompts (outline + section) are preserved under `resources/prompts/alain-kit/versions/v0.1-text/` for comparison. They reflect the pre-tooling flow where OutlineJSON and SectionJSON were generated via direct prompts without tool logging.
+
 ## v2025.09.13
 
 Numbered prompt set for harmony and flattened (Poe/API) variants.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { backendUrl } from '../../../lib/backend';
 import type { ProviderInfo } from '../../../lib/types';
 import api, { APIClientError, parseHfRef } from '../../../lib/api';
@@ -74,6 +74,10 @@ export interface UseGenerateLessonResult {
   formRef: React.MutableRefObject<HTMLFormElement | null>;
   hfUrl: string;
   setHfUrl: (value: string) => void;
+  briefTitle: string;
+  setBriefTitle: (value: string) => void;
+  briefContext: string;
+  setBriefContext: (value: string) => void;
   source: Source;
   setSource: (value: Source) => void;
   rawTextInput: string;
@@ -121,6 +125,8 @@ export interface UseGenerateLessonResult {
 export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): UseGenerateLessonResult {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [hfUrl, setHfUrl] = useState('');
+  const [briefTitle, setBriefTitle] = useState('');
+  const [briefContext, setBriefContext] = useState('');
   const [source, setSource] = useState<Source>('hf');
   const [rawTextInput, setRawTextInput] = useState('');
   const [difficulty, setDifficulty] = useState('beginner');
@@ -149,6 +155,16 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
   const [exportState, setExportState] = useState<ExportState>({ status: 'idle' });
   const exportUrlRef = useRef<string | null>(null);
 
+  const buildCustomPromptPayload = useCallback(() => {
+    const trimmedTitle = briefTitle.trim();
+    const trimmedContext = briefContext.trim();
+    if (!trimmedTitle && !trimmedContext) return undefined;
+    return {
+      title: trimmedTitle || undefined,
+      context: trimmedContext || undefined,
+    };
+  }, [briefTitle, briefContext]);
+
   useEffect(() => {
     return () => {
       if (exportUrlRef.current) {
@@ -164,6 +180,8 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     const hf = q.get('hf');
     const provider = q.get('provider');
     const model = q.get('model');
+    const title = q.get('title');
+    const context = q.get('context');
     if (hf) {
       setSource('hf');
       setHfUrl(hf);
@@ -173,6 +191,8 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
       if (provider === 'local') setSource('local');
       setTargetProvider(provider);
     }
+    if (title) setBriefTitle(title);
+    if (context) setBriefContext(context);
   }, []);
 
   useEffect(() => {
@@ -290,6 +310,7 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
             teacherModel,
             targetProvider,
             targetModel,
+            customPrompt: buildCustomPromptPayload(),
           }),
         });
       } else if (source === 'text') {
@@ -314,6 +335,7 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
             teacherModel,
             targetProvider,
             targetModel,
+            customPrompt: buildCustomPromptPayload(),
           }),
         });
       } else {
@@ -338,6 +360,7 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
             teacherModel,
             targetProvider,
             targetModel,
+            customPrompt: buildCustomPromptPayload(),
           }),
         });
       }
@@ -410,6 +433,8 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     setSource('hf');
     setTeacherProvider('poe');
     setHfUrl('meta-llama/Meta-Llama-3.1-8B-Instruct');
+    setBriefTitle('Teach Meta Llama 3.1 8B Instruct');
+    setBriefContext('Create a quickstart notebook that introduces the model, explains ideal use cases, and walks through a simple inference example.');
     setSnackbar('Generating…');
     requestSubmitSoon();
   }
@@ -418,6 +443,8 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     setSource('local');
     setTargetProvider('openai-compatible');
     setTargetModel('gpt-oss-20b');
+    setBriefTitle('Local GPT-OSS 20B hands-on');
+    setBriefContext('Walk the user through running GPT-OSS 20B locally, including setup checks and a sample prompt.');
     setSnackbar('Generating…');
     requestSubmitSoon();
   }
@@ -433,6 +460,8 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     setForceFallback(false);
     setRawTextInput('');
     setHfUrl('');
+    setBriefTitle('Start with ALAIN demo');
+    setBriefContext('Showcase how to go from a model reference to a runnable manual with minimal setup.');
     setSnackbar('Demo preset loaded with GPT-OSS-20B. Click Generate to run it.');
     setTimeout(() => setSnackbar(null), 2600);
   }
@@ -482,6 +511,10 @@ export function useGenerateLesson({ promptMode }: UseGenerateLessonOptions): Use
     formRef,
     hfUrl,
     setHfUrl,
+    briefTitle,
+    setBriefTitle,
+    briefContext,
+    setBriefContext,
     source,
     setSource,
     rawTextInput,

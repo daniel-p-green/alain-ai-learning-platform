@@ -1,8 +1,15 @@
+import fs from 'fs';
+import path from 'path';
 import { extractJsonLoose } from './json-utils.js';
 import { createLogger, timeIt, trackEvent, metrics } from './obs.js';
 import { capsFor, buildChatCompletionsUrl } from './providers.js';
 import { supportsTemperature } from './model-caps.js';
 import { loadPromptTemplate, applyTemplate } from './prompt-loader.js';
+const OUTLINE_PLACEHOLDER_PATTERNS = [
+    /excerpt intentionally truncated/i,
+    /code excerpt truncated/i,
+    /\.{3}$/
+];
 export class OutlineGenerator {
     constructor(options = {}) {
         this.log = createLogger('OutlineGenerator');
@@ -40,7 +47,7 @@ export class OutlineGenerator {
             const allowTemperature = supportsTemperature(model);
             let outline;
             let lastError;
-            for (let attempt = 1; attempt <= 2; attempt++) {
+            for (let attempt = 1; attempt <= 4; attempt++) {
                 const userPrompt = attempt === 1
                     ? prompt
                     : this.buildRetryOutlinePrompt(subject, difficulty, context);
@@ -87,6 +94,7 @@ export class OutlineGenerator {
                     outline = this.repairOutlineDeterministic(outline);
                 }
             }
+            this.ensureOutlineCompleteness(outline);
             const dur = Date.now() - started;
             metrics.inc('alain_outline_generated_total', 1, { model, difficulty });
             metrics.observe('alain_outline_duration_ms', dur, { model, difficulty });
@@ -115,18 +123,56 @@ export class OutlineGenerator {
         return `${this.buildOutlinePrompt(subject, difficulty, context)}\n\nYour previous reply was not valid JSON. Reply again with ONLY the OutlineJSON object (start with {, end with }). No commentary.`;
     }
     parseOutlineResponse(raw) {
+        const trimmed = this.trimToJson(raw);
+        if (!trimmed) {
+            this.log.error('outline_json_extract_failed', { head: raw.slice(0, 200) });
+            const fallback = this.compileFallbackOutline(raw);
+            this.logTrace('outline', 0, 'compiled_fallback', 'Generated fallback after missing JSON');
+            this.recordHumanReview('outline', raw, 'compiled_fallback');
+            return fallback;
+        }
         try {
-            return JSON.parse(raw);
+            return JSON.parse(trimmed);
         }
         catch (err) {
             this.log.warn('outline_json_parse_failed', { error: err?.message || String(err) });
+            this.logTrace('outline', 0, 'parse_failed', trimmed);
         }
-        const loose = extractJsonLoose(raw);
+        const loose = extractJsonLoose(trimmed);
         if (loose) {
             return loose;
         }
-        this.log.error('outline_json_extract_failed', { head: raw.slice(0, 200) });
-        throw new Error('No valid JSON found in outline response');
+        this.log.error('outline_json_extract_failed', { head: trimmed.slice(0, 200) });
+        const fallback = this.compileFallbackOutline(trimmed);
+        this.logTrace('outline', 0, 'compiled_fallback', 'Generated fallback after parse failure');
+        this.recordHumanReview('outline', trimmed, 'compiled_fallback');
+        return fallback;
+    }
+    trimToJson(raw) {
+        if (!raw)
+            return '';
+        const firstBrace = raw.indexOf('{');
+        if (firstBrace === -1)
+            return '';
+        return raw.slice(firstBrace);
+    }
+    sanitizeJsonResponse(raw) {
+        const trimmed = this.trimToJson(raw);
+        if (!trimmed)
+            return '';
+        let depth = 0;
+        for (let i = 0; i < trimmed.length; i++) {
+            const ch = trimmed[i];
+            if (ch === '{')
+                depth++;
+            if (ch === '}') {
+                depth--;
+                if (depth === 0) {
+                    return trimmed.slice(0, i + 1);
+                }
+            }
+        }
+        return '';
     }
     describeAudience(difficulty) {
         switch (difficulty) {
@@ -214,6 +260,21 @@ export class OutlineGenerator {
                 explanation: 'Review the outline section to find the correct answer.'
             });
         }
+        if (!fixed.title) {
+            fixed.title = 'Generated Notebook Outline';
+        }
+        if (!fixed.overview) {
+            fixed.overview = 'Auto-generated overview: revisit core goals, environment setup, and dual workflows.';
+        }
+        if (!fixed.summary) {
+            fixed.summary = 'Auto-generated summary placeholder to satisfy outline validation.';
+        }
+        if (!fixed.next_steps) {
+            fixed.next_steps = 'Review the generated notebook for accuracy, run validation, and prepare learner exercises.';
+        }
+        if (!Array.isArray(fixed.references)) {
+            fixed.references = [];
+        }
         // Ensure objectives have at least 3 items
         if (!Array.isArray(fixed.objectives) || fixed.objectives.length < 3) {
             fixed.objectives = [
@@ -235,7 +296,8 @@ export class OutlineGenerator {
     async requestWithRetry(url, apiKey, body) {
         let attempt = 0;
         let delay = 500;
-        while (attempt < 3) {
+        const maxAttempts = 5;
+        while (attempt < maxAttempts) {
             try {
                 const started = Date.now();
                 const headers = { 'Content-Type': 'application/json' };
@@ -252,14 +314,21 @@ export class OutlineGenerator {
                 }
                 const data = await response.json();
                 const content = data.choices?.[0]?.message?.content;
-                if (!content)
+                if (!content || !String(content).trim()) {
+                    this.logTrace('outline', attempt + 1, 'empty', content ?? '');
                     throw new Error('Empty content');
+                }
+                const sanitized = this.sanitizeJsonResponse(String(content));
+                if (!sanitized) {
+                    this.logTrace('outline', attempt + 1, 'no_json_object', String(content));
+                    throw new Error('No JSON detected');
+                }
                 this.log.debug('outline_request_success', { attempt: attempt + 1, duration_ms: Date.now() - started });
-                return content;
+                return sanitized;
             }
             catch (e) {
                 attempt++;
-                if (attempt >= 3)
+                if (attempt >= maxAttempts)
                     throw e;
                 const jitter = Math.round(delay * (0.8 + Math.random() * 0.4));
                 this.log.warn('outline_request_retry', { attempt, delay_ms: jitter });
@@ -268,6 +337,107 @@ export class OutlineGenerator {
             }
         }
         throw new Error('Max retries exceeded');
+    }
+    recordHumanReview(kind, payload, reason) {
+        const reviewRoot = (process.env.ALAIN_HUMAN_REVIEW_DIR || '').trim();
+        if (!reviewRoot)
+            return;
+        try {
+            const scenario = (process.env.ALAIN_SCENARIO_SLUG || 'unknown').replace(/[^a-zA-Z0-9-_]/g, '_');
+            const dir = path.resolve(reviewRoot, scenario || 'unknown');
+            fs.mkdirSync(dir, { recursive: true });
+            const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const file = path.join(dir, `${kind}-${reason}-${stamp}.txt`);
+            const header = `# Human Review Artifact\nScenario: ${scenario}\nType: ${kind}\nReason: ${reason}\nTimestamp: ${new Date().toISOString()}\n\n`;
+            fs.writeFileSync(file, header + payload, 'utf8');
+            this.appendTrace(dir, kind, reason, payload);
+        }
+        catch (error) {
+            this.log.warn('human_review_write_failed', { error: error?.message || String(error) });
+        }
+    }
+    logTrace(kind, attempt, phase, payload) {
+        const reviewRoot = (process.env.ALAIN_HUMAN_REVIEW_DIR || '').trim();
+        if (!reviewRoot)
+            return;
+        try {
+            const scenario = (process.env.ALAIN_SCENARIO_SLUG || 'unknown').replace(/[^a-zA-Z0-9-_]/g, '_');
+            const dir = path.resolve(reviewRoot, scenario || 'unknown');
+            fs.mkdirSync(dir, { recursive: true });
+            const traceLine = `${new Date().toISOString()}\tkind=${kind}\tattempt=${attempt}\tphase=${phase}\tpreview=${payload.slice(0, 160).replace(/[\r\n]+/g, ' ')}\n`;
+            fs.appendFileSync(path.join(dir, 'trace.log'), traceLine, 'utf8');
+        }
+        catch (error) {
+            this.log.warn('trace_write_failed', { error: error?.message || String(error) });
+        }
+    }
+    compileFallbackOutline(raw) {
+        const placeholder = raw.slice(0, 2000).replace(/```/g, '').trim();
+        return {
+            title: 'Manual Review Required',
+            overview: placeholder || 'Outline unavailable. Manual authoring required.',
+            objectives: [
+                'Replace fallback outline with finalized objectives.',
+                'Document prerequisites and references before publishing.',
+                'Ensure each section contains actionable guidance.'
+            ],
+            prerequisites: ['Manual review required'],
+            setup: {
+                requirements: ['Manual review required'],
+                environment: ['Manual review required'],
+                commands: []
+            },
+            outline: [
+                {
+                    step: 1,
+                    title: 'Step 1: Manual Review Needed',
+                    type: 'concept',
+                    estimated_tokens: 400,
+                    content_type: 'markdown + code'
+                }
+            ],
+            exercises: [],
+            assessments: [],
+            summary: 'Outline generation failed; content requires manual authoring.',
+            next_steps: 'Replace fallback content with a complete outline.',
+            references: ['Manual review required'],
+            estimated_total_tokens: 1200,
+            target_reading_time: '15-20 minutes'
+        };
+    }
+    appendTrace(dir, kind, phase, payload) {
+        const traceLine = `${new Date().toISOString()}\tkind=${kind}\tphase=${phase}\tpreview=${payload.slice(0, 160).replace(/[\r\n]+/g, ' ')}\n`;
+        fs.appendFileSync(path.join(dir, 'trace.log'), traceLine, 'utf8');
+    }
+    ensureOutlineCompleteness(outline) {
+        const issues = [];
+        const checkField = (value, name) => {
+            if (!value || value.trim().length < 120) {
+                issues.push(`${name} is too short or missing`);
+            }
+            OUTLINE_PLACEHOLDER_PATTERNS.forEach(pattern => {
+                if (value && pattern.test(value)) {
+                    issues.push(`${name} contains placeholder language (${pattern})`);
+                }
+            });
+        };
+        checkField(outline.overview, 'Overview');
+        checkField(outline.summary, 'Summary');
+        if (!Array.isArray(outline.references) || outline.references.length < 2) {
+            issues.push('At least two references are required');
+        }
+        const serialized = JSON.stringify(outline).toLowerCase();
+        OUTLINE_PLACEHOLDER_PATTERNS.forEach(pattern => {
+            if (pattern.test(serialized)) {
+                issues.push(`Outline contains placeholder artifact (${pattern})`);
+            }
+        });
+        if (issues.length) {
+            const message = issues.join('; ');
+            this.logTrace('outline', 0, 'incomplete', message);
+            this.recordHumanReview('outline', JSON.stringify(outline, null, 2), 'incomplete');
+            throw new Error(`Outline completeness check failed: ${message}`);
+        }
     }
 }
 //# sourceMappingURL=outline-generator.js.map

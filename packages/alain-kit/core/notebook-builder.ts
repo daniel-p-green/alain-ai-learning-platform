@@ -207,7 +207,7 @@ export class NotebookBuilder {
           schemaVersion: "1.0.0",
           createdAt,
           title: outline.title,
-          builder: { name: "alain-kit", version: "0.1.0" }
+          builder: { name: "alain-kit", version: "0.2.0" }
         }
       },
       nbformat: 4,

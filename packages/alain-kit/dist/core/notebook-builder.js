@@ -145,7 +145,7 @@ export class NotebookBuilder {
                     schemaVersion: "1.0.0",
                     createdAt,
                     title: outline.title,
-                    builder: { name: "alain-kit", version: "0.1.0" }
+                    builder: { name: "alain-kit", version: "0.2.0" }
                 }
             },
             nbformat: 4,
@@ -382,6 +382,9 @@ export class NotebookBuilder {
             outputs: [],
         };
     }
+    /**
+     * Adds a light-touch runtime recap so learners see the same checklist that lives in the UI/README.
+     */
     createTransformerRuntimeCell() {
         return {
             cell_type: 'markdown',

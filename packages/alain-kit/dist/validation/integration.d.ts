@@ -33,6 +33,7 @@ export interface ALAINKitResult {
     };
 }
 export declare class ALAINKit {
+    private log;
     private outlineGenerator;
     private sectionGenerator;
     private notebookBuilder;
@@ -42,6 +43,8 @@ export declare class ALAINKit {
     private semanticValidator;
     private baseUrl?;
     private checkpointsDir;
+    private toolRuntime?;
+    private orchestrator;
     constructor(options?: {
         baseUrl?: string;
     });
@@ -65,8 +68,6 @@ export declare class ALAINKit {
         };
     }): Promise<ALAINKitResult>;
     private generateValidationReport;
-    private runPool;
-    private attemptWithBackoff;
 }
 /**
  * Simple usage example

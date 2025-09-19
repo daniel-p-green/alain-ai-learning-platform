@@ -1,20 +1,14 @@
+import Image from "next/image";
+
 export default function Footer() {
   return (
     <footer className="mt-16 bg-paper-50 border-t border-ink-100 text-ink-700">
       <div className="mx-auto max-w-7xl px-6 md:px-8 py-12">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <div className="font-display font-semibold text-ink-900">ALAIN</div>
-            <p className="mt-2 text-sm">Open AI learning with clear blueprints and accessible UI.</p>
-            <div className="mt-3">
-              <a
-                href="https://www.linkedin.com/in/danielpgreen"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center h-10 px-4 rounded-[12px] border border-ink-200 text-alain-blue hover:bg-paper-50"
-              >
-                Partner with us
-              </a>
+            <div className="flex items-center gap-3">
+              <Image src="/brand/ALAIN_logo_primary_blue-bg.svg" alt="ALAIN" width={88} height={32} className="h-8 w-auto" />
+              <span className="font-display text-sm font-semibold text-ink-900">AI Manuals for AI Models</span>
             </div>
           </div>
           <div>
@@ -47,13 +41,12 @@ export default function Footer() {
                   X (@dgrreen)
                 </a>
               </li>
-              <li><a className="hover:underline" href="https://www.linkedin.com/in/danielpgreen" target="_blank" rel="noopener noreferrer">Partner with us</a></li>
             </ul>
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-ink-100 text-xs flex items-center justify-between">
-          <div>
-            © {new Date().getFullYear()} ALAIN · Developed by {" "}
+        <div className="mt-8 flex items-center justify-between border-t border-ink-100 pt-6 text-xs text-ink-700">
+          <div className="flex items-center gap-2">
+            © {new Date().getFullYear()} ALAIN • Developed by
             <a
               href="https://linkedin.com/in/danielpgreen"
               target="_blank"

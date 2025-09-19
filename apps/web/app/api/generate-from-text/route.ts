@@ -3,6 +3,22 @@ export const runtime = 'nodejs';
 import { safeAuth, demoBypassEnabled } from "../../../lib/auth";
 import { backendUrl } from "../../../lib/backend";
 
+type CustomPromptPayload = {
+  title?: string;
+  context?: string;
+};
+
+function normalizeCustomPrompt(input: any): CustomPromptPayload | undefined {
+  if (!input || typeof input !== 'object') return undefined;
+  const rawTitle = typeof input.title === 'string' ? input.title.trim() : '';
+  const rawContext = typeof input.context === 'string' ? input.context.trim() : '';
+  if (!rawTitle && !rawContext) return undefined;
+  return {
+    title: rawTitle || undefined,
+    context: rawContext || undefined,
+  };
+}
+
 export async function POST(req: Request) {
   const { userId, getToken } = await safeAuth();
   if (!userId && !demoBypassEnabled()) return new Response("Unauthorized", { status: 401 });
@@ -19,6 +35,7 @@ export async function POST(req: Request) {
   const includeAssessment = Boolean(body.includeAssessment);
   const provider = (body.provider || process.env.TEACHER_PROVIDER || 'poe') as 'poe' | 'openai-compatible';
   const includeReasoning = Boolean(body.showReasoning);
+  const customPrompt = normalizeCustomPrompt(body.customPrompt);
   const token = await getToken();
 
   // 1) Generate lesson structure from pasted text (fallback to local if backend unavailable)
@@ -31,7 +48,7 @@ export async function POST(req: Request) {
       const genResp = await fetch(backendUrl('/lessons/generate-from-text'), {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ textContent: body.textContent, difficulty, teacherModel, includeAssessment, provider, includeReasoning }),
+        body: JSON.stringify({ textContent: body.textContent, difficulty, teacherModel, includeAssessment, provider, includeReasoning, customPrompt }),
         signal: genCtrl.signal,
       });
       try {
@@ -53,10 +70,10 @@ export async function POST(req: Request) {
     // Title: first non-empty line, strip URLs, trim to 80
     const firstLine = (body.textContent as string).split(/\r?\n/).find((l:string)=>l.trim().length>0) || '';
     const withoutUrls = firstLine.replace(/https?:\/\/\S+/g, '').replace(/\S+@\S+\.[\w]+/g, '').trim();
-    const title = (withoutUrls || 'Generated Lesson').slice(0, 80);
+    const fallbackTitle = customPrompt?.title || withoutUrls || 'Generated Lesson';
     lesson = {
-      title,
-      description: 'Generated from pasted text (local fallback).',
+      title: fallbackTitle.slice(0, 80),
+      description: customPrompt?.context || 'Generated from pasted text (local fallback).',
       provider,
       model: body.targetModel || 'gpt-oss:20b',
       difficulty,
@@ -66,6 +83,12 @@ export async function POST(req: Request) {
         { step_order: 2, title: 'Hands-on', content: 'Demonstrate a short example.', code_template: 'Provide a short example relevant to the topic.' }
       ],
     } as any;
+  }
+  if (customPrompt?.title && (!lesson.title || !String(lesson.title).trim())) {
+    lesson.title = customPrompt.title;
+  }
+  if (customPrompt?.context && (!lesson.description || !String(lesson.description).trim())) {
+    lesson.description = customPrompt.context;
   }
   // Optional overrides from UI (provider/model picker)
   if (body.targetProvider && typeof body.targetProvider === 'string') {
