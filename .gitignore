@@ -65,3 +65,6 @@ content/lessons/**/20*/
 
 # Allow keeping curated samples by explicitly adding them (use ! negation rules locally if needed)
 .env
+
+# Ignore Next.js build artifacts in tmp tutorial
+tmp_manual_tutorial/poe-chat-tutorial/.next
