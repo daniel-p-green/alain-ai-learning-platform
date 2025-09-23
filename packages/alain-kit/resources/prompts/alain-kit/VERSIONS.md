@@ -1,5 +1,21 @@
 # ALAIN-Kit Versions
 
+## v0.1 — Harmony (original; formerly “v1.x”)
+
+Original Harmony-based prompt set used in early releases. Provides orchestrator, research, design, develop, and validate flows with tool/controller integrations.
+
+- Index: `resources/prompts/alain-kit-v0.1/INDEX.md`
+- Canonical files: `resources/prompts/alain-kit/` (shared for backward compatibility)
+
+## v0.2a – Research Bundle v2 (offline)
+
+Focused improvement of the research prompt for deep, tool-assisted model investigation and offline packaging.
+
+- Path: `resources/prompts/alain-kit-v0.2a/core/01-research.offline-bundle.v2.txt`
+- Adds authoritative source links and search hints (HF Hub, GitHub releases/citation, arXiv, leaderboards/evals, servers/quantization, datasets, mirrors)
+- Enforces strict revision pinning (Hub revision, Git SHA, arXiv vN) and manifest with checksums
+- generation_config optional (fetch if present); servers/quantization marked official vs community support
+
 ## v0.2.0 – Tooling Orchestrator (current)
 
 Prompts powering the tool-runtime pipeline (Harmony orchestrator, research, design, develop, validate) remain at the root of `resources/prompts/alain-kit/`. Use these when exercising the `0.2.0` release that integrates notebook and validator tool controllers.
@@ -64,3 +80,41 @@ All variants enforce the same contract:
 - Fields: For single-pass develop: title, description, learning_objectives[], steps[], assessments[]. For outline/section: follow each file’s JSON schema.
 - Parameterized examples only; no secrets; no external calls
 - If validation fails, REPAIR and return valid JSON
+## v0.2c – Research Offline Bundler (fallback‑ready)
+
+Iteration on v0.2a that always produces a complete offline bundle. Adds:
+- No‑Tools Fallback: emits full bundle with Unknowns and [S#] placeholders when tools are unavailable
+- Optional SPEC_JSON input to prefill from a prior spec extractor
+- Final‑only output (no tool syntax or commentary)
+
+Path: `resources/prompts/alain-kit-v0.2c/core/01-research.offline-bundle.v2c.txt`
+
+## v0.2d – Research Spec Extractor (strict JSON)
+
+Iteration on v0.2b enforcing citations and no speculation.
+- JSON‑only single object
+- Unknowns labeled as "Not specified" with notes: "unverified"
+- Sources array with URLs for all non‑Unknown facts; Disputed section for conflicts
+
+Path: `resources/prompts/alain-kit-v0.2d/core/01-research.spec-json.v2d.txt`
+
+## v0.3 — Two‑Phase Research (Spec → Bundle)
+
+Short, robust prompts for a reliable two‑stage flow:
+- Stage 1 — Spec Extractor (strict JSON):
+  - Path: `resources/prompts/alain-kit-v0.3/core/01-spec.strict.json.v0.3.txt`
+  - Returns a single JSON object with verified facts and citations; Unknowns marked as "Not specified" + notes: "unverified"; Disputed supported.
+- Stage 2 — Offline Bundler (MCP):
+  - Path: `resources/prompts/alain-kit-v0.3/core/02-bundle.offline.v0.3.txt`
+  - Consumes SPEC_JSON, fetches raw sources via MCP (HF/GitHub/arXiv/Web), writes bundle files via fs-local, falls back gracefully with Unknowns and [S#].
+
+## v0.4 — Research Capsule (Spec → Bundle → Provenance)
+
+Hardens outputs for full offline reproducibility and provenance.
+
+- Stage 1 — Spec Extractor (strict JSON)
+  - Path: `resources/prompts/alain-kit-v0.4/core/01-spec.strict.json.v0.4.txt`
+  - Adds fields: identity.family_map, tokenizer_details, license_details, versioning, gaps_unknowns
+- Stage 2 — Offline Bundler (MCP + provenance)
+  - Path: `resources/prompts/alain-kit-v0.4/core/02-bundle.offline.v0.4.txt`
+  - Downloads raw sources (HF/GitHub/papers/leaderboards/datasets), writes Markdown/code/env, and emits manifest with checksums + provenance metadata (etag, last_modified, content_length_bytes, retrieval_tool, download_time_utc)

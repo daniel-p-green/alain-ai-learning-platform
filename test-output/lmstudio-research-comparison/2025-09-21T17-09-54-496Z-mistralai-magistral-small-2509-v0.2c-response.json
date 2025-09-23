@@ -1,0 +1,9 @@
+{
+  "version": "v0.2c",
+  "model_reference": "mistralai/Magistral-Small-2509",
+  "response_time_ms": 63898,
+  "json_parsed": false,
+  "coerced_json_parsed": false,
+  "error": "HTTP 400: {\"error\":\"Reached context length of 4096 tokens with model (arch: gpt-oss) that does not currently support mid-generation context overflow. Try reloading with a larger context length or shortening the prompt/chat.\"}",
+  "response_text": ""
+}

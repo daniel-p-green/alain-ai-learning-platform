@@ -1,0 +1,20 @@
+# Sources Digest for t5-large
+- HF revision: 150ebc2c4b72291e770f58e6057481c8d2ed331a
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 2
+- Parsed architecture: T5ForConditionalGeneration
+- Parsed parameters: 770M
+- Parsed context window: 512
+- Parsed license: apache-2.0
+- Primary GitHub repo: google-research/text-to-text-transfer-transformer
+  - c4: api=true readme=true
+  - wiki_dpr: api=true readme=true

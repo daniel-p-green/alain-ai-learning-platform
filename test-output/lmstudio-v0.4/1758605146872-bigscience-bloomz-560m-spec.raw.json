@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-cd9kz23w7gp9fer6zyt1o6",
+  "object": "chat.completion",
+  "created": 1758605167,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"bigscience/bloomz-560m\",\"identity\":{\"aliases\":[\"bloomz-560m\"],\"family_map\":[{\"variant\":\"bloomz-560m\",\"repo_id\":\"bigscience/bloomz-560m\",\"context_window\":\"2048\"}],\"canonical_repo\":\"bigscience/bloomz-5602?\"},\"technical_specs\":{\"architecture\":\"BloomForCale...}{\" ,\"parameters\":\"560M\",\"context_window\":\"2048\",\"tokenizer\":\"bigscience/bloomz-560m-tokenizer\",\"license\":\"bigscience-bloom-rail-1.0\",\"tokenizer_details\":{\"vocab_size\":\"Not specified\",\"special_tokens\":{\"eos\":\"<|endoftext|>\",\"bos\":\"<s>\",\"pad\":\"<pad>\",\"unk\":\"<unk>\"},\"checksum_sha256\":\"Not specified\"},\"license_details\":{\"spdx\":\"Not specified\",\"redistribution\":\"Not specified\",\"finetune\":\"Not specified\",\"attribution\":\"Not specified\"}},\"inference\":{\"servers\":[\"HuggingFace Inference API\"],\"min_hardware\":\"Not specified\",\"quantization\":[],\"context_length_verified\":\"2048\",\"throughput_notes\":\"Not specified\"},\"evals\":[{\"benchmark\":\"OpenAI Eval\",\"dataset_version\":\"1.0\",\"metric\":\"Accuracy\",\"score\":\"Not specified\",\"harness\":\"openai-eval\",\"notes\":\"Not specified\"}],\"sources\":[{\"url\":\"https://huggingface.co/bigscience/bloomz-560m\",\"source_type\":\"hf\",\"title\":\"bigscience/bloomz-560m on Hugging Face\",\"accessed_date\":\"2025-09-23\",\"primary\":true},{\"url\":\"https://github.com/bigscience-workshop/xmtf\",\"source_type\":\"github\",\"title\":\"BigScience XMTF Repository\",\"accessed_date\":\"2025-09-23\",\"primary\":true},{\"url\":\"https://arxiv.org/abs/2204.02311\",\"source_type\":\"paper\",\"title\":\"Bloom: A 176B Parameter Language Model\",\"accessed_date\":\"2025-09-23\",\"primary\":true}],\"disputed\":[],\"notes\":\"unverified\"}",
+        "reasoning": "Need produce full JSON. Use provided digest info. Provide sources list with at least 3 primary: HF repo, GitHub repo, arXiv paper. Fill fields accordingly. Let's craft.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1284,
+    "completion_tokens": 496,
+    "total_tokens": 1780
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

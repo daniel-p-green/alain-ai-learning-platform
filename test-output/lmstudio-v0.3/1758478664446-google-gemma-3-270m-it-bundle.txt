@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-t5sc3s4ff1dlhtad4mndq",
+  "object": "chat.completion",
+  "created": 1758478690,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to=repo_browser.search code<|message|>{\"path\":\"\", \"query\":\"gemma-3-270m-it\"}",
+        "reasoning": "We need to fetch HF repo gemma-3-270m-it. Use hf-mcp-server:model_search? Probably mcp/hf-mcp-server:model_search. Let's attempt.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 654,
+    "completion_tokens": 70,
+    "total_tokens": 724
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

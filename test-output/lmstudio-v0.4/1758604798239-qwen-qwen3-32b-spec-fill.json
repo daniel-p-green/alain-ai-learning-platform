@@ -1,0 +1,11 @@
+{
+  "technical_specs": {
+    "architecture": "Causal Language Model",
+    "parameters": "32.8B",
+    "context_window": "32768",
+    "tokenizer": "qwen3-tokenizer",
+    "license": "apache-2.0"
+  },
+  "primary_repo": "https://github.com/QwenLM/Qwen3",
+  "notes": "Context length 131072 tokens with YaRN supported; inference via sglang or vllm; no explicit hardware requirements listed."
+}

@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-k7r1d7lay9oapsgckjaah4",
+  "object": "chat.completion",
+  "created": 1758605153,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\":{\"parameters\":\"560M\",\"context_window\":\"\"},\"inference\":{\"servers\":[],\"min_hardware\":\"\",\"quantization\":[]},\"evals\":[{\"dataset\":\"Winogrande XL (xl)\",\"split\":\"validation\",\"source\":\"?\"}],\"primary_repo\":\"bigscience-workshop/xmtf\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 7424,
+    "completion_tokens": 65,
+    "total_tokens": 7489
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

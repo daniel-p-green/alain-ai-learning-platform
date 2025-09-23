@@ -1,0 +1,17 @@
+# Sources Digest for deepseek-ai/DeepSeek-R1-Distill-Qwen-32B
+- HF revision: 711ad2ea6aa40cfca18895e8aca02ab92df1a746
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: Qwen2ForCausalLM
+- Parsed context window: 131072
+- Parsed license: MIT
+- Primary GitHub repo: deepseek-ai/DeepSeek-R1

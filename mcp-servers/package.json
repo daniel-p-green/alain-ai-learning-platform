@@ -1,0 +1,18 @@
+{
+  "name": "alain-mcp-servers",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Minimal MCP servers for ALAIN research (LM Studio integration)",
+  "scripts": {
+    "hf": "node hf-server.js",
+    "github": "node github-server.js",
+    "web": "node web-server.js",
+    "arxiv": "node arxiv-server.js",
+    "fs": "node fs-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.1",
+    "zod": "^3.23.8"
+  }
+}

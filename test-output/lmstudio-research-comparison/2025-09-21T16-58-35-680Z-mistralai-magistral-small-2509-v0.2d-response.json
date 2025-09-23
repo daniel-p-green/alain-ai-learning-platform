@@ -1,0 +1,9 @@
+{
+  "version": "v0.2d",
+  "model_reference": "mistralai/Magistral-Small-2509",
+  "response_time_ms": 5606,
+  "json_parsed": true,
+  "coerced_json_parsed": false,
+  "error": null,
+  "response_text": "{\"model_name\":\"mistralai/​Magistral‑Small‑2509\",\"identity\":{\"aliases\":[\"Mistral 2.0?\"]},\"technical_specs\":{\"architecture\":\"Not specified unverified\",\"parameters\":\"Not ...\",\"context_window\":\"Not ...\",\"tokenizer\":\"Not ...\",\"license\":\"Not ...\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"..…\",\"quantization\":[\"..…\"]} ,\"evals\":[{\"benchmark\":\"...???\",\"dataset_version\":\"......…\",\"metric\":\",\" ,\"score\":\"...…\",\"harness\":\".. …\",\"notes\":\".. check …\"}] ,\"sources\":[],\"disputed\":[{\"field\":\"… …\",\"claims\":[\".. …\"],\"evidence_urls\":[\"\"],\"notes\":\".. ...???}……??………………………???  We need to provide JSON with verified specs for model mistralai/Magistral-Small-2509. Let's search memory: Mistral 2.0 models: \" } ] ,\"notes\":\"...\"} "
+}

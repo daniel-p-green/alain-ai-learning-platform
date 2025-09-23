@@ -1,0 +1,12 @@
+OK: /bigscience-bloomz-560m/README.md
+OK: /bigscience-bloomz-560m/CHANGELOG.md
+OK: /bigscience-bloomz-560m/TECH_SPECS.md
+OK: /bigscience-bloomz-560m/EVALS.md
+OK: /bigscience-bloomz-560m/COOKBOOK.md
+OK: /bigscience-bloomz-560m/LICENSE_NOTES.md
+OK: /bigscience-bloomz-560m/TROUBLESHOOTING.md
+OK: /bigscience-bloomz-560m/requirements.txt
+OK: /bigscience-bloomz-560m/.env.example
+OK: /bigscience-bloomz-560m/code/inference.py
+OK: /bigscience-bloomz-560m/code/finetune.py
+OK: /bigscience-bloomz-560m/code/run.sh

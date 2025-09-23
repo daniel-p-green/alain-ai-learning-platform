@@ -1,0 +1,99 @@
+{
+  "model_id": "Qwen/Qwen3-32B",
+  "revision": "9216db5781bf21249d130ec9da846c4624c16137",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 10,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "Qwen3ForCausalLM",
+    "context_window": "40960",
+    "tokenizer_details": {
+      "vocab_size": "151936"
+    },
+    "versioning": {
+      "hf_revision": "9216db5781bf21249d130ec9da846c4624c16137"
+    },
+    "inference": {},
+    "usage_sections": [
+      "## Quickstart\n\nThe code of Qwen3 has been in the latest Hugging Face `transformers` and we advise you to use the latest version of `transformers`.\n\nWith `transformers<4.51.0`, you will encounter the following error:\n```\nKeyError: 'qwen3'\n```\n\nThe following contains a code snippet illustrating how to use the model generate content based on given inputs. \n```python\nfrom transformers import AutoModelForCausalLM, AutoTokenizer\n\nmodel_name = \"Qwen/Qwen3-32B\"\n",
+      "### Advanced Usage: Switching Between Thinking and Non-Thinking Modes via User Input\n\nWe provide a soft switch mechanism that allows users to dynamically control the model's behavior when `enable_thinking=True`. Specifically, you can add `/think` and `/no_think` to user prompts or system messages to switch the model's thinking mode from turn to turn. The model will follow the most recent instruction in multi-turn conversations.\n\nHere is an example of a multi-turn conversation:\n\n```python\nfrom transformers import AutoModelForCausalLM, AutoTokenizer\n\nclass QwenChatbot:\n    def __init__(self, model_name=\"Qwen/Qwen3-32B\"):\n        self.tokenizer = AutoTokenizer.from_pretrained(model_name)\n        self.model = AutoModelForCausalLM.from_pretrained(model_name)\n        self.history = []\n\n    def generate_response(self, user_input):\n        messages = self.history + [{\"role\": \"user\", \"content\": user_input}]\n\n        text = self.tokenizer.apply_chat_template(\n            messages,\n            tokenize=False,\n            add_generation_prompt=True\n        )\n\n        inputs = self.tokenizer(text, return_tensors=\"pt\")\n        response_ids = self.model.generate(**inputs, max_new_tokens=32768)[0][len(inputs.input_ids[0]):].tolist()\n        response = self.tokenizer.decode(response_ids, skip_special_tokens=True)\n\n        # Update history\n        self.history.append({\"role\": \"user\", \"content\": user_input})\n        self.history.append({\"role\": \"assistant\", \"content\": response})\n\n        return response\n",
+      "# Example Usage\nif __name__ == \"__main__\":\n    chatbot = QwenChatbot()\n\n    # First input (without /think or /no_think tags, thinking mode is enabled by default)\n    user_input_1 = \"How many r's in strawberries?\"\n    print(f\"User: {user_input_1}\")\n    response_1 = chatbot.generate_response(user_input_1)\n    print(f\"Bot: {response_1}\")\n    print(\"----------------------\")\n\n    # Second input with /no_think\n    user_input_2 = \"Then, how many r's in blueberries? /no_think\"\n    print(f\"User: {user_input_2}\")\n    response_2 = chatbot.generate_response(user_input_2)\n    print(f\"Bot: {response_2}\") \n    print(\"----------------------\")\n\n    # Third input with /think\n    user_input_3 = \"Really? /think\"\n    print(f\"User: {user_input_3}\")\n    response_3 = chatbot.generate_response(user_input_3)\n    print(f\"Bot: {response_3}\")\n```\n\n> [!NOTE]\n> For API compatibility, when `enable_thinking=True`, regardless of whether the user uses `/think` or `/no_think`, the model will always output a block wrapped in `<think>...</think>`. However, the content inside this block may be empty if thinking is disabled.\n> When `enable_thinking=False`, the soft switches are not valid. Regardless of any `/think` or `/no_think` tags input by the user, the model will not generate think content and will not include a `<think>...</think>` block.\n"
+    ],
+    "evals": [
+      {
+        "benchmark": "Number of Parameters",
+        "metric": "B",
+        "score": "32.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Paramaters",
+        "dataset": "Non-Embedding",
+        "metric": "B",
+        "score": "31.2",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Layers",
+        "score": "64",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Attention Heads",
+        "dataset": "GQA",
+        "metric": "for Q and 8 for KV",
+        "score": "64",
+        "source": "README"
+      },
+      {
+        "benchmark": "Context Length",
+        "metric": "natively and [131,072 tokens with YaRN](#processing-long-texts).",
+        "score": "32,768",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "Yes",
+        "source": "link:https://qwenlm.github.io/blog/qwen3/"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "No",
+        "source": "link:https://qwenlm.github.io/blog/qwen3/"
+      }
+    ],
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "tokenizer",
+        "primary repo",
+        "inference hardware"
+      ],
+      "score": 60
+    },
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_primary_repo",
+      "needs_parameter_verification"
+    ]
+  }
+}

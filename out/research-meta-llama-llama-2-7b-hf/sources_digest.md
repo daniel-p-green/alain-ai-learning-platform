@@ -1,0 +1,14 @@
+# Sources Digest for meta-llama/Llama-2-7b-hf
+- HF revision: 01c7f73d771dfac7d292323805ebc428287df4f9
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed license: llama2

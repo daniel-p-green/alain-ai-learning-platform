@@ -273,12 +273,15 @@ export async function POST(req: NextRequest) {
       });
     } else {
       // Proxy non-streaming request to Encore execute endpoint
+      const encoreHeaders: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        encoreHeaders["Authorization"] = `Bearer ${token}`;
+      }
       const encoreResponse = await fetch(`${backendUrl}/execute`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: encoreHeaders,
         body: JSON.stringify(body),
       });
 

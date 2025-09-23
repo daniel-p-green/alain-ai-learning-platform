@@ -1,0 +1,17 @@
+# Sources Digest for Alibaba-NLP/Tongyi-DeepResearch-30B-A3B
+- HF revision: 103fcd84eca8dc8125166271ef9a25916a336cf8
+- README: true
+- config.json: true
+- generation_config.json: false
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: Qwen3MoeForCausalLM
+- Parsed context window: 131072
+- Parsed license: apache-2.0
+- Primary GitHub repo: alibaba-nlp/tongyi-deep-research

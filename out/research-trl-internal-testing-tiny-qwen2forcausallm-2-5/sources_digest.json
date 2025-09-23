@@ -1,0 +1,50 @@
+{
+  "model_id": "trl-internal-testing/tiny-Qwen2ForCausalLM-2.5",
+  "revision": "c837622efc2e86d1ebe972877de9105af0ad26a5",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 7,
+  "metadata": {
+    "architecture": "Qwen2ForCausalLM",
+    "context_window": "32768",
+    "tokenizer_details": {
+      "vocab_size": "151665"
+    },
+    "versioning": {
+      "hf_revision": "c837622efc2e86d1ebe972877de9105af0ad26a5"
+    },
+    "inference": {},
+    "coverage": {
+      "filled": 3,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "tokenizer",
+        "license",
+        "primary repo",
+        "evals",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 30
+    },
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals",
+      "missing_primary_repo",
+      "needs_parameter_verification"
+    ]
+  }
+}

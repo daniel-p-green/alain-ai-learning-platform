@@ -1,0 +1,29 @@
+# Sources Digest for dphn/dolphin-2.9.1-yi-1.5-34b
+- HF revision: 0141cba238d0faad09bc240ea7af14c9ea5aec44
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 13
+- Parsed architecture: LlamaForCausalLM
+- Parsed context window: 8192
+- Parsed license: Apache-2.0
+  - cognitivecomputations/dolphin-2-9: api=false readme=false
+  - teknium/openhermes-2-5: api=false readme=false
+  - m-a-p/codefeedback-filtered-instruction: api=true readme=true
+  - cognitivecomputations/dolphin-coder: api=true readme=true
+  - cognitivecomputations/samantha-data: api=true readme=true
+  - microsoft/orca-math-word-problems-200k: api=true readme=true
+  - locutusque/function-calling-chatml: api=true readme=true
+  - internlm/agent-flan: api=true readme=true
+  - cognitivecomputations/Dolphin-2.9: api=true readme=true
+  - teknium/OpenHermes-2.5: api=true readme=true
+  - m-a-p/CodeFeedback-Filtered-Instruction: api=true readme=true
+  - Locutusque/function-calling-chatml: api=true readme=true
+  - internlm/Agent-FLAN: api=true readme=true

@@ -1,0 +1,110 @@
+{
+  "model_id": "google/flan-t5-small",
+  "revision": "0fc9ddf78a1e988dac52e2dac162b0ede4fd74ab",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "svakulenk0/qrecc",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "taskmaster2",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "djaym7/wiki_dialog",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "deepmind/code_contests",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "lambada",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "gsm8k",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "aqua_rat",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "esnli",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "quasc",
+      "api": false,
+      "readme": false
+    },
+    {
+      "id": "qed",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 29,
+  "metadata": {
+    "license": "apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "T5ForConditionalGeneration",
+    "context_window": "512",
+    "tokenizer_details": {
+      "vocab_size": "32128"
+    },
+    "versioning": {
+      "hf_revision": "0fc9ddf78a1e988dac52e2dac162b0ede4fd74ab"
+    },
+    "inference": {},
+    "usage_sections": [
+      "# Usage\n\nFind below some example scripts on how to use the model in `transformers`:\n"
+    ],
+    "evals": [
+      {
+        "benchmark": "-tab-size-preference",
+        "score": "4",
+        "source": "link:https://github.com/google-research/t5x/blob/main/docs/models.md#flan-t5-checkpoints"
+      }
+    ],
+    "coverage": {
+      "filled": 5,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 50
+    },
+    "primary_repo": "google-research/t5x",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "needs_parameter_verification"
+    ]
+  }
+}

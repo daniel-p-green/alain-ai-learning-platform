@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-007slofmjxrl9pralsa3j88o",
+  "object": "chat.completion",
+  "created": 1758604071,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\":{\"architecture\":\"Causal Language Model\",\"parameters\":\"0.6B\",\"context_window\": \"32768\",\"tokenizer\":\"unknown\",\"license\":\"apache-2.0\"},\"primary_repo\":\"https://github.com/QwenLM/Qwen3\",\"notes\":\"Tokenizer details not provided in the README.\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3857,
+    "completion_tokens": 66,
+    "total_tokens": 3923
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

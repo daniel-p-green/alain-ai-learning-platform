@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-mcfhy3k16bnas7uqhcg14n",
+  "object": "chat.completion",
+  "created": 1758479071,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"openai/gpt-oss-20b\",\"identity\":{\"aliases\":[\"GPT‑OSS 20B\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not verified\",\"license\":\"Not specified\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"Not specified\",\"quantization\":[\"\"]},\"evals\":[{\"benchmark\":\"OpenAI LLaMA‑? …\",\"dataset_version\":\"...\",\"metric\":\",\",\"score\":\"..\",\"harness\":\",\",\"notes\":\"...\"}],\"sources\":[{ \"url\":\"https://github.com/openai/gpt-???\" , \"source_type\":\"github\",\"title\":\"GitHub repo …\",\"accessed_date\":\"2023‑08?…\"}]\n\t\t\t\t  \t, \"disputed\": [{\"field\":\"...\",\"claims\":[\"\"],\"evidence_urls\":[\"..\"],\"notes\":\"..}]}???…???  We need to gather info.{\" } , {\"field\":\"Not specified\",\"claims\":[\"Not specified\"],\"evidence_urls\":[],\"notes\":\"unverified\"}] ,\"notes\":\"unverified\"}",
+        "reasoning": "Need to fetch data for openai/gpt-oss-20b. Use hf repo.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 742,
+    "completion_tokens": 286,
+    "total_tokens": 1028
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

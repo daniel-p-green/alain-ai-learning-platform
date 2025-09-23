@@ -1,0 +1,70 @@
+{
+  "model_id": "t5-base",
+  "revision": "a9723ea7f1b39c1eae772870f3b547bf6ef7e6c1",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": false,
+    "gh_release": true,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "c4",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "wiki_dpr",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 21,
+  "metadata": {
+    "license": "apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "T5ForConditionalGeneration",
+    "context_window": "512",
+    "tokenizer_details": {
+      "vocab_size": "32128"
+    },
+    "versioning": {
+      "hf_revision": "a9723ea7f1b39c1eae772870f3b547bf6ef7e6c1"
+    },
+    "inference": {},
+    "evals": [
+      {
+        "benchmark": "SST",
+        "metric": "[Socher et al., 2013](https://nlp.stanford.edu/~socherr/EMNLP2013_RNTN.pdf)",
+        "score": "2",
+        "source": "README"
+      },
+      {
+        "benchmark": "Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., ... & Liu, P. J. (2020). Exploring the limits of transfer learning with a unified text-to-text transformer. J. Mach. Learn. Res., 21(140), 1",
+        "score": "67.",
+        "source": "README"
+      }
+    ],
+    "parameters": "220M",
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 60
+    },
+    "primary_repo": "google-research/text-to-text-transfer-transformer",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable)."
+  }
+}

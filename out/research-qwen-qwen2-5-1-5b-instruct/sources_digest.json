@@ -1,0 +1,80 @@
+{
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 8,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "Qwen2ForCausalLM",
+    "context_window": "32768",
+    "tokenizer_details": {
+      "vocab_size": "151936"
+    },
+    "versioning": {
+      "hf_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+    },
+    "inference": {},
+    "usage_sections": [
+      "## Quickstart\n\nHere provides a code snippet with `apply_chat_template` to show you how to load the tokenizer and model and how to generate contents.\n\n```python\nfrom transformers import AutoModelForCausalLM, AutoTokenizer\n\nmodel_name = \"Qwen/Qwen2.5-1.5B-Instruct\"\n\nmodel = AutoModelForCausalLM.from_pretrained(\n    model_name,\n    torch_dtype=\"auto\",\n    device_map=\"auto\"\n)\ntokenizer = AutoTokenizer.from_pretrained(model_name)\n\nprompt = \"Give me a short introduction to large language model.\"\nmessages = [\n    {\"role\": \"system\", \"content\": \"You are Qwen, created by Alibaba Cloud. You are a helpful assistant.\"},\n    {\"role\": \"user\", \"content\": prompt}\n]\ntext = tokenizer.apply_chat_template(\n    messages,\n    tokenize=False,\n    add_generation_prompt=True\n)\nmodel_inputs = tokenizer([text], return_tensors=\"pt\").to(model.device)\n\ngenerated_ids = model.generate(\n    **model_inputs,\n    max_new_tokens=512\n)\ngenerated_ids = [\n    output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)\n]\n\nresponse = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]\n```\n\n"
+    ],
+    "evals": [
+      {
+        "benchmark": "Number of Parameters",
+        "metric": "B",
+        "score": "1.54",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Paramaters",
+        "dataset": "Non-Embedding",
+        "metric": "B",
+        "score": "1.31",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Layers",
+        "score": "28",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Attention Heads",
+        "dataset": "GQA",
+        "metric": "for Q and 2 for KV",
+        "score": "12",
+        "source": "README"
+      }
+    ],
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "parameters": "72B",
+    "coverage": {
+      "filled": 7,
+      "total": 10,
+      "missing": [
+        "tokenizer",
+        "primary repo",
+        "inference hardware"
+      ],
+      "score": 70
+    },
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_primary_repo"
+    ]
+  }
+}

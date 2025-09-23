@@ -1,0 +1,16 @@
+# Sources Digest for facebook/MobileLLM-R1-950M
+- HF revision: ee9e10ec700da30153d9ba93815081ea91ed363d
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed parameters: 150M
+- Parsed license: other
+- Primary GitHub repo: facebookresearch/mobile-llm

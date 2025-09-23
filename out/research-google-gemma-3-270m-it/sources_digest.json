@@ -1,0 +1,19 @@
+{
+  "model_id": "google/gemma-3-270m-it",
+  "revision": "ac82b4e820549b854eebf28ce6dedaf9fdfa17b3",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 3
+}

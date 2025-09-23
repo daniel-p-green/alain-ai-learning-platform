@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-padehl424phw5wq6qoxzao",
+  "object": "chat.completion",
+  "created": 1758478657,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to=repo_search code<|message|>{\"name\":\"hf-mcp-server:model_search\",\"arguments\":{\"query\":\"openai/gpt-oss-20b\"}}",
+        "reasoning": "Need to fetch HF repo. Use hf-mcp-server:model_search for \"openai/gpt-oss-20b\". Then list files, get README, config, tokenizer, LICENSE. Also GitHub releases? Repo likely on HuggingFace. We'll proceed with tools.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 654,
+    "completion_tokens": 95,
+    "total_tokens": 749
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

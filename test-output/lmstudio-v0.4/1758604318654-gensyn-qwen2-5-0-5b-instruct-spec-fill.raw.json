@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-m0b1sk29qpz4et2bvrik9",
+  "object": "chat.completion",
+  "created": 1758604321,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\":{\"architecture\":\"transformers with RoPE, SwiGLU, RMSNorm, Attention QKV bias and tied word embeddings\",\"parameters\":\"0.49B\",\"context_window\": \"32768\",\"tokenizer\":\"unknown\"},\"primary_repo\":\"https://github.com/gensyn-ai/rl-swarm\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1050,
+    "completion_tokens": 65,
+    "total_tokens": 1115
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

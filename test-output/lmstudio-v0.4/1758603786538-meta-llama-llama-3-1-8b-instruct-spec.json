@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-fbjqmbzgc8qh2mjdicqf7",
+  "object": "chat.completion",
+  "created": 1758603788,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"meta-llama/Llama-3.1-8B-Instruct\",\"identity\":{\"aliases\":[\"meta-llama/Llama-3.1-8B-Instruct\"],\"canonical_repo\":\"\"},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not specified\",\"license\":\"llama3.1\",\"versioning\":{\"hf_revision\":\"0e9e39f249a16976918f6564b8830bc894c89659\",\"last_updated\":\"2025-09-23T05:05:51.874Z\"}},\"inference\":{\"servers\":[],\"min_hardware\":\"Not specified\",\"quantization\":[]},\"evals\":[],\"sources\":[{\"url\":\"https://huggingface.co/api/models/meta-llama/Llama-3.1-8B-Instruct\",\"source_type\":\"hf\",\"title\":\"meta-llama/Llama-3.1-8B-Instruct (HF API)\",\"accessed_date\":\"2025-09-23T05:03:06.538Z\",\"primary\":true,\"checksum_sha256\":\"7c0cc0ceda2796030ae4f01ed949fef8f015b9c67d15e33061e5d1451a401984\",\"revision\":\"0e9e39f249a16976918f6564b8830bc894c89659\"},{\"url\":\"https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/README.md\",\"source_type\":\"hf\",\"title\":\"README.md\",\"accessed_date\":\"2025-09-23T05:03:06.538Z\",\"primary\":true,\"checksum_sha256\":\"ed0e2e86f7a40c38b793b0a04dfd993b2c1dfb34906804f96b999f0bbd8d70e6\",\"revision\":\"0e9e39f249a16976918f6564b8830bc894c89659\"},{\"url\":\"http://export.arxiv.org/api/query?search_query=all:meta-llama%2FLlama-3.1-8B-Instruct&start=0&max_results=1\",\"source_type\":\"paper\",\"title\":\"arXiv query for meta-llama/Llama-3.1-8B-Instruct\",\"accessed_date\":\"2025-09-23T05:03:06.538Z\",\"primary\":true,\"checksum_sha256\":\"f0311c990cb7b3edddaaa0e5371b0d2235529bf2831bcf0601ce4b9d39b6f3e3\"}],\"disputed\":[],\"gaps_unknowns\":[],\"notes\":\"Generated offline from harvested metadata (LM spec unavailable).\",\"coverage_score\":\"2/10\",\"coverage_flags\":[\"incomplete_metadata\",\"missing_primary_repo\"]}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-uitj1gf8rmyyo5l649ujq",
+  "object": "chat.completion",
+  "created": 1758604595,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"primary_repo\":\"https://github.com/deepseek-ai/DeepSeek-R1\",\"notes\":\"parameters and tokenizer not specified in README; inference hardware omitted\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5403,
+    "completion_tokens": 33,
+    "total_tokens": 5436
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

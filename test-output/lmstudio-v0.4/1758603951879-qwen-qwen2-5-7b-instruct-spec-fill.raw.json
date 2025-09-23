@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-3venlhnk7ftum4yf63moka",
+  "object": "chat.completion",
+  "created": 1758603953,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"evals\": [], \"primary_repo\": \"https://github.com/QwenLM/Qwen2.5\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2122,
+    "completion_tokens": 24,
+    "total_tokens": 2146
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

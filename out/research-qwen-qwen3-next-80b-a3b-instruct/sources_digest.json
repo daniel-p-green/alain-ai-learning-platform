@@ -1,0 +1,19 @@
+{
+  "model_id": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+  "revision": "9c7f2fbe84465e40164a94cc16cd30b6999b0cc7",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 6
+}

@@ -1,0 +1,35 @@
+name: Consistency
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Show Node version
+        run: node -v
+      - name: Sync tasks and docs
+        run: |
+          cd alain-ai-learning-platform
+          npm ci --ignore-scripts --no-audit --no-fund || true
+          npm run tasks:sync
+          npm run docs:sync
+      - name: Consistency check
+        run: |
+          cd alain-ai-learning-platform
+          npm run repo:check
+      - name: Fail on drift
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          if ! git diff --quiet; then
+            echo "\nGenerated files are out of sync. Run 'npm run tasks:sync && npm run docs:sync' and commit changes." >&2
+            git --no-pager diff --stat
+            exit 1
+          fi

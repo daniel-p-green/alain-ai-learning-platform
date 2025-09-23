@@ -20,10 +20,14 @@
     "alain:bench:run": "npm --prefix packages/alain-kit-sdk run bench:run",
     "alain:bench:analyze": "npm --prefix packages/alain-kit-sdk run bench:analyze",
     "docs:structure": "node scripts/generate-file-structure.mjs",
-    "lint:prompts": "node scripts/check-prompts-sync.mjs"
+    "lint:prompts": "node scripts/check-prompts-sync.mjs",
+    "tasks:sync": "node scripts/sync-tasks.mjs",
+    "docs:sync": "node scripts/sync-docs.mjs",
+    "repo:check": "node scripts/check-consistency.mjs"
   },
   "dependencies": {
     "motion": "^12.23.12",
-    "openai": "^5.20.1"
+    "openai": "^5.20.1",
+    "yaml": "^2.8.1"
   }
 }

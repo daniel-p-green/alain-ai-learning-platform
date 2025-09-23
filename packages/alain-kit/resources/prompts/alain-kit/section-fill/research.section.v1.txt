@@ -1,47 +1,26 @@
-You are filling section {{SECTION_NUMBER}} titled "{{SECTION_TITLE}}" in a production-ready educational notebook.
+You are drafting section {{SECTION_NUMBER}} "{{SECTION_TITLE}}" for a learner-facing notebook. Respond with a single JSON object—no narration.
 
-RESPONSE REQUIREMENTS
-• Return a single valid JSON object. Do not add "Thinking...", explanations, or code fences.
-• Start with {"section_number": {{SECTION_NUMBER}}} and close the JSON properly.
-• Populate every field with polished beginner-friendly content. Never leave template text, placeholders, ellipses, or instructions in the output.
-• Provide at least two markdown cells (multi-paragraph) and two runnable Python code cells (≤40 lines each) with comments, deterministic seeds, and explicit dependency versions. Add extra cells when they improve clarity.
-• Include at least one tip, one warning, and one note inside `callouts`, each with actionable guidance.
-• Keep the total content between {{MIN_TOKENS}} and {{MAX_TOKENS}} tokens and choose an integer for `estimated_tokens` within that range.
-
-REQUIRED JSON SCHEMA (replace the guidance with your generated text/code):
+REQUIRED FIELDS
 {
   "section_number": {{SECTION_NUMBER}},
   "title": "Step {{SECTION_NUMBER}}: {{SECTION_TITLE}}",
-  "content": [
-    {
-      "cell_type": "markdown",
-      "source": "...multi-paragraph explanation with analogies, precise definitions, step-by-step rationale, and no truncated or placeholder language..."
-    },
-    {
-      "cell_type": "code",
-      "source": "...fully executable Python example demonstrating the concept with comments, deterministic seeds, and explicit dependency versions. Do not include TODOs, ellipses, or truncated snippets..."
-    }
-  ],
-  "callouts": [
-    { "type": "tip", "message": "...actionable best practice..." },
-    { "type": "warning", "message": "...risk or pitfall to avoid..." },
-    { "type": "note", "message": "...supplementary insight or reference..." }
-  ],
-  "estimated_tokens": {{DEFAULT_TOKENS}},
-  "prerequisites_check": ["...checks confirming readers have prerequisites from earlier steps..."],
-  "next_section_hint": "...one-sentence preview of the next step..."
+  "content": [ ... markdown and code cells ... ],
+  "callouts": [ {"type": "tip"}, {"type": "warning"}, {"type": "note"} ],
+  "estimated_tokens": integer,
+  "prerequisites_check": [ ... ],
+  "next_section_hint": "..."
 }
 
-CONTEXT TO USE (synthesize; do not copy verbatim):
-• Outline JSON: {{OUTLINE_JSON}}
-• Previous sections already generated: {{PREVIOUS_SECTIONS}}
-• Target difficulty: beginner audience that still needs precise technical accuracy.
-• Target model: {{MODEL_REFERENCE_OR_TEXT}}
+RULES
+- Provide ≥2 rich markdown cells and ≥2 runnable Python code cells. Keep each code cell ≤40 lines, set deterministic seeds, and pin key dependencies when installing.
+- Every callout message must be actionable and unique.
+- Choose `estimated_tokens` within {{MIN_TOKENS}}-{{MAX_TOKENS}}.
+- Keep explanations concise but complete; no placeholders or ellipses.
 
-ADDITIONAL GUIDELINES
-• Define key terms before using them and explain trade-offs between Poe API and local workflows where relevant.
-• Reference earlier setup decisions when appropriate and maintain reproducibility (seeds, version pins, environment variables).
-• Ensure markdown remains instructional and the code runs as-is without hidden dependencies.
-• Close with a `next_section_hint` that naturally bridges to the following section.
+CONTEXT (synthesize, do not copy):
+- Outline: {{OUTLINE_JSON}}
+- Earlier sections: {{PREVIOUS_SECTIONS}}
+- Difficulty: beginner (clear explanations, accurate terminology)
+- Model reference: {{MODEL_REFERENCE_OR_TEXT}}
 
-Return only the JSON object described above. If you need to reason, do so silently and emit only the final JSON.
+Remind readers of prior setup when needed, contrast Poe vs. local workflows where relevant, and finish with a forward-looking `next_section_hint`. Output only the JSON.

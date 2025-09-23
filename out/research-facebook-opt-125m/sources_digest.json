@@ -1,0 +1,50 @@
+{
+  "model_id": "facebook/opt-125m",
+  "revision": "27dcfa74d334bc871f3234de431e71c6eeba5dd6",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": true,
+    "gh_release": true,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 30,
+  "metadata": {
+    "license": "other",
+    "license_source": "README front-matter",
+    "architecture": "OPTForCausalLM",
+    "context_window": "2048",
+    "tokenizer": "BPE",
+    "tokenizer_details": {
+      "vocab_size": "50272"
+    },
+    "versioning": {
+      "hf_revision": "27dcfa74d334bc871f3234de431e71c6eeba5dd6"
+    },
+    "inference": {},
+    "parameters": "175B",
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "primary repo",
+        "evals",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 60
+    },
+    "primary_repo": "huggingface/transformers",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

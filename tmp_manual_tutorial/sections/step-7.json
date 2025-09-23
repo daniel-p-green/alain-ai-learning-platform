@@ -1,0 +1,17 @@
+{
+  "section_number": 7,
+  "title": "Step 7: Ship, Iterate, and Next Steps",
+  "estimated_tokens": 300,
+  "callouts": [
+    {
+      "type": "note",
+      "message": "Bundle the notebook, QA checklist, and this brief before handing off to reviewers."
+    }
+  ],
+  "content": [
+    {
+      "cell_type": "markdown",
+      "source": "Wrap things up by capturing QA notes:\n\n- \u2705 Lint + Vitest run clean.\n- \u2705 Streaming works across ten models (spot-check with real Poe key).\n- \u26a0\ufe0f TODO for production: persist telemetry to your analytics stack.\n\nPackage the notebook output (`File \u2192 Download .ipynb`) alongside `chat-poe-brief.md` and the QA checklist. Share it with another editor for the final review\u2014fresh eyes often spot tone or clarity issues the author misses.\n\n**Next ideas:**\n1. Add server-side rate limiting per model before exposing publicly.\n2. Build a compare view that renders latency deltas across models.\n3. Pipe telemetry into a hosted dashboard (e.g., Vercel Analytics or PostHog)."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "primary_repo": "https://github.com/deepseek-ai/DeepSeek-R1",
+  "notes": "parameters and tokenizer not specified in README; inference hardware omitted"
+}

@@ -1,0 +1,15 @@
+# Sources Digest for meta-llama/Meta-Llama-3-8B
+- HF revision: 8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed parameters: 70B
+- Parsed license: llama3

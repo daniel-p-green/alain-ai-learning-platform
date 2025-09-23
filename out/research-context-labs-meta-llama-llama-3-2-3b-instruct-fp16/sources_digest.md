@@ -1,0 +1,18 @@
+# Sources Digest for context-labs/meta-llama-Llama-3.2-3B-Instruct-FP16
+- HF revision: 4a7511c7510a87a493e7f30f51065a84b1a3943f
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: LlamaForCausalLM
+- Parsed parameters: 1.23B
+- Parsed context window: 131072
+- Parsed license: llama3.2
+- Primary GitHub repo: meta-llama/llama-models

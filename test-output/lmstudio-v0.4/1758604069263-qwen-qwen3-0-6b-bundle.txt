@@ -1,0 +1,12 @@
+OK: /qwen-qwen3-0-6b/README.md
+OK: /qwen-qwen3-0-6b/CHANGELOG.md
+OK: /qwen-qwen3-0-6b/TECH_SPECS.md
+OK: /qwen-qwen3-0-6b/EVALS.md
+OK: /qwen-qwen3-0-6b/COOKBOOK.md
+OK: /qwen-qwen3-0-6b/LICENSE_NOTES.md
+OK: /qwen-qwen3-0-6b/TROUBLESHOOTING.md
+OK: /qwen-qwen3-0-6b/requirements.txt
+OK: /qwen-qwen3-0-6b/.env.example
+OK: /qwen-qwen3-0-6b/code/inference.py
+OK: /qwen-qwen3-0-6b/code/finetune.py
+OK: /qwen-qwen3-0-6b/code/run.sh

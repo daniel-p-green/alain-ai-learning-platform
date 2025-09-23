@@ -1,0 +1,20 @@
+# Sources Digest for bigscience/bloomz-560m
+- HF revision: a2845d7e13dd12efae154a9f1c63fcc2e0cc4b05
+- README: true
+- config.json: true
+- generation_config.json: false
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 3
+- Parsed architecture: BloomForCausalLM
+- Parsed context window: 2048
+- Parsed license: bigscience-bloom-rail-1.0
+- Primary GitHub repo: bigscience-workshop/xmtf
+  - bigscience/xp3: api=true readme=true
+  - bigscience/xP3: api=true readme=true
+  - bigscience/evaluation-results: api=true readme=true

@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-gaf44dwxzf0llc76xbj5b",
+  "object": "chat.completion",
+  "created": 1758604939,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"meta-llama/Llama-2-7b-hf\",\"identity\":{\"aliases\":[\"LLaMA 2 7B\"],\"family_map\":[{\"variant\":\"LLaMA 2 7B\",\"repo_id\":\"meta-llama/Llama-2-7b-hw\",\"context_window\":\"2048\"}],\"canonical_repo\":\"Not specified\"},\"technical_specs\":{\"architecture\":\"Transformer-based LLM\",\"parameters\":\"Not specified\",\"context_window\":\"2048\",\"tokenizer\":\"LlamaTokenizerFast\",\"license\":\"LLAMA 2 License\",\"versioning\":{\"hf_revision\":\"01c7f73d771dfac7d292323805ebc428287df4f9\",\"last_updated\":\"2025-09-23T05:23:51.835Z\"}},\"inference\":{\"servers\":[\"Not specified\"],\"min_hardware\":\"Not specified\",\"quantization\":[\"Not specified\"]},\"evals\":[],\"sources\":[{\"url\":\"https://huggingface.co/api/models/meta-llama/Llama-2-7b-hf\",\"source_type\":\"hf\",\"title\":\"meta-llama/Llama-2-7b-hf (HF API)\",\"accessed_date\":\"2025-09-23T05:22:18.304Z\",\"primary\":true,\"checksum_sha256\":\"9dcd08d2c63ce9956cdb68f7936464d9fb58975ff2c92164b1e846b3600c94a1\",\"revision\":\"01c7f73d771dfac7d292323805ebc428287df4f9\"},{\"url\":\"https://huggingface.co/meta-llama/Llama-2-7b-hf/blob/main/LICENSE.txt\",\"source_type\":\"hf\",\"title\":\"LICENSE.txt\",\"accessed_date\":\"2025-09-23T05:22:18.304Z\",\"primary\":true,\"checksum_sha256\":\"8c17c2ebb0ea011be9981cc3922db8ca8fa61e828c5d3f44cb6ae342bf80460b\",\"revision\":\"01c7f73d771dfac7d292323805ebc428287df4f9\"},{\"url\":\"https://huggingface.co/meta-llama/Llama-2-7b-hf/blob/main/README.md\",\"source_type\":\"hf\",\"title\":\"README.md\",\"accessed_date\":\"2025-09-23T05:22:18.304Z\",\"primary\":true,\"checksum_sha256\":\"545082a6f3c9f13451c156388d1a5ae76fff44ad51b25baaca57bbabf5a75b68\",\"revision\":\"01c7f73d771dfac7d292323805ebc428287df4f9\"},{\"url\":\"http://export.arxiv.org/api/query?search_query=all:meta-llama%2FLlama-2-7b-hf&start=0&max_results=1\",\"source_type\":\"paper\",\"title\":\"arXiv query for meta-llama/Llama-2-7b-hf\",\"accessed_date\":\"2025-09-23T05:22:18.304Z\",\"primary\":true,\"checksum_sha256\":\"0db918297759abcb92d7ab7e318a813cd33044683045d1a04b10092aa8285c2c\"}],\"disputed\":[],\"gaps_unknowns\":[],\"notes\":\"Generated offline from harvested metadata (LM spec unavailable).\",\"coverage_score\":\"5/10\",\"coverage_flags\":[\"missing_primary_repo\"]}"
+      }
+    }
+  ]
+}

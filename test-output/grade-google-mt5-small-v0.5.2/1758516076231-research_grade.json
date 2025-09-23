@@ -1,0 +1,29 @@
+{
+  "total_score": 67,
+  "stage1": {
+    "score": 27,
+    "failures": [
+      "Fallback spec used"
+    ],
+    "warnings": [
+      "High unknown ratio 36.6%"
+    ],
+    "metrics": {
+      "primary_sources": 1,
+      "secondary_sources": 0,
+      "speculation_hits": 0,
+      "unknown_ratio": 0.36585365853658536
+    }
+  },
+  "stage2": {
+    "score": 40,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "files_written": 13,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [],
+  "summary": "redo"
+}

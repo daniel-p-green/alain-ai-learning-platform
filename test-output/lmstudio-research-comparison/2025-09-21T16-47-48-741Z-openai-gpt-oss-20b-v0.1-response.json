@@ -1,0 +1,9 @@
+{
+  "version": "v0.1",
+  "model_reference": "openai/gpt-oss-20b",
+  "response_time_ms": 6326,
+  "json_parsed": false,
+  "coerced_json_parsed": false,
+  "error": null,
+  "response_text": "{\"model_name\":\"gpt-4o\",\"technical_specs\":{\"architecture\":\"transformer\",\"parameters\":\"20B\",\"context_window\":\"2048\",\"license\":\"MIT\"},\"educational_context\":{\"prerequisites\":[\"Python\",\"..\"],\"learning_objectives\":[\"\"],\"difficulty_level\":\"intermediate\"} ,\"implementation\":{\"setup_instructions\":\"...??..\",\"code_example\":\"..??..}}"
+}

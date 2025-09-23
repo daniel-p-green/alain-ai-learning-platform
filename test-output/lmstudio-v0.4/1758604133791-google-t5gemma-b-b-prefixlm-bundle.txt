@@ -1,0 +1,12 @@
+OK: /google-t5gemma-b-b-prefixlm/README.md
+OK: /google-t5gemma-b-b-prefixlm/CHANGELOG.md
+OK: /google-t5gemma-b-b-prefixlm/TECH_SPECS.md
+OK: /google-t5gemma-b-b-prefixlm/EVALS.md
+OK: /google-t5gemma-b-b-prefixlm/COOKBOOK.md
+OK: /google-t5gemma-b-b-prefixlm/LICENSE_NOTES.md
+OK: /google-t5gemma-b-b-prefixlm/TROUBLESHOOTING.md
+OK: /google-t5gemma-b-b-prefixlm/requirements.txt
+OK: /google-t5gemma-b-b-prefixlm/.env.example
+OK: /google-t5gemma-b-b-prefixlm/code/inference.py
+OK: /google-t5gemma-b-b-prefixlm/code/finetune.py
+OK: /google-t5gemma-b-b-prefixlm/code/run.sh

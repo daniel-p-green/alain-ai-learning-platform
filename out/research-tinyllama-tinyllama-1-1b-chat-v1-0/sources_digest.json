@@ -1,0 +1,104 @@
+{
+  "model_id": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+  "revision": "fe8a4ea1ffedaf415f4da2f062534de366a451e6",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "cerebras/slimpajama-627b",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "bigcode/starcoderdata",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "huggingfaceh4/ultrachat_200k",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "huggingfaceh4/ultrafeedback_binarized",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "cerebras/SlimPajama-627B",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "HuggingFaceH4/ultrachat_200k",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "HuggingFaceH4/ultrafeedback_binarized",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "stingning/ultrachat",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "openbmb/ultrafeedback",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 24,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "LlamaForCausalLM",
+    "context_window": "2048",
+    "tokenizer_details": {
+      "vocab_size": "32000"
+    },
+    "versioning": {
+      "hf_revision": "fe8a4ea1ffedaf415f4da2f062534de366a451e6"
+    },
+    "inference": {},
+    "parameters": "1.1B",
+    "evals": [
+      {
+        "benchmark": "cerebras/SlimPajama",
+        "metric": "B",
+        "score": "627",
+        "source": "README"
+      }
+    ],
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "coverage": {
+      "filled": 7,
+      "total": 10,
+      "missing": [
+        "tokenizer",
+        "primary repo",
+        "inference hardware"
+      ],
+      "score": 70
+    },
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_primary_repo"
+    ]
+  }
+}

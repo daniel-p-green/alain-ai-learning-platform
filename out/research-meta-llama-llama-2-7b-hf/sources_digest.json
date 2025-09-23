@@ -1,0 +1,87 @@
+{
+  "model_id": "meta-llama/Llama-2-7b-hf",
+  "revision": "01c7f73d771dfac7d292323805ebc428287df4f9",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 4,
+  "metadata": {
+    "license": "llama2",
+    "license_source": "README front-matter",
+    "evals": [
+      {
+        "benchmark": "23.9",
+        "score": "35.1",
+        "source": "README"
+      },
+      {
+        "benchmark": "33.9",
+        "score": "46.9",
+        "source": "README"
+      },
+      {
+        "benchmark": "41.7",
+        "score": "57.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "47.6",
+        "score": "63.4",
+        "source": "README"
+      },
+      {
+        "benchmark": "29.3",
+        "score": "45.3",
+        "source": "README"
+      },
+      {
+        "benchmark": "39.1",
+        "score": "54.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "**54.2**",
+        "score": "**68.9**",
+        "source": "README"
+      },
+      {
+        "benchmark": "llama",
+        "score": "2",
+        "source": "README"
+      }
+    ],
+    "coverage": {
+      "filled": 2,
+      "total": 10,
+      "missing": [
+        "architecture",
+        "parameters",
+        "context window",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "tokenizer vocab",
+        "license SPDX"
+      ],
+      "score": 20
+    },
+    "versioning": {
+      "hf_revision": "01c7f73d771dfac7d292323805ebc428287df4f9"
+    },
+    "flags": [
+      "incomplete_metadata",
+      "missing_primary_repo"
+    ]
+  }
+}

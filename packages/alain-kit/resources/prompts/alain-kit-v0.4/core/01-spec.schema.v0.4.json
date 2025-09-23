@@ -1,0 +1,358 @@
+{
+  "name": "research_spec_v0_4",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "model_name",
+      "identity",
+      "technical_specs",
+      "inference",
+      "evals",
+      "sources",
+      "disputed",
+      "notes"
+    ],
+    "properties": {
+      "model_name": {
+        "type": "string"
+      },
+      "identity": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "aliases"
+        ],
+        "properties": {
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "family_map": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "variant",
+                "repo_id"
+              ],
+              "properties": {
+                "variant": {
+                  "type": "string"
+                },
+                "repo_id": {
+                  "type": "string"
+                },
+                "context_window": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "canonical_repo": {
+            "type": "string"
+          }
+        }
+      },
+      "technical_specs": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "architecture",
+          "parameters",
+          "context_window",
+          "tokenizer",
+          "license"
+        ],
+        "properties": {
+          "architecture": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "string"
+          },
+          "context_window": {
+            "type": "string"
+          },
+          "tokenizer": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "tokenizer_details": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "vocab_size": {
+                "type": "string"
+              },
+              "special_tokens": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "eos": {
+                    "type": "string"
+                  },
+                  "bos": {
+                    "type": "string"
+                  },
+                  "pad": {
+                    "type": "string"
+                  },
+                  "unk": {
+                    "type": "string"
+                  }
+                }
+              },
+              "checksum_sha256": {
+                "type": "string"
+              }
+            }
+          },
+          "license_details": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "spdx": {
+                "type": "string"
+              },
+              "redistribution": {
+                "type": "string"
+              },
+              "finetune": {
+                "type": "string"
+              },
+              "attribution": {
+                "type": "string"
+              }
+            }
+          },
+          "versioning": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hf_revision": {
+                "type": "string"
+              },
+              "gh_commits": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "paper_version": {
+                "type": "string"
+              },
+              "last_updated": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "inference": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "servers",
+          "min_hardware",
+          "quantization"
+        ],
+        "properties": {
+          "servers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min_hardware": {
+            "type": "string"
+          },
+          "quantization": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "context_length_verified": {
+            "type": "string"
+          },
+          "throughput_notes": {
+            "type": "string"
+          }
+        }
+      },
+      "evals": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "benchmark",
+            "dataset_version",
+            "metric",
+            "score",
+            "harness",
+            "notes"
+          ],
+          "properties": {
+            "benchmark": {
+              "type": "string"
+            },
+            "dataset_version": {
+              "type": "string"
+            },
+            "metric": {
+              "type": "string"
+            },
+            "score": {
+              "type": "string"
+            },
+            "harness": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            },
+            "harness_version": {
+              "type": "string"
+            },
+            "prompt_template": {
+              "type": "string"
+            },
+            "hardware": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "sources": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "source_type",
+            "title",
+            "accessed_date"
+          ],
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "source_type": {
+              "type": "string",
+              "enum": [
+                "hf",
+                "github",
+                "paper",
+                "blog",
+                "leaderboard",
+                "dataset",
+                "other"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "accessed_date": {
+              "type": "string"
+            },
+            "primary": {
+              "type": "boolean"
+            },
+            "checksum_sha256": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "disputed": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "field",
+            "claims",
+            "evidence_urls",
+            "notes"
+          ],
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "evidence_urls": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "gaps_unknowns": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "field",
+            "reason"
+          ],
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "attempts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "url",
+                  "date"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "notes": {
+        "type": "string"
+      }
+    }
+  },
+  "strict": true
+}

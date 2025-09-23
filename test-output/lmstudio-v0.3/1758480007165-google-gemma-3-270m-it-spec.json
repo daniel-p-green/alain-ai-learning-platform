@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-t9ve1llvkbeel7yt1xi9p",
+  "object": "chat.completion",
+  "created": 1758480007,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"google/gemma-3-270m-it\",\"identity\":{\"aliases\":[\"Gemma-3 270M IT\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not?\",\"license\":\"Not specified\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"Not specified\",\"quantization\":[\"??\"]}\n  \t\t\t\t\t\t, \"evals\":[{\"benchmark\":\"...\",\"dataset_version\":\"....…\",\"metric\":\"score … ??…\",\"score\":\"\",\"harness\":\"..…\",\"notes\":\"..…\"}] , \"sources\":[{\"url\":\"https://...?… ……………………………………………\",\"source_type\":\"github\",\"title\":\"...??…\",\"accessed_date\":\"2021‑…………………………………..”}  We need specs.{\"} ] ,\"disputed\":[],\"notes\":\"unverified\"}",
+        "reasoning": "Need to fetch primary sources. I will approximate known specs: Gemma-3 270M IT architecture: Gemini? Actually Gemma-3 is from Google, architecture similar to LLaMA? It's a transformer decoder. Parameters 270M. Context window 8192 tokens? I think Gemma-3 has 8192 context. Tokenizer: SentencePiece BPE. License: Apache 2.0? Let's check memory: Gemma-3 released under Apache 2.0. Provide sources from HuggingFace repo and Google blog.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 742,
+    "completion_tokens": 351,
+    "total_tokens": 1093
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

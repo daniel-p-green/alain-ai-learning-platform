@@ -1,0 +1,25 @@
+{
+  "total_score": 100,
+  "stage1": {
+    "score": 60,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "primary_sources": 3,
+      "secondary_sources": 0,
+      "speculation_hits": 0,
+      "unknown_ratio": 0.19607843137254902
+    }
+  },
+  "stage2": {
+    "score": 40,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "files_written": 13,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [],
+  "summary": "ready_to_ship"
+}

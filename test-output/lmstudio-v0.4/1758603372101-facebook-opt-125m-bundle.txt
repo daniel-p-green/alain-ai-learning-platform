@@ -1,0 +1,12 @@
+OK: /facebook-opt-125m/README.md
+OK: /facebook-opt-125m/CHANGELOG.md
+OK: /facebook-opt-125m/TECH_SPECS.md
+OK: /facebook-opt-125m/EVALS.md
+OK: /facebook-opt-125m/COOKBOOK.md
+OK: /facebook-opt-125m/LICENSE_NOTES.md
+OK: /facebook-opt-125m/TROUBLESHOOTING.md
+OK: /facebook-opt-125m/requirements.txt
+OK: /facebook-opt-125m/.env.example
+OK: /facebook-opt-125m/code/inference.py
+OK: /facebook-opt-125m/code/finetune.py
+OK: /facebook-opt-125m/code/run.sh

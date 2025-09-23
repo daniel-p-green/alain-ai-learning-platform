@@ -1,0 +1,67 @@
+{
+  "model_id": "bigscience/bloomz-560m",
+  "revision": "a2845d7e13dd12efae154a9f1c63fcc2e0cc4b05",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": false,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "bigscience/xp3",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "bigscience/xP3",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "bigscience/evaluation-results",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 18,
+  "metadata": {
+    "license": "bigscience-bloom-rail-1.0",
+    "license_source": "README front-matter",
+    "architecture": "BloomForCausalLM",
+    "context_window": "2048",
+    "tokenizer_details": {
+      "vocab_size": "250880"
+    },
+    "versioning": {
+      "hf_revision": "a2845d7e13dd12efae154a9f1c63fcc2e0cc4b05"
+    },
+    "inference": {},
+    "coverage": {
+      "filled": 4,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "tokenizer",
+        "primary repo",
+        "evals",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 40
+    },
+    "primary_repo": "bigscience-workshop/xmtf",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals",
+      "needs_parameter_verification"
+    ]
+  }
+}

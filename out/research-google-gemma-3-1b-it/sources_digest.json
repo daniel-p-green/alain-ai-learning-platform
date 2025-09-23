@@ -1,0 +1,235 @@
+{
+  "model_id": "google/gemma-3-1b-it",
+  "revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 3,
+  "metadata": {
+    "license": "gemma",
+    "license_source": "README front-matter",
+    "context_window": "256",
+    "usage_sections": [
+      "### Usage\n\nBelow, there are some code snippets on how to get quickly started with running the model. First, install the Transformers library. Gemma 3 is supported starting from transformers 4.50.0. \n\n```sh\n$ pip install -U transformers\n```\n\nThen, copy the snippet from the section that is relevant for your use case.\n",
+      "## Usage and Limitations\n\nThese models have certain limitations that users should be aware of.\n",
+      "### Intended Usage\n\nOpen vision-language models (VLMs) models have a wide range of applications\nacross various industries and domains. The following list of potential uses is\nnot comprehensive. The purpose of this list is to provide contextual information\nabout the possible use-cases that the model creators considered as part of model\ntraining and development.\n\n-   Content Creation and Communication\n    -   Text Generation: These models can be used to generate creative text\n        formats such as poems, scripts, code, marketing copy, and email drafts.\n    -   Chatbots and Conversational AI: Power conversational interfaces\n        for customer service, virtual assistants, or interactive applications.\n    -   Text Summarization: Generate concise summaries of a text corpus,\n        research papers, or reports.\n    -   Image Data Extraction: These models can be used to extract,\n        interpret, and summarize visual data for text communications.\n-   Research and Education\n    -   Natural Language Processing (NLP) and VLM Research: These\n        models can serve as a foundation for researchers to experiment with VLM\n        and NLP techniques, develop algorithms, and contribute to the\n        advancement of the field.\n    -   Language Learning Tools: Support interactive language learning\n        experiences, aiding in grammar correction or providing writing practice.\n    -   Knowledge Exploration: Assist researchers in exploring large\n        bodies of text by generating summaries or answering questions about\n        specific topics.\n"
+    ],
+    "evals": [
+      {
+        "benchmark": "[HellaSwag][hellaswag]",
+        "metric": "10-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[BoolQ][boolq]",
+        "metric": "0-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[PIQA][piqa]",
+        "metric": "0-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[SocialIQA][socialiqa]",
+        "metric": "0-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[TriviaQA][triviaqa]",
+        "metric": "5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[Natural Questions][naturalq]",
+        "metric": "5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[ARC-c][arc]",
+        "metric": "25-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[ARC-e][arc]",
+        "metric": "0-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[WinoGrande][winogrande]",
+        "metric": "5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[BIG-Bench Hard][bbh]",
+        "metric": "few-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[DROP][drop]",
+        "metric": "1-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[MMLU][mmlu]",
+        "metric": "5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[MMLU][mmlu] (Pro COT)",
+        "metric": "5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[AGIEval][agieval]",
+        "metric": "3-5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[MATH][math]",
+        "metric": "4-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[GSM8K][gsm8k]",
+        "metric": "8-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[GPQA][gpqa]",
+        "metric": "5-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[MBPP][mbpp]",
+        "metric": "3-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[HumanEval][humaneval]",
+        "metric": "0-shot",
+        "source": "README"
+      },
+      {
+        "benchmark": "[MGSM][mgsm]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[Global-MMLU-Lite][global-mmlu-lite]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[WMT24++][wmt24pp] (ChrF)",
+        "source": "README"
+      },
+      {
+        "benchmark": "[FloRes][flores]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[XQuAD][xquad] (all)",
+        "source": "README"
+      },
+      {
+        "benchmark": "[ECLeKTic][eclektic]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[IndicGenBench][indicgenbench]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[COCOcap][coco-cap]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[DocVQA][docvqa] (val)",
+        "source": "README"
+      },
+      {
+        "benchmark": "[InfoVQA][info-vqa] (val)",
+        "source": "README"
+      },
+      {
+        "benchmark": "[MMMU][mmmu] (pt)",
+        "source": "README"
+      },
+      {
+        "benchmark": "[TextVQA][textvqa] (val)",
+        "source": "README"
+      },
+      {
+        "benchmark": "[RealWorldQA][realworldqa]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[ReMI][remi]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[AI2D][ai2d]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[ChartQA][chartqa]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[VQAv2][vqav2]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[BLINK][blinkvqa]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[OKVQA][okvqa]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[TallyQA][tallyqa]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[SpatialSense VQA][ss-vqa]",
+        "source": "README"
+      },
+      {
+        "benchmark": "[CountBenchQA][countbenchqa]",
+        "source": "README"
+      }
+    ],
+    "coverage": {
+      "filled": 3,
+      "total": 10,
+      "missing": [
+        "architecture",
+        "parameters",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "tokenizer vocab",
+        "license SPDX"
+      ],
+      "score": 30
+    },
+    "versioning": {
+      "hf_revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752"
+    },
+    "flags": [
+      "missing_primary_repo",
+      "needs_parameter_verification"
+    ]
+  }
+}

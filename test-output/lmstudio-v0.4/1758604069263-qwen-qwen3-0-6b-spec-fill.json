@@ -1,0 +1,11 @@
+{
+  "technical_specs": {
+    "architecture": "Causal Language Model",
+    "parameters": "0.6B",
+    "context_window": "32768",
+    "tokenizer": "unknown",
+    "license": "apache-2.0"
+  },
+  "primary_repo": "https://github.com/QwenLM/Qwen3",
+  "notes": "Tokenizer details not provided in the README."
+}

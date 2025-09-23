@@ -1,0 +1,12 @@
+OK: /qwen-qwen2-5-3b-instruct/README.md
+OK: /qwen-qwen2-5-3b-instruct/CHANGELOG.md
+OK: /qwen-qwen2-5-3b-instruct/TECH_SPECS.md
+OK: /qwen-qwen2-5-3b-instruct/EVALS.md
+OK: /qwen-qwen2-5-3b-instruct/COOKBOOK.md
+OK: /qwen-qwen2-5-3b-instruct/LICENSE_NOTES.md
+OK: /qwen-qwen2-5-3b-instruct/TROUBLESHOOTING.md
+OK: /qwen-qwen2-5-3b-instruct/requirements.txt
+OK: /qwen-qwen2-5-3b-instruct/.env.example
+OK: /qwen-qwen2-5-3b-instruct/code/inference.py
+OK: /qwen-qwen2-5-3b-instruct/code/finetune.py
+OK: /qwen-qwen2-5-3b-instruct/code/run.sh

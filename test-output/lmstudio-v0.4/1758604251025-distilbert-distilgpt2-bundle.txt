@@ -1,0 +1,12 @@
+OK: /distilbert-distilgpt2/README.md
+OK: /distilbert-distilgpt2/CHANGELOG.md
+OK: /distilbert-distilgpt2/TECH_SPECS.md
+OK: /distilbert-distilgpt2/EVALS.md
+OK: /distilbert-distilgpt2/COOKBOOK.md
+OK: /distilbert-distilgpt2/LICENSE_NOTES.md
+OK: /distilbert-distilgpt2/TROUBLESHOOTING.md
+OK: /distilbert-distilgpt2/requirements.txt
+OK: /distilbert-distilgpt2/.env.example
+OK: /distilbert-distilgpt2/code/inference.py
+OK: /distilbert-distilgpt2/code/finetune.py
+OK: /distilbert-distilgpt2/code/run.sh

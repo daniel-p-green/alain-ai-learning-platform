@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-wgwd3ib36vblusoxsip5u",
+  "object": "chat.completion",
+  "created": 1758604235,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\": {\"architecture\": \"Qwen2ForCausalLM\"}, \"notes\":\"}{\" }",
+        "reasoning": "We need missing fields: parameters, tokenizer, license, primary repo, evals, inference hardware, license SPDX. README has no info. So omit those. Provide architecture only. Also maybe tokenizer type? It says AutoTokenizer but not specific. So omit tokenizer details. Return JSON with technical_specs.architecture and notes empty? Probably omit notes if none.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 711,
+    "completion_tokens": 107,
+    "total_tokens": 818
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

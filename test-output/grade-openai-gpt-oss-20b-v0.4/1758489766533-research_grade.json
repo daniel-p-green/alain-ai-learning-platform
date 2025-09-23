@@ -1,0 +1,29 @@
+{
+  "total_score": 40,
+  "stage1": {
+    "score": 0,
+    "failures": [
+      "Spec missing"
+    ],
+    "warnings": [],
+    "metrics": {
+      "primary_sources": 0,
+      "secondary_sources": 0,
+      "speculation_hits": 0,
+      "unknown_ratio": 0
+    }
+  },
+  "stage2": {
+    "score": 40,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "files_written": 13,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [
+    "Spec is missing or not an object"
+  ],
+  "summary": "redo"
+}

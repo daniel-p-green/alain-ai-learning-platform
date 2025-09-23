@@ -1,0 +1,13 @@
+# Sources Digest for mistralai/Magistral-Small-2509
+- HF revision: 92ad3595fd6f2c6299dadbc013460b313a29c063
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0

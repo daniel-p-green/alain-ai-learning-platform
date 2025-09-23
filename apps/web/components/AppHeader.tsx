@@ -10,6 +10,7 @@ import { Button } from "./Button";
 import { ButtonLink } from "./ButtonLink";
 import { cn } from "@/lib/utils";
 import { hasClerk } from "@/lib/env";
+import HFQuickOpen from "./HFQuickOpen";
 
 const navigation = [
   { href: "/#preview", label: "Preview" },
@@ -149,6 +150,21 @@ export function AppHeader() {
                 <Link href="/sign-in">Sign in</Link>
               </Button>
             )}
+          </div>
+          {/* Desktop quick Hugging Face open (xl and up) */}
+          <div className="hidden xl:block w-[420px]">
+            <HFQuickOpen
+              size="compact"
+              showError={false}
+              expandOnFocus
+              suggestions={[
+                "tiiuae/falcon-7b",
+                "mistralai/Mistral-7B-Instruct-v0.2",
+                "Qwen/Qwen2-7B-Instruct",
+                "google/gemma-2-2b-it",
+                "meta-llama/Llama-3.1-8B-Instruct",
+              ]}
+            />
           </div>
           <button
             type="button"

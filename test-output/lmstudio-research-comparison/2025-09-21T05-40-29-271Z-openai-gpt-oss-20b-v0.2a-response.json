@@ -1,0 +1,9 @@
+{
+  "version": "v0.2a",
+  "model_reference": "openai/gpt-oss-20b",
+  "response_time_ms": 7775,
+  "json_parsed": false,
+  "coerced_json_parsed": true,
+  "error": null,
+  "response_text": "<|channel|>commentary to=web.search <|constrain|>json<|message|>{\"query\":\"openai/gpt-oss-20b huggingface\",\"topn\":10,\"recency_days\":365}"
+}

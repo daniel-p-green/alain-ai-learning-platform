@@ -1,0 +1,14 @@
+# Sources Digest for google/t5gemma-b-b-prefixlm
+- HF revision: df5e1422c2a53948a57901c54bfcf397c92bfa1d
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed license: gemma

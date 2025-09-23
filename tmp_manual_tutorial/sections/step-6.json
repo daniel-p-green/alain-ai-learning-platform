@@ -1,0 +1,29 @@
+{
+  "section_number": 6,
+  "title": "Step 6: Test and Validate the Experience",
+  "estimated_tokens": 380,
+  "callouts": [
+    {
+      "type": "tip",
+      "message": "Running `npm run lint` first catches config drift before the Vitest suite runs."
+    }
+  ],
+  "content": [
+    {
+      "cell_type": "markdown",
+      "source": "Ship with confidence by locking in linting + unit smoke tests. The test suite covers our model guardrails and telemetry IDs; linting keeps Next.js conventions intact."
+    },
+    {
+      "cell_type": "code",
+      "source": "%%bash\nset -euo pipefail\ncat <<'EOF' > poe-chat-tutorial/tests/models.test.ts\nimport { describe, expect, it } from \"vitest\";\nimport { isAllowedModel, poeModels } from \"@/lib/models\";\nimport { createTelemetryId } from \"@/lib/telemetry\";\n\ndescribe(\"model validation\", () => {\n  it(\"accepts every configured Poe model\", () => {\n    for (const model of poeModels) {\n      expect(isAllowedModel(model.id)).toBe(true);\n    }\n  });\n\n  it(\"rejects unsupported models\", () => {\n    expect(isAllowedModel(\"unknown-model\")).toBe(false);\n    expect(isAllowedModel(123)).toBe(false);\n  });\n});\n\ndescribe(\"telemetry helpers\", () => {\n  it(\"creates unique identifiers\", () => {\n    const first = createTelemetryId();\n    const second = createTelemetryId();\n    expect(first).not.toEqual(second);\n    expect(first.startsWith(\"evt_\")).toBe(true);\n  });\n});\nEOF\ncat <<'EOF' > poe-chat-tutorial/vitest.config.ts\nimport { defineConfig } from \"vitest/config\";\nimport path from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\n\nconst __dirname = path.dirname(fileURLToPath(import.meta.url));\n\nexport default defineConfig({\n  resolve: {\n    alias: {\n      \"@\": path.resolve(__dirname, \".\")\n    }\n  },\n  test: {\n    include: [\"tests/**/*.test.ts\"],\n    environment: \"node\"\n  }\n});\nEOF"
+    },
+    {
+      "cell_type": "code",
+      "source": "%%bash\nset -euo pipefail\ncd poe-chat-tutorial\nnpm run lint\nnpm run test"
+    },
+    {
+      "cell_type": "markdown",
+      "source": "If you have your `POE_API_KEY` exported, optionally run the dev server and send a test prompt:\n\n```bash\ncd poe-chat-tutorial\nnpm run dev\n```\n\nVisit http://localhost:3000 and confirm streaming + telemetry behave as expected."
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "project": "ALAIN",
+  "components": [
+    {
+      "name": "backend-execution",
+      "kind": "service",
+      "status_0_100": 75,
+      "rubric_notes": "Core lesson generation/adaptation flows ship with validation and tests; SSE streaming still unmet so not beyond integrated stage.",
+      "evidence": [
+        "apps/backend/execution/lesson-generator.ts",
+        "apps/backend/execution/lesson-generator.test.ts",
+        "apps/backend/execution/teacher.ts"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 3
+    },
+    {
+      "name": "backend-research",
+      "kind": "service",
+      "status_0_100": 50,
+      "rubric_notes": "Happy path implemented but lacks automated tests and throttling; relies on manual QA.",
+      "evidence": [
+        "apps/backend/research/api.ts",
+        "resources/content/research/openai",
+        "apps/backend/research/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 2
+    },
+    {
+      "name": "backend-tutorials",
+      "kind": "service",
+      "status_0_100": 60,
+      "rubric_notes": "Tutorial CRUD, validation, and publication flows in place with unit tests; lacking full end-to-end coverage.",
+      "evidence": [
+        "apps/backend/tutorials/create.ts",
+        "apps/backend/tutorials/validation.test.ts",
+        "apps/backend/tutorials/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 3
+    },
+    {
+      "name": "backend-assessments",
+      "kind": "service",
+      "status_0_100": 55,
+      "rubric_notes": "Assessment APIs validated but explanations/analytics incomplete and tests focus on logic layer only.",
+      "evidence": [
+        "apps/backend/assessments/api.ts",
+        "apps/backend/assessments/logic.test.ts",
+        "apps/backend/assessments/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 2
+    },
+    {
+      "name": "web-app",
+      "kind": "service",
+      "status_0_100": 60,
+      "rubric_notes": "Generate and research flows wired with client hooks; automation coverage missing for critical journeys.",
+      "evidence": [
+        "apps/web/features/generate/GeneratePage.tsx",
+        "apps/web/features/research/ResearchPage.tsx",
+        "apps/web/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 5
+    },
+    {
+      "name": "pkg-alain-kit",
+      "kind": "package",
+      "status_0_100": 50,
+      "rubric_notes": "Provides orchestration primitives but still uses loose types and lacks automation for docs/status sync.",
+      "evidence": [
+        "packages/alain-kit/core/section-generator.ts",
+        "packages/alain-kit/README.md",
+        "packages/alain-kit/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 2
+    },
+    {
+      "name": "alain-kit-sdk",
+      "kind": "package",
+      "status_0_100": 50,
+      "rubric_notes": "CLI exists but flags and structured logs need expansion per PRD; add examples and tests.",
+      "evidence": [
+        "packages/alain-kit-sdk/index.ts",
+        "packages/alain-kit-sdk/README.md",
+        "packages/alain-kit-sdk/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 3
+    },
+    {
+      "name": "backend-export",
+      "kind": "service",
+      "status_0_100": 30,
+      "rubric_notes": "Scaffolding for export present; streaming /export endpoint not implemented.",
+      "evidence": [
+        "apps/backend/convert-to-notebook.ts",
+        "apps/backend/export/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 2
+    },
+    {
+      "name": "repo-ci",
+      "kind": "infra",
+      "status_0_100": 30,
+      "rubric_notes": "Initial workflow added to validate docs/tasks consistency; coverage and test matrix not configured.",
+      "evidence": [
+        ".github/workflows/consistency.yml",
+        "alain-ai-learning-platform/TODO.md"
+      ],
+      "owner": "[TBD]",
+      "todos_open": 2
+    }
+  ],
+  "ci": {
+    "passing": false,
+    "tests_total": 0,
+    "coverage": 0
+  },
+  "last_updated": "2025-09-21T23:41:18Z"
+}

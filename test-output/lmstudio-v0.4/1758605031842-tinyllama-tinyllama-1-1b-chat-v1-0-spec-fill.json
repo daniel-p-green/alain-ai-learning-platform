@@ -1,0 +1,10 @@
+{
+  "technical_specs": {
+    "architecture": "Llama 2",
+    "parameters": "1.1B",
+    "context_window": "4096",
+    "tokenizer": "Llama 2 tokenizer",
+    "license": "apache-2.0"
+  },
+  "primary_repo": "https://github.com/jzhang38/TinyLlama"
+}

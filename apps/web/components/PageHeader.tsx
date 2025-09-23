@@ -67,7 +67,7 @@ export function PageHeader({
               </span>
             ) : null}
             <div className="space-y-3">
-              <h1 className="text-display-1 font-semibold text-foreground">AI Manuals for AI Models</h1>
+              <h1 className="text-display-1 text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground">AI Manuals for AI Models</h1>
               {headline ? <h2 className="text-display-2 font-semibold text-muted-foreground">{headline}</h2> : null}
               {description ? <p className="max-w-3xl text-sm text-muted-foreground md:text-base">{description}</p> : null}
             </div>

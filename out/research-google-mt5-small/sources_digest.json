@@ -1,0 +1,58 @@
+{
+  "model_id": "google/mt5-small",
+  "revision": "73fb5dbe4756edadc8fbe8c769b0a109493acf7a",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "mc4",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 7,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "MT5ForConditionalGeneration",
+    "tokenizer": "T5Tokenizer",
+    "tokenizer_details": {
+      "vocab_size": "250112"
+    },
+    "versioning": {
+      "hf_revision": "73fb5dbe4756edadc8fbe8c769b0a109493acf7a"
+    },
+    "inference": {},
+    "parameters": "60M",
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "context window",
+        "primary repo",
+        "evals",
+        "inference hardware"
+      ],
+      "score": 60
+    },
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals",
+      "missing_primary_repo"
+    ]
+  }
+}

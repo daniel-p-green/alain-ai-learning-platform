@@ -1,0 +1,46 @@
+{
+  "model_id": "10",
+  "revision": "main",
+  "files": {
+    "hf_readme": false,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 1,
+  "metadata": {
+    "coverage": {
+      "filled": 0,
+      "total": 10,
+      "missing": [
+        "architecture",
+        "parameters",
+        "context window",
+        "tokenizer",
+        "license",
+        "primary repo",
+        "evals",
+        "inference hardware",
+        "tokenizer vocab",
+        "license SPDX"
+      ],
+      "score": 0
+    },
+    "versioning": {
+      "hf_revision": "main"
+    },
+    "flags": [
+      "incomplete_metadata",
+      "missing_evals",
+      "missing_primary_repo"
+    ]
+  }
+}

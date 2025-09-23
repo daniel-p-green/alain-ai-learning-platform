@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-82q8xp5gk4ds2ykdzhqi",
+  "object": "chat.completion",
+  "created": 1758604732,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"deepseek-ai/DeepSeek-R1-Distill-Llama-8B\",\"identity\":{\"aliases\":[\"DeepSeek R1 Distill Llama 8B\"],\"family_map\":[{\"variant\":\"DeepSeek R1 Distill Llama 8B\",\"repo_id\":\"deepseek-ai/DeepSeek-R1\",\"context_window\":\"131072\"}],\"canonical_repo\":\"deepseek-ai/DeepSeek-R1\"},\"technical_specs\":{\"architecture\":\"LlamaForCausalLM\",\"parameters\":\"Not specified\",\"context_window\":\"131072\",\"tokenizer\":\"deepseek‑t5?\",\"license\":\"MIT\",\"tokenizer_details\":{\"vocab_size\":\"Not ​...\"}}\n, \"inference\":{\"servers\":[\"HF Hub\"],\"min_hardware\":\"Not …..}}}{ \" ,\"quantization\":[],\"context_length_verified\":\"131072\",\"throughput_notes\":\"Not specified\" }, \"evals\": [], \"sources\": [ { \"url\":\"https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-8B\", \"source_type\":\"hf\", \"title\":\"HF Model Hub Page\", \"accessed_date\":\"2025-09-23\", \"primary\":true, \"checksum_sha256\":\"Not specified\", \"revision\":\"6a6f4aa4197940add57724a7707d069478df56b1\" }, { \"url\":\"https://github.com/deepseek-ai/DeepSeek-R1/blob/main/README.md\", \"source_type\":\"github\", \"title\":\"GitHub README\", \"accessed_date\":\"2025-09-23\", \"primary\":true, \"checksum_sha256\":\"Not specified\", \"revision\":\"main\" }, { \"url\":\"https://github.com/deepseek-ai/DeepSeek-R1/blob/main/LICENSE\", \"source_type\":\"github\", \"title\":\"GitHub LICENSE\", \"accessed_date\":\"2025-09-23\", \"primary\":true, \"checksum_sha256\":\"Not specified\", \"revision\":\"main\" } ], \"disputed\": [], \"notes\":\"unverified\" }",
+        "reasoning": "Need produce valid JSON with fields. Provide sources. Use primary sources: HF repo files, GitHub README, LICENSE. Provide checksum maybe omitted. Let's craft concise.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1248,
+    "completion_tokens": 481,
+    "total_tokens": 1729
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

@@ -21,7 +21,7 @@ export default function NavBarPublic() {
     let ignore = false;
     (async () => {
       try {
-        const res = await fetch("https://api.github.com/repos/AppliedLearningAI/alain-ai-learning-platform", { cache: "force-cache" });
+        const res = await fetch("https://api.github.com/repos/daniel-p-green/alain-ai-learning-platform", { cache: "force-cache" });
         if (!res.ok) return;
         const data = await res.json();
         if (!ignore) setStars(formatStars(typeof data?.stargazers_count === "number" ? data.stargazers_count : null));
@@ -38,7 +38,7 @@ export default function NavBarPublic() {
     () => [
       { href: "/docs", label: "Docs" },
       { href: "/notebooks", label: "Notebook Library" },
-      { href: "https://github.com/AppliedLearningAI/alain-ai-learning-platform", label: stars ? `GitHub (${stars})` : "GitHub", external: true },
+      { href: "https://github.com/daniel-p-green/alain-ai-learning-platform", label: stars ? `GitHub (${stars})` : "GitHub", external: true },
     ],
     [stars],
   );

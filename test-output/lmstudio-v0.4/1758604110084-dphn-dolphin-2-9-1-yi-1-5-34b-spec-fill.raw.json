@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-vrk66yiz7a90dyqncpq1v",
+  "object": "chat.completion",
+  "created": 1758604115,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\": {\"architecture\": \"LlamaForCausalLM\", \"parameters\": \"34B\", \"context_window\": \"8192\", \"tokenizer\": \"LlamaTokenizer\", \"license\": \"apache-2.0\"}, \"primary_repo\": \"https://github.com/OpenAccess-AI-Collective/axolotl\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3126,
+    "completion_tokens": 72,
+    "total_tokens": 3198
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

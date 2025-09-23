@@ -1,0 +1,13 @@
+# Sources Digest for baidu/ERNIE-4.5-21B-A3B-Thinking
+- HF revision: 960d37ea466c4a1e4d09b7182e6f2740288cb76e
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0

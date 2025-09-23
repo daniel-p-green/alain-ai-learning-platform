@@ -1,0 +1,17 @@
+# Sources Digest for Helsinki-NLP/opus-mt-en-fr
+- HF revision: dd7f6540a7a48a7f4db59e5c0b9c42c8eea67f18
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: MarianMTModel
+- Parsed context window: 512
+- Parsed license: apache-2.0
+- Primary GitHub repo: Helsinki-NLP/OPUS-MT-train

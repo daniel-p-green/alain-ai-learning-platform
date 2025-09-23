@@ -1,0 +1,27 @@
+{
+  "total_score": 85,
+  "stage1": {
+    "score": 45,
+    "failures": [],
+    "warnings": [
+      "High unknown ratio 45.0%"
+    ],
+    "metrics": {
+      "primary_sources": 2,
+      "secondary_sources": 0,
+      "speculation_hits": 0,
+      "unknown_ratio": 0.45
+    }
+  },
+  "stage2": {
+    "score": 40,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "files_written": 13,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [],
+  "summary": "ready_to_ship"
+}

@@ -1,0 +1,19 @@
+{
+  "model_id": "baidu/ERNIE-4.5-21B-A3B-Thinking",
+  "revision": "960d37ea466c4a1e4d09b7182e6f2740288cb76e",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 6
+}

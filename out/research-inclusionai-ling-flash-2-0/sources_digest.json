@@ -1,0 +1,19 @@
+{
+  "model_id": "inclusionAI/Ling-flash-2.0",
+  "revision": "649f8b943c1a6db288552fd894576b66ca098c27",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 6
+}

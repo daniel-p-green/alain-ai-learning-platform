@@ -1,0 +1,106 @@
+{
+  "model_id": "google/flan-t5-base",
+  "revision": "7bcac572ce56db69c1ea7c8af255c5d7c9672fc2",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "svakulenk0/qrecc",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "taskmaster2",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "djaym7/wiki_dialog",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "deepmind/code_contests",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "lambada",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "gsm8k",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "aqua_rat",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "esnli",
+      "api": true,
+      "readme": true
+    },
+    {
+      "id": "quasc",
+      "api": false,
+      "readme": false
+    },
+    {
+      "id": "qed",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 32,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "T5ForConditionalGeneration",
+    "context_window": "512",
+    "tokenizer_details": {
+      "vocab_size": "32128"
+    },
+    "versioning": {
+      "hf_revision": "7bcac572ce56db69c1ea7c8af255c5d7c9672fc2"
+    },
+    "inference": {},
+    "usage_sections": [
+      "# Usage\n\nFind below some example scripts on how to use the model in `transformers`:\n"
+    ],
+    "parameters": "220M",
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "tokenizer",
+        "primary repo",
+        "evals",
+        "inference hardware"
+      ],
+      "score": 60
+    },
+    "primary_repo": "google-research/t5x",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

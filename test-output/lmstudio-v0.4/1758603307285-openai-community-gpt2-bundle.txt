@@ -1,0 +1,12 @@
+OK: /openai-community-gpt2/README.md
+OK: /openai-community-gpt2/CHANGELOG.md
+OK: /openai-community-gpt2/TECH_SPECS.md
+OK: /openai-community-gpt2/EVALS.md
+OK: /openai-community-gpt2/COOKBOOK.md
+OK: /openai-community-gpt2/LICENSE_NOTES.md
+OK: /openai-community-gpt2/TROUBLESHOOTING.md
+OK: /openai-community-gpt2/requirements.txt
+OK: /openai-community-gpt2/.env.example
+OK: /openai-community-gpt2/code/inference.py
+OK: /openai-community-gpt2/code/finetune.py
+OK: /openai-community-gpt2/code/run.sh

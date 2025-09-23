@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-3l7mjbma3kpmthp12m46a",
+  "object": "chat.completion",
+  "created": 1758605037,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\": {\"architecture\": \"Llama 2\", \"parameters\": \"1.1B\", \"context_window\": \"4096\", \"tokenizer\": \"Llama 2 tokenizer\", \"license\": \"apache-2.0\"}, \"primary_repo\": \"https://github.com/jzhang38/TinyLlama\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1528,
+    "completion_tokens": 71,
+    "total_tokens": 1599
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

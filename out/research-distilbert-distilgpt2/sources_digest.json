@@ -1,0 +1,58 @@
+{
+  "model_id": "distilbert/distilgpt2",
+  "revision": "2290a62682d06624634c1f46a6ad5be0f47f38aa",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": true,
+    "gh_release": true,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "openwebtext",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 37,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "GPT2LMHeadModel",
+    "context_window": "1024",
+    "tokenizer": "BPE",
+    "tokenizer_details": {
+      "vocab_size": "50257"
+    },
+    "versioning": {
+      "hf_revision": "2290a62682d06624634c1f46a6ad5be0f47f38aa"
+    },
+    "inference": {},
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "parameters": "124M",
+    "coverage": {
+      "filled": 7,
+      "total": 10,
+      "missing": [
+        "primary repo",
+        "evals",
+        "inference hardware"
+      ],
+      "score": 70
+    },
+    "primary_repo": "huggingface/transformers",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

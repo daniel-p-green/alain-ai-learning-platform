@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-xnfam29r0ge8m77eixphml",
+  "object": "chat.completion",
+  "created": 1758603365,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"openai-community/gpt2\",\"identity\":{\"aliases\":[\"gpt2\"],\"family_map\":[{\"variant\":\"gpt2\",\"repo_id\":\"openai-community/gpt2\",\"context_window\":\"1024\"}],\"canonical_repo\":\"openai-community/gpt-2\"},\"technical_specs\":{\"architecture\":\"GPT-2\",\"parameters\":\"124M\",\"context_window\":\"102�...}}",
+        "reasoning": "We need produce valid JSON with schema keys. Likely fields: model_name, identity, technical_specs, inference, evals, sources, gh_commits? We have truncated data. Use \",\"tokenizer\" : \"BPE\", \"license\":\"MIT\", \"tokenizer_details\":{ \"vocab_size\":\"Not specified\",\"special_tokens\":{\"eos\":\"<|endoftext>\",\"bos\":\"\"}}, \"license_details\":{ \"spdx\":\"MIT\",\"redistribution\":\"Yes\",\"finetune\":\"No\",\"attribution\":\"We …\"} } , \"inference\":{ \"servers\":[\"OpenAI ...\"],\"min_hardware\":\"Not specified\",\"quantization\":[] }, \"evals\":[{\"benchmark\":\"OpenAI ...\",\"dataset_version\":\"…\",\"metric\":\"…\",\"score\":\"…\",\"harness\":\"…\",\"notes\":\"…\"}], \"sources\":[{\"url\":\"https://huggingface.co/openai-community/gpt2\",\"source_type\":\"hf\",\"title\":\"HF Model Page\",\"accessed_date\":\"2024-06-01\"}], \"disputed\":[], \"notes\":\"…\"} ",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1022,
+    "completion_tokens": 320,
+    "total_tokens": 1342
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

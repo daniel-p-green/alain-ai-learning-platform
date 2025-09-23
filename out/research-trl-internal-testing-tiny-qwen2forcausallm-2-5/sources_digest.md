@@ -1,0 +1,15 @@
+# Sources Digest for trl-internal-testing/tiny-Qwen2ForCausalLM-2.5
+- HF revision: c837622efc2e86d1ebe972877de9105af0ad26a5
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: Qwen2ForCausalLM
+- Parsed context window: 32768

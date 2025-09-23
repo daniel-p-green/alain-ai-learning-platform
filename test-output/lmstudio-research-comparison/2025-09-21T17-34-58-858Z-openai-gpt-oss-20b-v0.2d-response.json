@@ -1,0 +1,9 @@
+{
+  "version": "v0.2d",
+  "model_reference": "openai/gpt-oss-20b",
+  "response_time_ms": 4896,
+  "json_parsed": false,
+  "coerced_json_parsed": false,
+  "error": null,
+  "response_text": "{\"model_name\":\"openai/gpt-oss-20b\",\"identity\":{\"aliases\":[\"GPT‑OSS 20B\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not specified\",\"license\":\"Not specified\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"Not ...}"
+}

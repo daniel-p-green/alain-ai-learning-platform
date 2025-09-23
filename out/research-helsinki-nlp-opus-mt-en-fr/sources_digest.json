@@ -1,0 +1,116 @@
+{
+  "model_id": "Helsinki-NLP/opus-mt-en-fr",
+  "revision": "dd7f6540a7a48a7f4db59e5c0b9c42c8eea67f18",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 8,
+  "metadata": {
+    "license": "apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "MarianMTModel",
+    "context_window": "512",
+    "tokenizer": "SentencePiece",
+    "tokenizer_details": {
+      "vocab_size": "59514"
+    },
+    "versioning": {
+      "hf_revision": "dd7f6540a7a48a7f4db59e5c0b9c42c8eea67f18"
+    },
+    "inference": {},
+    "evals": [
+      {
+        "benchmark": "benchmark",
+        "metric": "33.8",
+        "score": "33.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "40.0",
+        "score": "40.0",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "29.8",
+        "score": "29.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "27.5",
+        "score": "27.5",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "29.4",
+        "score": "29.4",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "32.7",
+        "score": "32.7",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "34.3",
+        "score": "34.3",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "31.8",
+        "score": "31.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "33.2",
+        "score": "33.2",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "50.5",
+        "score": "50.5",
+        "source": "README"
+      },
+      {
+        "benchmark": "-tab-size-preference",
+        "score": "4",
+        "source": "link:https://github.com/Helsinki-NLP/OPUS-MT-train/blob/master/models/en-fr/README.md"
+      }
+    ],
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "primary repo",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 60
+    },
+    "primary_repo": "Helsinki-NLP/OPUS-MT-train",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "needs_parameter_verification"
+    ]
+  }
+}

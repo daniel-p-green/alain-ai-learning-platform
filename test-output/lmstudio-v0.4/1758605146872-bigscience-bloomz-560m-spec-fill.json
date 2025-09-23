@@ -1,0 +1,19 @@
+{
+  "technical_specs": {
+    "parameters": "560M",
+    "context_window": ""
+  },
+  "inference": {
+    "servers": [],
+    "min_hardware": "",
+    "quantization": []
+  },
+  "evals": [
+    {
+      "dataset": "Winogrande XL (xl)",
+      "split": "validation",
+      "source": "?"
+    }
+  ],
+  "primary_repo": "bigscience-workshop/xmtf"
+}

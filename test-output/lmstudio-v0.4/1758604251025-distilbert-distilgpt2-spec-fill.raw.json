@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-071o85keccpktz2t1iaq2pi",
+  "object": "chat.completion",
+  "created": 1758604260,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"primary_repo\":\"https://github.com/huggingface/transformers\",\"notes\":\"Missing evals and inference hardware info\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 3247,
+    "completion_tokens": 27,
+    "total_tokens": 3274
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

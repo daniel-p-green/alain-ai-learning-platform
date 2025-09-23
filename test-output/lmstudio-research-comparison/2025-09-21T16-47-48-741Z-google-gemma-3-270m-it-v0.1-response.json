@@ -1,0 +1,9 @@
+{
+  "version": "v0.1",
+  "model_reference": "google/gemma-3-270m-it",
+  "response_time_ms": 67668,
+  "json_parsed": false,
+  "coerced_json_parsed": false,
+  "error": null,
+  "response_text": "{\"model_name\":\"gemma-2\",\"technical_specs\":{\"architecture\":\"transformer\",\"parameters\":\"10.0?\",\"context_window\":\"??\",\"license\":\"\"},\"educational_context\":{\"prerequisites\":[],\"learning_objectives\":[\"...\"],\"difficulty_level\":\"intermediate\"} ,\"implementation\":{\"setup_instructions\":\"???......\",\"code_example\":\"??......\",\"best_practices\":[\"\"]} ,\"community_resources\":{\"documentation_url\":\"...............\",\"tutorials\":[\"............\"],\"papers\":[\"..f................???......…\",\"................................................…\",\".......c..........................................…\",\"......…........t?....??………....……......…………..…\",\"......i....................c......…........…….....................................…..?..??..……........................………..\",\"We …....…..…..……………………………………The ....……open‑…………………………json…………repo………………………………………………………??…………………………”}"
+}

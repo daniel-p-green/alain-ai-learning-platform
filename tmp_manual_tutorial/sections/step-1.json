@@ -1,0 +1,17 @@
+{
+  "section_number": 1,
+  "title": "Step 1: Map the Experience and Requirements",
+  "estimated_tokens": 320,
+  "callouts": [
+    {
+      "type": "note",
+      "message": "Keep the tutorial focused on the end-to-end journey: from setup to telemetry."
+    }
+  ],
+  "content": [
+    {
+      "cell_type": "markdown",
+      "source": "## Step 1: Map the Experience and Requirements\n\nBefore touching code, capture the shape of the tutorial:\n\n- **Audience:** React + TypeScript engineers who can run Next.js locally but need Poe-specific guidance.\n- **North Star:** A streaming chat playground that switches between ten Poe-hosted teachers with telemetry on every turn.\n- **Success Criteria:** No placeholders, reproducible setup commands, and observable telemetry (latency + tokens + failures).\n\nWe also lock the brief so future contributors understand scope:\n\n- Target model roster: GPT-OSS-20B/120B, GPT-5, GPT-5 Chat, Claude 3.5 Sonnet, Claude Opus 4.1, Gemini 2.5 Pro, Grok 3, Mixtral 8x22B, Llama 3.1 405B.\n- Streaming transport: Poe via the OpenAI SDK (`baseURL=\"https://api.poe.com/v1\"`).\n- Telemetry surface: client-side store rendered in the UI\u2014no database required, but easy to extend later.\n\n> \ud83d\uddc2\ufe0f Save these as working notes (`tmp_manual_tutorial/chat-poe-brief.md`) so the instructional context ships with the repo."
+    }
+  ]
+}

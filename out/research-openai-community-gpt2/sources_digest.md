@@ -1,0 +1,18 @@
+# Sources Digest for openai-community/gpt2
+- HF revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: GPT2LMHeadModel
+- Parsed parameters: 124M
+- Parsed context window: 1024
+- Parsed license: MIT
+- Primary GitHub repo: openai/gpt-2

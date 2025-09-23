@@ -1,0 +1,18 @@
+# Sources Digest for openai/gpt-oss-120b
+- HF revision: b5c939de8f754692c1647ca79fbf85e8c1e70f8a
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: GptOssForCausalLM
+- Parsed parameters: 117B
+- Parsed context window: 131072
+- Parsed license: Apache-2.0
+- Primary GitHub repo: openai/gpt-oss

@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-vkq1vecouw8xw99nwlfec",
+  "object": "chat.completion",
+  "created": 1758480001,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"mistralai/Magistral-Small-2509\",\"identity\":{\"aliases\":[\"Magistral Small\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not found\",\"license\":\"Not specified\"},\"inference\":{\"servers\":[],\"min_hardware\":\"Not specified\",\"quantization\":[\"\" ]},\"evals\":[{\"benchmark\":\"OpenAI?\",\"dataset_version\":\"...\",\"metric\":\",\" ,\"score\":\"..???\",\"harness\":\"..??..?\",\"notes\":\"…\"}],\"sources\":[{\"url\":\"https://huggingface.co/models/?search=..???\",\"source_type\":\"hf\",\"title\":\"...\",\"accessed_date\":\"2024-08????\"}],\"disputed\":[{\"field\":\"...\",\"claims\":[\"..?\"],\"evidence_urls\":[],\"notes\":\"…}\"}],\"notes\":\"We …\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 745,
+    "completion_tokens": 199,
+    "total_tokens": 944
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

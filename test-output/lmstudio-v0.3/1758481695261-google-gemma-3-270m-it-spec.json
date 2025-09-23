@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-rdph9358w0ocihzo5pczy9",
+  "object": "chat.completion",
+  "created": 1758481695,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"google/gemma-3-270m-it\",\"identity\":{\"aliases\":[\"Gemma-3 270M IT\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not?\",\"license\":\"Not specified\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"Not specified\",\"quantization\":[\"??\",\"...\"]} ,\"evals\":[{\"benchmark\":\"OpenAI?\",\"dataset_version\":\"..\",\"metric\":\"..\",\"score\":\",\",\"harness\":\"..\",\"notes\":\"..\"}],\"sources\":[],\"disputed\":[{\"field\":\"...\",\"claims\":[\"\"],\"evidence_urls\":[\"\"], \"notes\":\"Disputed…\"}],\"notes\":\"We …\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 752,
+    "completion_tokens": 161,
+    "total_tokens": 913
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

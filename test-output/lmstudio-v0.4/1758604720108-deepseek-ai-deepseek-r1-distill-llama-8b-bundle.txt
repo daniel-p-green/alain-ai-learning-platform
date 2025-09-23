@@ -1,0 +1,12 @@
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/README.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/CHANGELOG.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/TECH_SPECS.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/EVALS.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/COOKBOOK.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/LICENSE_NOTES.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/TROUBLESHOOTING.md
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/requirements.txt
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/.env.example
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/code/inference.py
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/code/finetune.py
+OK: /deepseek-ai-deepseek-r1-distill-llama-8b/code/run.sh

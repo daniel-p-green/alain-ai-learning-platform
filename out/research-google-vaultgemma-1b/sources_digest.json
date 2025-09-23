@@ -1,0 +1,35 @@
+{
+  "model_id": "google/vaultgemma-1b",
+  "revision": "f9624dafc1760cb2f6039e86e12055d6559d7abb",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": false,
+    "gh_release": true,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 8,
+  "metadata": {
+    "license": "gemma",
+    "license_source": "HF API",
+    "parameters": "1B",
+    "usage_sections": [
+      "## Usage and Limitations\n\nThese models have certain limitations that users should be aware of.\n",
+      "### Intended Usage\n\nVaultGemma is intended for a wide range of natural language processing (NLP) applications. The purpose of this list is to provide contextual information about possible use cases that the model creators considered.\n\n-   Privacy-Preserving NLP Research: Serve as a strong baseline for researchers to experiment with privacy-preserving techniques, develop new algorithms, and fine-tune models on sensitive data.\n-   Applications with Sensitive Data: Can be fine-tuned on private or sensitive datasets (e.g., in healthcare, finance) where it is critical that the base model itself does not carry risks from public pre-training data.\n-   Content Creation and Communication: Generate creative text, power chatbots, and summarize documents in scenarios where data privacy is a primary concern.\n"
+    ],
+    "versioning": {
+      "hf_revision": "f9624dafc1760cb2f6039e86e12055d6559d7abb"
+    },
+    "primary_repo": "google-deepmind/gemma",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

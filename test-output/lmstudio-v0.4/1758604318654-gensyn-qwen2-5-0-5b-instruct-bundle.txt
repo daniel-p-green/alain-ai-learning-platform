@@ -1,0 +1,12 @@
+OK: /gensyn-qwen2-5-0-5b-instruct/README.md
+OK: /gensyn-qwen2-5-0-5b-instruct/CHANGELOG.md
+OK: /gensyn-qwen2-5-0-5b-instruct/TECH_SPECS.md
+OK: /gensyn-qwen2-5-0-5b-instruct/EVALS.md
+OK: /gensyn-qwen2-5-0-5b-instruct/COOKBOOK.md
+OK: /gensyn-qwen2-5-0-5b-instruct/LICENSE_NOTES.md
+OK: /gensyn-qwen2-5-0-5b-instruct/TROUBLESHOOTING.md
+OK: /gensyn-qwen2-5-0-5b-instruct/requirements.txt
+OK: /gensyn-qwen2-5-0-5b-instruct/.env.example
+OK: /gensyn-qwen2-5-0-5b-instruct/code/inference.py
+OK: /gensyn-qwen2-5-0-5b-instruct/code/finetune.py
+OK: /gensyn-qwen2-5-0-5b-instruct/code/run.sh

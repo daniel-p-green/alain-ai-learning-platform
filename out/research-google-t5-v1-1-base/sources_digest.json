@@ -1,0 +1,62 @@
+{
+  "model_id": "google/t5-v1_1-base",
+  "revision": "b5fc947a416ea3cb079532cb3c2bbadeb7f800fc",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": true,
+    "gh_citation": false,
+    "gh_release": true,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "c4",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 12,
+  "metadata": {
+    "license": "apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "T5ForConditionalGeneration",
+    "tokenizer_details": {
+      "vocab_size": "32128"
+    },
+    "versioning": {
+      "hf_revision": "b5fc947a416ea3cb079532cb3c2bbadeb7f800fc"
+    },
+    "inference": {},
+    "evals": [
+      {
+        "benchmark": "-tab-size-preference",
+        "score": "4",
+        "source": "link:https://github.com/google-research/text-to-text-transfer-transformer/blob/master/released_checkpoints.md#t511"
+      }
+    ],
+    "coverage": {
+      "filled": 4,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "context window",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 40
+    },
+    "primary_repo": "google-research/text-to-text-transfer-transformer",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "needs_parameter_verification"
+    ]
+  }
+}

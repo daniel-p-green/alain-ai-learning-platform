@@ -1,0 +1,11 @@
+{
+  "technical_specs": {
+    "architecture": "Llama 3.2",
+    "parameters": "1B (1.23B) / 3B (3.21B)",
+    "context_window": "128k",
+    "tokenizer": "unknown",
+    "license": "Llama 3.2 Community License"
+  },
+  "primary_repo": "https://github.com/meta-llama/llama-models",
+  "notes": "License is a custom commercial license, not an SPDX id."
+}

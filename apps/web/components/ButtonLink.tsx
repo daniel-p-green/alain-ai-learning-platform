@@ -1,22 +1,16 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { buttonVariantClasses } from "./Button";
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
 
-type ButtonLinkProps = {
-  href: string;
-  children: ReactNode;
-  variant?: "primary" | "accent" | "secondary" | "danger";
-  className?: string;
-  prefetch?: boolean;
-  target?: string;
-  rel?: string;
+import type { ButtonSize, LegacyVariant } from "./ui/button-variants";
+import { buttonVariants } from "./ui/button-variants";
+
+type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & {
+  variant?: LegacyVariant;
+  size?: ButtonSize;
 };
 
-export function ButtonLink({ href, children, variant = "primary", className = "", prefetch, target, rel }: ButtonLinkProps) {
-  const classes = buttonVariantClasses(variant, className);
-  return (
-    <Link href={href} prefetch={prefetch} target={target} rel={rel} className={classes}>
-      {children}
-    </Link>
-  );
+export function ButtonLink({ variant = "primary", className, size = "md", ...props }: ButtonLinkProps) {
+  const classes = cn(buttonVariants(variant, size), className);
+  return <Link {...props} className={classes} />;
 }

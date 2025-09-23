@@ -1,0 +1,18 @@
+# Sources Digest for facebook/opt-125m
+- HF revision: 27dcfa74d334bc871f3234de431e71c6eeba5dd6
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: true
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: OPTForCausalLM
+- Parsed parameters: 175B
+- Parsed context window: 2048
+- Parsed license: other
+- Primary GitHub repo: huggingface/transformers

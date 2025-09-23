@@ -9,11 +9,20 @@ type HFQuickOpenProps = {
   className?: string;
   size?: 'default' | 'compact';
   showError?: boolean;
+  suggestions?: string[];
+  expandOnFocus?: boolean;
 };
 
-export default function HFQuickOpen({ className, size = 'default', showError = true }: HFQuickOpenProps) {
+export default function HFQuickOpen({
+  className,
+  size = 'default',
+  showError = true,
+  suggestions = [],
+  expandOnFocus = false,
+}: HFQuickOpenProps) {
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   function normalizeInput(raw: string) {
     const trimmed = raw.trim();
@@ -24,18 +33,26 @@ export default function HFQuickOpen({ className, size = 'default', showError = t
     return trimmed;
   }
 
-  function handleOpen() {
-    const next = normalizeInput(value);
-    if (next !== value) setValue(next);
-    setError(null);
+  function openRepo(repo: string) {
+    const url = new URL("/generate", window.location.origin);
+    url.searchParams.set("hf", `https://huggingface.co/${repo}`);
+    window.location.assign(url.toString());
+  }
+
+  function attemptOpen(raw: string) {
+    const next = normalizeInput(raw);
+    setValue(next);
     const p = parseHfRef(next);
     if (!p.ok || !p.repo) {
       setError("Enter a valid Hugging Face repo, e.g. owner/model");
       return;
     }
-    const url = new URL("/generate", window.location.origin);
-    url.searchParams.set("hf", `https://huggingface.co/${p.repo}`);
-    window.location.assign(url.toString());
+    setError(null);
+    openRepo(p.repo);
+  }
+
+  function handleOpen() {
+    attemptOpen(value);
   }
 
   const inputSize = size === 'compact' ? 'h-10 text-sm' : 'h-12 text-base';
@@ -45,9 +62,23 @@ export default function HFQuickOpen({ className, size = 'default', showError = t
   const layoutClass = size === 'compact'
     ? 'flex flex-col gap-2 sm:flex-row sm:items-stretch'
     : 'flex flex-col gap-2 md:flex-row md:items-stretch';
+  const hasSuggestions = suggestions.length > 0;
+  const containerFocusStyles = expandOnFocus
+    ? 'transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-2 focus-within:ring-offset-white'
+    : '';
+  const containerActiveStyles = expandOnFocus && isFocused ? 'ring-2 ring-primary/40 shadow-md' : '';
 
   return (
-    <div className={cn("w-full rounded-xl border border-border/70 bg-white shadow-sm", containerPad, containerWidth, className)}>
+    <div
+      className={cn(
+        "w-full rounded-xl border border-border/70 bg-white shadow-sm",
+        containerPad,
+        containerWidth,
+        containerFocusStyles,
+        containerActiveStyles,
+        className,
+      )}
+    >
       <label htmlFor="hf-quick" className="sr-only">
         Paste a Hugging Face link
       </label>
@@ -57,11 +88,21 @@ export default function HFQuickOpen({ className, size = 'default', showError = t
           inputMode="url"
           placeholder={size === 'compact' ? "Hugging Face: owner/model or URL" : "Paste a Hugging Face model link (owner/model or URL)"}
           value={value}
+          onFocus={() => {
+            if (expandOnFocus) setIsFocused(true);
+          }}
           onChange={(e) => {
             if (error) setError(null);
             setValue(normalizeInput(e.target.value));
           }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              handleOpen();
+            }
+          }}
           onBlur={() => {
+            if (expandOnFocus) setIsFocused(false);
             const next = normalizeInput(value);
             if (next !== value) setValue(next);
           }}
@@ -83,6 +124,26 @@ export default function HFQuickOpen({ className, size = 'default', showError = t
         <p className="mt-2 text-sm text-danger" role="alert">
           {error}
         </p>
+      )}
+      {hasSuggestions && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {suggestions.map((suggestion) => (
+            <button
+              key={suggestion}
+              type="button"
+              onClick={() => {
+                setError(null);
+                setValue(normalizeInput(suggestion));
+              }}
+              className={cn(
+                buttonVariants("secondary", "sm"),
+                "border border-dashed border-border/80 bg-white/80 text-sm font-normal text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
+              )}
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

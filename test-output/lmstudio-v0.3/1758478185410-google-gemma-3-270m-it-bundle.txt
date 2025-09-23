@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-jbl2vuejcjvewm7rb7svg",
+  "object": "chat.completion",
+  "created": 1758478210,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to=repo_list code<|message|>{\"model\":\"google/gemma-3-270m-it\"}",
+        "reasoning": "We need to fetch HF repo google/gemma-3-270m-it. Use mcp/hf-mcp-server:model_search? Probably directly use hf_local. Let's try list files.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 654,
+    "completion_tokens": 67,
+    "total_tokens": 721
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

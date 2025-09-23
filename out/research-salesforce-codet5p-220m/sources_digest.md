@@ -1,0 +1,19 @@
+# Sources Digest for Salesforce/codet5p-220m
+- HF revision: 2b92f36e2782341a50551759fdba0dd15e821f99
+- README: true
+- config.json: true
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 1
+- Parsed architecture: T5ForConditionalGeneration
+- Parsed parameters: 137B
+- Parsed context window: 512
+- Parsed license: bsd-3-clause
+- Primary GitHub repo: salesforce/CodeT5
+  - codeparrot/github-code: api=true readme=true

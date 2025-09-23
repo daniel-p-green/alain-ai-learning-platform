@@ -1,0 +1,34 @@
+{
+  "model_id": "facebook/MobileLLM-R1-950M",
+  "revision": "ee9e10ec700da30153d9ba93815081ea91ed363d",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 3,
+  "metadata": {
+    "license": "other",
+    "license_source": "HF API",
+    "parameters": "150M",
+    "usage_sections": [
+      "# Inference examples\n\nTransformers\n\n```py\nfrom transformers import pipeline\nimport torch\n\nmodel_id = \"facebook/MobileLLM-R1-950M\"\n\npipe = pipeline(\n    \"text-generation\",\n    model=model_id,\n    torch_dtype=\"auto\",\n    device_map=\"auto\",\n)\n"
+    ],
+    "versioning": {
+      "hf_revision": "ee9e10ec700da30153d9ba93815081ea91ed363d"
+    },
+    "primary_repo": "facebookresearch/mobile-llm",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

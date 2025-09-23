@@ -1,0 +1,267 @@
+{
+  "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+  "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 3,
+  "metadata": {
+    "license": "llama3.1",
+    "license_source": "README front-matter",
+    "evals": [
+      {
+        "benchmark": "llama",
+        "score": "3",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "420",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "2,040",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "8,930",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "MMLU",
+        "metric": "macro_avg/acc_char",
+        "split": "5",
+        "source": "README"
+      },
+      {
+        "benchmark": "5",
+        "metric": "36.2",
+        "split": "macro_avg/acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "3-5",
+        "metric": "47.1",
+        "split": "average/acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "7",
+        "metric": "72.6",
+        "split": "acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "5",
+        "metric": "-",
+        "split": "acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "3",
+        "metric": "61.1",
+        "split": "average/em",
+        "source": "README"
+      },
+      {
+        "benchmark": "25",
+        "metric": "79.4",
+        "split": "acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "TriviaQA-Wiki",
+        "metric": "em",
+        "split": "5",
+        "source": "README"
+      },
+      {
+        "benchmark": "SQuAD",
+        "metric": "em",
+        "split": "1",
+        "source": "README"
+      },
+      {
+        "benchmark": "1",
+        "metric": "44.4",
+        "split": "f1",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "75.7",
+        "split": "acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "3",
+        "metric": "58.4",
+        "split": "f1",
+        "source": "README"
+      },
+      {
+        "benchmark": "MMLU",
+        "metric": "macro_avg/acc",
+        "split": "5",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "65.3",
+        "split": "macro_avg/acc",
+        "source": "README"
+      },
+      {
+        "benchmark": "5",
+        "metric": "45.5",
+        "split": "micro_avg/acc_char",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "metric": "76.8",
+        "source": "README"
+      },
+      {
+        "benchmark": "ARC-C",
+        "metric": "acc",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "34.6",
+        "split": "em",
+        "source": "README"
+      },
+      {
+        "benchmark": "HumanEval",
+        "metric": "pass@1",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "70.6",
+        "split": "pass@1",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "-",
+        "split": "pass@1",
+        "source": "README"
+      },
+      {
+        "benchmark": "GSM-8K (CoT)",
+        "metric": "em_maj1@1",
+        "split": "8",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "29.1",
+        "split": "final_em",
+        "source": "README"
+      },
+      {
+        "benchmark": "API-Bank",
+        "metric": "acc",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "60.3",
+        "split": "acc",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "1.7",
+        "split": "acc",
+        "source": "README"
+      },
+      {
+        "benchmark": "0",
+        "metric": "18.1",
+        "split": "macro_avg/acc",
+        "source": "README"
+      },
+      {
+        "benchmark": "Multilingual MGSM (CoT)",
+        "metric": "em",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "MMLU (5-shot, macro_avg/acc)",
+        "source": "README"
+      },
+      {
+        "benchmark": "62.45",
+        "source": "README"
+      },
+      {
+        "benchmark": "61.63",
+        "source": "README"
+      },
+      {
+        "benchmark": "60.59",
+        "source": "README"
+      },
+      {
+        "benchmark": "62.34",
+        "source": "README"
+      },
+      {
+        "benchmark": "50.88",
+        "source": "README"
+      },
+      {
+        "benchmark": "50.32",
+        "source": "README"
+      }
+    ],
+    "coverage": {
+      "filled": 2,
+      "total": 10,
+      "missing": [
+        "architecture",
+        "parameters",
+        "context window",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "tokenizer vocab",
+        "license SPDX"
+      ],
+      "score": 20
+    },
+    "versioning": {
+      "hf_revision": "0e9e39f249a16976918f6564b8830bc894c89659"
+    },
+    "flags": [
+      "incomplete_metadata",
+      "missing_primary_repo"
+    ]
+  }
+}

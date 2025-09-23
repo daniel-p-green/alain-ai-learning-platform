@@ -1,0 +1,12 @@
+OK: /openai-gpt-oss-20b/README.md
+OK: /openai-gpt-oss-20b/CHANGELOG.md
+OK: /openai-gpt-oss-20b/TECH_SPECS.md
+OK: /openai-gpt-oss-20b/EVALS.md
+OK: /openai-gpt-oss-20b/COOKBOOK.md
+OK: /openai-gpt-oss-20b/LICENSE_NOTES.md
+OK: /openai-gpt-oss-20b/TROUBLESHOOTING.md
+OK: /openai-gpt-oss-20b/requirements.txt
+OK: /openai-gpt-oss-20b/.env.example
+OK: /openai-gpt-oss-20b/code/inference.py
+OK: /openai-gpt-oss-20b/code/finetune.py
+OK: /openai-gpt-oss-20b/code/run.sh

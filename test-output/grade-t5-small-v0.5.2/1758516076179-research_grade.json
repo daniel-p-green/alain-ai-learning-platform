@@ -1,0 +1,27 @@
+{
+  "total_score": 95,
+  "stage1": {
+    "score": 55,
+    "failures": [
+      "Speculation terms present"
+    ],
+    "warnings": [],
+    "metrics": {
+      "primary_sources": 9,
+      "secondary_sources": 7,
+      "speculation_hits": 1,
+      "unknown_ratio": 0.09923664122137404
+    }
+  },
+  "stage2": {
+    "score": 40,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "files_written": 13,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [],
+  "summary": "ready_to_ship"
+}

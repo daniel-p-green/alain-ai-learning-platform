@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-gamouenxwxv1j95d6gkbr6",
+  "object": "chat.completion",
+  "created": 1758478278,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"mistralai/Magistral‑Small-2509\",\"identity\":{\"aliases\":[\"Magistral Small 2509\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not ? ???\",\"license\":\"Not ? x ??\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"..\",\"quantization\":[\"…\",\"...\"]} ,\"evals\":[],\"sources\":[{\"url\":\"https://huggingface.co/models/???\",\"source_type\":\"hf\",\"title\":\"Hugging Co‑? ???\",\"accessed_date\":\"2021‐10‐? …\"}] , \"disputed\":[{ \"field\":\"..\",\"claims\":[\"...\"],\"evidence_urls\":[\"..\"],\"notes\":\"..\"}] , \"notes\":\"…\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 745,
+    "completion_tokens": 192,
+    "total_tokens": 937
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

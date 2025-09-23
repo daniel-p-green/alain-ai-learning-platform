@@ -1,0 +1,12 @@
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/README.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/CHANGELOG.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/TECH_SPECS.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/EVALS.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/COOKBOOK.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/LICENSE_NOTES.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/TROUBLESHOOTING.md
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/requirements.txt
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/.env.example
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/code/inference.py
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/code/finetune.py
+OK: /context-labs-meta-llama-llama-3-2-3b-instruct-fp16/code/run.sh

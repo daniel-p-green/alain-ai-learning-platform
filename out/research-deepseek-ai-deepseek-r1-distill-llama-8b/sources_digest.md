@@ -1,0 +1,17 @@
+# Sources Digest for deepseek-ai/DeepSeek-R1-Distill-Llama-8B
+- HF revision: 6a6f4aa4197940add57724a7707d069478df56b1
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: LlamaForCausalLM
+- Parsed context window: 131072
+- Parsed license: MIT
+- Primary GitHub repo: deepseek-ai/DeepSeek-R1

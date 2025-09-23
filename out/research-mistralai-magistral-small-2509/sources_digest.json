@@ -1,0 +1,19 @@
+{
+  "model_id": "mistralai/Magistral-Small-2509",
+  "revision": "92ad3595fd6f2c6299dadbc013460b313a29c063",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 5
+}

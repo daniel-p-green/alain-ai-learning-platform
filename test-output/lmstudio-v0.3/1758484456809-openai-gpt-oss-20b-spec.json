@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-h5mwwbe5nsbsqk76dz1xe",
+  "object": "chat.completion",
+  "created": 1758484456,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"openai/gpt-oss-20b\",\"identity\":{\"aliases\":[\"GPT‑OSS 20B\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not specified\",\"license\":\"Not.specified\"},\"inference\":{\"servers\":[\"\"],\"min_hardware\":\"Not …?…..??...……………………………………………………………?……… ……………………………………………………\",\"quantization\":[\"\"]},\"evals\":[],\"sources\":[{\"url\":\"https://...\",\"source_type\":\"other\",\"title\":\"…..………………………………………………………………………………………………………?… ……???…..………………………………\",\"accessed_date\":\"202….....…………………………………………………………………………………………………………………………………{\"}] ,\"disputed\":[{\"field\":\"...\",\"claims\":[\"..?…..………………………………………………………………………………………\",\"…………Open……??……………………un…………………………………………………………..?…………………………………url…...}]}{\"]\n \t, \"evidence_urls\": [\"\"] ,\"notes\":\"…..………..??…………………………………………………………………………………………..………Open……..……………...?……f……………………………We……………………{\"}] , \"notes\": \"\"}\n",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 752,
+    "completion_tokens": 495,
+    "total_tokens": 1247
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-twohkrl2fg1oi1m9kfkyt",
+  "object": "chat.completion",
+  "created": 1758603503,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"technical_specs\":{\"architecture\":\"Llama 3.2\",\"parameters\":\"1B (1.23B) / 3B (3.21B)\",\"context_window\": \"128k\",\"tokenizer\":\"unknown\",\"license\":\"Llama 3.2 Community License\"},\"primary_repo\":\"https://github.com/meta-llama/llama-models\",\"notes\":\"License is a custom commercial license, not an SPDX id.\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5126,
+    "completion_tokens": 91,
+    "total_tokens": 5217
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

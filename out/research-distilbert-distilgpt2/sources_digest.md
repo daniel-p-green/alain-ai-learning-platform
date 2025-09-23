@@ -1,0 +1,19 @@
+# Sources Digest for distilbert/distilgpt2
+- HF revision: 2290a62682d06624634c1f46a6ad5be0f47f38aa
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: true
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 1
+- Parsed architecture: GPT2LMHeadModel
+- Parsed parameters: 124M
+- Parsed context window: 1024
+- Parsed license: Apache-2.0
+- Primary GitHub repo: huggingface/transformers
+  - openwebtext: api=true readme=true

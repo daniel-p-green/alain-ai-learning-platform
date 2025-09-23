@@ -1,0 +1,12 @@
+OK: /google-gemma-3-1b-it/README.md
+OK: /google-gemma-3-1b-it/CHANGELOG.md
+OK: /google-gemma-3-1b-it/TECH_SPECS.md
+OK: /google-gemma-3-1b-it/EVALS.md
+OK: /google-gemma-3-1b-it/COOKBOOK.md
+OK: /google-gemma-3-1b-it/LICENSE_NOTES.md
+OK: /google-gemma-3-1b-it/TROUBLESHOOTING.md
+OK: /google-gemma-3-1b-it/requirements.txt
+OK: /google-gemma-3-1b-it/.env.example
+OK: /google-gemma-3-1b-it/code/inference.py
+OK: /google-gemma-3-1b-it/code/finetune.py
+OK: /google-gemma-3-1b-it/code/run.sh

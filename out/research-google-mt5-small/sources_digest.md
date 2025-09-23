@@ -1,0 +1,17 @@
+# Sources Digest for google/mt5-small
+- HF revision: 73fb5dbe4756edadc8fbe8c769b0a109493acf7a
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 1
+- Parsed architecture: MT5ForConditionalGeneration
+- Parsed parameters: 60M
+- Parsed license: Apache-2.0
+  - mc4: api=true readme=true

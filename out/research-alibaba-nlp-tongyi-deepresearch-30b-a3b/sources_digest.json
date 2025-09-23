@@ -1,0 +1,38 @@
+{
+  "model_id": "Alibaba-NLP/Tongyi-DeepResearch-30B-A3B",
+  "revision": "103fcd84eca8dc8125166271ef9a25916a336cf8",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": false,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 5,
+  "metadata": {
+    "architecture": "Qwen3MoeForCausalLM",
+    "context_window": "131072",
+    "license": "apache-2.0",
+    "tokenizer_details": {
+      "vocab_size": "151936"
+    },
+    "versioning": {
+      "hf_revision": "103fcd84eca8dc8125166271ef9a25916a336cf8"
+    },
+    "inference": {},
+    "license_source": "HF API",
+    "primary_repo": "alibaba-nlp/tongyi-deep-research",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals",
+      "needs_parameter_verification"
+    ]
+  }
+}

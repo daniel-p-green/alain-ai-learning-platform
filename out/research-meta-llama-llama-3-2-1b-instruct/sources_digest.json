@@ -1,0 +1,210 @@
+{
+  "model_id": "meta-llama/Llama-3.2-1B-Instruct",
+  "revision": "9213176726f574b556790deb65791e0c5aa438b6",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 4,
+  "metadata": {
+    "license": "llama3.2",
+    "license_source": "README front-matter",
+    "usage_sections": [
+      "## Inference time\n\nIn the below table, we compare the performance metrics of different quantization methods (SpinQuant and QAT \\+ LoRA) with the BF16 baseline. The evaluation was done using the [ExecuTorch](https://github.com/pytorch/executorch) framework as the inference engine, with the ARM CPU as a backend using Android OnePlus 12 device.\n\n| Category | Decode (tokens/sec)  | Time-to-first-token (sec) | Prefill (tokens/sec) | Model size (PTE file size in MB) | Memory size (RSS in MB) |\n| :---- | ----- | ----- | ----- | ----- | ----- |\n| 1B BF16 (baseline) | 19.2 | 1.0 | 60.3 | 2358 | 3,185 |\n| 1B SpinQuant | 50.2 (2.6x) | 0.3 (-76.9%) | 260.5 (4.3x) | 1083 (-54.1%) | 1,921 (-39.7%) |\n| 1B QLoRA | 45.8 (2.4x) | 0.3 (-76.0%) | 252.0 (4.2x) | 1127 (-52.2%) | 2,255 (-29.2%) |\n| 3B BF16 (baseline) | 7.6 | 3.0 | 21.2 | 6129 | 7,419 |\n| 3B SpinQuant | 19.7 (2.6x) | 0.7 (-76.4%) | 89.7 (4.2x) | 2435 (-60.3%) | 3,726 (-49.8%) |\n| 3B QLoRA | 18.5 (2.4x) | 0.7 (-76.1%) | 88.8 (4.2x) | 2529 (-58.7%) | 4,060 (-45.3%) |\n\n(\\*) The performance measurement is done using an adb binary-based approach.\n(\\*\\*) It is measured on an Android OnePlus 12 device.\n(\\*\\*\\*) Time-to-first-token (TTFT)  is measured with prompt length=64\n\n*Footnote:*\n\n- *Decode (tokens/second) is for how quickly it keeps generating. Higher is better.*\n- *Time-to-first-token (TTFT for shorthand) is for how fast it generates the first token for a given prompt. Lower is better.*\n- *Prefill is the inverse of TTFT (aka 1/TTFT)  in tokens/second. Higher is better*\n- *Model size \\- how big is the model, measured by, PTE file, a binary file format for ExecuTorch*\n- *RSS size \\- Memory usage in resident set size (RSS)*\n"
+    ],
+    "evals": [
+      {
+        "benchmark": "MMLU",
+        "metric": "macro\\_avg/acc\\_char",
+        "split": "5",
+        "source": "README"
+      },
+      {
+        "benchmark": "AGIEval English",
+        "metric": "average/acc\\_char",
+        "split": "3-5",
+        "source": "README"
+      },
+      {
+        "benchmark": "ARC-Challenge",
+        "metric": "acc\\_char",
+        "split": "25",
+        "source": "README"
+      },
+      {
+        "benchmark": "SQuAD",
+        "metric": "em",
+        "split": "1",
+        "source": "README"
+      },
+      {
+        "benchmark": "QuAC (F1)",
+        "metric": "f1",
+        "split": "1",
+        "source": "README"
+      },
+      {
+        "benchmark": "DROP (F1)",
+        "metric": "f1",
+        "split": "3",
+        "source": "README"
+      },
+      {
+        "benchmark": "Needle in Haystack",
+        "metric": "em",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "MMLU",
+        "metric": "macro\\_avg/acc",
+        "score": "49.3",
+        "split": "5",
+        "source": "README"
+      },
+      {
+        "benchmark": "Open-rewrite eval",
+        "metric": "micro\\_avg/rougeL",
+        "score": "41.6",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "TLDR9+ (test)",
+        "metric": "rougeL",
+        "score": "16.8",
+        "split": "1",
+        "source": "README"
+      },
+      {
+        "benchmark": "IFEval",
+        "metric": "Avg(Prompt/Instruction acc Loose/Strict)",
+        "score": "59.5",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "GSM8K (CoT)",
+        "metric": "em\\_maj1@1",
+        "score": "44.4",
+        "split": "8",
+        "source": "README"
+      },
+      {
+        "benchmark": "MATH (CoT)",
+        "metric": "final\\_em",
+        "score": "30.6",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "ARC-C",
+        "metric": "acc",
+        "score": "59.4",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "GPQA",
+        "metric": "acc",
+        "score": "27.2",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "Hellaswag",
+        "metric": "acc",
+        "score": "41.2",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "BFCL V2",
+        "metric": "acc",
+        "score": "25.7",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "Nexus",
+        "metric": "macro\\_avg/acc",
+        "score": "13.5",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "InfiniteBench/En.QA",
+        "metric": "longbook\\_qa/f1",
+        "score": "20.3",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "InfiniteBench/En.MC",
+        "metric": "longbook\\_choice/acc",
+        "score": "38.0",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "NIH/Multi-needle",
+        "metric": "recall",
+        "score": "75.0",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "MGSM (CoT)",
+        "metric": "em",
+        "score": "24.5",
+        "split": "0",
+        "source": "README"
+      },
+      {
+        "benchmark": "MMLU (5-shot, macro_avg/acc)",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "source": "README"
+      },
+      {
+        "benchmark": "llama",
+        "score": "3",
+        "source": "README"
+      }
+    ],
+    "coverage": {
+      "filled": 2,
+      "total": 10,
+      "missing": [
+        "architecture",
+        "parameters",
+        "context window",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "tokenizer vocab",
+        "license SPDX"
+      ],
+      "score": 20
+    },
+    "versioning": {
+      "hf_revision": "9213176726f574b556790deb65791e0c5aa438b6"
+    },
+    "flags": [
+      "incomplete_metadata",
+      "missing_primary_repo"
+    ]
+  }
+}

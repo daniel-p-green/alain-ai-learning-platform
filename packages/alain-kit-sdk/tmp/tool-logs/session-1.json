@@ -1,0 +1,489 @@
+{
+  "session": {
+    "id": "session-1",
+    "metadata": {
+      "modelReference": "openai/gpt-oss-20b",
+      "difficulty": "beginner"
+    }
+  },
+  "tools": [
+    {
+      "namespace": "notebook",
+      "name": "add_dependency",
+      "description": "Register a dependency for the runtime environment."
+    },
+    {
+      "namespace": "notebook",
+      "name": "emit_markdown_step",
+      "description": "Append markdown instruction content for a section."
+    },
+    {
+      "namespace": "notebook",
+      "name": "emit_code_cell",
+      "description": "Append a runnable code cell aligned with the current section."
+    },
+    {
+      "namespace": "notebook",
+      "name": "record_assessment",
+      "description": "Create assessment items (MCQs, exercises) for the lesson."
+    },
+    {
+      "namespace": "notebook",
+      "name": "finalize",
+      "description": "Finalize notebook metadata, summary, and export artifacts."
+    },
+    {
+      "namespace": "notebook",
+      "name": "generate_section_legacy",
+      "description": "Legacy section generator placeholder until full tool calling is enabled."
+    },
+    {
+      "namespace": "notebook",
+      "name": "section_validation",
+      "description": "Validate generated section content against structural checks."
+    },
+    {
+      "namespace": "notebook",
+      "name": "record_prerequisites",
+      "description": "Track prerequisite callouts emitted by sections."
+    },
+    {
+      "namespace": "validator",
+      "name": "run_quality",
+      "description": "Execute notebook quality validation and return metrics."
+    },
+    {
+      "namespace": "validator",
+      "name": "run_colab",
+      "description": "Execute Colab compatibility checks and return issues/fixes."
+    },
+    {
+      "namespace": "validator",
+      "name": "run_qa_gate",
+      "description": "Run the lightweight QA gate before downstream validators."
+    },
+    {
+      "namespace": "validator",
+      "name": "run_semantic",
+      "description": "Run semantic validation against policy/completeness heuristics."
+    },
+    {
+      "namespace": "pipeline",
+      "name": "error",
+      "description": "Represents terminal pipeline errors before teardown."
+    }
+  ],
+  "invocations": [
+    {
+      "timestamp": "2025-09-21T05:41:36.819Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_outline",
+      "payload": {
+        "modelReference": "openai/gpt-oss-20b",
+        "difficulty": "beginner"
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "stepCount": 6,
+          "objectives": 4
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:41:54.614Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_tool",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "message": "Section completeness check failed: Code cell lacks executable content"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:42:10.828Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:42:10.830Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 2,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "message": "Section completeness check failed: Code cell lacks executable content; Code cell lacks executable content; Code cell lacks executable content; Markdown content too short (<150 characters); Code cell lacks executable content; Code cell lacks executable content; Code cell lacks executable content; Markdown content too short (<150 characters); Markdown content too short (<150 characters)"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:42:28.432Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 2,
+          "markdownCells": 4,
+          "codeCells": 2
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:42:54.322Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 2
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 2,
+          "issues": [
+            "Section below minimum tokens (~653 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:42:54.915Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 2,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 1,
+          "markdownCells": 3,
+          "codeCells": 2
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:43:10.905Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 1
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "issues": [
+            "Section below minimum tokens (~355 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:43:11.857Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 2,
+          "markdownCells": 4,
+          "codeCells": 2
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:43:29.669Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 2
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 2,
+          "issues": [
+            "Section below minimum tokens (~547 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:43:30.661Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 2,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 1,
+          "markdownCells": 1,
+          "codeCells": 1
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:43:46.462Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 1
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "issues": [
+            "Section below minimum tokens (~500 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:43:48.612Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 2,
+          "markdownCells": 3,
+          "codeCells": 2
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:04.428Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 2
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 2,
+          "issues": [
+            "Section below minimum tokens (~571 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:06.555Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 2,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 1,
+          "markdownCells": 1,
+          "codeCells": 1
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:18.991Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 1
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "issues": [
+            "Section below minimum tokens (~500 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:22.617Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 2,
+          "markdownCells": 4,
+          "codeCells": 2
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:34.651Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 2
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 2,
+          "issues": [
+            "Section below minimum tokens (~497 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:37.916Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 2,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 1,
+          "markdownCells": 1,
+          "codeCells": 1
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:47.203Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 1
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "issues": [
+            "Section below minimum tokens (~500 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:44:52.081Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 1,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 2,
+          "markdownCells": 3,
+          "codeCells": 3
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:45:09.183Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 2
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 2,
+          "issues": [
+            "Section below minimum tokens (~630 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:45:14.560Z",
+      "sessionId": "session-1",
+      "tool": "notebook.generate_section_legacy",
+      "payload": {
+        "sectionNumber": 2,
+        "previousCount": 0
+      },
+      "outcome": {
+        "status": "ok",
+        "details": {
+          "sectionNumber": 1,
+          "markdownCells": 2,
+          "codeCells": 2
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:45:22.171Z",
+      "sessionId": "session-1",
+      "tool": "notebook.section_validation",
+      "payload": {
+        "sectionNumber": 1
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "sectionNumber": 1,
+          "issues": [
+            "Section below minimum tokens (~295 < 800)"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-09-21T05:45:22.171Z",
+      "sessionId": "session-1",
+      "tool": "pipeline.error",
+      "payload": {
+        "message": "Section 1 failed validation: Section below minimum tokens (~295 < 800)"
+      },
+      "outcome": {
+        "status": "error",
+        "details": {
+          "message": "Section 1 failed validation: Section below minimum tokens (~295 < 800)"
+        }
+      }
+    }
+  ]
+}

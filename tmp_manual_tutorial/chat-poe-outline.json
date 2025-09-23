@@ -1,0 +1,149 @@
+{
+  "title": "Build a Poe-Powered Multi-Model Chat Interface",
+  "overview": "Create a Next.js tutorial that teaches readers how to wire up Poe-hosted chat models, build a selector for ten options, stream responses, and capture telemetry for runtime insight.",
+  "objectives": [
+    "Configure Poe via the OpenAI SDK in a Next.js environment",
+    "Implement a reusable model selector with ten Poe chat models",
+    "Stream chat completions into a React client with graceful error states",
+    "Instrument telemetry to track latency, tokens, and failures"
+  ],
+  "prerequisites": [
+    "Node.js 18+ with npm or pnpm",
+    "Comfortable with React 18 and TypeScript"
+  ],
+  "setup": {
+    "requirements": [
+      "ipywidgets>=8.0.0",
+      "openai>=1.40.0",
+      "next>=14.2.4",
+      "typescript>=5.4.0"
+    ],
+    "environment": [
+      "POE_API_KEY=your_poe_api_key",
+      "NEXT_PUBLIC_POE_DEFAULT_MODEL=gpt-oss-20b"
+    ],
+    "commands": [
+      "npm create next-app@latest poe-chat-tutorial --ts --app --eslint --use-npm --no-tailwind",
+      "cd poe-chat-tutorial && npm install openai@latest @vercel/analytics",
+      "npm install --save-dev @types/node vitest"
+    ]
+  },
+  "outline": [
+    {
+      "step": 1,
+      "title": "Step 1: Map the Experience and Requirements",
+      "type": "context",
+      "estimated_tokens": 320,
+      "content_type": "markdown"
+    },
+    {
+      "step": 2,
+      "title": "Step 2: Scaffold the Project and Wire Poe",
+      "type": "setup",
+      "estimated_tokens": 420,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 3,
+      "title": "Step 3: Build the Poe Model Selector",
+      "type": "hands-on",
+      "estimated_tokens": 480,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 4,
+      "title": "Step 4: Stream Chat Responses from Poe",
+      "type": "hands-on",
+      "estimated_tokens": 520,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 5,
+      "title": "Step 5: Add Telemetry and Error Reporting",
+      "type": "concept",
+      "estimated_tokens": 460,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 6,
+      "title": "Step 6: Test and Validate the Experience",
+      "type": "validation",
+      "estimated_tokens": 380,
+      "content_type": "markdown + code"
+    },
+    {
+      "step": 7,
+      "title": "Step 7: Ship, Iterate, and Next Steps",
+      "type": "wrap-up",
+      "estimated_tokens": 300,
+      "content_type": "markdown"
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Exercise 1: Add a temperature slider to the chat form",
+      "difficulty": "intermediate",
+      "estimated_tokens": 220
+    },
+    {
+      "title": "Exercise 2: Persist telemetry events to localStorage",
+      "difficulty": "intermediate",
+      "estimated_tokens": 200
+    }
+  ],
+  "assessments": [
+    {
+      "question": "Which environment variable must be set for Poe access in this tutorial?",
+      "options": [
+        "OPENAI_API_KEY",
+        "POE_API_KEY",
+        "NEXT_RUNTIME",
+        "VERCEL_ENV"
+      ],
+      "correct_index": 1,
+      "explanation": "Poe uses `POE_API_KEY`; the code maps it into OpenAI-compatible requests."
+    },
+    {
+      "question": "Why do we prefer streaming responses for the chat UI?",
+      "options": [
+        "It reduces token usage",
+        "It prevents API rate limits",
+        "It improves perceived latency for longer responses",
+        "It enables offline caching"
+      ],
+      "correct_index": 2,
+      "explanation": "Streaming lets users see partial responses quickly, improving perceived latency."
+    },
+    {
+      "question": "How does the selector ensure only supported models are requested?",
+      "options": [
+        "It fetches the list from a remote API on every request",
+        "It validates against a TypeScript union/enum on the server",
+        "It leaves validation to the front-end only",
+        "It relies on runtime errors from Poe"
+      ],
+      "correct_index": 1,
+      "explanation": "Server actions guard against unexpected values via static typing and runtime checks."
+    },
+    {
+      "question": "Which telemetry fields are captured in the tutorial?",
+      "options": [
+        "Latency, token usage, and failure reasons",
+        "CPU usage and memory",
+        "Geolocation and browser fingerprint",
+        "Billing cost per message"
+      ],
+      "correct_index": 0,
+      "explanation": "The tutorial records latency, token counts, and error context for review."
+    }
+  ],
+  "summary": "You built a Poe-backed chat experience with multi-model selection, streaming, and telemetry instrumentation.",
+  "next_steps": "Experiment with server-side persistence, add role-based gating, or plug telemetry into a dashboard.",
+  "references": [
+    "https://poe.com/api_key",
+    "https://platform.openai.com/docs/guides/text-generation",
+    "https://nextjs.org/docs/app"
+  ],
+  "estimated_total_tokens": 2880,
+  "target_reading_time": "18-22 minutes"
+}

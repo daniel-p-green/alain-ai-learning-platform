@@ -1,0 +1,56 @@
+{
+  "model_id": "Salesforce/codet5p-220m",
+  "revision": "2b92f36e2782341a50551759fdba0dd15e821f99",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": true
+  },
+  "datasets": [
+    {
+      "id": "codeparrot/github-code",
+      "api": true,
+      "readme": true
+    }
+  ],
+  "manifest_entries": 27,
+  "metadata": {
+    "license": "bsd-3-clause",
+    "license_source": "README front-matter",
+    "architecture": "T5ForConditionalGeneration",
+    "context_window": "512",
+    "tokenizer_details": {
+      "vocab_size": "32100"
+    },
+    "versioning": {
+      "hf_revision": "2b92f36e2782341a50551759fdba0dd15e821f99"
+    },
+    "inference": {},
+    "parameters": "137B",
+    "coverage": {
+      "filled": 5,
+      "total": 10,
+      "missing": [
+        "tokenizer",
+        "primary repo",
+        "evals",
+        "inference hardware",
+        "license SPDX"
+      ],
+      "score": 50
+    },
+    "primary_repo": "salesforce/CodeT5",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

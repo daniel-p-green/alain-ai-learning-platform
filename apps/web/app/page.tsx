@@ -123,7 +123,13 @@ export default function HomePage() {
           <div className="mb-8">
             <h3 className="mb-2 text-display-3 font-semibold">Paste a Hugging Face link</h3>
             <p className="mb-3 text-sm text-muted-foreground">Get started with any model by pasting its Hugging Face repo (owner/model) or full URL.</p>
-            <HFQuickOpen />
+            <HFQuickOpen suggestions={[
+              "openai/gpt-oss-20b",
+              "openai/gpt-oss-120b",
+              "meta-llama/Meta-Llama-3.1-8B-Instruct",
+              "qwen/Qwen2.5-7B-Instruct",
+              "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            ]} />
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {heroHighlights.map((item) => (

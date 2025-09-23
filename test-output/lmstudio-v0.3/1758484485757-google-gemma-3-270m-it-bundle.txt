@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-pcmp4sry50kzgqd0z0ngu",
+  "object": "chat.completion",
+  "created": 1758484489,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to= mcp/hf-mcp-server:model_search <|constrain|>json<|message|>{\"query\":\"google/gemma-3-270m-it\",\"limit\":5}",
+        "reasoning": "We need to call model_search.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1522,
+    "completion_tokens": 49,
+    "total_tokens": 1571
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-mbal8pbdpoxl0mmg50l6",
+  "object": "chat.completion",
+  "created": 1758481680,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"openai/gpt-oss-20b\",\"identity\":{\"aliases\":[\"GPT-OSS 20B\"]},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"Not specified\",\"tokenizer\":\"Not specified\",\"license\":\"Not specified\"},\"inference\":{\"servers\":[],\"min_hardware\":\"Not specified\",\"quantization\":[\"\" ]},\"evals\":[{\"benchmark\":\"OpenAI-ChatGPT-5.0?\",\"dataset_version\":\"...\",\"metric\":\"??\",\"score\":\"\",\"harness\":\"..\",\"notes\":\"Weird…\"}],\"sources\":[{\"url\":\"https://www.npmjs.com/downloads/??\",\"source_type\":\"blog\",\"title\":\"...???\",\"accessed_date\":\"2021-07..???\"}]\n, \"disputed\":[{\"field\":\"..??..\",\"claims\":[\"...\"],\"evidence_urls\":[\"..??..\"],\"notes\":\"…..?\"}\n],\"notes\":\"Weird ….. …………  ………Open…………………………… ………e………………………………… ………...…………………………………?\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 752,
+    "completion_tokens": 268,
+    "total_tokens": 1020
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

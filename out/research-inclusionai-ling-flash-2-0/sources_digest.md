@@ -1,0 +1,13 @@
+# Sources Digest for inclusionAI/Ling-flash-2.0
+- HF revision: 649f8b943c1a6db288552fd894576b66ca098c27
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0

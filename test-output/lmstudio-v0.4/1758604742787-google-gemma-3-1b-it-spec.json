@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-9cz1l0titjd54ps7kqxp92",
+  "object": "chat.completion",
+  "created": 1758604744,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"google/gemma-3-1b-it\",\"identity\":{\"aliases\":[\"google/gemma-3-1b-it\"],\"canonical_repo\":\"\"},\"technical_specs\":{\"architecture\":\"Not specified\",\"parameters\":\"Not specified\",\"context_window\":\"256\",\"tokenizer\":\"Not specified\",\"license\":\"gemma\",\"versioning\":{\"hf_revision\":\"dcc83ea841ab6100d6b47a070329e1ba4cf78752\",\"last_updated\":\"2025-09-23T05:19:58.231Z\"}},\"inference\":{\"servers\":[],\"min_hardware\":\"Not specified\",\"quantization\":[]},\"evals\":[],\"sources\":[{\"url\":\"https://huggingface.co/api/models/google/gemma-3-1b-it\",\"source_type\":\"hf\",\"title\":\"google/gemma-3-1b-it (HF API)\",\"accessed_date\":\"2025-09-23T05:19:02.787Z\",\"primary\":true,\"checksum_sha256\":\"be9ca1b5a9612a3946b3316e8a66089fc8265ccd4b8f2d89d672f6595f5e3243\",\"revision\":\"dcc83ea841ab6100d6b47a070329e1ba4cf78752\"},{\"url\":\"https://huggingface.co/google/gemma-3-1b-it/blob/main/README.md\",\"source_type\":\"hf\",\"title\":\"README.md\",\"accessed_date\":\"2025-09-23T05:19:02.787Z\",\"primary\":true,\"checksum_sha256\":\"60be259533fe3acba21d109a51673815a4c29aefdb7769862695086fcedbeb7a\",\"revision\":\"dcc83ea841ab6100d6b47a070329e1ba4cf78752\"},{\"url\":\"http://export.arxiv.org/api/query?search_query=all:google%2Fgemma-3-1b-it&start=0&max_results=1\",\"source_type\":\"paper\",\"title\":\"arXiv query for google/gemma-3-1b-it\",\"accessed_date\":\"2025-09-23T05:19:02.787Z\",\"primary\":true,\"checksum_sha256\":\"bc54b8804371ecc94f96db935700463f684c83d08d8080b5c96e5f12fcda1345\"}],\"disputed\":[],\"gaps_unknowns\":[],\"notes\":\"Generated offline from harvested metadata (LM spec unavailable).\",\"coverage_score\":\"3/10\",\"coverage_flags\":[\"missing_primary_repo\",\"needs_parameter_verification\"]}"
+      }
+    }
+  ]
+}

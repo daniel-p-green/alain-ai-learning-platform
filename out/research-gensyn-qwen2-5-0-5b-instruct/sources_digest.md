@@ -1,0 +1,17 @@
+# Sources Digest for Gensyn/Qwen2.5-0.5B-Instruct
+- HF revision: 317b7eb96312eda0c431d1dab1af958a308cb35e
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: Qwen2ForCausalLM
+- Parsed context window: 32768
+- Parsed license: Apache-2.0
+- Primary GitHub repo: gensyn-ai/paper-rl-swarm

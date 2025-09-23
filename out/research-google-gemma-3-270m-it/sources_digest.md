@@ -1,0 +1,13 @@
+# Sources Digest for google/gemma-3-270m-it
+- HF revision: ac82b4e820549b854eebf28ce6dedaf9fdfa17b3
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0

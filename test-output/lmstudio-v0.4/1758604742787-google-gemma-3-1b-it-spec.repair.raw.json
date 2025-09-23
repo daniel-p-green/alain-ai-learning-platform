@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-6oz8pb9xb8ergfcrnd6n89",
+  "object": "chat.completion",
+  "created": 1758604791,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"google/gemma-3-1b-it\",\"identity\":{\"aliases\":[\"Gemma 3.1B IT\"],\"family_map\":[{\"variant\":\"gemma-3-1b\",\"repo_id\":\"google/gemmamodels\",\"context_window\":\"256\"}],\"canonical_repo\":\"google/gemmamodels\"},\"technical_specs\":{\"architecture\":\"Transformer‑based L​...}",
+        "reasoning": "We need produce valid JSON with schema keys. We have truncated data. Need to fill unknown with \" ,\"parameters\" : \"Not specified\", \"context_window\": \"256\", \"tokenizer\":\"BPE-like\", \"license\":\"Gemma © Google & OpenAI? ..???\", \"versioning\" : {\"hf_revision\":\"dcc83ea841ab6100d6b47a070329e1ba4cf78752\"} } , \"inference\":{ \"servers\":[\"Not specified\"],\"min_hardware\":\"Not specified\",\"quantization\":[] }, \"evals\":[{\"benchmark\":\"Not specified\",\"dataset_version\":\"Not specified\",\"metric\":\"Not specified\",\"score\":\"Not specified\",\"harness\":\"Not specified\",\"notes\":\"Not specified\"}], \"sources\":[{\"url\":\"https://huggingface.co/google/gemma-3-1b-it\",\"source_type\":\"hf\",\"title\":\"Gemma 3.1B IT on Hugging Face\",\"accessed_date\":\"2025-09-23\"}] , \"disputed\":[], \"notes\":\"Not specified\" } ",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 952,
+    "completion_tokens": 318,
+    "total_tokens": 1270
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

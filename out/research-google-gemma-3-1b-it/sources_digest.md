@@ -1,0 +1,15 @@
+# Sources Digest for google/gemma-3-1b-it
+- HF revision: dcc83ea841ab6100d6b47a070329e1ba4cf78752
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed context window: 256
+- Parsed license: gemma

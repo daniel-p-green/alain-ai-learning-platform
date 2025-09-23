@@ -1,0 +1,10 @@
+{
+  "technical_specs": {
+    "architecture": "LlamaForCausalLM",
+    "parameters": "34B",
+    "context_window": "8192",
+    "tokenizer": "LlamaTokenizer",
+    "license": "apache-2.0"
+  },
+  "primary_repo": "https://github.com/OpenAccess-AI-Collective/axolotl"
+}

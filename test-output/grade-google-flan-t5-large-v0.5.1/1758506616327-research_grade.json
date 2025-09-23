@@ -1,0 +1,27 @@
+{
+  "total_score": 80,
+  "stage1": {
+    "score": 40,
+    "failures": [
+      "Fallback spec used"
+    ],
+    "warnings": [],
+    "metrics": {
+      "primary_sources": 9,
+      "secondary_sources": 20,
+      "speculation_hits": 0,
+      "unknown_ratio": 0.0748663101604278
+    }
+  },
+  "stage2": {
+    "score": 40,
+    "failures": [],
+    "warnings": [],
+    "metrics": {
+      "files_written": 13,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [],
+  "summary": "needs_fixes"
+}

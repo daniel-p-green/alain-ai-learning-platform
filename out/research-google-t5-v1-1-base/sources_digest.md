@@ -1,0 +1,17 @@
+# Sources Digest for google/t5-v1_1-base
+- HF revision: b5fc947a416ea3cb079532cb3c2bbadeb7f800fc
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 1
+- Parsed architecture: T5ForConditionalGeneration
+- Parsed license: apache-2.0
+- Primary GitHub repo: google-research/text-to-text-transfer-transformer
+  - c4: api=true readme=true

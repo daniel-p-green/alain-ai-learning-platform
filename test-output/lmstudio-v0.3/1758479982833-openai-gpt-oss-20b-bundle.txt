@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-yacqx91f5teikluql973f",
+  "object": "chat.completion",
+  "created": 1758479999,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to= \"mcp/hf-mcp-server:model_search\"<|constrain|>json<|message|>{\"query\":\"openai/gpt-oss-20b\",\"limit\":5}",
+        "reasoning": "Need to fetch HF repo.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1112,
+    "completion_tokens": 49,
+    "total_tokens": 1161
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

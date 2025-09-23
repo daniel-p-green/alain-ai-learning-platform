@@ -1,0 +1,12 @@
+OK: /meta-llama-llama-3-2-1b-instruct/README.md
+OK: /meta-llama-llama-3-2-1b-instruct/CHANGELOG.md
+OK: /meta-llama-llama-3-2-1b-instruct/TECH_SPECS.md
+OK: /meta-llama-llama-3-2-1b-instruct/EVALS.md
+OK: /meta-llama-llama-3-2-1b-instruct/COOKBOOK.md
+OK: /meta-llama-llama-3-2-1b-instruct/LICENSE_NOTES.md
+OK: /meta-llama-llama-3-2-1b-instruct/TROUBLESHOOTING.md
+OK: /meta-llama-llama-3-2-1b-instruct/requirements.txt
+OK: /meta-llama-llama-3-2-1b-instruct/.env.example
+OK: /meta-llama-llama-3-2-1b-instruct/code/inference.py
+OK: /meta-llama-llama-3-2-1b-instruct/code/finetune.py
+OK: /meta-llama-llama-3-2-1b-instruct/code/run.sh

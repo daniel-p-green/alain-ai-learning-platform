@@ -1,0 +1,16 @@
+# Sources Digest for Qwen/Qwen3-0.6B
+- HF revision: c1899de289a04d12100db370d81485cdf75e47ca
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed architecture: Qwen3ForCausalLM
+- Parsed context window: 40960
+- Parsed license: Apache-2.0

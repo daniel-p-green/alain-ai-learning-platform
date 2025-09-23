@@ -1,0 +1,118 @@
+:root {
+  color-scheme: light dark;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+  padding: 2.5rem 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+}
+
+button, select {
+  font: inherit;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.8);
+  color: inherit;
+}
+
+.chat-container {
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.65);
+  padding: 1rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.chat-message {
+  margin-bottom: 1rem;
+}
+
+.chat-message strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.telemetry-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.telemetry-list li {
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-pill.active {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+}
+
+.status-pill.idle {
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5f5;
+}
+
+.callout {
+  border-left: 4px solid #38bdf8;
+  background: rgba(14, 116, 144, 0.22);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.callout.warning {
+  border-left-color: #f97316;
+  background: rgba(249, 115, 22, 0.18);
+}

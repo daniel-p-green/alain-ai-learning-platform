@@ -1,0 +1,52 @@
+{
+  "model_id": "openai-community/gpt2",
+  "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 24,
+  "metadata": {
+    "license": "MIT",
+    "license_source": "README front-matter",
+    "architecture": "GPT2LMHeadModel",
+    "context_window": "1024",
+    "tokenizer": "BPE",
+    "tokenizer_details": {
+      "vocab_size": "50257"
+    },
+    "versioning": {
+      "hf_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e"
+    },
+    "inference": {},
+    "parameters": "124M",
+    "license_details": {
+      "spdx": "MIT"
+    },
+    "coverage": {
+      "filled": 7,
+      "total": 10,
+      "missing": [
+        "primary repo",
+        "evals",
+        "inference hardware"
+      ],
+      "score": 70
+    },
+    "primary_repo": "openai/gpt-2",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "missing_evals"
+    ]
+  }
+}

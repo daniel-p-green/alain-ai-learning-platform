@@ -1,0 +1,9 @@
+{
+  "version": "v0.2c",
+  "model_reference": "openai/gpt-oss-20b",
+  "response_time_ms": 65186,
+  "json_parsed": false,
+  "coerced_json_parsed": false,
+  "error": "HTTP 400: {\"error\":\"Reached context length of 4096 tokens with model (arch: gpt-oss) that does not currently support mid-generation context overflow. Try reloading with a larger context length or shortening the prompt/chat.\"}",
+  "response_text": ""
+}

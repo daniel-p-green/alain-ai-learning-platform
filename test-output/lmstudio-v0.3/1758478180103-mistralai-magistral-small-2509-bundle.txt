@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-ndcr2unripbyrk9iz2z3a",
+  "object": "chat.completion",
+  "created": 1758478183,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to=repo_search tool_input<|message|>{\"model_name\":\"mistralai/Magistral‑Small-2509\"}",
+        "reasoning": "We need to fetch HF repo. Use mcp/hf-mcp-server:model_search for mistralai/Magistral-Small-2509.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 816,
+    "completion_tokens": 64,
+    "total_tokens": 880
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

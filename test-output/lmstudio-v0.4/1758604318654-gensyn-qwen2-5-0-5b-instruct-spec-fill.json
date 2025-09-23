@@ -1,0 +1,9 @@
+{
+  "technical_specs": {
+    "architecture": "transformers with RoPE, SwiGLU, RMSNorm, Attention QKV bias and tied word embeddings",
+    "parameters": "0.49B",
+    "context_window": "32768",
+    "tokenizer": "unknown"
+  },
+  "primary_repo": "https://github.com/gensyn-ai/rl-swarm"
+}

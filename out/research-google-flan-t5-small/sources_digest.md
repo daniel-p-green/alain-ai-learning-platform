@@ -1,0 +1,27 @@
+# Sources Digest for google/flan-t5-small
+- HF revision: 0fc9ddf78a1e988dac52e2dac162b0ede4fd74ab
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 10
+- Parsed architecture: T5ForConditionalGeneration
+- Parsed context window: 512
+- Parsed license: apache-2.0
+- Primary GitHub repo: google-research/t5x
+  - svakulenk0/qrecc: api=true readme=true
+  - taskmaster2: api=true readme=true
+  - djaym7/wiki_dialog: api=true readme=true
+  - deepmind/code_contests: api=true readme=true
+  - lambada: api=true readme=true
+  - gsm8k: api=true readme=true
+  - aqua_rat: api=true readme=true
+  - esnli: api=true readme=true
+  - quasc: api=false readme=false
+  - qed: api=true readme=true

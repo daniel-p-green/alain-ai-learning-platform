@@ -1,0 +1,9 @@
+{
+  "version": "v0.2a",
+  "model_reference": "google/gemma-3-270m-it",
+  "response_time_ms": 12754,
+  "json_parsed": false,
+  "coerced_json_parsed": true,
+  "error": null,
+  "response_text": "<|channel|>commentary to=web.search <|constrain|>json<|message|>{\"query\":\"huggingface google/gemma-3-270m-it model card\",\"top_k\":5,\"recency_days\":-1}"
+}

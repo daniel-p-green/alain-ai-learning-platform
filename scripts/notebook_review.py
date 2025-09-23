@@ -54,60 +54,53 @@ def score_notebook(nb_json):
     code_text = "\n".join(text_of(c) for c in code_cells)
 
     # Heuristics
+    def clamp_pct(value: float) -> int:
+        return max(0, min(100, int(round(value))))
+
     has_title = any(text_of(c).lstrip().startswith("# ") for c in md_cells[:3])
     headings_count = len(HEAD_RE.findall(md_text))
     md_ratio = (len(md_cells) / max(1, len(cells)))
     short_cells = sum(1 for c in code_cells if len(text_of(c).splitlines()) <= 35)
-    short_ratio = short_cells / max(1, len(code_cells))
+    short_ratio = short_cells / max(1, len(code_cells)) if code_cells else 0
 
-    clarity = 0
-    clarity += 2 if has_title else 0
-    clarity += 2 if headings_count >= 4 else (1 if headings_count >= 2 else 0)
-    clarity += 1 if md_ratio >= 0.2 else 0
-    clarity = min(5, clarity)
+    heading_frac = min(headings_count / 8, 1.0)
+    markdown_balance = min(md_ratio / 0.5, 1.0)
+    clarity = clamp_pct((0.3 * (1 if has_title else 0) + 0.4 * heading_frac + 0.3 * markdown_balance) * 100)
 
     has_eval_heading = bool(re.search(r"^\s*##\s*Evaluation", md_text, re.MULTILINE))
-    has_asserts = ("assert " in code_text) or bool(re.search(r"accuracy|metrics|evaluate", code_text, re.I))
+    assert_count = len(re.findall(r"\bassert\b", code_text))
+    metrics_hits = len(re.findall(r"accuracy|metric|evaluate", code_text, re.I))
+    assert_signal = min((assert_count + metrics_hits) / 6, 1.0)
     task_framing = bool(re.search(r"##\s*(Quickstart|Setup|Guided|Steps|Overview)", md_text))
-    effectiveness = 0
-    effectiveness += 2 if has_eval_heading else 0
-    effectiveness += 2 if has_asserts else 0
-    effectiveness += 1 if task_framing else 0
-    effectiveness = min(5, effectiveness)
+    effectiveness = clamp_pct((0.35 * (1 if has_eval_heading else 0) + 0.45 * assert_signal + 0.2 * (1 if task_framing else 0)) * 100)
 
-    has_exercises = bool(re.search(r"##\s*Exercises|Try this|Challenge", md_text, re.I))
-    has_questions = bool(re.search(r"\?\s*$", md_text, re.M))
-    has_image = ("![](" in md_text) or bool(re.search(r"<img\s", md_text))
-    engagement = 0
-    engagement += 2 if has_exercises else 0
-    engagement += 1 if has_questions else 0
-    engagement += 1 if has_image else 0
-    engagement = min(5, engagement)
+    has_exercises = bool(re.search(r"##\s*(Exercises|Try\s+This|Challenge)", md_text, re.I))
+    question_count = len(re.findall(r"\?\s*$", md_text, re.M))
+    image_count = len(re.findall(r"!\[[^\]]*\]\([^)]+\)|<img\s", md_text))
+    exercise_score = 1 if has_exercises else 0
+    question_score = min(question_count / 6, 1.0)
+    image_score = min(image_count / 3, 1.0)
+    engagement = clamp_pct((0.4 * exercise_score + 0.35 * question_score + 0.25 * image_score) * 100)
 
-    has_sections = headings_count >= 4
-    sane_cell_lengths = short_ratio >= 0.6  # majority of code cells short
+    section_score = min(headings_count / 8, 1.0)
+    sane_cell_lengths = min(max(short_ratio, 0.0), 1.0)
     has_setup_section = bool(re.search(r"##\s*Setup", md_text))
-    style_layout = 0
-    style_layout += 2 if has_sections else 0
-    style_layout += 2 if sane_cell_lengths else 0
-    style_layout += 1 if has_setup_section else 0
-    style_layout = min(5, style_layout)
+    style_layout = clamp_pct((0.4 * section_score + 0.35 * sane_cell_lengths + 0.25 * (1 if has_setup_section else 0)) * 100)
 
-    seeds = any(re.search(p, code_text) for p in [r"random\.seed\(", r"np\.random\.seed\(", r"numpy\.random\.seed\(", r"torch\.manual_seed\("])
-    pip_pins = bool(re.search(r"pip\s+install\s+[^\n]*==", code_text)) or "-r requirements.txt" in code_text
-    prints_env = bool(re.search(r"pip show|pip list|sys\.version|platform\.platform|torch\.cuda|cuda", code_text))
-    reproducibility = 0
-    reproducibility += 2 if seeds else 0
-    reproducibility += 2 if pip_pins else 0
-    reproducibility += 1 if prints_env else 0
-    reproducibility = min(5, reproducibility)
+    seed_patterns = [r"random\.seed\(", r"np\.random\.seed\(", r"numpy\.random\.seed\(", r"torch\.manual_seed\("]
+    seed_count = sum(len(re.findall(p, code_text)) for p in seed_patterns)
+    pip_pin_count = len(re.findall(r"pip\s+install\s+[^\n]*==", code_text)) + (1 if "-r requirements.txt" in code_text else 0)
+    env_hits = len(re.findall(r"pip\s+(show|list)|sys\.version|platform\.platform|torch\.cuda|cuda", code_text))
+    seed_score = min(seed_count / 3, 1.0)
+    pip_score = min(pip_pin_count / 3, 1.0)
+    env_score = min(env_hits / 3, 1.0)
+    reproducibility = clamp_pct((0.4 * seed_score + 0.4 * pip_score + 0.2 * env_score) * 100)
 
-    cost_tokens = any(s in code_text for s in ["usage", "total_tokens", "prompt_tokens", "completion_tokens", "input_tokens", "output_tokens"])
-    latency = bool(re.search(r"time\.(time|perf_counter)|%%time", code_text))
-    observability = 0
-    observability += 3 if cost_tokens else 0
-    observability += 1 if latency else 0
-    observability = min(5, observability)
+    token_mentions = len(re.findall(r"(prompt|completion|total|input|output)_tokens", code_text, re.I)) + len(re.findall(r"usage", code_text, re.I))
+    latency_mentions = len(re.findall(r"time\.(time|perf_counter)|%%time", code_text))
+    tokens_score = min(token_mentions / 4, 1.0)
+    latency_score = min(latency_mentions / 3, 1.0)
+    observability = clamp_pct((0.7 * tokens_score + 0.3 * latency_score) * 100)
 
     return {
         "clarity": clarity,
@@ -122,14 +115,16 @@ def score_notebook(nb_json):
             "md_ratio": round(md_ratio, 2),
             "short_code_ratio": round(short_ratio, 2),
             "has_eval_heading": has_eval_heading,
-            "has_asserts_or_metrics": bool(has_asserts),
+            "assert_count": assert_count,
+            "metrics_hits": metrics_hits,
             "has_exercises": has_exercises,
-            "has_image": has_image,
-            "seeds": seeds,
-            "pip_pins": pip_pins,
-            "prints_env": prints_env,
-            "cost_tokens": cost_tokens,
-            "latency": latency,
+            "question_count": question_count,
+            "image_count": image_count,
+            "seed_matches": seed_count,
+            "pip_pin_matches": pip_pin_count,
+            "env_introspection_hits": env_hits,
+            "token_mentions": token_mentions,
+            "latency_mentions": latency_mentions,
         },
         "totals": {
             "cells": len(cells),
@@ -177,11 +172,11 @@ def main():
         src = r.get("source", "other")
         for k in ["clarity", "effectiveness", "engagement", "style_layout", "reproducibility", "observability"]:
             v = r.get(k)
-            if isinstance(v, int):
+            if isinstance(v, (int, float)):
                 agg[src][k].append(v)
 
     def avg(lst):
-        return round(sum(lst)/len(lst), 2) if lst else 0
+        return round(sum(lst)/len(lst), 1) if lst else 0.0
 
     aggregates = {
         src: {k: avg(vs) for k, vs in metrics.items()} for src, metrics in agg.items()
@@ -205,14 +200,16 @@ def main():
         lines.append("")
         lines.append("## Averages by Source")
         for src, metrics in aggregates.items():
-            lines.append(f"- {src}: " + ", ".join(f"{k} {v}/5" for k, v in metrics.items()))
+            lines.append(f"- {src}: " + ", ".join(f"{k} {float(v):.1f}/100" for k, v in metrics.items()))
         lines.append("")
         lines.append("## Top 15 by Overall Score")
+        metric_keys = ["clarity","effectiveness","engagement","style_layout","reproducibility","observability"]
         def overall(r):
-            return sum(r.get(k, 0) for k in ["clarity","effectiveness","engagement","style_layout","reproducibility","observability"])
+            vals = [r.get(k, 0) for k in metric_keys if isinstance(r.get(k), (int, float))]
+            return round(sum(vals)/len(vals), 1) if vals else 0
         top = sorted(results, key=overall, reverse=True)[:15]
         for r in top:
-            lines.append(f"- {r['path']}: total {overall(r)}/30 "
+            lines.append(f"- {r['path']}: avg {overall(r)}/100 "
                          f"(C{r['clarity']}, E{r['effectiveness']}, G{r['engagement']}, S{r['style_layout']}, R{r['reproducibility']}, O{r['observability']})")
         lines.append("")
         lines.append("Note: Heuristic scoring — intended for triage and curation, not definitive quality judgments.")

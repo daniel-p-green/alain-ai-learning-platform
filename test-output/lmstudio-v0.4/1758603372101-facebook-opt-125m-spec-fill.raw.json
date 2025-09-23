@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-vv65rrh8caw68eiglkjd",
+  "object": "chat.completion",
+  "created": 1758603380,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"evals\": [], \"primary_repo\": \"https://github.com/facebookresearch/metaseq\"}",
+        "reasoning": "",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2176,
+    "completion_tokens": 20,
+    "total_tokens": 2196
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

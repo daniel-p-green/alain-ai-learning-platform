@@ -1,0 +1,126 @@
+{
+  "model_id": "meta-llama/Meta-Llama-3-8B",
+  "revision": "8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920",
+  "files": {
+    "hf_readme": true,
+    "config": false,
+    "generation_config": false,
+    "tokenizer_json": false,
+    "tokenizer_model": false,
+    "gh_readme": false,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 3,
+  "metadata": {
+    "license": "llama3",
+    "license_source": "README front-matter",
+    "parameters": "70B",
+    "evals": [
+      {
+        "benchmark": "llama",
+        "score": "3",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "390",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "1900",
+        "source": "README"
+      },
+      {
+        "benchmark": "benchmark",
+        "score": "2290",
+        "source": "README"
+      },
+      {
+        "benchmark": "MMLU (5-shot)",
+        "source": "README"
+      },
+      {
+        "benchmark": "45.9",
+        "source": "README"
+      },
+      {
+        "benchmark": "72.6",
+        "source": "README"
+      },
+      {
+        "benchmark": "76.1",
+        "source": "README"
+      },
+      {
+        "benchmark": "61.1",
+        "source": "README"
+      },
+      {
+        "benchmark": "78.6",
+        "source": "README"
+      },
+      {
+        "benchmark": "TriviaQA-Wiki (5-shot)",
+        "source": "README"
+      },
+      {
+        "benchmark": "SQuAD (1-shot)",
+        "source": "README"
+      },
+      {
+        "benchmark": "44.4",
+        "source": "README"
+      },
+      {
+        "benchmark": "75.7",
+        "source": "README"
+      },
+      {
+        "benchmark": "58.4",
+        "source": "README"
+      },
+      {
+        "benchmark": "GPQA (0-shot)",
+        "source": "README"
+      },
+      {
+        "benchmark": "HumanEval (0-shot)",
+        "source": "README"
+      },
+      {
+        "benchmark": "GSM-8K (8-shot, CoT)",
+        "source": "README"
+      },
+      {
+        "benchmark": "MATH (4-shot, CoT)",
+        "source": "README"
+      }
+    ],
+    "coverage": {
+      "filled": 3,
+      "total": 10,
+      "missing": [
+        "architecture",
+        "context window",
+        "tokenizer",
+        "primary repo",
+        "inference hardware",
+        "tokenizer vocab",
+        "license SPDX"
+      ],
+      "score": 30
+    },
+    "versioning": {
+      "hf_revision": "8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920"
+    },
+    "flags": [
+      "missing_primary_repo"
+    ]
+  }
+}

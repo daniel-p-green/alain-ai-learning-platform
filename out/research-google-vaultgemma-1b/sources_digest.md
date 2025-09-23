@@ -1,0 +1,16 @@
+# Sources Digest for google/vaultgemma-1b
+- HF revision: f9624dafc1760cb2f6039e86e12055d6559d7abb
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: true
+- GitHub LICENSE: true
+- GitHub CITATION: false
+- GitHub release metadata: true
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed parameters: 1B
+- Parsed license: gemma
+- Primary GitHub repo: google-deepmind/gemma

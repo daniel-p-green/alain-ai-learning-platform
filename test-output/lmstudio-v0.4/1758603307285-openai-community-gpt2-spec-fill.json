@@ -1,0 +1,11 @@
+{
+  "technical_specs": {
+    "architecture": "transformer",
+    "parameters": "124M",
+    "context_window": "1024",
+    "tokenizer": "byte-level BPE",
+    "license": "mit"
+  },
+  "primary_repo": "https://github.com/openai/gpt-2",
+  "notes": "The text mentions 1024 tokens context window and 50,257 vocab size but only context_window included per rules."
+}

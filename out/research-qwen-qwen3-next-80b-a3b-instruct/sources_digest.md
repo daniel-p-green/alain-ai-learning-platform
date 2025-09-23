@@ -1,0 +1,13 @@
+# Sources Digest for Qwen/Qwen3-Next-80B-A3B-Instruct
+- HF revision: 9c7f2fbe84465e40164a94cc16cd30b6999b0cc7
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0

@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-ebx9y439s4cqaywdf77p2t",
+  "object": "chat.completion",
+  "created": 1758604922,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"model_name\":\"meta-llama/Meta-Llama-4???…... ...….. … … … ?… … ?… … ……………………………………………………………t………………………………??…………………‑………………………8 ………..?……………………………………………………………………} }{\",\"identity\":{\"aliases\":[\"Meta-Llama-3-8B\"],\"family_map\":[{\"variant\":\"Meta-Llama-3-8B\",\"repo_id\":\"meta-llama/Meta-Llama-3-8B\",\"context_window\":\"32768\"}],\"canonical_repo\":\"meta-llama/Meta-Llama-3-8B\"},\"technical_specs\":{\"architecture\":\"LLaMA 3\",\"parameters\":\"8,000,000,000\",\"context_window\":\"32768\",\"tokenizer\":\"LlamaTokenizerFast\",\"license\":\"llama3\",\"tokenizer_details\":{\"vocab_size\":\"32000\",\"special_tokens\":{\"eos\":\"<|end_of_text|>\",\"bos\":\"<|begin_of_text|>\",\"pad\":\"<|pad|>\",\"unk\":\"<unk>\"}},\"versioning\":{\"hf_revision\":\"8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920\",\"paper_version\":\"v0.1\",\"last_updated\":\"2024-07-01\"}},\"inference\":{\"servers\":[\"HuggingFace Inference API\"],\"min_hardware\":\"Not specified\",\"quantization\":[\"FP16\",\"INT8\"],\"context_length_verified\":\"32768\"},\"evals\":[],\"sources\":[{\"url\":\"https://huggingface.co/api/models/meta-llama/Meta-Llama-3-8B\",\"source_type\":\"hf\",\"title\":\"meta-llama/Meta-Llama-3-8B (HF API)\",\"accessed_date\":\"2025-09-23T05:22:00.796Z\",\"primary\":true,\"checksum_sha256\":\"bafbf2565122cdefeaeaa324b289c50cc3c4fbcf599016f471d4c6fbdb93ba07\",\"revision\":\"8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920\"},{\"url\":\"https://huggingface.co/meta-llama/Meta-Llama-3-8B/blob/main/README.md\",\"source_type\":\"hf\",\"title\":\"README.md\",\"accessed_date\":\"2025-09-23T05:22:00.796Z\",\"primary\":true,\"checksum_sha256\":\"3cbad75113f9c1d99d215598c624c96c8beead2852e5b3a6a3e40238c03676e9\",\"revision\":\"8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920\"},{\"url\":\"http://export.arxiv.org/api/query?search_query=all:meta-llama%2FMeta-Llama-3-8B&start=0&max_results=1\",\"source_type\":\"paper\",\"title\":\"arXiv query for meta-llama/Meta-Llama-3-8B\",\"accessed_date\":\"2025-09-23T05:22:00.796Z\",\"primary\":true,\"checksum_sha256\":\"d733aaa4a5e728d48939002a1e84dc54f574c6f158b25f565aa45593878e3560\"}],\"disputed\":[],\"gaps_unknowns\":[],\"notes\":\"unverified\",\"coverage_score\":\"8/10\",\"coverage_flags\":[]}"
+      }
+    }
+  ]
+}

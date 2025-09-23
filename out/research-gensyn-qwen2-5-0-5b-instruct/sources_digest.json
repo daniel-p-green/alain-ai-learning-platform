@@ -1,0 +1,81 @@
+{
+  "model_id": "Gensyn/Qwen2.5-0.5B-Instruct",
+  "revision": "317b7eb96312eda0c431d1dab1af958a308cb35e",
+  "files": {
+    "hf_readme": true,
+    "config": true,
+    "generation_config": true,
+    "tokenizer_json": true,
+    "tokenizer_model": false,
+    "gh_readme": true,
+    "gh_license": false,
+    "gh_citation": false,
+    "gh_release": false,
+    "arxiv_meta": true,
+    "dataset_cards": false
+  },
+  "datasets": [],
+  "manifest_entries": 9,
+  "metadata": {
+    "license": "Apache-2.0",
+    "license_source": "README front-matter",
+    "architecture": "Qwen2ForCausalLM",
+    "context_window": "32768",
+    "tokenizer_details": {
+      "vocab_size": "151936"
+    },
+    "versioning": {
+      "hf_revision": "317b7eb96312eda0c431d1dab1af958a308cb35e"
+    },
+    "inference": {},
+    "usage_sections": [
+      "## Quickstart\n\nTo deploy this model into a swarm and/or participate in the Gensyn Testnet, follow the instructions in the [RL Swarm repository](https://github.com/gensyn-ai/rl-swarm), read about the [testnet](https://www.gensyn.ai/testnet), read the [RL Swarm overview](https://www.gensyn.ai/articles/rl-swarm), and/or read the [RL Swarm technical report](https://github.com/gensyn-ai/paper-rl-swarm/blob/main/latest.pdf).\n"
+    ],
+    "evals": [
+      {
+        "benchmark": "Number of Parameters",
+        "metric": "B",
+        "score": "0.49",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Paramaters",
+        "dataset": "Non-Embedding",
+        "metric": "B",
+        "score": "0.36",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Layers",
+        "score": "24",
+        "source": "README"
+      },
+      {
+        "benchmark": "Number of Attention Heads",
+        "dataset": "GQA",
+        "metric": "for Q and 2 for KV",
+        "score": "14",
+        "source": "README"
+      }
+    ],
+    "license_details": {
+      "spdx": "Apache-2.0"
+    },
+    "coverage": {
+      "filled": 6,
+      "total": 10,
+      "missing": [
+        "parameters",
+        "tokenizer",
+        "primary repo",
+        "inference hardware"
+      ],
+      "score": 60
+    },
+    "primary_repo": "gensyn-ai/paper-rl-swarm",
+    "notes": "Generated offline from harvested metadata (LM spec unavailable).",
+    "flags": [
+      "needs_parameter_verification"
+    ]
+  }
+}

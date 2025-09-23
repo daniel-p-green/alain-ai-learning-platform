@@ -1,0 +1,26 @@
+{
+  "id": "chatcmpl-0cujzi02fc1laffk5psnzm",
+  "object": "chat.completion",
+  "created": 1758481692,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<|channel|>commentary to= mcp/hf-mcp-server:model_search <|constrain|>json<|message|>{\"query\":\"mistralai/Magistral-Small-2509\",\"limit\":5}",
+        "reasoning": "Need to perform tool calls.",
+        "tool_calls": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 1413,
+    "completion_tokens": 51,
+    "total_tokens": 1464
+  },
+  "stats": {},
+  "system_fingerprint": "openai/gpt-oss-20b"
+}

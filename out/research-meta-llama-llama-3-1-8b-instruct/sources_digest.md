@@ -1,0 +1,14 @@
+# Sources Digest for meta-llama/Llama-3.1-8B-Instruct
+- HF revision: 0e9e39f249a16976918f6564b8830bc894c89659
+- README: true
+- config.json: false
+- generation_config.json: false
+- tokenizer.json: false
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 0
+- Parsed license: llama3.1

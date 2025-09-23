@@ -1,0 +1,26 @@
+# Sources Digest for TinyLlama/TinyLlama-1.1B-Chat-v1.0
+- HF revision: fe8a4ea1ffedaf415f4da2f062534de366a451e6
+- README: true
+- config.json: true
+- generation_config.json: true
+- tokenizer.json: true
+- tokenizer.model: false
+- GitHub README: false
+- GitHub LICENSE: false
+- GitHub CITATION: false
+- GitHub release metadata: false
+- arXiv metadata: true
+- Dataset cards captured: 9
+- Parsed architecture: LlamaForCausalLM
+- Parsed parameters: 1.1B
+- Parsed context window: 2048
+- Parsed license: Apache-2.0
+  - cerebras/slimpajama-627b: api=true readme=true
+  - bigcode/starcoderdata: api=true readme=true
+  - huggingfaceh4/ultrachat_200k: api=true readme=true
+  - huggingfaceh4/ultrafeedback_binarized: api=true readme=true
+  - cerebras/SlimPajama-627B: api=true readme=true
+  - HuggingFaceH4/ultrachat_200k: api=true readme=true
+  - HuggingFaceH4/ultrafeedback_binarized: api=true readme=true
+  - stingning/ultrachat: api=true readme=true
+  - openbmb/ultrafeedback: api=true readme=true

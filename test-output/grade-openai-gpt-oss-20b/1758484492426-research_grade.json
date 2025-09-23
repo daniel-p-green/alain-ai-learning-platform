@@ -1,0 +1,29 @@
+{
+  "total_score": 88,
+  "stage1": {
+    "score": 52,
+    "failures": [
+      "No primary sources present"
+    ],
+    "warnings": [],
+    "metrics": {
+      "primary_sources": 0,
+      "secondary_sources": 1,
+      "speculation_hits": 0,
+      "unknown_ratio": 0.2
+    }
+  },
+  "stage2": {
+    "score": 36,
+    "failures": [],
+    "warnings": [
+      "Few OK lines; may not have saved files"
+    ],
+    "metrics": {
+      "files_written": 0,
+      "ok_lines": 0
+    }
+  },
+  "critical_failures": [],
+  "summary": "ready_to_ship"
+}
