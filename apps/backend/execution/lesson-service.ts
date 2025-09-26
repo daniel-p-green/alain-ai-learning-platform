@@ -9,6 +9,11 @@ type Provider = 'poe' | 'openai-compatible';
 
 type LessonDifficulty = 'beginner' | 'intermediate' | 'advanced';
 
+export interface CustomPromptConfig {
+  title?: string;
+  context?: string;
+}
+
 interface LessonContentOptions {
   prompt: string;
   teacherModel: 'GPT-OSS-20B' | 'GPT-OSS-120B';
@@ -310,7 +315,8 @@ export function buildLessonFromTextPrompt(
   textContent: string,
   difficulty: string,
   includeAssessment?: boolean,
-  includeReasoning?: boolean
+  includeReasoning?: boolean,
+  customPrompt?: CustomPromptConfig
 ): string {
   const snippet = textContent.length > 2000 ? `${textContent.slice(0, 2000)}\n...` : textContent;
   const wantReasoning = includeReasoning === true;
@@ -463,4 +469,17 @@ async function attemptRepairJSON(
   } catch {
     return null;
   }
+}
+
+function formatUserBrief(customPrompt?: CustomPromptConfig): string {
+  if (!customPrompt) return '';
+  const pieces: string[] = [];
+  if (customPrompt.title) {
+    pieces.push(`User requested focus: ${customPrompt.title}`);
+  }
+  if (customPrompt.context) {
+    pieces.push(`Additional context: ${customPrompt.context}`);
+  }
+  if (pieces.length === 0) return '';
+  return `User Brief:\n${pieces.join('\n')}`;
 }
