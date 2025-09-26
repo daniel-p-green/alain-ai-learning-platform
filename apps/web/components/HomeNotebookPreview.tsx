@@ -66,7 +66,7 @@ export default function HomeNotebookPreview() {
               if (cell.kind === 'markdown') {
                 return (
                   <article key={cell.label} className="rounded-2xl border border-ink-100 bg-white">
-                    <div className="border-b border-ink-100/70 px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-ink-400">
+                    <div className="border-b border-ink-100/70 px-5 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-ink-600">
                       {cell.label}
                     </div>
                     <div className="space-y-3 px-5 py-4 text-sm leading-6 text-ink-700">
@@ -135,13 +135,13 @@ export default function HomeNotebookPreview() {
           <dl className="grid gap-4 text-sm text-ink-700">
             {runSummary.map((item) => (
               <div key={item.label} className="rounded-2xl border border-ink-100 bg-white p-4 shadow-alain-sm">
-                <dt className="text-xs font-semibold uppercase tracking-[0.22em] text-ink-400">{item.label}</dt>
+                <dt className="text-xs font-semibold uppercase tracking-[0.22em] text-ink-600">{item.label}</dt>
                 <dd className="mt-1 font-medium text-ink-900">{item.value}</dd>
               </div>
             ))}
           </dl>
           <div className="rounded-2xl border border-ink-100 bg-paper-0 p-5 shadow-alain-sm">
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-400">Launch checklist</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-600">Launch checklist</div>
             <ul className="mt-3 space-y-2 text-sm text-ink-700">
               <li className="flex items-start gap-2">
                 <span className="mt-1 inline-flex h-1.5 w-1.5 flex-none rounded-full bg-alain-blue" />
