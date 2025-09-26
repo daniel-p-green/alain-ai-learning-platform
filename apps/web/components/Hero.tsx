@@ -18,7 +18,7 @@ export default function Hero() {
           </div>
         </div>
         <div className="justify-self-center">
-          <BrandLogo width={320} height={170} className="rounded-alain-lg shadow-alain-sm" />
+          <BrandLogo width={320} height={170} className="rounded-alain-lg" />
         </div>
       </div>
     </section>
